@@ -1,6 +1,6 @@
 import Foundation
 import AppKit
-import AVFoundation
+@preconcurrency import AVFoundation
 import Accelerate
 import UniformTypeIdentifiers
 
@@ -14,8 +14,55 @@ struct BPMAnalysisDebug {
     let detail: String
 }
 
+enum BPMAnalysisFailure: LocalizedError {
+    case message(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .message(let text): return text
+        }
+    }
+}
+
+private final class AudioConverterFeeder {
+    private let inputFile: AVAudioFile
+    private let inputBuffer: AVAudioPCMBuffer
+    private let inputCapacity: AVAudioFrameCount
+    private var reachedEOF = false
+
+    init(inputFile: AVAudioFile, inputBuffer: AVAudioPCMBuffer, inputCapacity: AVAudioFrameCount) {
+        self.inputFile = inputFile
+        self.inputBuffer = inputBuffer
+        self.inputCapacity = inputCapacity
+    }
+
+    func makeInputBlock() -> AVAudioConverterInputBlock {
+        return { [self] _, outStatus in
+            if reachedEOF {
+                outStatus.pointee = .endOfStream
+                return nil
+            }
+
+            do {
+                try inputFile.read(into: inputBuffer, frameCount: inputCapacity)
+                if inputBuffer.frameLength == 0 {
+                    reachedEOF = true
+                    outStatus.pointee = .endOfStream
+                    return nil
+                }
+                outStatus.pointee = .haveData
+                return inputBuffer
+            } catch {
+                reachedEOF = true
+                outStatus.pointee = .noDataNow
+                return nil
+            }
+        }
+    }
+}
+
 @MainActor
-final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, AVAudioPlayerDelegate {
+final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, @preconcurrency AVAudioPlayerDelegate {
     @Published private(set) var state: TransportState = .stopped
     @Published private(set) var loadedTrackName: String?
     @Published private(set) var statusText: String = "Preview clock"
@@ -131,8 +178,8 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
         case .success(let bpm):
             analysisDebug = BPMAnalysisDebug(status: "Detected", detail: "Estimated BPM from audio signal")
             return BPMDetectionResult(bpm: bpm, source: "analysis")
-        case .failure(let message):
-            analysisDebug = BPMAnalysisDebug(status: "Analysis failed", detail: message)
+        case .failure(let error):
+            analysisDebug = BPMAnalysisDebug(status: "Analysis failed", detail: error.localizedDescription)
             return nil
         }
     }
@@ -169,17 +216,17 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
         parseBPM(from: filename)
     }
 
-    private func detectBPMFromAudioAnalysis(for url: URL) -> Result<Double, String> {
+    private func detectBPMFromAudioAnalysis(for url: URL) -> Result<Double, BPMAnalysisFailure> {
         guard let samples = try? loadMonoSamples(from: url, maxFrames: 44100 * 120) else {
-            return .failure("Could not decode audio samples")
+            return .failure(.message("Could not decode audio samples"))
         }
         guard samples.count > 16384 else {
-            return .failure("Too few decoded samples for analysis")
+            return .failure(.message("Too few decoded samples for analysis"))
         }
 
         let envelope = buildEnergyEnvelope(from: samples, windowSize: 512)
         guard envelope.count > 512 else {
-            return .failure("Energy envelope too short")
+            return .failure(.message("Energy envelope too short"))
         }
 
         let sampleRate = 44100.0 / 512.0
@@ -188,7 +235,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
         let minLag = Int(sampleRate * 60.0 / maxBPM)
         let maxLag = Int(sampleRate * 60.0 / minBPM)
         guard maxLag < envelope.count else {
-            return .failure("Lag window exceeded envelope length")
+            return .failure(.message("Lag window exceeded envelope length"))
         }
 
         var bestLag = 0
@@ -207,12 +254,12 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
         }
 
         guard bestLag > 0, bestScore > 0 else {
-            return .failure("No stable tempo peak found")
+            return .failure(.message("No stable tempo peak found"))
         }
 
         let confidenceRatio = bestScore / max(secondBestScore, 0.0001)
         guard confidenceRatio > 1.05 else {
-            return .failure("Tempo peak confidence too low")
+            return .failure(.message("Tempo peak confidence too low"))
         }
 
         var bpm = 60.0 * sampleRate / Double(bestLag)
@@ -242,28 +289,8 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
             throw NSError(domain: "AudioPlaybackController", code: 4, userInfo: [NSLocalizedDescriptionKey: "Failed to create output buffer"])
         }
 
-        var reachedEOF = false
-        let inputBlock: AVAudioConverterInputBlock = { _, outStatus in
-            if reachedEOF {
-                outStatus.pointee = .endOfStream
-                return nil
-            }
-
-            do {
-                try inputFile.read(into: inputBuffer, frameCount: inputCapacity)
-                if inputBuffer.frameLength == 0 {
-                    reachedEOF = true
-                    outStatus.pointee = .endOfStream
-                    return nil
-                }
-                outStatus.pointee = .haveData
-                return inputBuffer
-            } catch {
-                reachedEOF = true
-                outStatus.pointee = .noDataNow
-                return nil
-            }
-        }
+        let feeder = AudioConverterFeeder(inputFile: inputFile, inputBuffer: inputBuffer, inputCapacity: inputCapacity)
+        let inputBlock = feeder.makeInputBlock()
 
         var error: NSError?
         converter.convert(to: outputBuffer, error: &error, withInputFrom: inputBlock)

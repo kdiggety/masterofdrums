@@ -6,6 +6,7 @@ enum TransportState: String {
     case paused = "Paused"
 }
 
+@MainActor
 protocol PlaybackClock: AnyObject {
     var currentTime: TimeInterval { get }
     var state: TransportState { get }
