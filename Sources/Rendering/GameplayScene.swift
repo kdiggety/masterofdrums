@@ -128,6 +128,7 @@ final class GameplayScene: SKScene {
 
     private func setupScene() {
         removeAllChildren()
+        highway.removeAllChildren()
         laneHighlights.removeAll()
 
         addChild(highway)
