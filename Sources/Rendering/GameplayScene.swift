@@ -10,6 +10,7 @@ final class GameplayScene: SKScene {
     private let highway = SKNode()
     private let judgmentLabel = SKLabelNode(fontNamed: "SF Pro Display")
     private let laneWidth: CGFloat = 120
+    private let laneInset: CGFloat = 2
     private let noteSpeed: CGFloat = 260
     private let hitLineY: CGFloat = 110
     private let laneOrder: [Lane] = [.red, .yellow, .blue, .green, .kick]
@@ -39,6 +40,12 @@ final class GameplayScene: SKScene {
         setupScene()
         songStartDate = Date()
         view.window?.makeFirstResponder(view)
+    }
+
+    override func didChangeSize(_ oldSize: CGSize) {
+        super.didChangeSize(oldSize)
+        setupScene()
+        updateVisibleNotes(Array(noteNodes.keys.compactMap { id in chart.notes.first(where: { $0.id == id }) }))
     }
 
     override func update(_ currentTime: TimeInterval) {
@@ -104,7 +111,6 @@ final class GameplayScene: SKScene {
 
     private func setupScene() {
         removeAllChildren()
-        noteNodes.removeAll()
         laneHighlights.removeAll()
 
         addChild(highway)
@@ -114,15 +120,14 @@ final class GameplayScene: SKScene {
         let startX = (size.width - totalWidth) / 2
 
         for (index, lane) in laneOrder.enumerated() {
-            let laneX = startX + CGFloat(index) * laneWidth
-            let laneRect = CGRect(x: laneX, y: 0, width: laneWidth - 4, height: size.height)
+            let laneFrame = frameForLane(at: index, startX: startX)
 
-            let laneNode = SKShapeNode(rect: laneRect, cornerRadius: 4)
+            let laneNode = SKShapeNode(rect: laneFrame, cornerRadius: 4)
             laneNode.strokeColor = .darkGray
             laneNode.fillColor = color(for: lane).withAlphaComponent(0.17)
             highway.addChild(laneNode)
 
-            let highlightNode = SKShapeNode(rect: laneRect, cornerRadius: 4)
+            let highlightNode = SKShapeNode(rect: laneFrame, cornerRadius: 4)
             highlightNode.strokeColor = color(for: lane).withAlphaComponent(0.8)
             highlightNode.lineWidth = 2
             highlightNode.fillColor = color(for: lane).withAlphaComponent(0.35)
@@ -131,7 +136,13 @@ final class GameplayScene: SKScene {
             laneHighlights[lane] = highlightNode
         }
 
-        let hitLine = SKShapeNode(rect: CGRect(x: startX, y: hitLineY, width: totalWidth - 4, height: 6), cornerRadius: 3)
+        let hitLineFrame = CGRect(
+            x: startX + laneInset,
+            y: hitLineY,
+            width: totalWidth - (laneInset * 2),
+            height: 6
+        )
+        let hitLine = SKShapeNode(rect: hitLineFrame, cornerRadius: 3)
         hitLine.fillColor = .white
         hitLine.strokeColor = .clear
         highway.addChild(hitLine)
@@ -147,10 +158,15 @@ final class GameplayScene: SKScene {
 
         for note in chart.notes {
             guard let node = noteNodes[note.id], let laneIndex = laneOrder.firstIndex(of: note.lane) else { continue }
-            let laneX = startX + CGFloat(laneIndex) * laneWidth + (laneWidth / 2) - 2
+            let laneFrame = frameForLane(at: laneIndex, startX: startX)
             let timeUntilHit = note.time - songTime
-            node.position = CGPoint(x: laneX, y: hitLineY + CGFloat(timeUntilHit) * noteSpeed)
+            node.position = CGPoint(x: laneFrame.midX, y: hitLineY + CGFloat(timeUntilHit) * noteSpeed)
         }
+    }
+
+    private func frameForLane(at index: Int, startX: CGFloat) -> CGRect {
+        let laneX = startX + CGFloat(index) * laneWidth + laneInset
+        return CGRect(x: laneX, y: 0, width: laneWidth - (laneInset * 2), height: size.height)
     }
 
     private func makeNoteNode(for note: NoteEvent) -> SKShapeNode {
