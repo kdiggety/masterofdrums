@@ -9,12 +9,18 @@ struct BPMDetectionResult {
     let source: String
 }
 
+struct BPMAnalysisDebug {
+    let status: String
+    let detail: String
+}
+
 @MainActor
 final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, AVAudioPlayerDelegate {
     @Published private(set) var state: TransportState = .stopped
     @Published private(set) var loadedTrackName: String?
     @Published private(set) var statusText: String = "Preview clock"
     @Published private(set) var detectedBPM: BPMDetectionResult?
+    @Published private(set) var analysisDebug = BPMAnalysisDebug(status: "Idle", detail: "No file analyzed yet")
 
     private let previewClock = PreviewPlaybackClock()
     private var audioPlayer: AVAudioPlayer?
@@ -54,13 +60,14 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
             if let detectedBPM {
                 statusText = "Loaded \(url.lastPathComponent) · BPM \(String(format: "%.1f", detectedBPM.bpm)) from \(detectedBPM.source)"
             } else {
-                statusText = "Loaded \(url.lastPathComponent)"
+                statusText = "Loaded \(url.lastPathComponent) · BPM not detected"
             }
         } catch {
             audioPlayer = nil
             loadedTrackName = nil
             detectedBPM = nil
             state = .stopped
+            analysisDebug = BPMAnalysisDebug(status: "Load failed", detail: error.localizedDescription)
             statusText = "Audio load failed: \(error.localizedDescription)"
         }
     }
@@ -108,19 +115,26 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
     }
 
     private func detectBPM(for url: URL) -> BPMDetectionResult? {
+        analysisDebug = BPMAnalysisDebug(status: "Analyzing", detail: "Checking metadata, filename, and audio signal")
+
         if let metadataBPM = detectBPMFromMetadata(for: url) {
+            analysisDebug = BPMAnalysisDebug(status: "Detected", detail: "Found BPM in file metadata")
             return BPMDetectionResult(bpm: metadataBPM, source: "metadata")
         }
 
         if let filenameBPM = detectBPMFromFilename(url.lastPathComponent) {
+            analysisDebug = BPMAnalysisDebug(status: "Detected", detail: "Found BPM in filename")
             return BPMDetectionResult(bpm: filenameBPM, source: "filename")
         }
 
-        if let analyzedBPM = detectBPMFromAudioAnalysis(for: url) {
-            return BPMDetectionResult(bpm: analyzedBPM, source: "analysis")
+        switch detectBPMFromAudioAnalysis(for: url) {
+        case .success(let bpm):
+            analysisDebug = BPMAnalysisDebug(status: "Detected", detail: "Estimated BPM from audio signal")
+            return BPMDetectionResult(bpm: bpm, source: "analysis")
+        case .failure(let message):
+            analysisDebug = BPMAnalysisDebug(status: "Analysis failed", detail: message)
+            return nil
         }
-
-        return nil
     }
 
     private func detectBPMFromMetadata(for url: URL) -> Double? {
@@ -155,52 +169,113 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
         parseBPM(from: filename)
     }
 
-    private func detectBPMFromAudioAnalysis(for url: URL) -> Double? {
-        guard let samples = try? loadMonoSamples(from: url, maxFrames: 44100 * 90), samples.count > 8192 else {
-            return nil
+    private func detectBPMFromAudioAnalysis(for url: URL) -> Result<Double, String> {
+        guard let samples = try? loadMonoSamples(from: url, maxFrames: 44100 * 120) else {
+            return .failure("Could not decode audio samples")
+        }
+        guard samples.count > 16384 else {
+            return .failure("Too few decoded samples for analysis")
         }
 
-        let envelope = buildEnergyEnvelope(from: samples, windowSize: 1024)
-        guard envelope.count > 256 else { return nil }
+        let envelope = buildEnergyEnvelope(from: samples, windowSize: 512)
+        guard envelope.count > 512 else {
+            return .failure("Energy envelope too short")
+        }
 
-        let sampleRate = 44100.0 / 1024.0
+        let sampleRate = 44100.0 / 512.0
         let minBPM = 70.0
         let maxBPM = 190.0
         let minLag = Int(sampleRate * 60.0 / maxBPM)
         let maxLag = Int(sampleRate * 60.0 / minBPM)
-        guard maxLag < envelope.count else { return nil }
+        guard maxLag < envelope.count else {
+            return .failure("Lag window exceeded envelope length")
+        }
 
         var bestLag = 0
         var bestScore: Float = 0
+        var secondBestScore: Float = 0
 
         for lag in minLag...maxLag {
             let score = autocorrelationScore(envelope: envelope, lag: lag)
             if score > bestScore {
+                secondBestScore = bestScore
                 bestScore = score
                 bestLag = lag
+            } else if score > secondBestScore {
+                secondBestScore = score
             }
         }
 
-        guard bestLag > 0 else { return nil }
-        var bpm = 60.0 * sampleRate / Double(bestLag)
+        guard bestLag > 0, bestScore > 0 else {
+            return .failure("No stable tempo peak found")
+        }
 
+        let confidenceRatio = bestScore / max(secondBestScore, 0.0001)
+        guard confidenceRatio > 1.05 else {
+            return .failure("Tempo peak confidence too low")
+        }
+
+        var bpm = 60.0 * sampleRate / Double(bestLag)
         while bpm < 80 { bpm *= 2 }
         while bpm > 180 { bpm /= 2 }
 
-        return (bpm * 10).rounded() / 10
+        return .success((bpm * 10).rounded() / 10)
     }
 
     private func loadMonoSamples(from url: URL, maxFrames: AVAudioFrameCount) throws -> [Float] {
-        let file = try AVAudioFile(forReading: url)
-        let format = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 44100, channels: 1, interleaved: false)!
-        let frameCount = min(maxFrames, AVAudioFrameCount(file.length))
-        guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount) else {
-            return []
+        let inputFile = try AVAudioFile(forReading: url)
+        guard let processingFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 44100, channels: 1, interleaved: false) else {
+            throw NSError(domain: "AudioPlaybackController", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to create processing format"])
         }
 
-        try file.read(into: buffer, frameCount: frameCount)
-        guard let channelData = buffer.floatChannelData?[0] else { return [] }
-        return Array(UnsafeBufferPointer(start: channelData, count: Int(buffer.frameLength)))
+        guard let converter = AVAudioConverter(from: inputFile.processingFormat, to: processingFormat) else {
+            throw NSError(domain: "AudioPlaybackController", code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to create audio converter"])
+        }
+
+        let inputCapacity: AVAudioFrameCount = 4096
+        guard let inputBuffer = AVAudioPCMBuffer(pcmFormat: inputFile.processingFormat, frameCapacity: inputCapacity) else {
+            throw NSError(domain: "AudioPlaybackController", code: 3, userInfo: [NSLocalizedDescriptionKey: "Failed to create input buffer"])
+        }
+
+        let outputCapacity = min(maxFrames, AVAudioFrameCount(Double(maxFrames) * processingFormat.sampleRate / inputFile.processingFormat.sampleRate) + 1024)
+        guard let outputBuffer = AVAudioPCMBuffer(pcmFormat: processingFormat, frameCapacity: outputCapacity) else {
+            throw NSError(domain: "AudioPlaybackController", code: 4, userInfo: [NSLocalizedDescriptionKey: "Failed to create output buffer"])
+        }
+
+        var reachedEOF = false
+        let inputBlock: AVAudioConverterInputBlock = { _, outStatus in
+            if reachedEOF {
+                outStatus.pointee = .endOfStream
+                return nil
+            }
+
+            do {
+                try inputFile.read(into: inputBuffer, frameCount: inputCapacity)
+                if inputBuffer.frameLength == 0 {
+                    reachedEOF = true
+                    outStatus.pointee = .endOfStream
+                    return nil
+                }
+                outStatus.pointee = .haveData
+                return inputBuffer
+            } catch {
+                reachedEOF = true
+                outStatus.pointee = .noDataNow
+                return nil
+            }
+        }
+
+        var error: NSError?
+        converter.convert(to: outputBuffer, error: &error, withInputFrom: inputBlock)
+        if let error {
+            throw error
+        }
+
+        guard let channelData = outputBuffer.floatChannelData?[0] else {
+            throw NSError(domain: "AudioPlaybackController", code: 5, userInfo: [NSLocalizedDescriptionKey: "No converted audio data available"])
+        }
+
+        return Array(UnsafeBufferPointer(start: channelData, count: Int(outputBuffer.frameLength)))
     }
 
     private func buildEnergyEnvelope(from samples: [Float], windowSize: Int) -> [Float] {
@@ -217,10 +292,8 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
             index += windowSize
         }
 
-        guard let mean = envelope.isEmpty ? nil : envelope.reduce(0, +) / Float(envelope.count) else {
-            return envelope
-        }
-
+        guard !envelope.isEmpty else { return [] }
+        let mean = envelope.reduce(0, +) / Float(envelope.count)
         return envelope.map { max(0, $0 - mean) }
     }
 
@@ -228,7 +301,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
         let count = envelope.count - lag
         guard count > 0 else { return 0 }
 
-        var lhs = Array(envelope[0..<count])
+        let lhs = Array(envelope[0..<count])
         let rhs = Array(envelope[lag..<(lag + count)])
         var result: Float = 0
         vDSP_dotpr(lhs, 1, rhs, 1, &result, vDSP_Length(count))

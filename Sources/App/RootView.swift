@@ -26,7 +26,7 @@ struct RootView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 14))
 
                     sideControlPanel
-                        .frame(width: 280)
+                        .frame(width: 300)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
 
@@ -83,6 +83,12 @@ struct RootView: View {
             GroupBox("Tempo") {
                 VStack(alignment: .leading, spacing: 10) {
                     infoRow("BPM Source", game.bpmSourceText)
+                    infoRow("Analysis", game.bpmAnalysisStatusText)
+                    Text(game.bpmAnalysisDetailText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+
                     stepperChip(title: "BPM", value: String(format: "%.1f", game.bpm)) {
                         game.nudgeBPM(by: -1)
                     } increment: {

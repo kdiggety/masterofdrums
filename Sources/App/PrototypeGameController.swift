@@ -18,6 +18,8 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var barBeatText: String = "1:1"
     @Published private(set) var musicalSubdivisionText: String = "1"
     @Published private(set) var bpmSourceText: String = "Manual"
+    @Published private(set) var bpmAnalysisStatusText: String = "Idle"
+    @Published private(set) var bpmAnalysisDetailText: String = "No file analyzed yet"
     @Published var bpm: Double = 120
     @Published var songOffset: Double = 0
 
@@ -69,6 +71,8 @@ final class PrototypeGameController: ObservableObject {
         } else {
             bpmSourceText = "Manual"
         }
+        bpmAnalysisStatusText = audio.analysisDebug.status
+        bpmAnalysisDetailText = audio.analysisDebug.detail
         syncTransportState()
     }
 
@@ -152,6 +156,8 @@ final class PrototypeGameController: ObservableObject {
         accuracyText = String(format: "%.0f%%", session.state.accuracy * 100)
         scene.updateVisibleNotes(session.notes(visibleAt: scene.currentSongTime, leadTime: 3.0))
         trackName = audio.loadedTrackName ?? "Preview clock"
+        bpmAnalysisStatusText = audio.analysisDebug.status
+        bpmAnalysisDetailText = audio.analysisDebug.detail
     }
 
     private func syncTransportState() {
