@@ -17,12 +17,18 @@ struct RootView: View {
         } detail: {
             VStack(spacing: 12) {
                 header
-                compactTransportBar
-                GameplayContainerView(scene: game.scene)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .layoutPriority(1)
-                    .background(Color.black)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
+
+                HStack(alignment: .top, spacing: 14) {
+                    GameplayContainerView(scene: game.scene)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .layoutPriority(1)
+                        .background(Color.black)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+
+                    sideControlPanel
+                        .frame(width: 280)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
 
                 statusBar
             }
@@ -35,7 +41,7 @@ struct RootView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text("MasterOfDrums")
                 .font(.largeTitle.bold())
-            Text("Prototype pass 5: musical transport UI, manual BPM/offset control, and bar-beat display on top of the audio clock.")
+            Text("Prototype pass 6: side-panel transport controls and BPM auto-fill from metadata/filename when available.")
                 .foregroundStyle(.secondary)
             Text("Click the gameplay area if keyboard input doesn't register immediately.")
                 .font(.subheadline)
@@ -44,62 +50,69 @@ struct RootView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private var compactTransportBar: some View {
-        VStack(spacing: 8) {
-            HStack(spacing: 10) {
-                Label(game.trackName, systemImage: "waveform")
-                    .font(.subheadline.weight(.medium))
-                    .lineLimit(1)
+    private var sideControlPanel: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            GroupBox("Transport") {
+                VStack(alignment: .leading, spacing: 10) {
+                    Label(game.trackName, systemImage: "waveform")
+                        .font(.subheadline.weight(.medium))
+                        .lineLimit(2)
 
-                Text("\(game.transportStateText) · \(game.playbackTimeText)")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    infoRow("State", game.transportStateText)
+                    infoRow("Time", game.playbackTimeText)
+                    infoRow("Bar:Beat:Sub", game.musicalPositionText)
 
-                Text("Bar:Beat:Sub \(game.musicalPositionText)")
-                    .font(.subheadline.monospacedDigit())
-                    .foregroundStyle(.secondary)
+                    HStack(spacing: 8) {
+                        Button("Choose Audio") {
+                            game.chooseAudioFile()
+                        }
+                        .buttonStyle(.bordered)
 
-                Spacer(minLength: 8)
+                        Button("Play") {
+                            game.playTransport()
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
 
-                Button("Choose Audio") {
-                    game.chooseAudioFile()
+                    Button("Pause") {
+                        game.pauseTransport()
+                    }
+                    .buttonStyle(.bordered)
                 }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
-
-                Button("Play") {
-                    game.playTransport()
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.small)
-
-                Button("Pause") {
-                    game.pauseTransport()
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
             }
 
-            HStack(spacing: 12) {
-                stepperChip(title: "BPM", value: String(format: "%.1f", game.bpm)) {
-                    game.nudgeBPM(by: -1)
-                } increment: {
-                    game.nudgeBPM(by: 1)
-                }
+            GroupBox("Tempo") {
+                VStack(alignment: .leading, spacing: 10) {
+                    infoRow("BPM Source", game.bpmSourceText)
+                    stepperChip(title: "BPM", value: String(format: "%.1f", game.bpm)) {
+                        game.nudgeBPM(by: -1)
+                    } increment: {
+                        game.nudgeBPM(by: 1)
+                    }
 
-                stepperChip(title: "Offset", value: String(format: "%.2fs", game.songOffset)) {
-                    game.nudgeOffset(by: -0.01)
-                } increment: {
-                    game.nudgeOffset(by: 0.01)
+                    stepperChip(title: "Offset", value: String(format: "%.2fs", game.songOffset)) {
+                        game.nudgeOffset(by: -0.01)
+                    } increment: {
+                        game.nudgeOffset(by: 0.01)
+                    }
                 }
-
-                Spacer()
             }
+
+            GroupBox("Run") {
+                VStack(alignment: .leading, spacing: 10) {
+                    Button(game.isRunComplete ? "Restart Run" : "Reset Run") {
+                        game.restartRun()
+                    }
+                    .buttonStyle(.borderedProminent)
+
+                    Text("D red · F yellow · J blue · K green · Space kick")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            Spacer(minLength: 0)
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(Color(nsColor: .controlBackgroundColor))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 
     private var statusBar: some View {
@@ -129,12 +142,6 @@ struct RootView: View {
                     .foregroundStyle(.secondary)
                 Text(game.activeInputSourceName)
                     .font(.headline)
-                Button(game.isRunComplete ? "Restart Run" : "Reset Run") {
-                    game.restartRun()
-                }
-                .buttonStyle(.borderedProminent)
-                Text("D red · F yellow · J blue · K green · Space kick")
-                    .font(.subheadline)
             }
         }
         .padding(.horizontal, 6)
@@ -147,6 +154,17 @@ struct RootView: View {
                 .foregroundStyle(.secondary)
             Text(value)
                 .font(.title2.bold())
+        }
+    }
+
+    private func infoRow(_ title: String, _ value: String) -> some View {
+        HStack {
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Spacer()
+            Text(value)
+                .font(.subheadline.monospacedDigit())
         }
     }
 

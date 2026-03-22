@@ -16,6 +16,7 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var transportStateText: String = TransportState.stopped.rawValue
     @Published private(set) var playbackTimeText: String = "0.00s"
     @Published private(set) var musicalPositionText: String = "1:1:1"
+    @Published private(set) var bpmSourceText: String = "Manual"
     @Published var bpm: Double = 120
     @Published var songOffset: Double = 0
 
@@ -61,6 +62,12 @@ final class PrototypeGameController: ObservableObject {
             trackName = loadedTrackName
             statusMessage = "Loaded \(loadedTrackName)"
         }
+        if let detected = audio.detectedBPM {
+            bpm = detected.bpm
+            bpmSourceText = detected.source.capitalized
+        } else {
+            bpmSourceText = "Manual"
+        }
         syncTransportState()
     }
 
@@ -76,6 +83,7 @@ final class PrototypeGameController: ObservableObject {
 
     func nudgeBPM(by delta: Double) {
         bpm = max(40, min(240, bpm + delta))
+        bpmSourceText = "Manual"
         syncTransportState()
     }
 
