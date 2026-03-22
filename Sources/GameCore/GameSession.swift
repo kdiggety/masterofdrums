@@ -23,6 +23,10 @@ final class GameSession {
         }
     }
 
+    var isComplete: Bool {
+        nextIndex >= chart.notes.count
+    }
+
     @discardableResult
     func registerHit(lane: Lane, at time: TimeInterval) -> Judgment {
         advanceMisses(at: time)

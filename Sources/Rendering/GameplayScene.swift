@@ -9,6 +9,7 @@ final class GameplayScene: SKScene {
     private let keyboardInputDevice: KeyboardInputDevice
     private let highway = SKNode()
     private let judgmentLabel = SKLabelNode(fontNamed: "SF Pro Display")
+    private let statusLabel = SKLabelNode(fontNamed: "SF Pro Display")
     private let laneWidth: CGFloat = 120
     private let laneInset: CGFloat = 2
     private let noteSpeed: CGFloat = 260
@@ -38,7 +39,7 @@ final class GameplayScene: SKScene {
     override func didMove(to view: SKView) {
         super.didMove(to: view)
         setupScene()
-        songStartDate = Date()
+        restartSong()
         view.window?.makeFirstResponder(view)
     }
 
@@ -61,6 +62,11 @@ final class GameplayScene: SKScene {
             return
         }
         onInput?(inputEvent)
+    }
+
+    func restartSong() {
+        songStartDate = Date()
+        updateVisibleNotes([])
     }
 
     func updateVisibleNotes(_ notes: [NoteEvent]) {
@@ -99,6 +105,17 @@ final class GameplayScene: SKScene {
         ]))
     }
 
+    func flashStatus(_ text: String) {
+        statusLabel.text = text
+        statusLabel.alpha = 1.0
+        statusLabel.removeAllActions()
+        statusLabel.run(.sequence([
+            .fadeIn(withDuration: 0.02),
+            .wait(forDuration: 0.25),
+            .fadeOut(withDuration: 0.25)
+        ]))
+    }
+
     func flashLane(_ lane: Lane) {
         guard let highlight = laneHighlights[lane] else { return }
         highlight.removeAllActions()
@@ -115,6 +132,7 @@ final class GameplayScene: SKScene {
 
         addChild(highway)
         addChild(judgmentLabel)
+        addChild(statusLabel)
 
         let totalWidth = laneWidth * CGFloat(laneOrder.count)
         let startX = (size.width - totalWidth) / 2
@@ -134,6 +152,15 @@ final class GameplayScene: SKScene {
             highlightNode.alpha = 0.0
             highway.addChild(highlightNode)
             laneHighlights[lane] = highlightNode
+
+            let laneLabel = SKLabelNode(fontNamed: "SF Pro Rounded")
+            laneLabel.text = lane.keyLabel
+            laneLabel.fontColor = .white.withAlphaComponent(0.9)
+            laneLabel.fontSize = lane == .kick ? 22 : 24
+            laneLabel.position = CGPoint(x: laneFrame.midX, y: hitLineY - 36)
+            laneLabel.verticalAlignmentMode = .center
+            laneLabel.horizontalAlignmentMode = .center
+            highway.addChild(laneLabel)
         }
 
         let hitLineFrame = CGRect(
@@ -150,6 +177,11 @@ final class GameplayScene: SKScene {
         judgmentLabel.position = CGPoint(x: size.width / 2, y: size.height - 60)
         judgmentLabel.fontSize = 28
         judgmentLabel.alpha = 0
+
+        statusLabel.position = CGPoint(x: size.width / 2, y: size.height - 96)
+        statusLabel.fontSize = 20
+        statusLabel.fontColor = .white.withAlphaComponent(0.85)
+        statusLabel.alpha = 0
     }
 
     private func updateNodePositions(songTime: TimeInterval) {

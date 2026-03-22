@@ -45,6 +45,10 @@ struct NoteEvent: Identifiable {
 struct Chart {
     let notes: [NoteEvent]
 
+    var endTime: TimeInterval {
+        notes.map(\.time).max() ?? 0
+    }
+
     static let prototype: Chart = {
         let pattern: [(Lane, TimeInterval)] = [
             (.red, 1.0), (.yellow, 1.5), (.blue, 2.0), (.green, 2.5),

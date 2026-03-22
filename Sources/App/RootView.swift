@@ -32,7 +32,7 @@ struct RootView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("MasterOfDrums")
                 .font(.largeTitle.bold())
-            Text("Prototype pass 2: routed input layer, keyboard fallback device, scoring, miss tracking, and lane-hit feedback.")
+            Text("Prototype pass 3: restartable runs, clearer session status, and lane guidance for faster playtesting.")
                 .foregroundStyle(.secondary)
             Text("Click the gameplay area if keyboard input doesn't register immediately.")
                 .font(.subheadline)
@@ -47,23 +47,31 @@ struct RootView: View {
             metric(title: "Combo", value: "\(game.combo)")
             metric(title: "Hits", value: "\(game.hitCount)")
             metric(title: "Misses", value: "\(game.missCount)")
+            metric(title: "Accuracy", value: game.accuracyText)
 
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text("Last Judgment")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Text(game.lastJudgmentText)
                     .font(.title3.weight(.semibold))
+                Text(game.statusMessage)
+                    .font(.subheadline)
+                    .foregroundStyle(game.isRunComplete ? .orange : .secondary)
             }
 
             Spacer()
 
-            VStack(alignment: .trailing, spacing: 6) {
+            VStack(alignment: .trailing, spacing: 8) {
                 Text("Active Input")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Text(game.activeInputSourceName)
                     .font(.headline)
+                Button(game.isRunComplete ? "Restart Run" : "Reset Run") {
+                    game.restartRun()
+                }
+                .buttonStyle(.borderedProminent)
                 Text("D red · F yellow · J blue · K green · Space kick")
                     .font(.subheadline)
             }
