@@ -15,6 +15,9 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var trackName: String = "Preview clock"
     @Published private(set) var transportStateText: String = TransportState.stopped.rawValue
     @Published private(set) var playbackTimeText: String = "0.00s"
+    @Published private(set) var musicalPositionText: String = "1:1:1"
+    @Published var bpm: Double = 120
+    @Published var songOffset: Double = 0
 
     let scene: GameplayScene
     let audio: AudioPlaybackController
@@ -49,6 +52,7 @@ final class PrototypeGameController: ObservableObject {
         }
 
         syncState()
+        syncTransportState()
     }
 
     func chooseAudioFile() {
@@ -67,6 +71,16 @@ final class PrototypeGameController: ObservableObject {
 
     func pauseTransport() {
         audio.pause()
+        syncTransportState()
+    }
+
+    func nudgeBPM(by delta: Double) {
+        bpm = max(40, min(240, bpm + delta))
+        syncTransportState()
+    }
+
+    func nudgeOffset(by delta: Double) {
+        songOffset = max(-2, min(2, songOffset + delta))
         syncTransportState()
     }
 
@@ -132,8 +146,11 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func syncTransportState() {
+        let currentTime = audio.currentTime
         transportStateText = audio.state.rawValue
-        playbackTimeText = String(format: "%.2fs", audio.currentTime)
+        playbackTimeText = String(format: "%.2fs", currentTime)
+        let position = MusicalTransport.position(at: currentTime, bpm: bpm, songOffset: songOffset)
+        musicalPositionText = position.displayText
     }
 
     private func completionMessage() -> String {

@@ -12,6 +12,7 @@ This prototype currently covers:
 - Routed input layer with a keyboard fallback device
 - Basic scoring, combo, miss tracking, and hit feedback
 - Audio transport scaffolding with a shared playback clock
+- Musical transport display with manual BPM and song-offset controls
 
 ## Current controls
 
@@ -25,8 +26,8 @@ The prototype uses keyboard keys mapped to lanes:
 
 ## Architecture
 
-- `Sources/App` — SwiftUI shell, HUD, gameplay controller, and transport controls
-- `Sources/Audio` — playback clock, audio loading, and MIDI import scaffolding
+- `Sources/App` — SwiftUI shell, HUD, gameplay controller, transport controls, and BPM/offset tuning
+- `Sources/Audio` — playback clock, audio loading, musical transport math, and MIDI import scaffolding
 - `Sources/GameCore` — models and timing/judgment logic
 - `Sources/Input` — input abstractions, routing, and keyboard device support
 - `Sources/Rendering` — SpriteKit gameplay scene and bridge view
@@ -38,25 +39,26 @@ The prototype uses keyboard keys mapped to lanes:
 2. Let Xcode resolve the package.
 3. Run the `MasterOfDrums` executable target.
 4. Optionally choose an audio file from the transport bar to test song-backed timing.
+5. Use the BPM and Offset controls to align the musical transport with the song.
 
 This package is macOS-only because it uses SwiftUI, AppKit, SpriteKit, and AVFoundation.
 
 ## Current prototype pass
 
-This pass starts moving the prototype from a pure preview timer toward real song-driven gameplay timing.
+This pass makes the transport legible in musical units instead of seconds only.
 
 Implemented in this pass:
 
-1. `AudioPlaybackController` with file picker + AVAudioPlayer-backed transport
-2. `PreviewPlaybackClock` fallback so the prototype still works without a loaded song
-3. Shared playback clock wiring from app controller into the gameplay scene
-4. Transport UI for choosing audio, play, pause, and displaying current playback time
-5. `MIDIChartLoader` scaffold for the upcoming chart-import pass
+1. Musical transport math for `bar:beat:subdivision` display
+2. Manual BPM control in the UI
+3. Manual song offset control in the UI
+4. Live musical-position readout alongside seconds-based transport time
+5. Architecture groundwork for real MIDI tempo/map import next
 
 ## Next milestones
 
-1. MIDI/chart parsing into lane events
+1. MIDI/chart parsing into lane events and tempo metadata
 2. Bind chart timing to imported song structure instead of the hardcoded prototype chart
-3. Calibration UI and timing offsets
+3. Calibration UI and timing offsets persistence
 4. Maschine MK3 device detection and input adapter
 5. Expanded note rendering and lane-specific art

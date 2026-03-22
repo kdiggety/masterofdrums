@@ -7,12 +7,13 @@
 - Pure Swift game core for timing, note scheduling, and judgment
 - Input routing layer for normalized lane-hit events
 - Audio transport layer for playback clock ownership and file-backed song playback
+- Musical transport layer for bar/beat/subdivision display and BPM/offset conversion
 - Later: CoreMIDI / HID for Maschine MK3 integration
 
 ## Layers
 
 ### App
-Owns window structure, screen state, transport controls, and bridges SwiftUI to the gameplay scene.
+Owns window structure, screen state, transport controls, BPM/offset tuning, and bridges SwiftUI to the gameplay scene.
 
 ### Audio
 Owns song playback and timing.
@@ -22,9 +23,10 @@ Current prototype types:
 - `PlaybackClock`
 - `PreviewPlaybackClock`
 - `AudioPlaybackController`
+- `MusicalTransport`
 - `MIDIChartLoader` (scaffold)
 
-The app now treats playback time as shared state instead of letting the rendering layer invent its own clock.
+The app now treats playback time as shared state and derives both seconds and musical-position UI from it.
 
 ### GameCore
 Contains the lane model, chart model, note timing, hit windows, and scoring state.
@@ -42,7 +44,7 @@ Current prototype types:
 
 ### Rendering
 Contains the SpriteKit scene plus adapters to render notes and judgments from `GameCore` state.
-The rendering layer now consumes an injected playback clock via `timeProvider`.
+The rendering layer consumes an injected playback clock via `timeProvider`.
 
 ## Prototype constraints
 
@@ -50,19 +52,19 @@ This prototype intentionally still avoids:
 
 - Maschine-specific code
 - real MIDI note parsing into lanes
+- automatic BPM extraction from finished audio as a source of truth
 - calibration persistence
 - chart editor tooling
 
-The goal is now shifting from “prove the app shell works” to “prove playback-driven rhythm timing works before adding hardware-specific complexity.”
+The current path is: shared playback clock → musical transport UI → MIDI/chart import → hardware input.
 
-## What changed in pass 4
+## What changed in pass 5
 
-- Added a dedicated audio/transport layer.
-- Added a file picker for loading a backing track on macOS.
-- Added AVAudioPlayer-backed playback state and current-time reporting.
-- Kept a preview fallback clock so the prototype remains usable without assets in-repo.
-- Rewired gameplay timing to use a shared playback clock instead of a scene-owned timer.
-- Added a MIDI import scaffold to make the next chart pass incremental instead of invasive.
+- Added manual BPM and song-offset controls.
+- Added bar/beat/subdivision transport display.
+- Added `MusicalTransport` math for converting seconds into musical position.
+- Kept seconds-based transport visible for debugging and calibration.
+- Prepared the app for a future tempo-map-aware chart import flow.
 
 ## Next gameplay integration step
 
@@ -72,5 +74,6 @@ Implement real chart import and timing binding:
 - lane mapping from MIDI pitches / tracks into `Lane`
 - gameplay session consumes imported `Chart` instead of `.prototype`
 - optional song+chart pairing metadata
+- eventually replace manual BPM fallback when tempo metadata exists
 
 Once that is stable, hardware input becomes another event source feeding the same timing system.

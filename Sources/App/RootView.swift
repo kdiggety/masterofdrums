@@ -35,7 +35,7 @@ struct RootView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text("MasterOfDrums")
                 .font(.largeTitle.bold())
-            Text("Prototype pass 4: audio transport scaffolding, shared playback clock, and UI hooks for backing-track-driven timing.")
+            Text("Prototype pass 5: musical transport UI, manual BPM/offset control, and bar-beat display on top of the audio clock.")
                 .foregroundStyle(.secondary)
             Text("Click the gameplay area if keyboard input doesn't register immediately.")
                 .font(.subheadline)
@@ -45,34 +45,56 @@ struct RootView: View {
     }
 
     private var compactTransportBar: some View {
-        HStack(spacing: 10) {
-            Label(game.trackName, systemImage: "waveform")
-                .font(.subheadline.weight(.medium))
-                .lineLimit(1)
+        VStack(spacing: 8) {
+            HStack(spacing: 10) {
+                Label(game.trackName, systemImage: "waveform")
+                    .font(.subheadline.weight(.medium))
+                    .lineLimit(1)
 
-            Text("\(game.transportStateText) · \(game.playbackTimeText)")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                Text("\(game.transportStateText) · \(game.playbackTimeText)")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
 
-            Spacer(minLength: 8)
+                Text("Bar:Beat:Sub \(game.musicalPositionText)")
+                    .font(.subheadline.monospacedDigit())
+                    .foregroundStyle(.secondary)
 
-            Button("Choose Audio") {
-                game.chooseAudioFile()
+                Spacer(minLength: 8)
+
+                Button("Choose Audio") {
+                    game.chooseAudioFile()
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+
+                Button("Play") {
+                    game.playTransport()
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
+
+                Button("Pause") {
+                    game.pauseTransport()
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
             }
-            .buttonStyle(.bordered)
-            .controlSize(.small)
 
-            Button("Play") {
-                game.playTransport()
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.small)
+            HStack(spacing: 12) {
+                stepperChip(title: "BPM", value: String(format: "%.1f", game.bpm)) {
+                    game.nudgeBPM(by: -1)
+                } increment: {
+                    game.nudgeBPM(by: 1)
+                }
 
-            Button("Pause") {
-                game.pauseTransport()
+                stepperChip(title: "Offset", value: String(format: "%.2fs", game.songOffset)) {
+                    game.nudgeOffset(by: -0.01)
+                } increment: {
+                    game.nudgeOffset(by: 0.01)
+                }
+
+                Spacer()
             }
-            .buttonStyle(.bordered)
-            .controlSize(.small)
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
@@ -125,6 +147,23 @@ struct RootView: View {
                 .foregroundStyle(.secondary)
             Text(value)
                 .font(.title2.bold())
+        }
+    }
+
+    private func stepperChip(title: String, value: String, decrement: @escaping () -> Void, increment: @escaping () -> Void) -> some View {
+        HStack(spacing: 8) {
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Button("−", action: decrement)
+                .buttonStyle(.bordered)
+                .controlSize(.mini)
+            Text(value)
+                .font(.subheadline.monospacedDigit())
+                .frame(minWidth: 62, alignment: .center)
+            Button("+", action: increment)
+                .buttonStyle(.bordered)
+                .controlSize(.mini)
         }
     }
 }
