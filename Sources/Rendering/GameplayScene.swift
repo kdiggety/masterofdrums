@@ -2,10 +2,11 @@ import SpriteKit
 import AppKit
 
 final class GameplayScene: SKScene {
-    var onLaneHit: ((Lane, TimeInterval) -> Void)?
+    var onInput: ((InputEvent) -> Void)?
     var onTick: ((TimeInterval) -> Void)?
 
     private let chart: Chart
+    private let keyboardInputDevice: KeyboardInputDevice
     private let highway = SKNode()
     private let judgmentLabel = SKLabelNode(fontNamed: "SF Pro Display")
     private let laneWidth: CGFloat = 120
@@ -14,14 +15,16 @@ final class GameplayScene: SKScene {
     private let laneOrder: [Lane] = [.red, .yellow, .blue, .green, .kick]
     private var songStartDate: Date?
     private var noteNodes: [UUID: SKShapeNode] = [:]
+    private var laneHighlights: [Lane: SKShapeNode] = [:]
 
     var currentSongTime: TimeInterval {
         guard let songStartDate else { return 0 }
         return Date().timeIntervalSince(songStartDate)
     }
 
-    init(chart: Chart) {
+    init(chart: Chart, keyboardInputDevice: KeyboardInputDevice) {
         self.chart = chart
+        self.keyboardInputDevice = keyboardInputDevice
         super.init(size: CGSize(width: 900, height: 480))
         scaleMode = .resizeFill
         backgroundColor = .black
@@ -46,11 +49,11 @@ final class GameplayScene: SKScene {
     }
 
     override func keyDown(with event: NSEvent) {
-        guard let lane = lane(for: event) else {
+        guard let inputEvent = keyboardInputDevice.makeInputEvent(from: event, songTime: currentSongTime) else {
             super.keyDown(with: event)
             return
         }
-        onLaneHit?(lane, currentSongTime)
+        onInput?(inputEvent)
     }
 
     func updateVisibleNotes(_ notes: [NoteEvent]) {
@@ -89,9 +92,20 @@ final class GameplayScene: SKScene {
         ]))
     }
 
+    func flashLane(_ lane: Lane) {
+        guard let highlight = laneHighlights[lane] else { return }
+        highlight.removeAllActions()
+        highlight.alpha = 0.8
+        highlight.run(.sequence([
+            .fadeAlpha(to: 0.8, duration: 0.01),
+            .fadeAlpha(to: 0.0, duration: 0.16)
+        ]))
+    }
+
     private func setupScene() {
         removeAllChildren()
         noteNodes.removeAll()
+        laneHighlights.removeAll()
 
         addChild(highway)
         addChild(judgmentLabel)
@@ -102,10 +116,19 @@ final class GameplayScene: SKScene {
         for (index, lane) in laneOrder.enumerated() {
             let laneX = startX + CGFloat(index) * laneWidth
             let laneRect = CGRect(x: laneX, y: 0, width: laneWidth - 4, height: size.height)
+
             let laneNode = SKShapeNode(rect: laneRect, cornerRadius: 4)
             laneNode.strokeColor = .darkGray
             laneNode.fillColor = color(for: lane).withAlphaComponent(0.17)
             highway.addChild(laneNode)
+
+            let highlightNode = SKShapeNode(rect: laneRect, cornerRadius: 4)
+            highlightNode.strokeColor = color(for: lane).withAlphaComponent(0.8)
+            highlightNode.lineWidth = 2
+            highlightNode.fillColor = color(for: lane).withAlphaComponent(0.35)
+            highlightNode.alpha = 0.0
+            highway.addChild(highlightNode)
+            laneHighlights[lane] = highlightNode
         }
 
         let hitLine = SKShapeNode(rect: CGRect(x: startX, y: hitLineY, width: totalWidth - 4, height: 6), cornerRadius: 3)
@@ -146,17 +169,6 @@ final class GameplayScene: SKScene {
         case .blue: return .systemBlue
         case .green: return .systemGreen
         case .kick: return .systemGray
-        }
-    }
-
-    private func lane(for event: NSEvent) -> Lane? {
-        switch event.keyCode {
-        case 2: return .red      // D
-        case 3: return .yellow   // F
-        case 38: return .blue    // J
-        case 40: return .green   // K
-        case 49: return .kick    // Space
-        default: return nil
         }
     }
 }

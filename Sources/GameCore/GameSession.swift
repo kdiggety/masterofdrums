@@ -33,12 +33,14 @@ final class GameSession {
             return note.lane == lane && abs(note.time - time) <= goodWindow
         }) else {
             state.combo = 0
+            state.missCount += 1
             state.lastJudgment = .miss
             return .miss
         }
 
         let note = chart.notes[candidateIndex]
         nextIndex = candidateIndex + 1
+        state.hitCount += 1
 
         let delta = abs(note.time - time)
         if delta <= perfectWindow {
@@ -59,6 +61,7 @@ final class GameSession {
             let note = chart.notes[nextIndex]
             if note.time + goodWindow < time {
                 state.combo = 0
+                state.missCount += 1
                 state.lastJudgment = .miss
                 nextIndex += 1
             } else {

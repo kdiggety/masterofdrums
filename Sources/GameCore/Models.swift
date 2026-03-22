@@ -48,5 +48,13 @@ struct Chart {
 struct ScoreState {
     var score: Int = 0
     var combo: Int = 0
+    var hitCount: Int = 0
+    var missCount: Int = 0
     var lastJudgment: Judgment? = nil
+
+    var accuracy: Double {
+        let total = hitCount + missCount
+        guard total > 0 else { return 0 }
+        return Double(hitCount) / Double(total)
+    }
 }

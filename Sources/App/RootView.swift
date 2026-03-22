@@ -32,7 +32,7 @@ struct RootView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("MasterOfDrums")
                 .font(.largeTitle.bold())
-            Text("Initial Swift prototype: note highway, keyboard input fallback, scoring, and judgment feedback.")
+            Text("Prototype pass 2: routed input layer, keyboard fallback device, scoring, miss tracking, and lane-hit feedback.")
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -40,21 +40,10 @@ struct RootView: View {
 
     private var statusBar: some View {
         HStack(spacing: 18) {
-            VStack(alignment: .leading) {
-                Text("Score")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Text("\(game.score)")
-                    .font(.title2.bold())
-            }
-
-            VStack(alignment: .leading) {
-                Text("Combo")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Text("\(game.combo)")
-                    .font(.title2.bold())
-            }
+            metric(title: "Score", value: "\(game.score)")
+            metric(title: "Combo", value: "\(game.combo)")
+            metric(title: "Hits", value: "\(game.hitCount)")
+            metric(title: "Misses", value: "\(game.missCount)")
 
             VStack(alignment: .leading) {
                 Text("Last Judgment")
@@ -66,14 +55,26 @@ struct RootView: View {
 
             Spacer()
 
-            VStack(alignment: .trailing) {
-                Text("Keyboard Lanes")
+            VStack(alignment: .trailing, spacing: 6) {
+                Text("Active Input")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                Text(game.activeInputSourceName)
+                    .font(.headline)
                 Text("D red · F yellow · J blue · K green · Space kick")
                     .font(.subheadline)
             }
         }
         .padding(.horizontal, 6)
+    }
+
+    private func metric(title: String, value: String) -> some View {
+        VStack(alignment: .leading) {
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(.title2.bold())
+        }
     }
 }
