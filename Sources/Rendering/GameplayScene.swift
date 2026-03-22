@@ -159,6 +159,17 @@ final class GameplayScene: SKScene {
         node.fillColor = color(for: note.lane)
         node.strokeColor = .white
         node.lineWidth = 2
+
+        let label = SKLabelNode(fontNamed: "SF Pro Rounded")
+        label.text = note.lane.keyLabel
+        label.fontColor = .white
+        label.fontSize = note.lane == .kick ? 22 : 24
+        label.verticalAlignmentMode = .center
+        label.horizontalAlignmentMode = .center
+        label.position = CGPoint(x: 0, y: note.lane == .kick ? 1 : 0)
+        label.zPosition = 1
+        node.addChild(label)
+
         return node
     }
 

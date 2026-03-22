@@ -18,6 +18,16 @@ enum Lane: Int, CaseIterable, Identifiable {
         case .kick: return "Kick"
         }
     }
+
+    var keyLabel: String {
+        switch self {
+        case .red: return "D"
+        case .yellow: return "F"
+        case .blue: return "J"
+        case .green: return "K"
+        case .kick: return "␣"
+        }
+    }
 }
 
 enum Judgment: String {
