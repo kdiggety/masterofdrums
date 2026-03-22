@@ -6,12 +6,25 @@
 - SpriteKit for gameplay rendering and the note highway
 - Pure Swift game core for timing, note scheduling, and judgment
 - Input routing layer for normalized lane-hit events
+- Audio transport layer for playback clock ownership and file-backed song playback
 - Later: CoreMIDI / HID for Maschine MK3 integration
 
 ## Layers
 
 ### App
-Owns window structure, high-level screen state, and bridges SwiftUI to the gameplay scene.
+Owns window structure, screen state, transport controls, and bridges SwiftUI to the gameplay scene.
+
+### Audio
+Owns song playback and timing.
+
+Current prototype types:
+
+- `PlaybackClock`
+- `PreviewPlaybackClock`
+- `AudioPlaybackController`
+- `MIDIChartLoader` (scaffold)
+
+The app now treats playback time as shared state instead of letting the rendering layer invent its own clock.
 
 ### GameCore
 Contains the lane model, chart model, note timing, hit windows, and scoring state.
@@ -29,33 +42,35 @@ Current prototype types:
 
 ### Rendering
 Contains the SpriteKit scene plus adapters to render notes and judgments from `GameCore` state.
+The rendering layer now consumes an injected playback clock via `timeProvider`.
 
 ## Prototype constraints
 
 This prototype intentionally still avoids:
 
 - Maschine-specific code
-- audio playback
-- chart import from MIDI
+- real MIDI note parsing into lanes
 - calibration persistence
+- chart editor tooling
 
-The goal is to validate that the Mac app structure and gameplay feel are viable before adding hardware-specific complexity.
+The goal is now shifting from “prove the app shell works” to “prove playback-driven rhythm timing works before adding hardware-specific complexity.”
 
-## What changed in pass 2
+## What changed in pass 4
 
-- Keyboard input is no longer hard-coded directly into gameplay logic.
-- The SpriteKit scene now emits normalized input events.
-- The app controller owns routing and judgment handling.
-- HUD state now exposes hits, misses, and active input source.
-- Lane flashes make successful/failed interaction more legible while testing.
+- Added a dedicated audio/transport layer.
+- Added a file picker for loading a backing track on macOS.
+- Added AVAudioPlayer-backed playback state and current-time reporting.
+- Kept a preview fallback clock so the prototype remains usable without assets in-repo.
+- Rewired gameplay timing to use a shared playback clock instead of a scene-owned timer.
+- Added a MIDI import scaffold to make the next chart pass incremental instead of invasive.
 
-## Next hardware integration step
+## Next gameplay integration step
 
-Add a Maschine-backed device implementation that conforms to the same input contracts:
+Implement real chart import and timing binding:
 
-- `MaschineInputDevice`
-- `MaschinePadMapper`
-- `InputRouter` device switching / discovery
-- transport controls for calibration and clock sync
+- `MIDIChartLoader` parses note-on/note-off and tempo metadata
+- lane mapping from MIDI pitches / tracks into `Lane`
+- gameplay session consumes imported `Chart` instead of `.prototype`
+- optional song+chart pairing metadata
 
-That will let the rest of the app consume normalized lane hit events regardless of source.
+Once that is stable, hardware input becomes another event source feeding the same timing system.

@@ -4,6 +4,7 @@ import AppKit
 final class GameplayScene: SKScene {
     var onInput: ((InputEvent) -> Void)?
     var onTick: ((TimeInterval) -> Void)?
+    var timeProvider: (() -> TimeInterval)?
 
     private let chart: Chart
     private let keyboardInputDevice: KeyboardInputDevice
@@ -15,13 +16,11 @@ final class GameplayScene: SKScene {
     private let noteSpeed: CGFloat = 260
     private let hitLineY: CGFloat = 110
     private let laneOrder: [Lane] = [.red, .yellow, .blue, .green, .kick]
-    private var songStartDate: Date?
     private var noteNodes: [UUID: SKShapeNode] = [:]
     private var laneHighlights: [Lane: SKShapeNode] = [:]
 
     var currentSongTime: TimeInterval {
-        guard let songStartDate else { return 0 }
-        return Date().timeIntervalSince(songStartDate)
+        timeProvider?() ?? 0
     }
 
     init(chart: Chart, keyboardInputDevice: KeyboardInputDevice) {
@@ -50,7 +49,6 @@ final class GameplayScene: SKScene {
     }
 
     override func update(_ currentTime: TimeInterval) {
-        guard songStartDate != nil else { return }
         let songTime = currentSongTime
         onTick?(songTime)
         updateNodePositions(songTime: songTime)
@@ -65,7 +63,6 @@ final class GameplayScene: SKScene {
     }
 
     func restartSong() {
-        songStartDate = Date()
         updateVisibleNotes([])
     }
 

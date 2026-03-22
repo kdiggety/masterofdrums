@@ -8,6 +8,7 @@ struct RootView: View {
             List {
                 Section("Prototype") {
                     Label("Gameplay", systemImage: "music.note")
+                    Label("Audio", systemImage: "waveform")
                     Label("Calibration", systemImage: "slider.horizontal.3")
                     Label("Devices", systemImage: "pianokeys")
                 }
@@ -16,6 +17,7 @@ struct RootView: View {
         } detail: {
             VStack(spacing: 16) {
                 header
+                transportBar
                 GameplayContainerView(scene: game.scene)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.black)
@@ -32,13 +34,48 @@ struct RootView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("MasterOfDrums")
                 .font(.largeTitle.bold())
-            Text("Prototype pass 3: restartable runs, clearer session status, and lane guidance for faster playtesting.")
+            Text("Prototype pass 4: audio transport scaffolding, shared playback clock, and UI hooks for backing-track-driven timing.")
                 .foregroundStyle(.secondary)
             Text("Click the gameplay area if keyboard input doesn't register immediately.")
                 .font(.subheadline)
                 .foregroundStyle(.tertiary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var transportBar: some View {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Track")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(game.trackName)
+                    .font(.headline)
+                Text("Transport: \(game.transportStateText) · Time: \(game.playbackTimeText)")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            Button("Choose Audio File") {
+                game.chooseAudioFile()
+            }
+            .buttonStyle(.bordered)
+
+            Button("Play") {
+                game.playTransport()
+            }
+            .buttonStyle(.borderedProminent)
+
+            Button("Pause") {
+                game.pauseTransport()
+            }
+            .buttonStyle(.bordered)
+        }
+        .padding(14)
+        .background(Color(nsColor: .controlBackgroundColor))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
     private var statusBar: some View {

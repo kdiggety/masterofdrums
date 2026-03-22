@@ -11,6 +11,7 @@ This prototype currently covers:
 - Pure Swift gameplay core types for lanes, notes, charts, and judgments
 - Routed input layer with a keyboard fallback device
 - Basic scoring, combo, miss tracking, and hit feedback
+- Audio transport scaffolding with a shared playback clock
 
 ## Current controls
 
@@ -24,7 +25,8 @@ The prototype uses keyboard keys mapped to lanes:
 
 ## Architecture
 
-- `Sources/App` — SwiftUI shell, HUD, and gameplay controller
+- `Sources/App` — SwiftUI shell, HUD, gameplay controller, and transport controls
+- `Sources/Audio` — playback clock, audio loading, and MIDI import scaffolding
 - `Sources/GameCore` — models and timing/judgment logic
 - `Sources/Input` — input abstractions, routing, and keyboard device support
 - `Sources/Rendering` — SpriteKit gameplay scene and bridge view
@@ -35,25 +37,26 @@ The prototype uses keyboard keys mapped to lanes:
 1. Open the package in Xcode on your Mac.
 2. Let Xcode resolve the package.
 3. Run the `MasterOfDrums` executable target.
+4. Optionally choose an audio file from the transport bar to test song-backed timing.
 
-This package is macOS-only because it uses SwiftUI, AppKit, and SpriteKit.
+This package is macOS-only because it uses SwiftUI, AppKit, SpriteKit, and AVFoundation.
 
 ## Current prototype pass
 
-This pass moves input handling out of the gameplay scene and into a dedicated input layer so the app can accept normalized lane-hit events from multiple device types later.
+This pass starts moving the prototype from a pure preview timer toward real song-driven gameplay timing.
 
 Implemented in this pass:
 
-1. `InputSource`, `InputEvent`, and `InputDevice` building blocks
-2. `InputRouter` for normalized event delivery
-3. `KeyboardInputDevice` + key-to-lane mapper
-4. HUD updates for hits, misses, and active input source
-5. Lane flash feedback on hits
+1. `AudioPlaybackController` with file picker + AVAudioPlayer-backed transport
+2. `PreviewPlaybackClock` fallback so the prototype still works without a loaded song
+3. Shared playback clock wiring from app controller into the gameplay scene
+4. Transport UI for choosing audio, play, pause, and displaying current playback time
+5. `MIDIChartLoader` scaffold for the upcoming chart-import pass
 
 ## Next milestones
 
-1. Maschine MK3 device detection and input adapter
-2. Real song timing and playback clock
-3. Calibration UI
-4. Chart import format
+1. MIDI/chart parsing into lane events
+2. Bind chart timing to imported song structure instead of the hardcoded prototype chart
+3. Calibration UI and timing offsets
+4. Maschine MK3 device detection and input adapter
 5. Expanded note rendering and lane-specific art
