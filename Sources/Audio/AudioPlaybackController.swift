@@ -14,6 +14,11 @@ struct BPMAnalysisDebug {
     let detail: String
 }
 
+struct BPMAnalysisEstimate {
+    let bpm: Double
+    let detail: String
+}
+
 enum BPMAnalysisFailure: LocalizedError {
     case message(String)
 
@@ -175,9 +180,9 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
         }
 
         switch detectBPMFromAudioAnalysis(for: url) {
-        case .success(let bpm):
-            analysisDebug = BPMAnalysisDebug(status: "Detected", detail: "Estimated BPM from audio signal")
-            return BPMDetectionResult(bpm: bpm, source: "analysis")
+        case .success(let result):
+            analysisDebug = BPMAnalysisDebug(status: "Detected", detail: result.detail)
+            return BPMDetectionResult(bpm: result.bpm, source: "analysis")
         case .failure(let error):
             analysisDebug = BPMAnalysisDebug(status: "Analysis failed", detail: error.localizedDescription)
             return nil
@@ -216,7 +221,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
         parseBPM(from: filename)
     }
 
-    private func detectBPMFromAudioAnalysis(for url: URL) -> Result<Double, BPMAnalysisFailure> {
+    private func detectBPMFromAudioAnalysis(for url: URL) -> Result<BPMAnalysisEstimate, BPMAnalysisFailure> {
         guard let samples = try? loadMonoSamples(from: url, maxFrames: 44100 * 120) else {
             return .failure(.message("Could not decode audio samples"))
         }
@@ -258,15 +263,18 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
         }
 
         let confidenceRatio = bestScore / max(secondBestScore, 0.0001)
-        guard confidenceRatio > 1.05 else {
-            return .failure(.message("Tempo peak confidence too low"))
-        }
 
         var bpm = 60.0 * sampleRate / Double(bestLag)
         while bpm < 80 { bpm *= 2 }
         while bpm > 180 { bpm /= 2 }
+        bpm = (bpm * 10).rounded() / 10
 
-        return .success((bpm * 10).rounded() / 10)
+        if confidenceRatio < 1.01 {
+            return .failure(.message("Tempo peak confidence too low (ratio \(String(format: "%.3f", confidenceRatio)))"))
+        }
+
+        let detail = "Estimated from signal · ratio \(String(format: "%.3f", confidenceRatio))"
+        return .success(BPMAnalysisEstimate(bpm: bpm, detail: detail))
     }
 
     private func loadMonoSamples(from url: URL, maxFrames: AVAudioFrameCount) throws -> [Float] {
