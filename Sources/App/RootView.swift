@@ -34,6 +34,9 @@ struct RootView: View {
                 .font(.largeTitle.bold())
             Text("Prototype pass 2: routed input layer, keyboard fallback device, scoring, miss tracking, and lane-hit feedback.")
                 .foregroundStyle(.secondary)
+            Text("Click the gameplay area if keyboard input doesn't register immediately.")
+                .font(.subheadline)
+                .foregroundStyle(.tertiary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
