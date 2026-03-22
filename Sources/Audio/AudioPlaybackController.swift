@@ -1,6 +1,7 @@
 import Foundation
 import AppKit
 import AVFoundation
+import Accelerate
 import UniformTypeIdentifiers
 
 struct BPMDetectionResult {
@@ -17,7 +18,6 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
 
     private let previewClock = PreviewPlaybackClock()
     private var audioPlayer: AVAudioPlayer?
-    private var loadedURL: URL?
 
     var currentTime: TimeInterval {
         if let audioPlayer {
@@ -46,7 +46,6 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
             player.prepareToPlay()
             player.delegate = self
             audioPlayer = player
-            loadedURL = url
             loadedTrackName = url.lastPathComponent
             state = .stopped
             previewClock.stop()
@@ -59,7 +58,6 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
             }
         } catch {
             audioPlayer = nil
-            loadedURL = nil
             loadedTrackName = nil
             detectedBPM = nil
             state = .stopped
@@ -118,6 +116,10 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
             return BPMDetectionResult(bpm: filenameBPM, source: "filename")
         }
 
+        if let analyzedBPM = detectBPMFromAudioAnalysis(for: url) {
+            return BPMDetectionResult(bpm: analyzedBPM, source: "analysis")
+        }
+
         return nil
     }
 
@@ -144,15 +146,6 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
                     return numberValue
                 }
             }
-
-            if let keySpace = item.keySpace?.rawValue.lowercased(),
-               keySpace.contains("id3"),
-               let key = item.key as? String,
-               key.lowercased().contains("tbpm") {
-                if let stringValue = item.stringValue, let bpm = parseBPM(from: stringValue) {
-                    return bpm
-                }
-            }
         }
 
         return nil
@@ -160,6 +153,86 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
 
     private func detectBPMFromFilename(_ filename: String) -> Double? {
         parseBPM(from: filename)
+    }
+
+    private func detectBPMFromAudioAnalysis(for url: URL) -> Double? {
+        guard let samples = try? loadMonoSamples(from: url, maxFrames: 44100 * 90), samples.count > 8192 else {
+            return nil
+        }
+
+        let envelope = buildEnergyEnvelope(from: samples, windowSize: 1024)
+        guard envelope.count > 256 else { return nil }
+
+        let sampleRate = 44100.0 / 1024.0
+        let minBPM = 70.0
+        let maxBPM = 190.0
+        let minLag = Int(sampleRate * 60.0 / maxBPM)
+        let maxLag = Int(sampleRate * 60.0 / minBPM)
+        guard maxLag < envelope.count else { return nil }
+
+        var bestLag = 0
+        var bestScore: Float = 0
+
+        for lag in minLag...maxLag {
+            let score = autocorrelationScore(envelope: envelope, lag: lag)
+            if score > bestScore {
+                bestScore = score
+                bestLag = lag
+            }
+        }
+
+        guard bestLag > 0 else { return nil }
+        var bpm = 60.0 * sampleRate / Double(bestLag)
+
+        while bpm < 80 { bpm *= 2 }
+        while bpm > 180 { bpm /= 2 }
+
+        return (bpm * 10).rounded() / 10
+    }
+
+    private func loadMonoSamples(from url: URL, maxFrames: AVAudioFrameCount) throws -> [Float] {
+        let file = try AVAudioFile(forReading: url)
+        let format = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 44100, channels: 1, interleaved: false)!
+        let frameCount = min(maxFrames, AVAudioFrameCount(file.length))
+        guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount) else {
+            return []
+        }
+
+        try file.read(into: buffer, frameCount: frameCount)
+        guard let channelData = buffer.floatChannelData?[0] else { return [] }
+        return Array(UnsafeBufferPointer(start: channelData, count: Int(buffer.frameLength)))
+    }
+
+    private func buildEnergyEnvelope(from samples: [Float], windowSize: Int) -> [Float] {
+        guard windowSize > 0 else { return [] }
+        var envelope: [Float] = []
+        envelope.reserveCapacity(samples.count / windowSize)
+
+        var index = 0
+        while index + windowSize <= samples.count {
+            let window = Array(samples[index..<(index + windowSize)])
+            var rms: Float = 0
+            vDSP_rmsqv(window, 1, &rms, vDSP_Length(window.count))
+            envelope.append(rms)
+            index += windowSize
+        }
+
+        guard let mean = envelope.isEmpty ? nil : envelope.reduce(0, +) / Float(envelope.count) else {
+            return envelope
+        }
+
+        return envelope.map { max(0, $0 - mean) }
+    }
+
+    private func autocorrelationScore(envelope: [Float], lag: Int) -> Float {
+        let count = envelope.count - lag
+        guard count > 0 else { return 0 }
+
+        var lhs = Array(envelope[0..<count])
+        let rhs = Array(envelope[lag..<(lag + count)])
+        var result: Float = 0
+        vDSP_dotpr(lhs, 1, rhs, 1, &result, vDSP_Length(count))
+        return result
     }
 
     private func parseBPM(from text: String) -> Double? {

@@ -7,6 +7,10 @@ struct MusicalPosition {
     let beatsPerBar: Int
     let subdivisionsPerBeat: Int
 
+    var barBeatText: String {
+        "\(bar):\(beat)"
+    }
+
     var displayText: String {
         "\(bar):\(beat):\(subdivision)"
     }

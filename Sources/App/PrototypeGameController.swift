@@ -15,7 +15,8 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var trackName: String = "Preview clock"
     @Published private(set) var transportStateText: String = TransportState.stopped.rawValue
     @Published private(set) var playbackTimeText: String = "0.00s"
-    @Published private(set) var musicalPositionText: String = "1:1:1"
+    @Published private(set) var barBeatText: String = "1:1"
+    @Published private(set) var musicalSubdivisionText: String = "1"
     @Published private(set) var bpmSourceText: String = "Manual"
     @Published var bpm: Double = 120
     @Published var songOffset: Double = 0
@@ -158,7 +159,8 @@ final class PrototypeGameController: ObservableObject {
         transportStateText = audio.state.rawValue
         playbackTimeText = String(format: "%.2fs", currentTime)
         let position = MusicalTransport.position(at: currentTime, bpm: bpm, songOffset: songOffset)
-        musicalPositionText = position.displayText
+        barBeatText = position.barBeatText
+        musicalSubdivisionText = String(position.subdivision)
     }
 
     private func completionMessage() -> String {

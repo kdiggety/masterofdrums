@@ -15,8 +15,8 @@ struct RootView: View {
             }
             .navigationSplitViewColumnWidth(min: 220, ideal: 240)
         } detail: {
-            VStack(spacing: 12) {
-                header
+            VStack(spacing: 8) {
+                compactHeader
 
                 HStack(alignment: .top, spacing: 14) {
                     GameplayContainerView(scene: game.scene)
@@ -32,22 +32,20 @@ struct RootView: View {
 
                 statusBar
             }
-            .padding(20)
+            .padding(16)
             .background(Color(nsColor: .windowBackgroundColor))
         }
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 6) {
+    private var compactHeader: some View {
+        HStack {
             Text("MasterOfDrums")
-                .font(.largeTitle.bold())
-            Text("Prototype pass 6: side-panel transport controls and BPM auto-fill from metadata/filename when available.")
-                .foregroundStyle(.secondary)
-            Text("Click the gameplay area if keyboard input doesn't register immediately.")
-                .font(.subheadline)
+                .font(.title.bold())
+            Spacer()
+            Text("Click playfield if keys stop responding")
+                .font(.caption)
                 .foregroundStyle(.tertiary)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var sideControlPanel: some View {
@@ -60,7 +58,8 @@ struct RootView: View {
 
                     infoRow("State", game.transportStateText)
                     infoRow("Time", game.playbackTimeText)
-                    infoRow("Bar:Beat:Sub", game.musicalPositionText)
+                    infoRow("Bar:Beat", game.barBeatText)
+                    infoRow("Sub", game.musicalSubdivisionText)
 
                     HStack(spacing: 8) {
                         Button("Choose Audio") {
@@ -123,7 +122,7 @@ struct RootView: View {
             metric(title: "Misses", value: "\(game.missCount)")
             metric(title: "Accuracy", value: game.accuracyText)
 
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text("Last Judgment")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -136,7 +135,7 @@ struct RootView: View {
 
             Spacer()
 
-            VStack(alignment: .trailing, spacing: 8) {
+            VStack(alignment: .trailing, spacing: 6) {
                 Text("Active Input")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -144,7 +143,7 @@ struct RootView: View {
                     .font(.headline)
             }
         }
-        .padding(.horizontal, 6)
+        .padding(.horizontal, 4)
     }
 
     private func metric(title: String, value: String) -> some View {
