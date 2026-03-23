@@ -8,6 +8,7 @@ struct AdminChartEditorView: View {
             VStack(alignment: .leading, spacing: 14) {
                 header
                 controlBar
+                stepModePanel
                 authoringWorkspace
                 saveLoadRow
                 manualFixPanel
@@ -22,9 +23,9 @@ struct AdminChartEditorView: View {
     private var header: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Admin Record Mode")
+                Text("Admin Step + Record Mode")
                     .font(.title2.bold())
-                Text("Load audio, play the song, and use the gameplay keys to record a chart.")
+                Text("Build charts by stepping through the song and placing notes at a cursor, or record in real time when useful.")
                     .foregroundStyle(.secondary)
             }
             Spacer()
@@ -71,6 +72,60 @@ struct AdminChartEditorView: View {
         }
     }
 
+    private var stepModePanel: some View {
+        GroupBox("Step Mode") {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 12) {
+                    Text("Resolution")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Picker("Resolution", selection: $game.stepResolution) {
+                        ForEach(PrototypeGameController.StepResolution.allCases) { resolution in
+                            Text(resolution.rawValue).tag(resolution)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .frame(width: 220)
+
+                    Spacer()
+
+                    Text(game.stepCursorDisplayText)
+                        .font(.headline.monospacedDigit())
+                }
+
+                HStack(spacing: 10) {
+                    Button("← Step Back") {
+                        game.stepBackward()
+                    }
+                    .buttonStyle(.bordered)
+
+                    Button("Sync To Playback") {
+                        game.syncStepCursorToPlayback()
+                    }
+                    .buttonStyle(.bordered)
+
+                    Button("Step Forward →") {
+                        game.stepForward()
+                    }
+                    .buttonStyle(.bordered)
+                }
+
+                HStack(spacing: 10) {
+                    Button("Place Kick") { game.placeStepNote(.kick) }
+                        .buttonStyle(.bordered)
+                    Button("Place Snare") { game.placeStepNote(.red) }
+                        .buttonStyle(.bordered)
+                    Button("Place Hat") { game.placeStepNote(.yellow) }
+                        .buttonStyle(.bordered)
+                    Button("Place Blue") { game.placeStepNote(.blue) }
+                        .buttonStyle(.bordered)
+                    Button("Place Green") { game.placeStepNote(.green) }
+                        .buttonStyle(.bordered)
+                }
+            }
+        }
+    }
+
     private var authoringWorkspace: some View {
         HStack(alignment: .top, spacing: 14) {
             GameplayContainerView(scene: game.scene)
@@ -96,11 +151,9 @@ struct AdminChartEditorView: View {
 
                 GroupBox("Workflow") {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("1. Choose Audio")
-                        Text("2. Start a new empty chart")
-                        Text("3. Arm Record")
-                        Text("4. Press Play and hit D/F/J/K/Space in time")
-                        Text("5. Save Chart JSON")
+                        Text("Step mode: step, place notes, step again")
+                        Text("Record mode: only use if live capture is convenient")
+                        Text("Save Chart JSON when the section looks right")
                     }
                     .font(.subheadline)
                 }

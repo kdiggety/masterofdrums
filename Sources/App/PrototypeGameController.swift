@@ -5,6 +5,22 @@ import UniformTypeIdentifiers
 
 @MainActor
 final class PrototypeGameController: ObservableObject {
+    enum StepResolution: String, CaseIterable, Identifiable {
+        case quarter = "1/4"
+        case eighth = "1/8"
+        case sixteenth = "1/16"
+
+        var id: String { rawValue }
+
+        var subdivisionsPerBeat: Int {
+            switch self {
+            case .quarter: return 1
+            case .eighth: return 2
+            case .sixteenth: return 4
+            }
+        }
+    }
+
     @Published private(set) var score: Int = 0
     @Published private(set) var combo: Int = 0
     @Published private(set) var missCount: Int = 0
@@ -33,6 +49,9 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var adminNotes: [NoteEvent] = []
     @Published private(set) var adminStatusText: String = "Open Admin to create or load a chart."
     @Published var isAdminRecordMode = false
+    @Published var stepResolution: StepResolution = .sixteenth
+    @Published var stepCursorTime: Double = 0
+    @Published private(set) var stepCursorDisplayText: String = "1:1 · 0.00s"
 
     let scene: GameplayScene
     let audio: AudioPlaybackController
@@ -72,6 +91,7 @@ final class PrototypeGameController: ObservableObject {
 
         syncState()
         syncTransportState()
+        updateStepCursorDisplay()
     }
 
     func chooseAudioFile() {
@@ -88,6 +108,7 @@ final class PrototypeGameController: ObservableObject {
         }
         bpmAnalysisStatusText = audio.analysisDebug.status
         bpmAnalysisDetailText = audio.analysisDebug.detail
+        updateStepCursorDisplay()
         syncTransportState()
     }
 
@@ -108,26 +129,56 @@ final class PrototypeGameController: ObservableObject {
     func startAdminChart() {
         let chart = Chart(notes: [], title: trackName == "Preview clock" ? "Untitled Chart" : trackName)
         applyChart(chart, bpmOverride: bpm, chartStatus: "Started empty admin chart")
-        adminStatusText = "Started new chart. Use record mode or add notes manually."
+        adminStatusText = "Started new chart. Use step mode or record mode."
         adminNoteTime = 0
         adminSelectedLane = .kick
+        stepCursorTime = 0
+        updateStepCursorDisplay()
     }
 
     func toggleAdminRecordMode() {
         isAdminRecordMode.toggle()
-        adminStatusText = isAdminRecordMode ? "Record mode armed. Press Play, then use gameplay keys to capture notes." : "Record mode off."
+        adminStatusText = isAdminRecordMode ? "Record mode armed. Press Play, then use gameplay keys to capture notes." : "Record mode off. Step mode remains available."
     }
 
     func clearAdminNotes() {
         let title = chartName == Chart.prototype.title ? "Admin Chart" : chartName
         applyChart(Chart(notes: [], title: title), bpmOverride: bpm, chartStatus: "Cleared chart notes")
         adminStatusText = "Cleared chart notes."
+        stepCursorTime = 0
+        updateStepCursorDisplay()
     }
 
     func addAdminNote() {
         let note = NoteEvent(lane: adminSelectedLane, time: max(0, adminNoteTime))
         appendAdminNote(note)
         adminStatusText = "Added \(note.lane.displayName) at \(String(format: "%.2f", note.time))s"
+    }
+
+    func placeStepNote(_ lane: Lane? = nil) {
+        let selectedLane = lane ?? adminSelectedLane
+        let quantizedTime = quantizedStepCursorTime()
+        let note = NoteEvent(lane: selectedLane, time: quantizedTime)
+        appendAdminNote(note)
+        adminStatusText = "Placed \(selectedLane.displayName) at \(stepCursorDisplayText)"
+    }
+
+    func stepBackward() {
+        stepCursorTime = max(0, stepCursorTime - stepInterval)
+        updateStepCursorDisplay()
+        adminStatusText = "Stepped backward to \(stepCursorDisplayText)"
+    }
+
+    func stepForward() {
+        stepCursorTime += stepInterval
+        updateStepCursorDisplay()
+        adminStatusText = "Stepped forward to \(stepCursorDisplayText)"
+    }
+
+    func syncStepCursorToPlayback() {
+        stepCursorTime = max(0, audio.currentTime)
+        updateStepCursorDisplay()
+        adminStatusText = "Synced step cursor to playback: \(stepCursorDisplayText)"
     }
 
     func deleteAdminNote(_ id: UUID) {
@@ -158,6 +209,8 @@ final class PrototypeGameController: ObservableObject {
             let loaded = try chartFileStore.loadChart(from: url)
             applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)")
             adminStatusText = "Loaded chart JSON \(url.lastPathComponent)"
+            stepCursorTime = 0
+            updateStepCursorDisplay()
         } catch {
             adminStatusText = "Load failed: \(error.localizedDescription)"
         }
@@ -176,11 +229,13 @@ final class PrototypeGameController: ObservableObject {
     func nudgeBPM(by delta: Double) {
         bpm = max(40, min(240, bpm + delta))
         bpmSourceText = "Manual"
+        updateStepCursorDisplay()
         syncTransportState()
     }
 
     func nudgeOffset(by delta: Double) {
         songOffset = max(-2, min(2, songOffset + delta))
+        updateStepCursorDisplay()
         syncTransportState()
     }
 
@@ -207,6 +262,8 @@ final class PrototypeGameController: ObservableObject {
             }
             statusMessage = "Loaded chart \(loaded.chart.title)"
             adminStatusText = "Imported MIDI chart \(url.lastPathComponent)"
+            stepCursorTime = 0
+            updateStepCursorDisplay()
         } catch {
             chartStatusText = "Chart load failed"
             statusMessage = error.localizedDescription
@@ -306,6 +363,28 @@ final class PrototypeGameController: ObservableObject {
         let position = MusicalTransport.position(at: currentTime, bpm: bpm, songOffset: songOffset)
         barBeatText = position.barBeatText
         musicalSubdivisionText = String(position.subdivision)
+    }
+
+    private func quantizedStepCursorTime() -> Double {
+        let interval = stepInterval
+        guard interval > 0 else { return max(0, stepCursorTime) }
+        return (stepCursorTime / interval).rounded() * interval
+    }
+
+    private var stepInterval: Double {
+        let beatDuration = 60.0 / max(1, bpm)
+        return beatDuration / Double(stepResolution.subdivisionsPerBeat)
+    }
+
+    private func updateStepCursorDisplay() {
+        let position = MusicalTransport.position(
+            at: stepCursorTime,
+            bpm: bpm,
+            songOffset: songOffset,
+            subdivisionsPerBeat: max(stepResolution.subdivisionsPerBeat, 1)
+        )
+        let subText = stepResolution == .quarter ? "" : ".\(position.subdivision)"
+        stepCursorDisplayText = "\(position.bar):\(position.beat)\(subText) · \(String(format: "%.2f", quantizedStepCursorTime()))s"
     }
 
     private var chartContentTypes: [UTType] {
