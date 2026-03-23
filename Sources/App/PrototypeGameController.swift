@@ -1,5 +1,7 @@
 import Foundation
 import Combine
+import AppKit
+import UniformTypeIdentifiers
 
 @MainActor
 final class PrototypeGameController: ObservableObject {
@@ -14,6 +16,7 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var accuracyText: String = "0%"
     @Published private(set) var trackName: String = "Preview clock"
     @Published private(set) var chartName: String = Chart.prototype.title
+    @Published private(set) var chartStatusText: String = "Prototype chart loaded"
     @Published private(set) var transportStateText: String = TransportState.stopped.rawValue
     @Published private(set) var playbackTimeText: String = "0.00s"
     @Published private(set) var barBeatText: String = "1:1"
@@ -33,7 +36,7 @@ final class PrototypeGameController: ObservableObject {
     private let completionGracePeriod: TimeInterval = 0.5
 
     init() {
-        let initialChart = (try? midiLoader.loadChart(from: URL(fileURLWithPath: "/home/klewisjr/.openclaw/workspace/masterofdrums/Charts/Basic.midi"))) ?? .prototype
+        let initialChart = Chart.prototype
         self.session = GameSession(chart: initialChart)
         let keyboard = KeyboardInputDevice()
         self.inputRouter = InputRouter(activeDevice: keyboard)
@@ -57,10 +60,6 @@ final class PrototypeGameController: ObservableObject {
             self?.handleTick(time)
         }
 
-        if initialChart.title != Chart.prototype.title {
-            statusMessage = "Loaded chart \(initialChart.title)"
-        }
-
         syncState()
         syncTransportState()
     }
@@ -80,6 +79,20 @@ final class PrototypeGameController: ObservableObject {
         bpmAnalysisStatusText = audio.analysisDebug.status
         bpmAnalysisDetailText = audio.analysisDebug.detail
         syncTransportState()
+    }
+
+    func chooseChartFile() {
+        let panel = NSOpenPanel()
+        panel.title = "Choose chart file"
+        panel.allowedContentTypes = chartContentTypes
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+
+        guard panel.runModal() == .OK, let url = panel.url else {
+            return
+        }
+
+        loadChart(from: url)
     }
 
     func playTransport() {
@@ -112,6 +125,21 @@ final class PrototypeGameController: ObservableObject {
         scene.flashStatus("Restart")
         syncState()
         syncTransportState()
+    }
+
+    private func loadChart(from url: URL) {
+        do {
+            let chart = try midiLoader.loadChart(from: url)
+            session.replaceChart(chart)
+            scene.replaceChart(chart)
+            chartName = chart.title
+            chartStatusText = "Loaded \(chart.notes.count) notes from \(url.lastPathComponent)"
+            statusMessage = "Loaded chart \(chart.title)"
+            restartRun()
+        } catch {
+            chartStatusText = "Chart load failed"
+            statusMessage = error.localizedDescription
+        }
     }
 
     private func handleTick(_ time: TimeInterval) {
@@ -174,6 +202,13 @@ final class PrototypeGameController: ObservableObject {
         let position = MusicalTransport.position(at: currentTime, bpm: bpm, songOffset: songOffset)
         barBeatText = position.barBeatText
         musicalSubdivisionText = String(position.subdivision)
+    }
+
+    private var chartContentTypes: [UTType] {
+        var types: [UTType] = []
+        if let midi = UTType(filenameExtension: "midi") { types.append(midi) }
+        if let mid = UTType(filenameExtension: "mid") { types.append(mid) }
+        return types.isEmpty ? [.data] : types
     }
 
     private func completionMessage() -> String {

@@ -56,6 +56,10 @@ struct RootView: View {
                         .font(.subheadline.weight(.medium))
                         .lineLimit(2)
                     infoRow("Chart", game.chartName)
+                    Text(game.chartStatusText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                     infoRow("State", game.transportStateText)
                     infoRow("Time", game.playbackTimeText)
                     infoRow("Bar:Beat", game.barBeatText)
@@ -67,16 +71,23 @@ struct RootView: View {
                         }
                         .buttonStyle(.bordered)
 
+                        Button("Choose Chart") {
+                            game.chooseChartFile()
+                        }
+                        .buttonStyle(.bordered)
+                    }
+
+                    HStack(spacing: 8) {
                         Button("Play") {
                             game.playTransport()
                         }
                         .buttonStyle(.borderedProminent)
-                    }
 
-                    Button("Pause") {
-                        game.pauseTransport()
+                        Button("Pause") {
+                            game.pauseTransport()
+                        }
+                        .buttonStyle(.bordered)
                     }
-                    .buttonStyle(.bordered)
                 }
             }
 
