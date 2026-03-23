@@ -11,7 +11,7 @@ struct AdminChartEditorView: View {
                 HStack(alignment: .top, spacing: 14) {
                     GameplayContainerView(scene: game.scene, focusVersion: game.gameplayFocusVersion)
                         .frame(maxWidth: .infinity)
-                        .frame(height: 440)
+                        .frame(height: 480)
                         .background(Color.black)
                         .clipShape(RoundedRectangle(cornerRadius: 14))
 
