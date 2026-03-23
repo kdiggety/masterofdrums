@@ -45,6 +45,7 @@ final class PrototypeGameController: ObservableObject {
     @Published var bpm: Double = 120
     @Published var songOffset: Double = 0
 
+    @Published var isAdminPageActive = false
     @Published var adminSelectedLane: Lane = .kick
     @Published var adminNoteTime: Double = 0
     @Published private(set) var adminNotes: [NoteEvent] = []
@@ -357,11 +358,16 @@ final class PrototypeGameController: ObservableObject {
     private func handleInput(_ event: InputEvent) {
         laneSoundPlayer.play(lane: event.lane)
 
-        if isAdminRecordMode {
-            let note = NoteEvent(lane: event.lane, time: event.timestamp)
-            appendAdminNote(note)
-            adminStatusText = "Recorded \(event.lane.displayName) at \(String(format: "%.2f", event.timestamp))s"
-            statusMessage = "Admin Record"
+        if isAdminAuthoringActive {
+            if isAdminRecordMode {
+                let note = NoteEvent(lane: event.lane, time: event.timestamp)
+                appendAdminNote(note)
+                adminStatusText = "Recorded \(event.lane.displayName) at \(String(format: "%.2f", event.timestamp))s"
+                statusMessage = "Admin Record"
+            } else {
+                placeStepNote(event.lane)
+                statusMessage = "Admin Step"
+            }
             return
         }
 
@@ -375,7 +381,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func syncState() {
-        if isAdminRecordMode {
+        if isAdminAuthoringActive {
             score = 0
             combo = 0
             missCount = 0
@@ -442,15 +448,5 @@ final class PrototypeGameController: ObservableObject {
 
     private func completionMessage() -> String {
         "Run complete · \(hitCount) hits · \(missCount) misses · \(accuracyText) accuracy"
-    }
-}
-ssCount) misses · \(accuracyText) accuracy"
-    }
-}
-age() -> String {
-        "Run complete · \(hitCount) hits · \(missCount) misses · \(accuracyText) accuracy"
-    }
-}
-ssCount) misses · \(accuracyText) accuracy"
     }
 }
