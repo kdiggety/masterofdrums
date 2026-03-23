@@ -64,6 +64,10 @@ final class PrototypeGameController: ObservableObject {
     private let laneSoundPlayer = LaneSoundPlayer()
     private let completionGracePeriod: TimeInterval = 0.5
 
+    var isAdminAuthoringActive: Bool {
+        isAdminRecordMode || true
+    }
+
     init() {
         let initialChart = Chart.prototype
         self.session = GameSession(chart: initialChart)
@@ -143,6 +147,7 @@ final class PrototypeGameController: ObservableObject {
     func toggleAdminRecordMode() {
         isAdminRecordMode.toggle()
         adminStatusText = isAdminRecordMode ? "Record mode armed. Press Play, then use gameplay keys to capture notes." : "Record mode off. Step mode remains available."
+        statusMessage = isAdminRecordMode ? "Admin Record" : "Admin Step"
         refocusGameplay()
     }
 
@@ -168,6 +173,7 @@ final class PrototypeGameController: ObservableObject {
         let note = NoteEvent(lane: selectedLane, time: quantizedTime)
         appendAdminNote(note)
         adminStatusText = "Placed \(selectedLane.displayName) at \(stepCursorDisplayText)"
+        statusMessage = "Admin Step"
         refocusGameplay()
     }
 
@@ -315,11 +321,21 @@ final class PrototypeGameController: ObservableObject {
         chartName = chart.title
         chartStatusText = chartStatus
         adminNotes = chart.notes.sorted { $0.time < $1.time }
-        restartRun()
+        session.reset()
+        isRunComplete = false
+        scene.restartSong()
+        syncState()
+        syncTransportState()
     }
 
     private func handleTick(_ time: TimeInterval) {
         playbackTimeText = String(format: "%.2fs", time)
+
+        if isAdminRecordMode {
+            syncTransportState()
+            return
+        }
+
         guard !isRunComplete else {
             syncTransportState()
             return
@@ -345,17 +361,8 @@ final class PrototypeGameController: ObservableObject {
             let note = NoteEvent(lane: event.lane, time: event.timestamp)
             appendAdminNote(note)
             adminStatusText = "Recorded \(event.lane.displayName) at \(String(format: "%.2f", event.timestamp))s"
-            statusMessage = "Recording"
+            statusMessage = "Admin Record"
             return
-        }
-
-        if audio.state == .stopped {
-            audio.play()
-        }
-
-        if isRunComplete {
-            restartRun()
-            audio.play()
         }
 
         let judgment = session.registerHit(lane: event.lane, at: event.timestamp)
@@ -368,12 +375,21 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func syncState() {
-        score = session.state.score
-        combo = session.state.combo
-        missCount = session.state.missCount
-        hitCount = session.state.hitCount
-        lastJudgmentText = session.state.lastJudgment?.rawValue ?? "—"
-        accuracyText = String(format: "%.0f%%", session.state.accuracy * 100)
+        if isAdminRecordMode {
+            score = 0
+            combo = 0
+            missCount = 0
+            hitCount = 0
+            lastJudgmentText = "—"
+            accuracyText = "—"
+        } else {
+            score = session.state.score
+            combo = session.state.combo
+            missCount = session.state.missCount
+            hitCount = session.state.hitCount
+            lastJudgmentText = session.state.lastJudgment?.rawValue ?? "—"
+            accuracyText = String(format: "%.0f%%", session.state.accuracy * 100)
+        }
         scene.updateVisibleNotes(session.notes(visibleAt: scene.currentSongTime, leadTime: 3.0))
         trackName = audio.loadedTrackName ?? "Preview clock"
         chartName = session.chart.title

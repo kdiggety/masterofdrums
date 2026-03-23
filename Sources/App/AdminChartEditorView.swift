@@ -25,7 +25,7 @@ struct AdminChartEditorView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Admin Step + Record Mode")
                     .font(.title2.bold())
-                Text("Gameplay keys stay the same here: D, F, J, K, and Space. Use buttons for transport; use keys for note entry.")
+                Text("Gameplay keys stay the same here: D, F, J, K, and Space. Use transport buttons only; Space should be kick, not play/pause.")
                     .foregroundStyle(.secondary)
             }
             Spacer()
@@ -36,37 +36,31 @@ struct AdminChartEditorView: View {
         GroupBox("Authoring Controls") {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 10) {
-                    Button("Choose Audio") {
+                    adminButton("Choose Audio") {
                         game.chooseAudioFile()
                     }
-                    .buttonStyle(.bordered)
 
-                    Button("Play") {
+                    adminProminentButton("Play") {
                         game.playTransport()
                     }
-                    .buttonStyle(.borderedProminent)
 
-                    Button("Pause") {
+                    adminButton("Pause") {
                         game.pauseTransport()
                     }
-                    .buttonStyle(.bordered)
                 }
 
                 HStack(spacing: 10) {
-                    Button("New Empty Chart") {
+                    adminButton("New Empty Chart") {
                         game.startAdminChart()
                     }
-                    .buttonStyle(.bordered)
 
-                    Button(game.isAdminRecordMode ? "Stop Recording" : "Arm Record") {
+                    adminProminentButton(game.isAdminRecordMode ? "Stop Recording" : "Arm Record") {
                         game.toggleAdminRecordMode()
                     }
-                    .buttonStyle(.borderedProminent)
 
-                    Button("Clear Notes") {
+                    adminButton("Clear Notes") {
                         game.clearAdminNotes()
                     }
-                    .buttonStyle(.bordered)
                 }
             }
         }
@@ -94,33 +88,25 @@ struct AdminChartEditorView: View {
                 }
 
                 HStack(spacing: 10) {
-                    Button("← Step Back") {
+                    adminButton("← Step Back") {
                         game.stepBackward()
                     }
-                    .buttonStyle(.bordered)
 
-                    Button("Sync To Playback") {
+                    adminButton("Sync To Playback") {
                         game.syncStepCursorToPlayback()
                     }
-                    .buttonStyle(.bordered)
 
-                    Button("Step Forward →") {
+                    adminButton("Step Forward →") {
                         game.stepForward()
                     }
-                    .buttonStyle(.bordered)
                 }
 
                 HStack(spacing: 10) {
-                    Button("Place Kick") { game.placeStepNote(.kick) }
-                        .buttonStyle(.bordered)
-                    Button("Place Snare") { game.placeStepNote(.red) }
-                        .buttonStyle(.bordered)
-                    Button("Place Hat") { game.placeStepNote(.yellow) }
-                        .buttonStyle(.bordered)
-                    Button("Place Blue") { game.placeStepNote(.blue) }
-                        .buttonStyle(.bordered)
-                    Button("Place Green") { game.placeStepNote(.green) }
-                        .buttonStyle(.bordered)
+                    adminButton("Place Kick") { game.placeStepNote(.kick) }
+                    adminButton("Place Snare") { game.placeStepNote(.red) }
+                    adminButton("Place Hat") { game.placeStepNote(.yellow) }
+                    adminButton("Place Blue") { game.placeStepNote(.blue) }
+                    adminButton("Place Green") { game.placeStepNote(.green) }
                 }
             }
         }
@@ -151,9 +137,9 @@ struct AdminChartEditorView: View {
 
                 GroupBox("Workflow") {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Step mode: use buttons to move the cursor, then use D/F/J/K/Space or Place buttons to enter notes")
+                        Text("Step mode: move the cursor with buttons, then use D/F/J/K/Space or Place buttons to enter notes")
                         Text("Record mode: same gameplay keys, but captures live timing")
-                        Text("Transport is button-driven; note input uses the gameplay keys")
+                        Text("Admin mode should not judge misses or combos")
                     }
                     .font(.subheadline)
                 }
@@ -171,15 +157,13 @@ struct AdminChartEditorView: View {
 
     private var saveLoadRow: some View {
         HStack(spacing: 10) {
-            Button("Load Chart JSON") {
+            adminButton("Load Chart JSON") {
                 game.loadAdminChartDocument()
             }
-            .buttonStyle(.bordered)
 
-            Button("Save Chart JSON") {
+            adminButton("Save Chart JSON") {
                 game.saveAdminChartDocument()
             }
-            .buttonStyle(.bordered)
         }
     }
 
@@ -188,10 +172,9 @@ struct AdminChartEditorView: View {
             HStack(spacing: 10) {
                 lanePicker
                 timeField
-                Button("Add Note") {
+                adminButton("Add Note") {
                     game.addAdminNote()
                 }
-                .buttonStyle(.bordered)
             }
         }
     }
@@ -225,6 +208,7 @@ struct AdminChartEditorView: View {
                             game.deleteAdminNote(note.id)
                         }
                         .buttonStyle(.borderless)
+                        .focusable(false)
                     }
                 }
             }
@@ -265,5 +249,17 @@ struct AdminChartEditorView: View {
                 .font(.subheadline.monospacedDigit())
                 .lineLimit(1)
         }
+    }
+
+    private func adminButton(_ title: String, action: @escaping () -> Void) -> some View {
+        Button(title, action: action)
+            .buttonStyle(.bordered)
+            .focusable(false)
+    }
+
+    private func adminProminentButton(_ title: String, action: @escaping () -> Void) -> some View {
+        Button(title, action: action)
+            .buttonStyle(.borderedProminent)
+            .focusable(false)
     }
 }
