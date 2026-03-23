@@ -32,6 +32,7 @@ final class PrototypeGameController: ObservableObject {
     @Published var adminNoteTime: Double = 0
     @Published private(set) var adminNotes: [NoteEvent] = []
     @Published private(set) var adminStatusText: String = "Open Admin to create or load a chart."
+    @Published var isAdminRecordMode = false
 
     let scene: GameplayScene
     let audio: AudioPlaybackController
@@ -107,22 +108,31 @@ final class PrototypeGameController: ObservableObject {
     func startAdminChart() {
         let chart = Chart(notes: [], title: trackName == "Preview clock" ? "Untitled Chart" : trackName)
         applyChart(chart, bpmOverride: bpm, chartStatus: "Started empty admin chart")
-        adminStatusText = "Started new chart. Add notes below."
+        adminStatusText = "Started new chart. Use record mode or add notes manually."
         adminNoteTime = 0
         adminSelectedLane = .kick
     }
 
+    func toggleAdminRecordMode() {
+        isAdminRecordMode.toggle()
+        adminStatusText = isAdminRecordMode ? "Record mode armed. Press Play, then use gameplay keys to capture notes." : "Record mode off."
+    }
+
+    func clearAdminNotes() {
+        let title = chartName == Chart.prototype.title ? "Admin Chart" : chartName
+        applyChart(Chart(notes: [], title: title), bpmOverride: bpm, chartStatus: "Cleared chart notes")
+        adminStatusText = "Cleared chart notes."
+    }
+
     func addAdminNote() {
         let note = NoteEvent(lane: adminSelectedLane, time: max(0, adminNoteTime))
-        let updated = (adminNotes + [note]).sorted { $0.time < $1.time }
-        let title = chartName == Chart.prototype.title ? "Admin Chart" : chartName
-        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Added \(updated.count) chart notes")
+        appendAdminNote(note)
         adminStatusText = "Added \(note.lane.displayName) at \(String(format: "%.2f", note.time))s"
     }
 
     func deleteAdminNote(_ id: UUID) {
         let updated = adminNotes.filter { $0.id != id }
-        let title = chartName == Chart.prototype.title ? "Admin Chart" : chartName
+        let title = normalizedAdminChartTitle()
         applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Edited chart notes")
         adminStatusText = "Deleted note. \(updated.count) notes remain."
     }
@@ -203,6 +213,16 @@ final class PrototypeGameController: ObservableObject {
         }
     }
 
+    private func appendAdminNote(_ note: NoteEvent) {
+        let updated = (adminNotes + [note]).sorted { $0.time < $1.time }
+        let title = normalizedAdminChartTitle()
+        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Recorded \(updated.count) chart notes")
+    }
+
+    private func normalizedAdminChartTitle() -> String {
+        chartName == Chart.prototype.title ? (trackName == "Preview clock" ? "Admin Chart" : trackName) : chartName
+    }
+
     private func applyChart(_ chart: Chart, bpmOverride: Double?, chartStatus: String) {
         if let bpmOverride {
             bpm = bpmOverride
@@ -237,6 +257,14 @@ final class PrototypeGameController: ObservableObject {
 
     private func handleInput(_ event: InputEvent) {
         laneSoundPlayer.play(lane: event.lane)
+
+        if isAdminRecordMode {
+            let note = NoteEvent(lane: event.lane, time: event.timestamp)
+            appendAdminNote(note)
+            adminStatusText = "Recorded \(event.lane.displayName) at \(String(format: "%.2f", event.timestamp))s"
+            statusMessage = "Recording"
+            return
+        }
 
         if audio.state == .stopped {
             audio.play()

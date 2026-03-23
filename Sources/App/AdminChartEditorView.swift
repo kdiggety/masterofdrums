@@ -7,9 +7,9 @@ struct AdminChartEditorView: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Admin Chart Editor")
+                    Text("Admin Record Mode")
                         .font(.title2.bold())
-                    Text("Author chart notes without touching MIDI directly.")
+                    Text("Use the gameplay lanes and keys to record a chart while the song plays.")
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
@@ -21,6 +21,16 @@ struct AdminChartEditorView: View {
                 }
                 .buttonStyle(.bordered)
 
+                Button(game.isAdminRecordMode ? "Stop Recording" : "Arm Record") {
+                    game.toggleAdminRecordMode()
+                }
+                .buttonStyle(.borderedProminent)
+
+                Button("Clear Notes") {
+                    game.clearAdminNotes()
+                }
+                .buttonStyle(.bordered)
+
                 Button("Load Chart JSON") {
                     game.loadAdminChartDocument()
                 }
@@ -29,32 +39,51 @@ struct AdminChartEditorView: View {
                 Button("Save Chart JSON") {
                     game.saveAdminChartDocument()
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
             }
 
-            GroupBox("Chart Settings") {
-                VStack(alignment: .leading, spacing: 10) {
-                    HStack {
-                        Text("Current Chart")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                        Text(game.chartName)
-                            .font(.headline)
-                    }
+            HStack(alignment: .top, spacing: 14) {
+                GameplayContainerView(scene: game.scene)
+                    .frame(maxWidth: .infinity, minHeight: 340)
+                    .background(Color.black)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
 
-                    HStack(spacing: 10) {
-                        lanePicker
-                        timeField
-                        Button("Add Note") {
-                            game.addAdminNote()
+                VStack(alignment: .leading, spacing: 12) {
+                    GroupBox("Workflow") {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("1. Choose Audio on the Gameplay page if needed")
+                            Text("2. Start a new empty chart")
+                            Text("3. Arm Record")
+                            Text("4. Press Play and hit D/F/J/K/Space in time")
+                            Text("5. Save Chart JSON")
                         }
-                        .buttonStyle(.borderedProminent)
+                        .font(.subheadline)
                     }
 
-                    Text(game.adminStatusText)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    GroupBox("Status") {
+                        VStack(alignment: .leading, spacing: 8) {
+                            statusRow("Chart", game.chartName)
+                            statusRow("Transport", game.transportStateText)
+                            statusRow("Time", game.playbackTimeText)
+                            statusRow("Bar:Beat", game.barBeatText)
+                            Text(game.adminStatusText)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                }
+                .frame(width: 280)
+            }
+
+            GroupBox("Manual Add / Fix") {
+                HStack(spacing: 10) {
+                    lanePicker
+                    timeField
+                    Button("Add Note") {
+                        game.addAdminNote()
+                    }
+                    .buttonStyle(.bordered)
                 }
             }
 
@@ -71,7 +100,7 @@ struct AdminChartEditorView: View {
                 }
             }
 
-            GroupBox("Notes") {
+            GroupBox("Recorded Notes") {
                 List {
                     ForEach(game.adminNotes) { note in
                         HStack {
@@ -87,7 +116,7 @@ struct AdminChartEditorView: View {
                         }
                     }
                 }
-                .frame(minHeight: 260)
+                .frame(minHeight: 220)
             }
         }
         .padding(16)
@@ -113,6 +142,17 @@ struct AdminChartEditorView: View {
             Text("sec")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+        }
+    }
+
+    private func statusRow(_ title: String, _ value: String) -> some View {
+        HStack {
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Spacer()
+            Text(value)
+                .font(.subheadline.monospacedDigit())
         }
     }
 }
