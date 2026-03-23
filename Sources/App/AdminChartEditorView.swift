@@ -4,147 +4,179 @@ struct AdminChartEditorView: View {
     @EnvironmentObject private var game: PrototypeGameController
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Admin Record Mode")
-                        .font(.title2.bold())
-                    Text("Load audio, play the song, and use the gameplay keys to record a chart.")
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
+        ScrollView {
+            VStack(alignment: .leading, spacing: 14) {
+                header
+                controlBar
+                authoringWorkspace
+                saveLoadRow
+                manualFixPanel
+                laneSummaryPanel
+                recordedNotesPanel
             }
+            .padding(16)
+        }
+        .background(Color(nsColor: .windowBackgroundColor))
+    }
 
-            HStack(spacing: 10) {
-                Button("Choose Audio") {
-                    game.chooseAudioFile()
-                }
-                .buttonStyle(.bordered)
-
-                Button("Play") {
-                    game.playTransport()
-                }
-                .buttonStyle(.borderedProminent)
-
-                Button("Pause") {
-                    game.pauseTransport()
-                }
-                .buttonStyle(.bordered)
-
-                Button("New Empty Chart") {
-                    game.startAdminChart()
-                }
-                .buttonStyle(.bordered)
-
-                Button(game.isAdminRecordMode ? "Stop Recording" : "Arm Record") {
-                    game.toggleAdminRecordMode()
-                }
-                .buttonStyle(.borderedProminent)
-
-                Button("Clear Notes") {
-                    game.clearAdminNotes()
-                }
-                .buttonStyle(.bordered)
+    private var header: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Admin Record Mode")
+                    .font(.title2.bold())
+                Text("Load audio, play the song, and use the gameplay keys to record a chart.")
+                    .foregroundStyle(.secondary)
             }
+            Spacer()
+        }
+    }
 
-            HStack(alignment: .top, spacing: 14) {
-                GameplayContainerView(scene: game.scene)
-                    .frame(maxWidth: .infinity, minHeight: 340)
-                    .background(Color.black)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
-
-                VStack(alignment: .leading, spacing: 12) {
-                    GroupBox("Session") {
-                        VStack(alignment: .leading, spacing: 8) {
-                            statusRow("Audio", game.trackName)
-                            statusRow("Chart", game.chartName)
-                            statusRow("Transport", game.transportStateText)
-                            statusRow("Time", game.playbackTimeText)
-                            statusRow("Bar:Beat", game.barBeatText)
-                            Text(game.chartStatusText)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
+    private var controlBar: some View {
+        GroupBox("Authoring Controls") {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 10) {
+                    Button("Choose Audio") {
+                        game.chooseAudioFile()
                     }
+                    .buttonStyle(.bordered)
 
-                    GroupBox("Workflow") {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("1. Choose Audio")
-                            Text("2. Start a new empty chart")
-                            Text("3. Arm Record")
-                            Text("4. Press Play and hit D/F/J/K/Space in time")
-                            Text("5. Save Chart JSON")
-                        }
-                        .font(.subheadline)
+                    Button("Play") {
+                        game.playTransport()
                     }
+                    .buttonStyle(.borderedProminent)
 
-                    GroupBox("Status") {
-                        Text(game.adminStatusText)
+                    Button("Pause") {
+                        game.pauseTransport()
+                    }
+                    .buttonStyle(.bordered)
+                }
+
+                HStack(spacing: 10) {
+                    Button("New Empty Chart") {
+                        game.startAdminChart()
+                    }
+                    .buttonStyle(.bordered)
+
+                    Button(game.isAdminRecordMode ? "Stop Recording" : "Arm Record") {
+                        game.toggleAdminRecordMode()
+                    }
+                    .buttonStyle(.borderedProminent)
+
+                    Button("Clear Notes") {
+                        game.clearAdminNotes()
+                    }
+                    .buttonStyle(.bordered)
+                }
+            }
+        }
+    }
+
+    private var authoringWorkspace: some View {
+        HStack(alignment: .top, spacing: 14) {
+            GameplayContainerView(scene: game.scene)
+                .frame(maxWidth: .infinity)
+                .frame(height: 360)
+                .background(Color.black)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+
+            VStack(alignment: .leading, spacing: 12) {
+                GroupBox("Session") {
+                    VStack(alignment: .leading, spacing: 8) {
+                        statusRow("Audio", game.trackName)
+                        statusRow("Chart", game.chartName)
+                        statusRow("Transport", game.transportStateText)
+                        statusRow("Time", game.playbackTimeText)
+                        statusRow("Bar:Beat", game.barBeatText)
+                        Text(game.chartStatusText)
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
-                .frame(width: 280)
-            }
 
+                GroupBox("Workflow") {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("1. Choose Audio")
+                        Text("2. Start a new empty chart")
+                        Text("3. Arm Record")
+                        Text("4. Press Play and hit D/F/J/K/Space in time")
+                        Text("5. Save Chart JSON")
+                    }
+                    .font(.subheadline)
+                }
+
+                GroupBox("Status") {
+                    Text(game.adminStatusText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .frame(width: 280)
+        }
+    }
+
+    private var saveLoadRow: some View {
+        HStack(spacing: 10) {
+            Button("Load Chart JSON") {
+                game.loadAdminChartDocument()
+            }
+            .buttonStyle(.bordered)
+
+            Button("Save Chart JSON") {
+                game.saveAdminChartDocument()
+            }
+            .buttonStyle(.bordered)
+        }
+    }
+
+    private var manualFixPanel: some View {
+        GroupBox("Manual Add / Fix") {
             HStack(spacing: 10) {
-                Button("Load Chart JSON") {
-                    game.loadAdminChartDocument()
+                lanePicker
+                timeField
+                Button("Add Note") {
+                    game.addAdminNote()
                 }
                 .buttonStyle(.bordered)
-
-                Button("Save Chart JSON") {
-                    game.saveAdminChartDocument()
-                }
-                .buttonStyle(.bordered)
-            }
-
-            GroupBox("Manual Add / Fix") {
-                HStack(spacing: 10) {
-                    lanePicker
-                    timeField
-                    Button("Add Note") {
-                        game.addAdminNote()
-                    }
-                    .buttonStyle(.bordered)
-                }
-            }
-
-            GroupBox("Lane Summary") {
-                VStack(alignment: .leading, spacing: 8) {
-                    ForEach(Lane.allCases) { lane in
-                        HStack {
-                            Text(lane.displayName)
-                            Spacer()
-                            Text("\(game.noteCount(for: lane))")
-                                .font(.headline.monospacedDigit())
-                        }
-                    }
-                }
-            }
-
-            GroupBox("Recorded Notes") {
-                List {
-                    ForEach(game.adminNotes) { note in
-                        HStack {
-                            Text(note.lane.displayName)
-                                .frame(width: 80, alignment: .leading)
-                            Text(String(format: "%.2fs", note.time))
-                                .monospacedDigit()
-                            Spacer()
-                            Button("Delete") {
-                                game.deleteAdminNote(note.id)
-                            }
-                            .buttonStyle(.borderless)
-                        }
-                    }
-                }
-                .frame(minHeight: 220)
             }
         }
-        .padding(16)
+    }
+
+    private var laneSummaryPanel: some View {
+        GroupBox("Lane Summary") {
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(Lane.allCases) { lane in
+                    HStack {
+                        Text(lane.displayName)
+                        Spacer()
+                        Text("\(game.noteCount(for: lane))")
+                            .font(.headline.monospacedDigit())
+                    }
+                }
+            }
+        }
+    }
+
+    private var recordedNotesPanel: some View {
+        GroupBox("Recorded Notes") {
+            List {
+                ForEach(game.adminNotes) { note in
+                    HStack {
+                        Text(note.lane.displayName)
+                            .frame(width: 80, alignment: .leading)
+                        Text(String(format: "%.2fs", note.time))
+                            .monospacedDigit()
+                        Spacer()
+                        Button("Delete") {
+                            game.deleteAdminNote(note.id)
+                        }
+                        .buttonStyle(.borderless)
+                    }
+                }
+            }
+            .frame(minHeight: 220)
+        }
     }
 
     private var lanePicker: some View {
