@@ -63,11 +63,21 @@ struct AdminChartEditorView: View {
 
             GroupBox("Playback") {
                 VStack(alignment: .leading, spacing: 10) {
+                    statusRow("Position", "\(game.playbackTimeText) / \(game.playbackDurationText)")
+                    Slider(
+                        value: Binding(
+                            get: { game.playbackProgress },
+                            set: { game.seekTransport(to: $0 * game.playbackDuration) }
+                        ),
+                        in: 0...1
+                    )
+                    .disabled(game.playbackDuration <= 0)
+
                     statusRow("Speed", game.playbackRateText)
                     HStack(spacing: 8) {
-                        adminButton("100%") { game.setPlaybackRate(1.0) }
-                        adminButton("75%") { game.setPlaybackRate(0.75) }
-                        adminButton("50%") { game.setPlaybackRate(0.5) }
+                        playbackRateButton("100%", rate: 1.0)
+                        playbackRateButton("75%", rate: 0.75)
+                        playbackRateButton("50%", rate: 0.5)
                     }
 
                     statusRow("Loop", game.loopStatusText)
@@ -216,6 +226,12 @@ struct AdminChartEditorView: View {
     private func adminProminentButton(_ title: String, action: @escaping () -> Void) -> some View {
         Button(title, action: action)
             .buttonStyle(.borderedProminent)
+            .focusable(false)
+    }
+
+    private func playbackRateButton(_ title: String, rate: Float) -> some View {
+        Button(title) { game.setPlaybackRate(rate) }
+            .buttonStyle(game.isPlaybackRateSelected(rate) ? .borderedProminent : .bordered)
             .focusable(false)
     }
 }

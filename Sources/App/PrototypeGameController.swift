@@ -57,6 +57,7 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var midiTempoText: String = "Not loaded"
     @Published private(set) var gameplayFocusVersion: Int = 0
     @Published private(set) var playbackRateText: String = "100%"
+    @Published private(set) var playbackDurationText: String = "0.00s"
     @Published private(set) var loopStatusText: String = "Loop Off"
     @Published var bpm: Double = 120
     @Published var songOffset: Double = 0
@@ -227,6 +228,13 @@ final class PrototypeGameController: ObservableObject {
         audio.setPlaybackRate(rate)
         updatePlaybackRateText()
         adminStatusText = "Playback speed set to \(playbackRateText)"
+        refocusGameplay()
+    }
+
+    func seekTransport(to time: Double) {
+        audio.seek(to: time)
+        syncTransportState()
+        adminStatusText = "Seeked to \(playbackTimeText)"
         refocusGameplay()
     }
 
@@ -427,6 +435,7 @@ final class PrototypeGameController: ObservableObject {
         let currentTime = audio.currentTime
         transportStateText = audio.state.rawValue
         playbackTimeText = String(format: "%.2fs", currentTime)
+        playbackDurationText = String(format: "%.2fs", audio.duration)
         let position = MusicalTransport.position(at: currentTime, bpm: bpm, songOffset: songOffset)
         barBeatText = position.barBeatText
         musicalSubdivisionText = String(position.subdivision)
@@ -458,6 +467,17 @@ final class PrototypeGameController: ObservableObject {
 
     private func updatePlaybackRateText() {
         playbackRateText = "\(Int(audio.playbackRate * 100))%"
+    }
+
+    var playbackDuration: Double { audio.duration }
+    var playbackProgress: Double {
+        let duration = max(audio.duration, 0)
+        guard duration > 0 else { return 0 }
+        return min(max(audio.currentTime / duration, 0), 1)
+    }
+
+    func isPlaybackRateSelected(_ rate: Float) -> Bool {
+        abs(audio.playbackRate - rate) < 0.001
     }
 
     private func updateLoopStatusText() {
