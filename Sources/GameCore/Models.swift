@@ -44,6 +44,7 @@ struct NoteEvent: Identifiable {
 
 struct Chart {
     let notes: [NoteEvent]
+    let title: String
 
     var endTime: TimeInterval {
         notes.map(\.time).max() ?? 0
@@ -55,7 +56,7 @@ struct Chart {
             (.red, 3.0), (.kick, 3.0), (.yellow, 3.5), (.blue, 4.0), (.green, 4.5),
             (.kick, 5.0), (.red, 5.5), (.yellow, 6.0), (.blue, 6.5), (.green, 7.0)
         ]
-        return Chart(notes: pattern.map { NoteEvent(lane: $0.0, time: $0.1) })
+        return Chart(notes: pattern.map { NoteEvent(lane: $0.0, time: $0.1) }, title: "Prototype")
     }()
 }
 

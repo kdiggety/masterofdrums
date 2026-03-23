@@ -6,7 +6,7 @@ final class GameplayScene: SKScene {
     var onTick: ((TimeInterval) -> Void)?
     var timeProvider: (() -> TimeInterval)?
 
-    private let chart: Chart
+    private var chart: Chart
     private let keyboardInputDevice: KeyboardInputDevice
     private let highway = SKNode()
     private let judgmentLabel = SKLabelNode(fontNamed: "SF Pro Display")
@@ -60,6 +60,12 @@ final class GameplayScene: SKScene {
             return
         }
         onInput?(inputEvent)
+    }
+
+    func replaceChart(_ chart: Chart) {
+        self.chart = chart
+        restartSong()
+        updateVisibleNotes([])
     }
 
     func restartSong() {

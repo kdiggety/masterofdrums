@@ -1,7 +1,7 @@
 import Foundation
 
 final class GameSession {
-    let chart: Chart
+    private(set) var chart: Chart
     private(set) var state = ScoreState()
     private var nextIndex = 0
 
@@ -10,6 +10,11 @@ final class GameSession {
 
     init(chart: Chart) {
         self.chart = chart
+    }
+
+    func replaceChart(_ chart: Chart) {
+        self.chart = chart
+        reset()
     }
 
     func reset() {

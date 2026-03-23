@@ -13,6 +13,7 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var statusMessage: String = "Ready"
     @Published private(set) var accuracyText: String = "0%"
     @Published private(set) var trackName: String = "Preview clock"
+    @Published private(set) var chartName: String = Chart.prototype.title
     @Published private(set) var transportStateText: String = TransportState.stopped.rawValue
     @Published private(set) var playbackTimeText: String = "0.00s"
     @Published private(set) var barBeatText: String = "1:1"
@@ -28,17 +29,18 @@ final class PrototypeGameController: ObservableObject {
 
     private let session: GameSession
     private let inputRouter: InputRouter
-    private let chart: Chart
+    private let midiLoader = MIDIChartLoader()
     private let completionGracePeriod: TimeInterval = 0.5
 
     init() {
-        self.chart = .prototype
-        self.session = GameSession(chart: .prototype)
+        let initialChart = (try? midiLoader.loadChart(from: URL(fileURLWithPath: "/home/klewisjr/.openclaw/workspace/masterofdrums/Charts/Basic.midi"))) ?? .prototype
+        self.session = GameSession(chart: initialChart)
         let keyboard = KeyboardInputDevice()
         self.inputRouter = InputRouter(activeDevice: keyboard)
         self.audio = AudioPlaybackController()
-        self.scene = GameplayScene(chart: .prototype, keyboardInputDevice: keyboard)
+        self.scene = GameplayScene(chart: initialChart, keyboardInputDevice: keyboard)
         self.activeInputSourceName = keyboard.source.rawValue
+        self.chartName = initialChart.title
 
         self.scene.timeProvider = { [weak audio] in
             audio?.currentTime ?? 0
@@ -53,6 +55,10 @@ final class PrototypeGameController: ObservableObject {
         }
         self.scene.onTick = { [weak self] time in
             self?.handleTick(time)
+        }
+
+        if initialChart.title != Chart.prototype.title {
+            statusMessage = "Loaded chart \(initialChart.title)"
         }
 
         syncState()
@@ -117,7 +123,7 @@ final class PrototypeGameController: ObservableObject {
 
         session.advanceMisses(at: time)
 
-        if session.isComplete && time >= chart.endTime + completionGracePeriod {
+        if session.isComplete && time >= session.chart.endTime + completionGracePeriod {
             isRunComplete = true
             statusMessage = completionMessage()
             scene.flashStatus("Finished")
@@ -156,6 +162,7 @@ final class PrototypeGameController: ObservableObject {
         accuracyText = String(format: "%.0f%%", session.state.accuracy * 100)
         scene.updateVisibleNotes(session.notes(visibleAt: scene.currentSongTime, leadTime: 3.0))
         trackName = audio.loadedTrackName ?? "Preview clock"
+        chartName = session.chart.title
         bpmAnalysisStatusText = audio.analysisDebug.status
         bpmAnalysisDetailText = audio.analysisDebug.detail
     }

@@ -55,7 +55,7 @@ struct RootView: View {
                     Label(game.trackName, systemImage: "waveform")
                         .font(.subheadline.weight(.medium))
                         .lineLimit(2)
-
+                    infoRow("Chart", game.chartName)
                     infoRow("State", game.transportStateText)
                     infoRow("Time", game.playbackTimeText)
                     infoRow("Bar:Beat", game.barBeatText)
