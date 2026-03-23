@@ -222,26 +222,62 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
     }
 
     private func detectBPMFromAudioAnalysis(for url: URL) -> Result<BPMAnalysisEstimate, BPMAnalysisFailure> {
-        guard let samples = try? loadMonoSamples(from: url, maxFrames: 44100 * 120) else {
+        guard let samples = try? loadMonoSamples(from: url, maxFrames: 44100 * 180) else {
             return .failure(.message("Could not decode audio samples"))
         }
-        guard samples.count > 16384 else {
-            return .failure(.message("Too few decoded samples for analysis"))
+        guard samples.count > 44100 * 20 else {
+            return .failure(.message("Too few decoded samples for multi-window analysis"))
         }
 
-        let envelope = buildEnergyEnvelope(from: samples, windowSize: 512)
-        guard envelope.count > 512 else {
-            return .failure(.message("Energy envelope too short"))
+        let windowFrameCount = 44100 * 20
+        let stepFrameCount = 44100 * 15
+        var candidates: [(bpm: Double, ratio: Float)] = []
+        var start = 0
+
+        while start + windowFrameCount <= samples.count {
+            let segment = Array(samples[start..<(start + windowFrameCount)])
+            if let candidate = estimateBPMCandidate(from: segment) {
+                candidates.append(candidate)
+            }
+            start += stepFrameCount
         }
+
+        guard !candidates.isEmpty else {
+            return .failure(.message("No stable tempo candidates found across windows"))
+        }
+
+        let grouped = Dictionary(grouping: candidates) { Int(($0.bpm * 2).rounded()) }
+        let ranked = grouped.map { bucket, values in
+            let bpm = values.map(\.bpm).reduce(0, +) / Double(values.count)
+            let avgRatio = values.map(\.ratio).reduce(0, +) / Float(values.count)
+            return (bpm: bpm, votes: values.count, ratio: avgRatio)
+        }
+        .sorted {
+            if $0.votes == $1.votes {
+                return $0.ratio > $1.ratio
+            }
+            return $0.votes > $1.votes
+        }
+
+        guard let winner = ranked.first else {
+            return .failure(.message("No ranked tempo candidates available"))
+        }
+
+        let bpm = (winner.bpm * 10).rounded() / 10
+        let detail = "Estimated from \(winner.votes) window(s) · avg ratio \(String(format: "%.3f", winner.ratio))"
+        return .success(BPMAnalysisEstimate(bpm: bpm, detail: detail))
+    }
+
+    private func estimateBPMCandidate(from samples: [Float]) -> (bpm: Double, ratio: Float)? {
+        let envelope = buildEnergyEnvelope(from: samples, windowSize: 512)
+        guard envelope.count > 512 else { return nil }
 
         let sampleRate = 44100.0 / 512.0
         let minBPM = 70.0
         let maxBPM = 190.0
         let minLag = Int(sampleRate * 60.0 / maxBPM)
         let maxLag = Int(sampleRate * 60.0 / minBPM)
-        guard maxLag < envelope.count else {
-            return .failure(.message("Lag window exceeded envelope length"))
-        }
+        guard maxLag < envelope.count else { return nil }
 
         var bestLag = 0
         var bestScore: Float = 0
@@ -258,23 +294,16 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
             }
         }
 
-        guard bestLag > 0, bestScore > 0 else {
-            return .failure(.message("No stable tempo peak found"))
-        }
+        guard bestLag > 0, bestScore > 0 else { return nil }
 
-        let confidenceRatio = bestScore / max(secondBestScore, 0.0001)
+        let ratio = bestScore / max(secondBestScore, 0.0001)
+        guard ratio > 1.003 else { return nil }
 
         var bpm = 60.0 * sampleRate / Double(bestLag)
         while bpm < 80 { bpm *= 2 }
         while bpm > 180 { bpm /= 2 }
-        bpm = (bpm * 10).rounded() / 10
 
-        if confidenceRatio < 1.01 {
-            return .failure(.message("Tempo peak confidence too low (ratio \(String(format: "%.3f", confidenceRatio)))"))
-        }
-
-        let detail = "Estimated from signal · ratio \(String(format: "%.3f", confidenceRatio))"
-        return .success(BPMAnalysisEstimate(bpm: bpm, detail: detail))
+        return ((bpm * 10).rounded() / 10, ratio)
     }
 
     private func loadMonoSamples(from url: URL, maxFrames: AVAudioFrameCount) throws -> [Float] {
