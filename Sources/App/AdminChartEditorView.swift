@@ -18,6 +18,12 @@ struct AdminChartEditorView: View {
             .padding(16)
         }
         .background(Color(nsColor: .windowBackgroundColor))
+        .onAppear {
+            game.isAdminPageActive = true
+        }
+        .onDisappear {
+            game.isAdminPageActive = false
+        }
     }
 
     private var header: some View {

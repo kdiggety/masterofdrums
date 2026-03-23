@@ -65,7 +65,7 @@ final class PrototypeGameController: ObservableObject {
     private let completionGracePeriod: TimeInterval = 0.5
 
     var isAdminAuthoringActive: Bool {
-        isAdminRecordMode || true
+        isAdminPageActive
     }
 
     init() {
@@ -331,7 +331,7 @@ final class PrototypeGameController: ObservableObject {
     private func handleTick(_ time: TimeInterval) {
         playbackTimeText = String(format: "%.2fs", time)
 
-        if isAdminRecordMode {
+        if isAdminAuthoringActive {
             syncTransportState()
             return
         }
@@ -442,5 +442,15 @@ final class PrototypeGameController: ObservableObject {
 
     private func completionMessage() -> String {
         "Run complete · \(hitCount) hits · \(missCount) misses · \(accuracyText) accuracy"
+    }
+}
+ssCount) misses · \(accuracyText) accuracy"
+    }
+}
+age() -> String {
+        "Run complete · \(hitCount) hits · \(missCount) misses · \(accuracyText) accuracy"
+    }
+}
+ssCount) misses · \(accuracyText) accuracy"
     }
 }
