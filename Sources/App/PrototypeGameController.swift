@@ -24,6 +24,7 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var bpmSourceText: String = "Manual"
     @Published private(set) var bpmAnalysisStatusText: String = "Idle"
     @Published private(set) var bpmAnalysisDetailText: String = "No file analyzed yet"
+    @Published private(set) var midiTempoText: String = "Not loaded"
     @Published var bpm: Double = 120
     @Published var songOffset: Double = 0
 
@@ -33,6 +34,7 @@ final class PrototypeGameController: ObservableObject {
     private let session: GameSession
     private let inputRouter: InputRouter
     private let midiLoader = MIDIChartLoader()
+    private let laneSoundPlayer = LaneSoundPlayer()
     private let completionGracePeriod: TimeInterval = 0.5
 
     init() {
@@ -129,12 +131,19 @@ final class PrototypeGameController: ObservableObject {
 
     private func loadChart(from url: URL) {
         do {
-            let chart = try midiLoader.loadChart(from: url)
-            session.replaceChart(chart)
-            scene.replaceChart(chart)
-            chartName = chart.title
-            chartStatusText = "Loaded \(chart.notes.count) notes from \(url.lastPathComponent)"
-            statusMessage = "Loaded chart \(chart.title)"
+            let loaded = try midiLoader.loadChartData(from: url)
+            session.replaceChart(loaded.chart)
+            scene.replaceChart(loaded.chart)
+            chartName = loaded.chart.title
+            chartStatusText = "Loaded \(loaded.chart.notes.count) notes from \(url.lastPathComponent)"
+            if let bpm = loaded.bpm {
+                self.bpm = bpm
+                bpmSourceText = "MIDI"
+                midiTempoText = String(format: "%.1f BPM from MIDI", bpm)
+            } else {
+                midiTempoText = "No MIDI tempo event"
+            }
+            statusMessage = "Loaded chart \(loaded.chart.title)"
             restartRun()
         } catch {
             chartStatusText = "Chart load failed"
@@ -163,6 +172,8 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func handleInput(_ event: InputEvent) {
+        laneSoundPlayer.play(lane: event.lane)
+
         if audio.state == .stopped {
             audio.play()
         }

@@ -94,6 +94,10 @@ struct RootView: View {
             GroupBox("Tempo") {
                 VStack(alignment: .leading, spacing: 10) {
                     infoRow("BPM Source", game.bpmSourceText)
+                    Text(game.midiTempoText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                     infoRow("Analysis", game.bpmAnalysisStatusText)
                     Text(game.bpmAnalysisDetailText)
                         .font(.caption)

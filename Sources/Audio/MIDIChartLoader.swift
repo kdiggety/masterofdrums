@@ -7,6 +7,12 @@ struct MIDIChartLoader {
         let status: String
     }
 
+    struct LoadedChart {
+        let chart: Chart
+        let bpm: Double?
+        let sourceName: String
+    }
+
     private struct MIDITrackData {
         let name: String
         let notes: [(tick: Int, note: Int, velocity: Int, channel: Int)]
@@ -14,15 +20,20 @@ struct MIDIChartLoader {
 
     func inspectFile(at url: URL) throws -> LoadedChartSummary {
         let data = try Data(contentsOf: url)
-        let chart = try loadChart(from: url)
+        let loaded = try loadChartData(from: url)
+        let bpmText = loaded.bpm.map { String(format: "%.1f BPM", $0) } ?? "unknown BPM"
         return LoadedChartSummary(
             sourceName: url.lastPathComponent,
             bytes: data.count,
-            status: "Imported \(chart.notes.count) notes from \(chart.title)"
+            status: "Imported \(loaded.chart.notes.count) notes from \(loaded.chart.title) @ \(bpmText)"
         )
     }
 
     func loadChart(from url: URL) throws -> Chart {
+        try loadChartData(from: url).chart
+    }
+
+    func loadChartData(from url: URL) throws -> LoadedChart {
         let data = try Data(contentsOf: url)
         var offset = 0
 
@@ -40,18 +51,25 @@ struct MIDIChartLoader {
         }
 
         var tracks: [MIDITrackData] = []
+        var microsecondsPerQuarterNote: Int?
+
         for _ in 0..<trackCount {
             guard readString(data, &offset, length: 4) == "MTrk" else {
                 throw NSError(domain: "MIDIChartLoader", code: 2, userInfo: [NSLocalizedDescriptionKey: "Missing track chunk"])
             }
             let length = Int(try readUInt32(data, &offset))
             let trackData = data.subdata(in: offset..<(offset + length))
-            tracks.append(try parseTrack(trackData))
+            let parsed = try parseTrack(trackData)
+            tracks.append(MIDITrackData(name: parsed.name, notes: parsed.notes))
+            if microsecondsPerQuarterNote == nil {
+                microsecondsPerQuarterNote = parsed.microsecondsPerQuarterNote
+            }
             offset += length
         }
 
         let ticksPerQuarter = max(division, 1)
-        let secondsPerTick = (60.0 / 95.0) / Double(ticksPerQuarter)
+        let bpm = microsecondsPerQuarterNote.map { 60_000_000.0 / Double($0) }
+        let secondsPerTick = Double(microsecondsPerQuarterNote ?? 600_000) / 1_000_000.0 / Double(ticksPerQuarter)
 
         let mappedNotes = tracks.flatMap { track -> [NoteEvent] in
             let lane = lane(forTrackName: track.name)
@@ -63,7 +81,11 @@ struct MIDIChartLoader {
         }
         .sorted { $0.time < $1.time }
 
-        return Chart(notes: mappedNotes, title: url.deletingPathExtension().lastPathComponent)
+        return LoadedChart(
+            chart: Chart(notes: mappedNotes, title: url.deletingPathExtension().lastPathComponent),
+            bpm: bpm,
+            sourceName: url.lastPathComponent
+        )
     }
 
     private func lane(forTrackName name: String) -> Lane? {
@@ -74,12 +96,13 @@ struct MIDIChartLoader {
         return nil
     }
 
-    private func parseTrack(_ data: Data) throws -> MIDITrackData {
+    private func parseTrack(_ data: Data) throws -> (name: String, notes: [(tick: Int, note: Int, velocity: Int, channel: Int)], microsecondsPerQuarterNote: Int?) {
         var offset = 0
         var runningStatus: UInt8?
         var absoluteTick = 0
         var trackName = "Unnamed Track"
         var notes: [(tick: Int, note: Int, velocity: Int, channel: Int)] = []
+        var microsecondsPerQuarterNote: Int?
 
         while offset < data.count {
             let delta = try readVariableLength(data, &offset)
@@ -106,6 +129,8 @@ struct MIDIChartLoader {
 
                 if metaType == 0x03, let name = String(data: payload, encoding: .utf8) {
                     trackName = name
+                } else if metaType == 0x51, payload.count == 3 {
+                    microsecondsPerQuarterNote = payload.reduce(0) { ($0 << 8) | Int($1) }
                 } else if metaType == 0x2F {
                     break
                 }
@@ -136,7 +161,7 @@ struct MIDIChartLoader {
             }
         }
 
-        return MIDITrackData(name: trackName, notes: notes)
+        return (trackName, notes, microsecondsPerQuarterNote)
     }
 
     private func readString(_ data: Data, _ offset: inout Int, length: Int) -> String {
