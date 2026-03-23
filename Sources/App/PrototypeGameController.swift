@@ -28,12 +28,18 @@ final class PrototypeGameController: ObservableObject {
     @Published var bpm: Double = 120
     @Published var songOffset: Double = 0
 
+    @Published var adminSelectedLane: Lane = .kick
+    @Published var adminNoteTime: Double = 0
+    @Published private(set) var adminNotes: [NoteEvent] = []
+    @Published private(set) var adminStatusText: String = "Open Admin to create or load a chart."
+
     let scene: GameplayScene
     let audio: AudioPlaybackController
 
     private let session: GameSession
     private let inputRouter: InputRouter
     private let midiLoader = MIDIChartLoader()
+    private let chartFileStore = ChartFileStore()
     private let laneSoundPlayer = LaneSoundPlayer()
     private let completionGracePeriod: TimeInterval = 0.5
 
@@ -46,6 +52,7 @@ final class PrototypeGameController: ObservableObject {
         self.scene = GameplayScene(chart: initialChart, keyboardInputDevice: keyboard)
         self.activeInputSourceName = keyboard.source.rawValue
         self.chartName = initialChart.title
+        self.adminNotes = initialChart.notes
 
         self.scene.timeProvider = { [weak audio] in
             audio?.currentTime ?? 0
@@ -97,6 +104,55 @@ final class PrototypeGameController: ObservableObject {
         loadChart(from: url)
     }
 
+    func startAdminChart() {
+        let chart = Chart(notes: [], title: trackName == "Preview clock" ? "Untitled Chart" : trackName)
+        applyChart(chart, bpmOverride: bpm, chartStatus: "Started empty admin chart")
+        adminStatusText = "Started new chart. Add notes below."
+        adminNoteTime = 0
+        adminSelectedLane = .kick
+    }
+
+    func addAdminNote() {
+        let note = NoteEvent(lane: adminSelectedLane, time: max(0, adminNoteTime))
+        let updated = (adminNotes + [note]).sorted { $0.time < $1.time }
+        let title = chartName == Chart.prototype.title ? "Admin Chart" : chartName
+        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Added \(updated.count) chart notes")
+        adminStatusText = "Added \(note.lane.displayName) at \(String(format: "%.2f", note.time))s"
+    }
+
+    func deleteAdminNote(_ id: UUID) {
+        let updated = adminNotes.filter { $0.id != id }
+        let title = chartName == Chart.prototype.title ? "Admin Chart" : chartName
+        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Edited chart notes")
+        adminStatusText = "Deleted note. \(updated.count) notes remain."
+    }
+
+    func noteCount(for lane: Lane) -> Int {
+        adminNotes.filter { $0.lane == lane }.count
+    }
+
+    func saveAdminChartDocument() {
+        guard let url = chartFileStore.chooseChartFileForSave(defaultName: chartName) else { return }
+        do {
+            try chartFileStore.save(chart: session.chart, bpm: bpm, to: url)
+            adminStatusText = "Saved chart to \(url.lastPathComponent)"
+            chartStatusText = "Saved chart file \(url.lastPathComponent)"
+        } catch {
+            adminStatusText = "Save failed: \(error.localizedDescription)"
+        }
+    }
+
+    func loadAdminChartDocument() {
+        guard let url = chartFileStore.chooseChartFileForOpen() else { return }
+        do {
+            let loaded = try chartFileStore.loadChart(from: url)
+            applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)")
+            adminStatusText = "Loaded chart JSON \(url.lastPathComponent)"
+        } catch {
+            adminStatusText = "Load failed: \(error.localizedDescription)"
+        }
+    }
+
     func playTransport() {
         audio.play()
         syncTransportState()
@@ -132,23 +188,31 @@ final class PrototypeGameController: ObservableObject {
     private func loadChart(from url: URL) {
         do {
             let loaded = try midiLoader.loadChartData(from: url)
-            session.replaceChart(loaded.chart)
-            scene.replaceChart(loaded.chart)
-            chartName = loaded.chart.title
-            chartStatusText = "Loaded \(loaded.chart.notes.count) notes from \(url.lastPathComponent)"
+            applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded \(loaded.chart.notes.count) notes from \(url.lastPathComponent)")
             if let bpm = loaded.bpm {
-                self.bpm = bpm
                 bpmSourceText = "MIDI"
                 midiTempoText = String(format: "%.1f BPM from MIDI", bpm)
             } else {
                 midiTempoText = "No MIDI tempo event"
             }
             statusMessage = "Loaded chart \(loaded.chart.title)"
-            restartRun()
+            adminStatusText = "Imported MIDI chart \(url.lastPathComponent)"
         } catch {
             chartStatusText = "Chart load failed"
             statusMessage = error.localizedDescription
         }
+    }
+
+    private func applyChart(_ chart: Chart, bpmOverride: Double?, chartStatus: String) {
+        if let bpmOverride {
+            bpm = bpmOverride
+        }
+        session.replaceChart(chart)
+        scene.replaceChart(chart)
+        chartName = chart.title
+        chartStatusText = chartStatus
+        adminNotes = chart.notes.sorted { $0.time < $1.time }
+        restartRun()
     }
 
     private func handleTick(_ time: TimeInterval) {
@@ -202,6 +266,7 @@ final class PrototypeGameController: ObservableObject {
         scene.updateVisibleNotes(session.notes(visibleAt: scene.currentSongTime, leadTime: 3.0))
         trackName = audio.loadedTrackName ?? "Preview clock"
         chartName = session.chart.title
+        adminNotes = session.chart.notes.sorted { $0.time < $1.time }
         bpmAnalysisStatusText = audio.analysisDebug.status
         bpmAnalysisDetailText = audio.analysisDebug.detail
     }

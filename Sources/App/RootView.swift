@@ -7,34 +7,49 @@ struct RootView: View {
         NavigationSplitView {
             List {
                 Section("Prototype") {
-                    Label("Gameplay", systemImage: "music.note")
+                    NavigationLink {
+                        gameplayView
+                    } label: {
+                        Label("Gameplay", systemImage: "music.note")
+                    }
+
+                    NavigationLink {
+                        AdminChartEditorView()
+                            .environmentObject(game)
+                    } label: {
+                        Label("Admin", systemImage: "slider.horizontal.3")
+                    }
+
                     Label("Audio", systemImage: "waveform")
-                    Label("Calibration", systemImage: "slider.horizontal.3")
                     Label("Devices", systemImage: "pianokeys")
                 }
             }
             .navigationSplitViewColumnWidth(min: 220, ideal: 240)
         } detail: {
-            VStack(spacing: 8) {
-                compactHeader
-
-                HStack(alignment: .top, spacing: 14) {
-                    GameplayContainerView(scene: game.scene)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .layoutPriority(1)
-                        .background(Color.black)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
-
-                    sideControlPanel
-                        .frame(width: 300)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-                statusBar
-            }
-            .padding(16)
-            .background(Color(nsColor: .windowBackgroundColor))
+            gameplayView
         }
+    }
+
+    private var gameplayView: some View {
+        VStack(spacing: 8) {
+            compactHeader
+
+            HStack(alignment: .top, spacing: 14) {
+                GameplayContainerView(scene: game.scene)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .layoutPriority(1)
+                    .background(Color.black)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
+
+                sideControlPanel
+                    .frame(width: 300)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            statusBar
+        }
+        .padding(16)
+        .background(Color(nsColor: .windowBackgroundColor))
     }
 
     private var compactHeader: some View {
