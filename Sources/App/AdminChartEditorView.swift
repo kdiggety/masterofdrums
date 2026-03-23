@@ -9,13 +9,28 @@ struct AdminChartEditorView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Admin Record Mode")
                         .font(.title2.bold())
-                    Text("Use the gameplay lanes and keys to record a chart while the song plays.")
+                    Text("Load audio, play the song, and use the gameplay keys to record a chart.")
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
             }
 
             HStack(spacing: 10) {
+                Button("Choose Audio") {
+                    game.chooseAudioFile()
+                }
+                .buttonStyle(.bordered)
+
+                Button("Play") {
+                    game.playTransport()
+                }
+                .buttonStyle(.borderedProminent)
+
+                Button("Pause") {
+                    game.pauseTransport()
+                }
+                .buttonStyle(.bordered)
+
                 Button("New Empty Chart") {
                     game.startAdminChart()
                 }
@@ -30,16 +45,6 @@ struct AdminChartEditorView: View {
                     game.clearAdminNotes()
                 }
                 .buttonStyle(.bordered)
-
-                Button("Load Chart JSON") {
-                    game.loadAdminChartDocument()
-                }
-                .buttonStyle(.bordered)
-
-                Button("Save Chart JSON") {
-                    game.saveAdminChartDocument()
-                }
-                .buttonStyle(.bordered)
             }
 
             HStack(alignment: .top, spacing: 14) {
@@ -49,9 +54,23 @@ struct AdminChartEditorView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 14))
 
                 VStack(alignment: .leading, spacing: 12) {
+                    GroupBox("Session") {
+                        VStack(alignment: .leading, spacing: 8) {
+                            statusRow("Audio", game.trackName)
+                            statusRow("Chart", game.chartName)
+                            statusRow("Transport", game.transportStateText)
+                            statusRow("Time", game.playbackTimeText)
+                            statusRow("Bar:Beat", game.barBeatText)
+                            Text(game.chartStatusText)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+
                     GroupBox("Workflow") {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("1. Choose Audio on the Gameplay page if needed")
+                            Text("1. Choose Audio")
                             Text("2. Start a new empty chart")
                             Text("3. Arm Record")
                             Text("4. Press Play and hit D/F/J/K/Space in time")
@@ -61,19 +80,25 @@ struct AdminChartEditorView: View {
                     }
 
                     GroupBox("Status") {
-                        VStack(alignment: .leading, spacing: 8) {
-                            statusRow("Chart", game.chartName)
-                            statusRow("Transport", game.transportStateText)
-                            statusRow("Time", game.playbackTimeText)
-                            statusRow("Bar:Beat", game.barBeatText)
-                            Text(game.adminStatusText)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
+                        Text(game.adminStatusText)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
                 .frame(width: 280)
+            }
+
+            HStack(spacing: 10) {
+                Button("Load Chart JSON") {
+                    game.loadAdminChartDocument()
+                }
+                .buttonStyle(.bordered)
+
+                Button("Save Chart JSON") {
+                    game.saveAdminChartDocument()
+                }
+                .buttonStyle(.bordered)
             }
 
             GroupBox("Manual Add / Fix") {
@@ -153,6 +178,7 @@ struct AdminChartEditorView: View {
             Spacer()
             Text(value)
                 .font(.subheadline.monospacedDigit())
+                .lineLimit(1)
         }
     }
 }
