@@ -26,6 +26,7 @@ final class GameplaySKView: SKView {
 
 struct GameplayContainerView: NSViewRepresentable {
     let scene: GameplayScene
+    var focusVersion: Int = 0
 
     func makeNSView(context: Context) -> SKView {
         let view = GameplaySKView()
@@ -45,6 +46,7 @@ struct GameplayContainerView: NSViewRepresentable {
             nsView.presentScene(scene)
         }
 
+        _ = focusVersion
         DispatchQueue.main.async {
             nsView.window?.makeFirstResponder(nsView)
         }

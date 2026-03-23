@@ -25,7 +25,7 @@ struct AdminChartEditorView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Admin Step + Record Mode")
                     .font(.title2.bold())
-                Text("Build charts by stepping through the song and placing notes at a cursor, or record in real time when useful.")
+                Text("Gameplay keys stay the same here: D, F, J, K, and Space. Use buttons for transport; use keys for note entry.")
                     .foregroundStyle(.secondary)
             }
             Spacer()
@@ -128,7 +128,7 @@ struct AdminChartEditorView: View {
 
     private var authoringWorkspace: some View {
         HStack(alignment: .top, spacing: 14) {
-            GameplayContainerView(scene: game.scene)
+            GameplayContainerView(scene: game.scene, focusVersion: game.gameplayFocusVersion)
                 .frame(maxWidth: .infinity)
                 .frame(height: 360)
                 .background(Color.black)
@@ -151,9 +151,9 @@ struct AdminChartEditorView: View {
 
                 GroupBox("Workflow") {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Step mode: step, place notes, step again")
-                        Text("Record mode: only use if live capture is convenient")
-                        Text("Save Chart JSON when the section looks right")
+                        Text("Step mode: use buttons to move the cursor, then use D/F/J/K/Space or Place buttons to enter notes")
+                        Text("Record mode: same gameplay keys, but captures live timing")
+                        Text("Transport is button-driven; note input uses the gameplay keys")
                     }
                     .font(.subheadline)
                 }

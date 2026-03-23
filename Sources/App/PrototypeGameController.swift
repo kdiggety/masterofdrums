@@ -41,6 +41,7 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var bpmAnalysisStatusText: String = "Idle"
     @Published private(set) var bpmAnalysisDetailText: String = "No file analyzed yet"
     @Published private(set) var midiTempoText: String = "Not loaded"
+    @Published private(set) var gameplayFocusVersion: Int = 0
     @Published var bpm: Double = 120
     @Published var songOffset: Double = 0
 
@@ -110,6 +111,7 @@ final class PrototypeGameController: ObservableObject {
         bpmAnalysisDetailText = audio.analysisDebug.detail
         updateStepCursorDisplay()
         syncTransportState()
+        refocusGameplay()
     }
 
     func chooseChartFile() {
@@ -120,6 +122,7 @@ final class PrototypeGameController: ObservableObject {
         panel.canChooseDirectories = false
 
         guard panel.runModal() == .OK, let url = panel.url else {
+            refocusGameplay()
             return
         }
 
@@ -134,11 +137,13 @@ final class PrototypeGameController: ObservableObject {
         adminSelectedLane = .kick
         stepCursorTime = 0
         updateStepCursorDisplay()
+        refocusGameplay()
     }
 
     func toggleAdminRecordMode() {
         isAdminRecordMode.toggle()
         adminStatusText = isAdminRecordMode ? "Record mode armed. Press Play, then use gameplay keys to capture notes." : "Record mode off. Step mode remains available."
+        refocusGameplay()
     }
 
     func clearAdminNotes() {
@@ -147,12 +152,14 @@ final class PrototypeGameController: ObservableObject {
         adminStatusText = "Cleared chart notes."
         stepCursorTime = 0
         updateStepCursorDisplay()
+        refocusGameplay()
     }
 
     func addAdminNote() {
         let note = NoteEvent(lane: adminSelectedLane, time: max(0, adminNoteTime))
         appendAdminNote(note)
         adminStatusText = "Added \(note.lane.displayName) at \(String(format: "%.2f", note.time))s"
+        refocusGameplay()
     }
 
     func placeStepNote(_ lane: Lane? = nil) {
@@ -161,24 +168,28 @@ final class PrototypeGameController: ObservableObject {
         let note = NoteEvent(lane: selectedLane, time: quantizedTime)
         appendAdminNote(note)
         adminStatusText = "Placed \(selectedLane.displayName) at \(stepCursorDisplayText)"
+        refocusGameplay()
     }
 
     func stepBackward() {
         stepCursorTime = max(0, stepCursorTime - stepInterval)
         updateStepCursorDisplay()
         adminStatusText = "Stepped backward to \(stepCursorDisplayText)"
+        refocusGameplay()
     }
 
     func stepForward() {
         stepCursorTime += stepInterval
         updateStepCursorDisplay()
         adminStatusText = "Stepped forward to \(stepCursorDisplayText)"
+        refocusGameplay()
     }
 
     func syncStepCursorToPlayback() {
         stepCursorTime = max(0, audio.currentTime)
         updateStepCursorDisplay()
         adminStatusText = "Synced step cursor to playback: \(stepCursorDisplayText)"
+        refocusGameplay()
     }
 
     func deleteAdminNote(_ id: UUID) {
@@ -186,6 +197,7 @@ final class PrototypeGameController: ObservableObject {
         let title = normalizedAdminChartTitle()
         applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Edited chart notes")
         adminStatusText = "Deleted note. \(updated.count) notes remain."
+        refocusGameplay()
     }
 
     func noteCount(for lane: Lane) -> Int {
@@ -193,7 +205,10 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func saveAdminChartDocument() {
-        guard let url = chartFileStore.chooseChartFileForSave(defaultName: chartName) else { return }
+        guard let url = chartFileStore.chooseChartFileForSave(defaultName: chartName) else {
+            refocusGameplay()
+            return
+        }
         do {
             try chartFileStore.save(chart: session.chart, bpm: bpm, to: url)
             adminStatusText = "Saved chart to \(url.lastPathComponent)"
@@ -201,10 +216,14 @@ final class PrototypeGameController: ObservableObject {
         } catch {
             adminStatusText = "Save failed: \(error.localizedDescription)"
         }
+        refocusGameplay()
     }
 
     func loadAdminChartDocument() {
-        guard let url = chartFileStore.chooseChartFileForOpen() else { return }
+        guard let url = chartFileStore.chooseChartFileForOpen() else {
+            refocusGameplay()
+            return
+        }
         do {
             let loaded = try chartFileStore.loadChart(from: url)
             applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)")
@@ -214,16 +233,19 @@ final class PrototypeGameController: ObservableObject {
         } catch {
             adminStatusText = "Load failed: \(error.localizedDescription)"
         }
+        refocusGameplay()
     }
 
     func playTransport() {
         audio.play()
         syncTransportState()
+        refocusGameplay()
     }
 
     func pauseTransport() {
         audio.pause()
         syncTransportState()
+        refocusGameplay()
     }
 
     func nudgeBPM(by delta: Double) {
@@ -231,12 +253,14 @@ final class PrototypeGameController: ObservableObject {
         bpmSourceText = "Manual"
         updateStepCursorDisplay()
         syncTransportState()
+        refocusGameplay()
     }
 
     func nudgeOffset(by delta: Double) {
         songOffset = max(-2, min(2, songOffset + delta))
         updateStepCursorDisplay()
         syncTransportState()
+        refocusGameplay()
     }
 
     func restartRun() {
@@ -248,6 +272,7 @@ final class PrototypeGameController: ObservableObject {
         scene.flashStatus("Restart")
         syncState()
         syncTransportState()
+        refocusGameplay()
     }
 
     private func loadChart(from url: URL) {
@@ -268,6 +293,7 @@ final class PrototypeGameController: ObservableObject {
             chartStatusText = "Chart load failed"
             statusMessage = error.localizedDescription
         }
+        refocusGameplay()
     }
 
     private func appendAdminNote(_ note: NoteEvent) {
@@ -385,6 +411,10 @@ final class PrototypeGameController: ObservableObject {
         )
         let subText = stepResolution == .quarter ? "" : ".\(position.subdivision)"
         stepCursorDisplayText = "\(position.bar):\(position.beat)\(subText) · \(String(format: "%.2f", quantizedStepCursorTime()))s"
+    }
+
+    private func refocusGameplay() {
+        gameplayFocusVersion += 1
     }
 
     private var chartContentTypes: [UTType] {
