@@ -5,15 +5,19 @@ struct AdminChartEditorView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 12) {
                 header
-                controlBar
-                stepModePanel
-                authoringWorkspace
-                saveLoadRow
-                manualFixPanel
-                laneSummaryPanel
-                recordedNotesPanel
+
+                HStack(alignment: .top, spacing: 14) {
+                    GameplayContainerView(scene: game.scene, focusVersion: game.gameplayFocusVersion)
+                        .frame(maxWidth: .infinity)
+                        .frame(minHeight: 620)
+                        .background(Color.black)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+
+                    rightPanel
+                        .frame(width: 320)
+                }
             }
             .padding(16)
         }
@@ -38,187 +42,138 @@ struct AdminChartEditorView: View {
         }
     }
 
-    private var controlBar: some View {
-        GroupBox("Authoring Controls") {
-            VStack(alignment: .leading, spacing: 10) {
-                HStack(spacing: 10) {
-                    adminButton("Choose Audio") {
-                        game.chooseAudioFile()
+    private var rightPanel: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            GroupBox("Authoring Controls") {
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack(spacing: 10) {
+                        adminButton("Choose Audio") {
+                            game.chooseAudioFile()
+                        }
+
+                        adminProminentButton("Play") {
+                            game.playTransport()
+                        }
+
+                        adminButton("Pause") {
+                            game.pauseTransport()
+                        }
                     }
 
-                    adminProminentButton("Play") {
-                        game.playTransport()
+                    HStack(spacing: 10) {
+                        adminButton("New Empty Chart") {
+                            game.startAdminChart()
+                        }
+
+                        adminProminentButton(game.isAdminRecordMode ? "Stop Recording" : "Arm Record") {
+                            game.toggleAdminRecordMode()
+                        }
                     }
 
-                    adminButton("Pause") {
-                        game.pauseTransport()
-                    }
-                }
+                    HStack(spacing: 10) {
+                        adminButton("Clear Notes") {
+                            game.clearAdminNotes()
+                        }
 
-                HStack(spacing: 10) {
-                    adminButton("New Empty Chart") {
-                        game.startAdminChart()
-                    }
+                        adminButton("Load Chart JSON") {
+                            game.loadAdminChartDocument()
+                        }
 
-                    adminProminentButton(game.isAdminRecordMode ? "Stop Recording" : "Arm Record") {
-                        game.toggleAdminRecordMode()
-                    }
-
-                    adminButton("Clear Notes") {
-                        game.clearAdminNotes()
+                        adminButton("Save Chart JSON") {
+                            game.saveAdminChartDocument()
+                        }
                     }
                 }
             }
-        }
-    }
 
-    private var stepModePanel: some View {
-        GroupBox("Step Mode") {
-            VStack(alignment: .leading, spacing: 10) {
-                HStack(spacing: 12) {
-                    Text("Resolution")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+            GroupBox("Step Mode") {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(game.stepCursorDisplayText)
+                        .font(.headline.monospacedDigit())
+
                     Picker("Resolution", selection: $game.stepResolution) {
                         ForEach(PrototypeGameController.StepResolution.allCases) { resolution in
                             Text(resolution.rawValue).tag(resolution)
                         }
                     }
                     .pickerStyle(.segmented)
-                    .frame(width: 220)
 
-                    Spacer()
-
-                    Text(game.stepCursorDisplayText)
-                        .font(.headline.monospacedDigit())
-                }
-
-                HStack(spacing: 10) {
-                    adminButton("← Step Back") {
-                        game.stepBackward()
+                    HStack(spacing: 8) {
+                        adminButton("← Back") { game.stepBackward() }
+                        adminButton("Sync") { game.syncStepCursorToPlayback() }
+                        adminButton("Next →") { game.stepForward() }
                     }
 
-                    adminButton("Sync To Playback") {
-                        game.syncStepCursorToPlayback()
+                    VStack(alignment: .leading, spacing: 8) {
+                        adminButton("Place Kick") { game.placeStepNote(.kick) }
+                        adminButton("Place Snare") { game.placeStepNote(.red) }
+                        adminButton("Place Hat") { game.placeStepNote(.yellow) }
+                        adminButton("Place Blue") { game.placeStepNote(.blue) }
+                        adminButton("Place Green") { game.placeStepNote(.green) }
                     }
-
-                    adminButton("Step Forward →") {
-                        game.stepForward()
-                    }
-                }
-
-                HStack(spacing: 10) {
-                    adminButton("Place Kick") { game.placeStepNote(.kick) }
-                    adminButton("Place Snare") { game.placeStepNote(.red) }
-                    adminButton("Place Hat") { game.placeStepNote(.yellow) }
-                    adminButton("Place Blue") { game.placeStepNote(.blue) }
-                    adminButton("Place Green") { game.placeStepNote(.green) }
                 }
             }
-        }
-    }
 
-    private var authoringWorkspace: some View {
-        HStack(alignment: .top, spacing: 14) {
-            GameplayContainerView(scene: game.scene, focusVersion: game.gameplayFocusVersion)
-                .frame(maxWidth: .infinity)
-                .frame(height: 360)
-                .background(Color.black)
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-
-            VStack(alignment: .leading, spacing: 12) {
-                GroupBox("Session") {
-                    VStack(alignment: .leading, spacing: 8) {
-                        statusRow("Audio", game.trackName)
-                        statusRow("Chart", game.chartName)
-                        statusRow("Transport", game.transportStateText)
-                        statusRow("Time", game.playbackTimeText)
-                        statusRow("Bar:Beat", game.barBeatText)
-                        Text(game.chartStatusText)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-
-                GroupBox("Workflow") {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Step mode: move the cursor with buttons, then use D/F/J/K/Space or Place buttons to enter notes")
-                        Text("Record mode: same gameplay keys, but captures live timing")
-                        Text("Admin mode should not judge misses or combos")
-                    }
-                    .font(.subheadline)
-                }
-
-                GroupBox("Status") {
+            GroupBox("Session") {
+                VStack(alignment: .leading, spacing: 8) {
+                    statusRow("Audio", game.trackName)
+                    statusRow("Chart", game.chartName)
+                    statusRow("Transport", game.transportStateText)
+                    statusRow("Time", game.playbackTimeText)
+                    statusRow("Bar:Beat", game.barBeatText)
+                    Text(game.chartStatusText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(game.adminStatusText)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            .frame(width: 280)
-        }
-    }
 
-    private var saveLoadRow: some View {
-        HStack(spacing: 10) {
-            adminButton("Load Chart JSON") {
-                game.loadAdminChartDocument()
-            }
-
-            adminButton("Save Chart JSON") {
-                game.saveAdminChartDocument()
-            }
-        }
-    }
-
-    private var manualFixPanel: some View {
-        GroupBox("Manual Add / Fix") {
-            HStack(spacing: 10) {
-                lanePicker
-                timeField
-                adminButton("Add Note") {
-                    game.addAdminNote()
-                }
-            }
-        }
-    }
-
-    private var laneSummaryPanel: some View {
-        GroupBox("Lane Summary") {
-            VStack(alignment: .leading, spacing: 8) {
-                ForEach(Lane.allCases) { lane in
-                    HStack {
-                        Text(lane.displayName)
-                        Spacer()
-                        Text("\(game.noteCount(for: lane))")
-                            .font(.headline.monospacedDigit())
-                    }
-                }
-            }
-        }
-    }
-
-    private var recordedNotesPanel: some View {
-        GroupBox("Recorded Notes") {
-            List {
-                ForEach(game.adminNotes) { note in
-                    HStack {
-                        Text(note.lane.displayName)
-                            .frame(width: 80, alignment: .leading)
-                        Text(String(format: "%.2fs", note.time))
-                            .monospacedDigit()
-                        Spacer()
-                        Button("Delete") {
-                            game.deleteAdminNote(note.id)
+            GroupBox("Lane Summary") {
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(Lane.allCases) { lane in
+                        HStack {
+                            Text(lane.displayName)
+                            Spacer()
+                            Text("\(game.noteCount(for: lane))")
+                                .font(.headline.monospacedDigit())
                         }
-                        .buttonStyle(.borderless)
-                        .focusable(false)
                     }
                 }
             }
-            .frame(minHeight: 220)
+
+            GroupBox("Manual Add / Fix") {
+                VStack(alignment: .leading, spacing: 10) {
+                    lanePicker
+                    timeField
+                    adminButton("Add Note") {
+                        game.addAdminNote()
+                    }
+                }
+            }
+
+            GroupBox("Recorded Notes") {
+                List {
+                    ForEach(game.adminNotes) { note in
+                        HStack {
+                            Text(note.lane.displayName)
+                                .frame(width: 80, alignment: .leading)
+                            Text(String(format: "%.2fs", note.time))
+                                .monospacedDigit()
+                            Spacer()
+                            Button("Delete") {
+                                game.deleteAdminNote(note.id)
+                            }
+                            .buttonStyle(.borderless)
+                            .focusable(false)
+                        }
+                    }
+                }
+                .frame(minHeight: 220)
+            }
         }
     }
 
@@ -229,7 +184,6 @@ struct AdminChartEditorView: View {
             }
         }
         .pickerStyle(.menu)
-        .frame(width: 140)
     }
 
     private var timeField: some View {
