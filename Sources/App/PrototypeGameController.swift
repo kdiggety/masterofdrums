@@ -11,12 +11,26 @@ final class PrototypeGameController: ObservableObject {
         case sixteenth = "1/16"
 
         var id: String { rawValue }
-
         var subdivisionsPerBeat: Int {
             switch self {
             case .quarter: return 1
             case .eighth: return 2
             case .sixteenth: return 4
+            }
+        }
+    }
+
+    enum LoopLength: String, CaseIterable, Identifiable {
+        case off = "Off"
+        case oneBar = "1 Bar"
+        case twoBars = "2 Bars"
+
+        var id: String { rawValue }
+        var barCount: Int {
+            switch self {
+            case .off: return 0
+            case .oneBar: return 1
+            case .twoBars: return 2
             }
         }
     }
@@ -42,6 +56,8 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var bpmAnalysisDetailText: String = "No file analyzed yet"
     @Published private(set) var midiTempoText: String = "Not loaded"
     @Published private(set) var gameplayFocusVersion: Int = 0
+    @Published private(set) var playbackRateText: String = "100%"
+    @Published private(set) var loopStatusText: String = "Loop Off"
     @Published var bpm: Double = 120
     @Published var songOffset: Double = 0
 
@@ -54,6 +70,7 @@ final class PrototypeGameController: ObservableObject {
     @Published var stepResolution: StepResolution = .sixteenth
     @Published var stepCursorTime: Double = 0
     @Published private(set) var stepCursorDisplayText: String = "1:1 · 0.00s"
+    @Published var loopLength: LoopLength = .off
 
     let scene: GameplayScene
     let audio: AudioPlaybackController
@@ -65,9 +82,7 @@ final class PrototypeGameController: ObservableObject {
     private let laneSoundPlayer = LaneSoundPlayer()
     private let completionGracePeriod: TimeInterval = 0.5
 
-    var isAdminAuthoringActive: Bool {
-        isAdminPageActive
-    }
+    var isAdminAuthoringActive: Bool { isAdminPageActive }
 
     init() {
         let initialChart = Chart.prototype
@@ -83,21 +98,15 @@ final class PrototypeGameController: ObservableObject {
         self.scene.timeProvider = { [weak audio] in
             audio?.currentTime ?? 0
         }
-
-        self.inputRouter.onInput = { [weak self] event in
-            self?.handleInput(event)
-        }
-
-        self.scene.onInput = { [weak self] event in
-            self?.inputRouter.route(event)
-        }
-        self.scene.onTick = { [weak self] time in
-            self?.handleTick(time)
-        }
+        self.inputRouter.onInput = { [weak self] event in self?.handleInput(event) }
+        self.scene.onInput = { [weak self] event in self?.inputRouter.route(event) }
+        self.scene.onTick = { [weak self] time in self?.handleTick(time) }
 
         syncState()
         syncTransportState()
         updateStepCursorDisplay()
+        updatePlaybackRateText()
+        updateLoopStatusText()
     }
 
     func chooseAudioFile() {
@@ -125,12 +134,9 @@ final class PrototypeGameController: ObservableObject {
         panel.allowedContentTypes = chartContentTypes
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
-
         guard panel.runModal() == .OK, let url = panel.url else {
-            refocusGameplay()
-            return
+            refocusGameplay(); return
         }
-
         loadChart(from: url)
     }
 
@@ -170,8 +176,7 @@ final class PrototypeGameController: ObservableObject {
 
     func placeStepNote(_ lane: Lane? = nil) {
         let selectedLane = lane ?? adminSelectedLane
-        let quantizedTime = quantizedStepCursorTime()
-        let note = NoteEvent(lane: selectedLane, time: quantizedTime)
+        let note = NoteEvent(lane: selectedLane, time: quantizedStepCursorTime())
         appendAdminNote(note)
         adminStatusText = "Placed \(selectedLane.displayName) at \(stepCursorDisplayText)"
         statusMessage = "Admin Step"
@@ -181,6 +186,7 @@ final class PrototypeGameController: ObservableObject {
     func stepBackward() {
         stepCursorTime = max(0, stepCursorTime - stepInterval)
         updateStepCursorDisplay()
+        updateLoopStatusText()
         adminStatusText = "Stepped backward to \(stepCursorDisplayText)"
         refocusGameplay()
     }
@@ -188,14 +194,46 @@ final class PrototypeGameController: ObservableObject {
     func stepForward() {
         stepCursorTime += stepInterval
         updateStepCursorDisplay()
+        updateLoopStatusText()
         adminStatusText = "Stepped forward to \(stepCursorDisplayText)"
+        refocusGameplay()
+    }
+
+    func jumpBackwardBar() {
+        stepCursorTime = max(0, stepCursorTime - barDuration)
+        updateStepCursorDisplay()
+        updateLoopStatusText()
+        adminStatusText = "Jumped back one bar to \(stepCursorDisplayText)"
+        refocusGameplay()
+    }
+
+    func jumpForwardBar() {
+        stepCursorTime += barDuration
+        updateStepCursorDisplay()
+        updateLoopStatusText()
+        adminStatusText = "Jumped forward one bar to \(stepCursorDisplayText)"
         refocusGameplay()
     }
 
     func syncStepCursorToPlayback() {
         stepCursorTime = max(0, audio.currentTime)
         updateStepCursorDisplay()
+        updateLoopStatusText()
         adminStatusText = "Synced step cursor to playback: \(stepCursorDisplayText)"
+        refocusGameplay()
+    }
+
+    func setPlaybackRate(_ rate: Float) {
+        audio.setPlaybackRate(rate)
+        updatePlaybackRateText()
+        adminStatusText = "Playback speed set to \(playbackRateText)"
+        refocusGameplay()
+    }
+
+    func setLoopLength(_ length: LoopLength) {
+        loopLength = length
+        updateLoopStatusText()
+        adminStatusText = length == .off ? "Loop disabled" : "Looping \(length.rawValue) from current bar"
         refocusGameplay()
     }
 
@@ -207,15 +245,10 @@ final class PrototypeGameController: ObservableObject {
         refocusGameplay()
     }
 
-    func noteCount(for lane: Lane) -> Int {
-        adminNotes.filter { $0.lane == lane }.count
-    }
+    func noteCount(for lane: Lane) -> Int { adminNotes.filter { $0.lane == lane }.count }
 
     func saveAdminChartDocument() {
-        guard let url = chartFileStore.chooseChartFileForSave(defaultName: chartName) else {
-            refocusGameplay()
-            return
-        }
+        guard let url = chartFileStore.chooseChartFileForSave(defaultName: chartName) else { refocusGameplay(); return }
         do {
             try chartFileStore.save(chart: session.chart, bpm: bpm, to: url)
             adminStatusText = "Saved chart to \(url.lastPathComponent)"
@@ -227,10 +260,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func loadAdminChartDocument() {
-        guard let url = chartFileStore.chooseChartFileForOpen() else {
-            refocusGameplay()
-            return
-        }
+        guard let url = chartFileStore.chooseChartFileForOpen() else { refocusGameplay(); return }
         do {
             let loaded = try chartFileStore.loadChart(from: url)
             applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)")
@@ -243,22 +273,14 @@ final class PrototypeGameController: ObservableObject {
         refocusGameplay()
     }
 
-    func playTransport() {
-        audio.play()
-        syncTransportState()
-        refocusGameplay()
-    }
-
-    func pauseTransport() {
-        audio.pause()
-        syncTransportState()
-        refocusGameplay()
-    }
+    func playTransport() { audio.play(); syncTransportState(); refocusGameplay() }
+    func pauseTransport() { audio.pause(); syncTransportState(); refocusGameplay() }
 
     func nudgeBPM(by delta: Double) {
         bpm = max(40, min(240, bpm + delta))
         bpmSourceText = "Manual"
         updateStepCursorDisplay()
+        updateLoopStatusText()
         syncTransportState()
         refocusGameplay()
     }
@@ -296,6 +318,7 @@ final class PrototypeGameController: ObservableObject {
             adminStatusText = "Imported MIDI chart \(url.lastPathComponent)"
             stepCursorTime = 0
             updateStepCursorDisplay()
+            updateLoopStatusText()
         } catch {
             chartStatusText = "Chart load failed"
             statusMessage = error.localizedDescription
@@ -314,9 +337,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func applyChart(_ chart: Chart, bpmOverride: Double?, chartStatus: String) {
-        if let bpmOverride {
-            bpm = bpmOverride
-        }
+        if let bpmOverride { bpm = bpmOverride }
         session.replaceChart(chart)
         scene.replaceChart(chart)
         chartName = chart.title
@@ -333,31 +354,25 @@ final class PrototypeGameController: ObservableObject {
         playbackTimeText = String(format: "%.2fs", time)
 
         if isAdminAuthoringActive {
+            applyLoopIfNeeded(at: time)
             syncTransportState()
             return
         }
 
-        guard !isRunComplete else {
-            syncTransportState()
-            return
-        }
-
+        guard !isRunComplete else { syncTransportState(); return }
         session.advanceMisses(at: time)
-
         if session.isComplete && time >= session.chart.endTime + completionGracePeriod {
             isRunComplete = true
             statusMessage = completionMessage()
             scene.flashStatus("Finished")
             audio.pause()
         }
-
         syncState()
         syncTransportState()
     }
 
     private func handleInput(_ event: InputEvent) {
         laneSoundPlayer.play(lane: event.lane)
-
         if isAdminAuthoringActive {
             if isAdminRecordMode {
                 let note = NoteEvent(lane: event.lane, time: event.timestamp)
@@ -380,14 +395,18 @@ final class PrototypeGameController: ObservableObject {
         syncTransportState()
     }
 
+    private func applyLoopIfNeeded(at time: TimeInterval) {
+        guard loopLength != .off, audio.state == .playing else { return }
+        let start = currentBarStartTime
+        let end = start + (barDuration * Double(loopLength.barCount))
+        if time >= end {
+            audio.seek(to: start)
+        }
+    }
+
     private func syncState() {
         if isAdminAuthoringActive {
-            score = 0
-            combo = 0
-            missCount = 0
-            hitCount = 0
-            lastJudgmentText = "—"
-            accuracyText = "—"
+            score = 0; combo = 0; missCount = 0; hitCount = 0; lastJudgmentText = "—"; accuracyText = "—"
         } else {
             score = session.state.score
             combo = session.state.combo
@@ -424,20 +443,34 @@ final class PrototypeGameController: ObservableObject {
         return beatDuration / Double(stepResolution.subdivisionsPerBeat)
     }
 
+    private var barDuration: Double { (60.0 / max(1, bpm)) * 4.0 }
+
+    private var currentBarStartTime: Double {
+        let bar = floor(max(0, stepCursorTime - songOffset) / barDuration)
+        return (bar * barDuration) + songOffset
+    }
+
     private func updateStepCursorDisplay() {
-        let position = MusicalTransport.position(
-            at: stepCursorTime,
-            bpm: bpm,
-            songOffset: songOffset,
-            subdivisionsPerBeat: max(stepResolution.subdivisionsPerBeat, 1)
-        )
+        let position = MusicalTransport.position(at: stepCursorTime, bpm: bpm, songOffset: songOffset, subdivisionsPerBeat: max(stepResolution.subdivisionsPerBeat, 1))
         let subText = stepResolution == .quarter ? "" : ".\(position.subdivision)"
         stepCursorDisplayText = "\(position.bar):\(position.beat)\(subText) · \(String(format: "%.2f", quantizedStepCursorTime()))s"
     }
 
-    private func refocusGameplay() {
-        gameplayFocusVersion += 1
+    private func updatePlaybackRateText() {
+        playbackRateText = "\(Int(audio.playbackRate * 100))%"
     }
+
+    private func updateLoopStatusText() {
+        if loopLength == .off {
+            loopStatusText = "Loop Off"
+        } else {
+            let start = currentBarStartTime
+            let end = start + (barDuration * Double(loopLength.barCount))
+            loopStatusText = "\(loopLength.rawValue) · \(String(format: "%.2f", start))s–\(String(format: "%.2f", end))s"
+        }
+    }
+
+    private func refocusGameplay() { gameplayFocusVersion += 1 }
 
     private var chartContentTypes: [UTType] {
         var types: [UTType] = []

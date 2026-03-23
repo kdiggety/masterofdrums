@@ -42,7 +42,7 @@ private final class AudioConverterFeeder {
     }
 
     func makeInputBlock() -> AVAudioConverterInputBlock {
-        return { [self] _, outStatus in
+        { [self] _, outStatus in
             if reachedEOF {
                 outStatus.pointee = .endOfStream
                 return nil
@@ -73,6 +73,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
     @Published private(set) var statusText: String = "Preview clock"
     @Published private(set) var detectedBPM: BPMDetectionResult?
     @Published private(set) var analysisDebug = BPMAnalysisDebug(status: "Idle", detail: "No file analyzed yet")
+    @Published private(set) var playbackRate: Float = 1.0
 
     private let previewClock = PreviewPlaybackClock()
     private var audioPlayer: AVAudioPlayer?
@@ -101,6 +102,8 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
     func loadAudioFile(from url: URL) {
         do {
             let player = try AVAudioPlayer(contentsOf: url)
+            player.enableRate = true
+            player.rate = playbackRate
             player.prepareToPlay()
             player.delegate = self
             audioPlayer = player
@@ -126,6 +129,8 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
 
     func play() {
         if let audioPlayer {
+            audioPlayer.enableRate = true
+            audioPlayer.rate = playbackRate
             audioPlayer.play()
             state = .playing
             statusText = "Playing \(loadedTrackName ?? "track")"
@@ -158,6 +163,21 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
             previewClock.stop()
             state = previewClock.state
             statusText = "Preview clock reset"
+        }
+    }
+
+    func setPlaybackRate(_ rate: Float) {
+        playbackRate = max(0.5, min(1.0, rate))
+        if let audioPlayer {
+            audioPlayer.enableRate = true
+            audioPlayer.rate = playbackRate
+        }
+        statusText = "Playback speed \(Int(playbackRate * 100))%"
+    }
+
+    func seek(to time: TimeInterval) {
+        if let audioPlayer {
+            audioPlayer.currentTime = max(0, min(time, audioPlayer.duration))
         }
     }
 
@@ -247,7 +267,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
         }
 
         let grouped = Dictionary(grouping: candidates) { Int(($0.bpm * 2).rounded()) }
-        let ranked = grouped.map { bucket, values in
+        let ranked = grouped.map { _, values in
             let bpm = values.map(\.bpm).reduce(0, +) / Double(values.count)
             let avgRatio = values.map(\.ratio).reduce(0, +) / Float(values.count)
             return (bpm: bpm, votes: values.count, ratio: avgRatio)
@@ -331,9 +351,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
 
         var error: NSError?
         converter.convert(to: outputBuffer, error: &error, withInputFrom: inputBlock)
-        if let error {
-            throw error
-        }
+        if let error { throw error }
 
         guard let channelData = outputBuffer.floatChannelData?[0] else {
             throw NSError(domain: "AudioPlaybackController", code: 5, userInfo: [NSLocalizedDescriptionKey: "No converted audio data available"])

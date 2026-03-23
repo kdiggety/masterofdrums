@@ -22,12 +22,8 @@ struct AdminChartEditorView: View {
             .padding(16)
         }
         .background(Color(nsColor: .windowBackgroundColor))
-        .onAppear {
-            game.isAdminPageActive = true
-        }
-        .onDisappear {
-            game.isAdminPageActive = false
-        }
+        .onAppear { game.isAdminPageActive = true }
+        .onDisappear { game.isAdminPageActive = false }
     }
 
     private var header: some View {
@@ -35,7 +31,7 @@ struct AdminChartEditorView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Admin Step + Record Mode")
                     .font(.title2.bold())
-                Text("Gameplay keys stay the same here: D, F, J, K, and Space. Use transport buttons only; Space should be kick, not play/pause.")
+                Text("Use real audio slowdown plus looping to chart small sections. Gameplay keys remain D, F, J, K, and Space.")
                     .foregroundStyle(.secondary)
             }
             Spacer()
@@ -47,41 +43,42 @@ struct AdminChartEditorView: View {
             GroupBox("Authoring Controls") {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack(spacing: 10) {
-                        adminButton("Choose Audio") {
-                            game.chooseAudioFile()
-                        }
-
-                        adminProminentButton("Play") {
-                            game.playTransport()
-                        }
-
-                        adminButton("Pause") {
-                            game.pauseTransport()
-                        }
+                        adminButton("Choose Audio") { game.chooseAudioFile() }
+                        adminProminentButton("Play") { game.playTransport() }
+                        adminButton("Pause") { game.pauseTransport() }
                     }
 
                     HStack(spacing: 10) {
-                        adminButton("New Empty Chart") {
-                            game.startAdminChart()
-                        }
-
-                        adminProminentButton(game.isAdminRecordMode ? "Stop Recording" : "Arm Record") {
-                            game.toggleAdminRecordMode()
-                        }
+                        adminButton("New Empty Chart") { game.startAdminChart() }
+                        adminProminentButton(game.isAdminRecordMode ? "Stop Recording" : "Arm Record") { game.toggleAdminRecordMode() }
                     }
 
                     HStack(spacing: 10) {
-                        adminButton("Clear Notes") {
-                            game.clearAdminNotes()
-                        }
+                        adminButton("Clear Notes") { game.clearAdminNotes() }
+                        adminButton("Load Chart JSON") { game.loadAdminChartDocument() }
+                        adminButton("Save Chart JSON") { game.saveAdminChartDocument() }
+                    }
+                }
+            }
 
-                        adminButton("Load Chart JSON") {
-                            game.loadAdminChartDocument()
-                        }
+            GroupBox("Playback") {
+                VStack(alignment: .leading, spacing: 10) {
+                    statusRow("Speed", game.playbackRateText)
+                    HStack(spacing: 8) {
+                        adminButton("100%") { game.setPlaybackRate(1.0) }
+                        adminButton("75%") { game.setPlaybackRate(0.75) }
+                        adminButton("50%") { game.setPlaybackRate(0.5) }
+                    }
 
-                        adminButton("Save Chart JSON") {
-                            game.saveAdminChartDocument()
+                    statusRow("Loop", game.loopStatusText)
+                    Picker("Loop", selection: $game.loopLength) {
+                        ForEach(PrototypeGameController.LoopLength.allCases) { length in
+                            Text(length.rawValue).tag(length)
                         }
+                    }
+                    .pickerStyle(.segmented)
+                    .onChange(of: game.loopLength) { _, newValue in
+                        game.setLoopLength(newValue)
                     }
                 }
             }
@@ -102,6 +99,11 @@ struct AdminChartEditorView: View {
                         adminButton("← Back") { game.stepBackward() }
                         adminButton("Sync") { game.syncStepCursorToPlayback() }
                         adminButton("Next →") { game.stepForward() }
+                    }
+
+                    HStack(spacing: 8) {
+                        adminButton("← Bar") { game.jumpBackwardBar() }
+                        adminButton("Bar →") { game.jumpForwardBar() }
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
@@ -149,9 +151,7 @@ struct AdminChartEditorView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     lanePicker
                     timeField
-                    adminButton("Add Note") {
-                        game.addAdminNote()
-                    }
+                    adminButton("Add Note") { game.addAdminNote() }
                 }
             }
 
@@ -164,11 +164,9 @@ struct AdminChartEditorView: View {
                             Text(String(format: "%.2fs", note.time))
                                 .monospacedDigit()
                             Spacer()
-                            Button("Delete") {
-                                game.deleteAdminNote(note.id)
-                            }
-                            .buttonStyle(.borderless)
-                            .focusable(false)
+                            Button("Delete") { game.deleteAdminNote(note.id) }
+                                .buttonStyle(.borderless)
+                                .focusable(false)
                         }
                     }
                 }
@@ -179,9 +177,7 @@ struct AdminChartEditorView: View {
 
     private var lanePicker: some View {
         Picker("Lane", selection: $game.adminSelectedLane) {
-            ForEach(Lane.allCases) { lane in
-                Text(lane.displayName).tag(lane)
-            }
+            ForEach(Lane.allCases) { lane in Text(lane.displayName).tag(lane) }
         }
         .pickerStyle(.menu)
     }
