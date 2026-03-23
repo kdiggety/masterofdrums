@@ -77,7 +77,7 @@ struct AdminChartEditorView: View {
                         }
                     }
                     .pickerStyle(.segmented)
-                    .onChange(of: game.loopLength) { _, newValue in
+                    .onChange(of: game.loopLength) { newValue in
                         game.setLoopLength(newValue)
                     }
                 }
