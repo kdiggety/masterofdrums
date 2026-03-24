@@ -29,7 +29,7 @@ enum BPMAnalysisFailure: LocalizedError {
     }
 }
 
-private final class AudioConverterFeeder {
+private final class AudioConverterFeeder: @unchecked Sendable {
     private let inputFile: AVAudioFile
     private let inputBuffer: AVAudioPCMBuffer
     private let inputCapacity: AVAudioFrameCount
@@ -41,26 +41,24 @@ private final class AudioConverterFeeder {
         self.inputCapacity = inputCapacity
     }
 
-    func makeInputBlock() -> AVAudioConverterInputBlock {
-        { [self] _, outStatus in
-            if reachedEOF {
+    func feed(_ outStatus: UnsafeMutablePointer<AVAudioConverterInputStatus>) -> AVAudioBuffer? {
+        if reachedEOF {
+            outStatus.pointee = .endOfStream
+            return nil
+        }
+        do {
+            try inputFile.read(into: inputBuffer, frameCount: inputCapacity)
+            if inputBuffer.frameLength == 0 {
+                reachedEOF = true
                 outStatus.pointee = .endOfStream
                 return nil
             }
-            do {
-                try inputFile.read(into: inputBuffer, frameCount: inputCapacity)
-                if inputBuffer.frameLength == 0 {
-                    reachedEOF = true
-                    outStatus.pointee = .endOfStream
-                    return nil
-                }
-                outStatus.pointee = .haveData
-                return inputBuffer
-            } catch {
-                reachedEOF = true
-                outStatus.pointee = .noDataNow
-                return nil
-            }
+            outStatus.pointee = .haveData
+            return inputBuffer
+        } catch {
+            reachedEOF = true
+            outStatus.pointee = .noDataNow
+            return nil
         }
     }
 }
@@ -108,11 +106,18 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
             loadedTrackName = url.lastPathComponent
             state = .stopped
             previewClock.stop()
-            detectedBPM = detectBPM(for: url)
-            if let detectedBPM {
-                statusText = "Loaded \(url.lastPathComponent) · BPM \(String(format: "%.1f", detectedBPM.bpm)) from \(detectedBPM.source)"
-            } else {
-                statusText = "Loaded \(url.lastPathComponent) · BPM not detected"
+            detectedBPM = nil
+            analysisDebug = BPMAnalysisDebug(status: "Analyzing", detail: "Checking metadata, filename, and audio signal")
+            statusText = "Loaded \(url.lastPathComponent) · analyzing BPM…"
+
+            Task {
+                let detectedBPM = await detectBPM(for: url)
+                self.detectedBPM = detectedBPM
+                if let detectedBPM {
+                    self.statusText = "Loaded \(url.lastPathComponent) · BPM \(String(format: "%.1f", detectedBPM.bpm)) from \(detectedBPM.source)"
+                } else {
+                    self.statusText = "Loaded \(url.lastPathComponent) · BPM not detected"
+                }
             }
         } catch {
             audioPlayer = nil
@@ -183,9 +188,8 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
         statusText = flag ? "Finished \(loadedTrackName ?? "track")" : "Playback stopped"
     }
 
-    private func detectBPM(for url: URL) -> BPMDetectionResult? {
-        analysisDebug = BPMAnalysisDebug(status: "Analyzing", detail: "Checking metadata, filename, and audio signal")
-        if let metadataBPM = detectBPMFromMetadata(for: url) {
+    private func detectBPM(for url: URL) async -> BPMDetectionResult? {
+        if let metadataBPM = await detectBPMFromMetadata(for: url) {
             analysisDebug = BPMAnalysisDebug(status: "Detected", detail: "Found BPM in file metadata")
             return BPMDetectionResult(bpm: metadataBPM, source: "metadata")
         }
@@ -203,19 +207,22 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
         }
     }
 
-    private func detectBPMFromMetadata(for url: URL) -> Double? {
+    private func detectBPMFromMetadata(for url: URL) async -> Double? {
         let asset = AVAsset(url: url)
-        let metadataItems = asset.commonMetadata + asset.metadata
+        let commonMetadata = (try? await asset.load(.commonMetadata)) ?? []
+        let metadata = (try? await asset.load(.metadata)) ?? []
+        let metadataItems = commonMetadata + metadata
         for item in metadataItems {
-            if let stringValue = item.stringValue {
+            let stringValue = try? await item.load(.stringValue)
+            if let stringValue {
                 let commonKey = item.commonKey?.rawValue.lowercased()
                 if commonKey == "tempo" || stringValue.lowercased().contains("bpm") {
                     if let bpm = parseBPM(from: stringValue) { return bpm }
                 }
             }
             if let key = item.key as? String, ["tbpm", "tempo", "bpm"].contains(key.lowercased()) {
-                if let stringValue = item.stringValue, let bpm = parseBPM(from: stringValue) { return bpm }
-                if let numberValue = item.numberValue?.doubleValue { return numberValue }
+                if let stringValue, let bpm = parseBPM(from: stringValue) { return bpm }
+                if let numberValue = try? await item.load(.numberValue), let bpm = numberValue?.doubleValue { return bpm }
             }
         }
         return nil
@@ -316,9 +323,10 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
         }
 
         let feeder = AudioConverterFeeder(inputFile: inputFile, inputBuffer: inputBuffer, inputCapacity: inputCapacity)
-        let inputBlock = feeder.makeInputBlock()
         var error: NSError?
-        converter.convert(to: outputBuffer, error: &error, withInputFrom: inputBlock)
+        converter.convert(to: outputBuffer, error: &error) { _, outStatus in
+            feeder.feed(outStatus)
+        }
         if let error { throw error }
         guard let channelData = outputBuffer.floatChannelData?[0] else {
             throw NSError(domain: "AudioPlaybackController", code: 5, userInfo: [NSLocalizedDescriptionKey: "No converted audio data available"])
