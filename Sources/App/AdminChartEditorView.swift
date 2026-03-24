@@ -225,13 +225,20 @@ struct AdminChartEditorView: View {
 
     private func adminProminentButton(_ title: String, action: @escaping () -> Void) -> some View {
         Button(title, action: action)
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(BorderedProminentButtonStyle())
             .focusable(false)
     }
 
+    @ViewBuilder
     private func playbackRateButton(_ title: String, rate: Float) -> some View {
-        Button(title) { game.setPlaybackRate(rate) }
-            .buttonStyle(game.isPlaybackRateSelected(rate) ? .borderedProminent : .bordered)
-            .focusable(false)
+        if game.isPlaybackRateSelected(rate) {
+            Button(title) { game.setPlaybackRate(rate) }
+                .buttonStyle(BorderedProminentButtonStyle())
+                .focusable(false)
+        } else {
+            Button(title) { game.setPlaybackRate(rate) }
+                .buttonStyle(BorderedButtonStyle())
+                .focusable(false)
+        }
     }
 }
