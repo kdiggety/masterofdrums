@@ -72,6 +72,7 @@ final class PrototypeGameController: ObservableObject {
     @Published var stepCursorTime: Double = 0
     @Published private(set) var stepCursorDisplayText: String = "1:1 · 0.00s"
     @Published var loopLength: LoopLength = .off
+    @Published private(set) var loopStartTime: Double = 0
 
     let scene: GameplayScene
     let audio: AudioPlaybackController
@@ -185,41 +186,31 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func stepBackward() {
-        stepCursorTime = max(0, stepCursorTime - stepInterval)
-        updateStepCursorDisplay()
-        updateLoopStatusText()
+        moveStepCursor(to: max(0, stepCursorTime - stepInterval), seekPlayback: true)
         adminStatusText = "Stepped backward to \(stepCursorDisplayText)"
         refocusGameplay()
     }
 
     func stepForward() {
-        stepCursorTime += stepInterval
-        updateStepCursorDisplay()
-        updateLoopStatusText()
+        moveStepCursor(to: stepCursorTime + stepInterval, seekPlayback: true)
         adminStatusText = "Stepped forward to \(stepCursorDisplayText)"
         refocusGameplay()
     }
 
     func jumpBackwardBar() {
-        stepCursorTime = max(0, stepCursorTime - barDuration)
-        updateStepCursorDisplay()
-        updateLoopStatusText()
+        moveStepCursor(to: max(0, stepCursorTime - barDuration), seekPlayback: true)
         adminStatusText = "Jumped back one bar to \(stepCursorDisplayText)"
         refocusGameplay()
     }
 
     func jumpForwardBar() {
-        stepCursorTime += barDuration
-        updateStepCursorDisplay()
-        updateLoopStatusText()
+        moveStepCursor(to: stepCursorTime + barDuration, seekPlayback: true)
         adminStatusText = "Jumped forward one bar to \(stepCursorDisplayText)"
         refocusGameplay()
     }
 
     func syncStepCursorToPlayback() {
-        stepCursorTime = max(0, audio.currentTime)
-        updateStepCursorDisplay()
-        updateLoopStatusText()
+        moveStepCursor(to: max(0, audio.currentTime), seekPlayback: false)
         adminStatusText = "Synced step cursor to playback: \(stepCursorDisplayText)"
         refocusGameplay()
     }
@@ -233,6 +224,11 @@ final class PrototypeGameController: ObservableObject {
 
     func seekTransport(to time: Double) {
         audio.seek(to: time)
+        moveStepCursor(to: time, seekPlayback: false)
+        if loopLength != .off {
+            loopStartTime = quantizedLoopStart(for: time)
+            updateLoopStatusText()
+        }
         syncTransportState()
         adminStatusText = "Seeked to \(playbackTimeText)"
         refocusGameplay()
@@ -240,8 +236,9 @@ final class PrototypeGameController: ObservableObject {
 
     func setLoopLength(_ length: LoopLength) {
         loopLength = length
+        loopStartTime = quantizedLoopStart(for: audio.currentTime)
         updateLoopStatusText()
-        adminStatusText = length == .off ? "Loop disabled" : "Looping \(length.rawValue) from current bar"
+        adminStatusText = length == .off ? "Loop disabled" : "Looping \(length.rawValue) from current position"
         refocusGameplay()
     }
 
@@ -405,7 +402,7 @@ final class PrototypeGameController: ObservableObject {
 
     private func applyLoopIfNeeded(at time: TimeInterval) {
         guard loopLength != .off, audio.state == .playing else { return }
-        let start = currentBarStartTime
+        let start = loopStartTime
         let end = start + (barDuration * Double(loopLength.barCount))
         if time >= end {
             audio.seek(to: start)
@@ -459,6 +456,21 @@ final class PrototypeGameController: ObservableObject {
         return (bar * barDuration) + songOffset
     }
 
+    private func quantizedLoopStart(for time: Double) -> Double {
+        let bar = floor(max(0, time - songOffset) / barDuration)
+        return (bar * barDuration) + songOffset
+    }
+
+    private func moveStepCursor(to time: Double, seekPlayback: Bool) {
+        stepCursorTime = max(0, time)
+        updateStepCursorDisplay()
+        updateLoopStatusText()
+        if seekPlayback {
+            audio.seek(to: stepCursorTime)
+            syncTransportState()
+        }
+    }
+
     private func updateStepCursorDisplay() {
         let position = MusicalTransport.position(at: stepCursorTime, bpm: bpm, songOffset: songOffset, subdivisionsPerBeat: max(stepResolution.subdivisionsPerBeat, 1))
         let subText = stepResolution == .quarter ? "" : ".\(position.subdivision)"
@@ -484,7 +496,7 @@ final class PrototypeGameController: ObservableObject {
         if loopLength == .off {
             loopStatusText = "Loop Off"
         } else {
-            let start = currentBarStartTime
+            let start = loopStartTime
             let end = start + (barDuration * Double(loopLength.barCount))
             loopStatusText = "\(loopLength.rawValue) · \(String(format: "%.2f", start))s–\(String(format: "%.2f", end))s"
         }
