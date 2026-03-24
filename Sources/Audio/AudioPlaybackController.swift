@@ -222,7 +222,9 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
             }
             if let key = item.key as? String, ["tbpm", "tempo", "bpm"].contains(key.lowercased()) {
                 if let stringValue, let bpm = parseBPM(from: stringValue) { return bpm }
-                if let numberValue = try? await item.load(.numberValue), let bpm = numberValue?.doubleValue { return bpm }
+                if let numberValue = try? await item.load(.numberValue) {
+                    return numberValue.doubleValue
+                }
             }
         }
         return nil
