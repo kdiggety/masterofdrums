@@ -68,7 +68,12 @@ final class PrototypeGameController: ObservableObject {
     @Published var bpm: Double = 120
     @Published var songOffset: Double = 0
 
-    @Published var isAdminPageActive = false
+    @Published var isAdminPageActive = false {
+        didSet {
+            scene.isAdminAuthoringMode = isAdminPageActive
+            refreshAdminVisibleNotes(at: adminScrubPreviewTime ?? audio.currentTime)
+        }
+    }
     @Published var adminSelectedLane: Lane = .kick
     @Published var adminNoteTime: Double = 0
     @Published private(set) var adminNotes: [NoteEvent] = []
@@ -101,6 +106,7 @@ final class PrototypeGameController: ObservableObject {
         self.inputRouter = InputRouter(activeDevice: keyboard)
         self.audio = AudioPlaybackController()
         self.scene = GameplayScene(chart: initialChart, keyboardInputDevice: keyboard)
+        self.scene.isAdminAuthoringMode = false
         self.activeInputSourceName = keyboard.source.rawValue
         self.chartName = initialChart.title
         self.adminNotes = initialChart.notes

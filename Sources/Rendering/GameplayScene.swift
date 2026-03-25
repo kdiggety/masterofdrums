@@ -13,11 +13,13 @@ final class GameplayScene: SKScene {
     private let statusLabel = SKLabelNode(fontNamed: "SF Pro Display")
     private let laneWidth: CGFloat = 120
     private let laneInset: CGFloat = 2
-    private let noteSpeed: CGFloat = 260
+    private let defaultNoteSpeed: CGFloat = 260
+    private let adminAuthoringNoteSpeed: CGFloat = 110
     private let hitLineY: CGFloat = 110
     private let laneOrder: [Lane] = [.red, .yellow, .blue, .green, .kick]
     private var noteNodes: [UUID: SKShapeNode] = [:]
     private var laneHighlights: [Lane: SKShapeNode] = [:]
+    var isAdminAuthoringMode: Bool = false
 
     var currentSongTime: TimeInterval {
         timeProvider?() ?? 0
@@ -198,8 +200,12 @@ final class GameplayScene: SKScene {
             guard let node = noteNodes[note.id], let laneIndex = laneOrder.firstIndex(of: note.lane) else { continue }
             let laneFrame = frameForLane(at: laneIndex, startX: startX)
             let timeUntilHit = note.time - songTime
-            node.position = CGPoint(x: laneFrame.midX, y: hitLineY + CGFloat(timeUntilHit) * noteSpeed)
+            node.position = CGPoint(x: laneFrame.midX, y: hitLineY + CGFloat(timeUntilHit) * activeNoteSpeed)
         }
+    }
+
+    private var activeNoteSpeed: CGFloat {
+        isAdminAuthoringMode ? adminAuthoringNoteSpeed : defaultNoteSpeed
     }
 
     private func frameForLane(at index: Int, startX: CGFloat) -> CGRect {
