@@ -63,6 +63,7 @@ final class GameplayScene: SKScene {
     override func update(_ currentTime: TimeInterval) {
         let songTime = currentSongTime
         onTick?(songTime)
+        advanceDraggedNotePreviews()
         updateNodePositions(songTime: songTime)
     }
 
@@ -177,18 +178,11 @@ final class GameplayScene: SKScene {
     }
 
     func previewAdminNoteMove(id: UUID, time: TimeInterval, lane: Lane? = nil, smoothingFactor: Double = 0.45) {
-        let clampedSmoothing = max(0, min(1, smoothingFactor))
-        let currentTime = draggedAdminNotePreviewTimeByID[id] ?? time
-        let delta = time - currentTime
-        let nextTime: TimeInterval
-        if abs(delta) < 0.0005 {
-            nextTime = time
-        } else {
-            let minimumStep = min(abs(delta), 0.0035)
-            nextTime = currentTime + (delta * clampedSmoothing) + (delta.sign == .minus ? -minimumStep : minimumStep)
+        _ = smoothingFactor
+        if draggedAdminNotePreviewTimeByID[id] == nil {
+            draggedAdminNotePreviewTimeByID[id] = time
         }
         draggedAdminNotePreviewTargetTimeByID[id] = time
-        draggedAdminNotePreviewTimeByID[id] = max(0, nextTime)
         if let lane {
             draggedAdminNotePreviewLaneByID[id] = lane
         }
@@ -206,6 +200,20 @@ final class GameplayScene: SKScene {
             draggedAdminNotePreviewLaneByID.removeAll()
         }
         updateNodePositions(songTime: currentSongTime)
+    }
+
+    private func advanceDraggedNotePreviews() {
+        for (id, targetTime) in draggedAdminNotePreviewTargetTimeByID {
+            let currentTime = draggedAdminNotePreviewTimeByID[id] ?? targetTime
+            let delta = targetTime - currentTime
+            let nextTime: TimeInterval
+            if abs(delta) < 0.0005 {
+                nextTime = targetTime
+            } else {
+                nextTime = currentTime + (delta * 0.35)
+            }
+            draggedAdminNotePreviewTimeByID[id] = nextTime
+        }
     }
 
     private func setupScene() {
