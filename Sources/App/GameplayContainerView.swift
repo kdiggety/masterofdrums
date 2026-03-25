@@ -18,6 +18,10 @@ final class GameplaySKView: SKView {
     override func mouseDown(with event: NSEvent) {
         window?.makeFirstResponder(self)
         let point = convert(event.locationInWindow, from: nil)
+        if event.modifierFlags.contains(.control) {
+            onAdminRightMouseDown?(point)
+            return
+        }
         onAdminLeftMouseDown?(point, bounds.size)
         super.mouseDown(with: event)
     }
