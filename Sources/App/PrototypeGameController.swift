@@ -109,6 +109,7 @@ final class PrototypeGameController: ObservableObject {
     private let laneSoundPlayer = LaneSoundPlayer()
     private let completionGracePeriod: TimeInterval = 0.5
     private let adminLaneScrubDurationMultiplier: Double = 0.08
+    private let adminNoteDragDurationMultiplier: Double = 0.03
     private let adminScrubSmoothingFactor: Double = 0.35
     private let adminAuthoringNoteSpeed: Double = 110
     private let noteLaneHitLineHeight: Double = 6
@@ -292,7 +293,7 @@ final class PrototypeGameController: ObservableObject {
     func adminDraggedNoteTime(from startTime: Double, translationHeight: Double, availableHeight: Double) -> Double {
         let height = max(availableHeight, 1)
         let normalizedDelta = -translationHeight / height
-        let scaledDuration = max(playbackDuration, 0) * adminLaneScrubDurationMultiplier
+        let scaledDuration = max(playbackDuration, 0) * adminNoteDragDurationMultiplier
         let unclampedTargetTime = startTime + (normalizedDelta * scaledDuration)
         return max(0, min(playbackDuration, unclampedTargetTime))
     }
