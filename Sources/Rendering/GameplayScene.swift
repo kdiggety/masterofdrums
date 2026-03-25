@@ -22,6 +22,7 @@ final class GameplayScene: SKScene {
     private var visibleNotes: [NoteEvent] = []
     private var laneHighlights: [Lane: SKShapeNode] = [:]
     private var draggedAdminNotePreviewTimeByID: [UUID: TimeInterval] = [:]
+    private var draggedAdminNotePreviewLaneByID: [UUID: Lane] = [:]
     var isAdminAuthoringMode: Bool = false
     var selectedAdminNoteID: UUID? {
         didSet { updateSelectionAppearance() }
@@ -75,6 +76,7 @@ final class GameplayScene: SKScene {
         noteNodes.removeAll()
         visibleNotes = []
         draggedAdminNotePreviewTimeByID.removeAll()
+        draggedAdminNotePreviewLaneByID.removeAll()
         restartSong()
         updateVisibleNotes([])
     }
@@ -96,6 +98,7 @@ final class GameplayScene: SKScene {
         let staleIDs = noteNodes.keys.filter { !visibleIDs.contains($0) }
         for id in staleIDs {
             draggedAdminNotePreviewTimeByID.removeValue(forKey: id)
+            draggedAdminNotePreviewLaneByID.removeValue(forKey: id)
             noteNodes[id]?.removeFromParent()
             noteNodes.removeValue(forKey: id)
         }
@@ -157,16 +160,32 @@ final class GameplayScene: SKScene {
         return nil
     }
 
-    func previewAdminNoteMove(id: UUID, time: TimeInterval) {
+    func adminLane(at scenePoint: CGPoint) -> Lane? {
+        let totalWidth = laneWidth * CGFloat(laneOrder.count)
+        let startX = (size.width - totalWidth) / 2
+        for (index, lane) in laneOrder.enumerated() {
+            if frameForLane(at: index, startX: startX).contains(scenePoint) {
+                return lane
+            }
+        }
+        return nil
+    }
+
+    func previewAdminNoteMove(id: UUID, time: TimeInterval, lane: Lane? = nil) {
         draggedAdminNotePreviewTimeByID[id] = time
+        if let lane {
+            draggedAdminNotePreviewLaneByID[id] = lane
+        }
         updateNodePositions(songTime: currentSongTime)
     }
 
     func clearAdminNoteMovePreview(for id: UUID? = nil) {
         if let id {
             draggedAdminNotePreviewTimeByID.removeValue(forKey: id)
+            draggedAdminNotePreviewLaneByID.removeValue(forKey: id)
         } else {
             draggedAdminNotePreviewTimeByID.removeAll()
+            draggedAdminNotePreviewLaneByID.removeAll()
         }
         updateNodePositions(songTime: currentSongTime)
     }
@@ -236,7 +255,9 @@ final class GameplayScene: SKScene {
         let startX = (size.width - totalWidth) / 2
 
         for note in chart.notes {
-            guard let node = noteNodes[note.id], let laneIndex = laneOrder.firstIndex(of: note.lane) else { continue }
+            guard let node = noteNodes[note.id] else { continue }
+            let effectiveLane = draggedAdminNotePreviewLaneByID[note.id] ?? note.lane
+            guard let laneIndex = laneOrder.firstIndex(of: effectiveLane) else { continue }
             let laneFrame = frameForLane(at: laneIndex, startX: startX)
             let effectiveTime = draggedAdminNotePreviewTimeByID[note.id] ?? note.time
             let timeUntilHit = effectiveTime - songTime

@@ -346,22 +346,27 @@ final class PrototypeGameController: ObservableObject {
         refocusGameplay()
     }
 
-    func previewAdminNoteMove(_ id: UUID, to time: Double) {
+    func previewAdminNoteMove(_ id: UUID, to time: Double, lane: Lane? = nil) {
         let clampedTime = max(0, min(playbackDuration, time))
-        scene.previewAdminNoteMove(id: id, time: clampedTime)
-        adminStatusText = "Moving note to \(String(format: "%.2f", clampedTime))s"
+        scene.previewAdminNoteMove(id: id, time: clampedTime, lane: lane)
+        if let lane {
+            adminStatusText = "Moving note to \(lane.displayName) at \(String(format: "%.2f", clampedTime))s"
+        } else {
+            adminStatusText = "Moving note to \(String(format: "%.2f", clampedTime))s"
+        }
     }
 
     func clearAdminNoteMovePreview(_ id: UUID? = nil) {
         scene.clearAdminNoteMovePreview(for: id)
     }
 
-    func moveAdminNote(_ id: UUID, to time: Double) {
+    func moveAdminNote(_ id: UUID, to time: Double, lane: Lane? = nil) {
         guard let existingNote = adminNotes.first(where: { $0.id == id }) else { return }
         let clampedTime = max(0, min(playbackDuration, time))
+        let targetLane = lane ?? existingNote.lane
         let updated = adminNotes.map { note in
             guard note.id == id else { return note }
-            return NoteEvent(id: id, lane: existingNote.lane, time: clampedTime)
+            return NoteEvent(id: id, lane: targetLane, time: clampedTime)
         }.sorted { lhs, rhs in
             if abs(lhs.time - rhs.time) > 0.0001 {
                 return lhs.time < rhs.time
