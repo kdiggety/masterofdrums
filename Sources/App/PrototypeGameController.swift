@@ -234,6 +234,7 @@ final class PrototypeGameController: ObservableObject {
             loopStartTime = quantizedLoopStart(for: time)
             updateLoopStatusText()
         }
+        refreshAdminVisibleNotes(at: time)
         syncTransportState()
         adminStatusText = "Seeked to \(playbackTimeText)"
         refocusGameplay()
