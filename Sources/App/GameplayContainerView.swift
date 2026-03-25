@@ -138,7 +138,7 @@ struct GameplayContainerView: NSViewRepresentable {
 
         private enum Interaction {
             case scrubbing(startTime: Double)
-            case draggingNote(id: UUID)
+            case draggingNote(id: UUID, startTime: Double)
         }
 
         private var interaction: Interaction?
@@ -158,7 +158,8 @@ struct GameplayContainerView: NSViewRepresentable {
             let scenePoint = scene.convertPoint(fromView: viewPoint)
             if let noteID = scene.adminNoteID(at: scenePoint) {
                 game.adminSelectedNoteID = noteID
-                interaction = .draggingNote(id: noteID)
+                let startTime = game.adminNotes.first(where: { $0.id == noteID })?.time ?? game.currentPlaybackTime
+                interaction = .draggingNote(id: noteID, startTime: startTime)
             } else if clickCount >= 2, let lane = scene.adminLane(at: scenePoint) {
                 let targetTime = game.adminNoteTime(at: scenePoint)
                 game.addAdminNote(at: targetTime, lane: lane)
@@ -185,9 +186,13 @@ struct GameplayContainerView: NSViewRepresentable {
                     availableHeight: size.height
                 )
                 game.updateAdminScrubPreview(to: previewTime)
-            case .draggingNote(let id):
+            case .draggingNote(let id, let startTime):
                 let scenePoint = scene.convertPoint(fromView: viewPoint)
-                let movedTime = game.adminNoteTime(at: scenePoint)
+                let movedTime = game.adminDraggedNoteTime(
+                    from: startTime,
+                    translationHeight: translation.y,
+                    availableHeight: size.height
+                )
                 let targetLane = scene.adminLane(at: scenePoint)
                 game.previewAdminNoteMove(id, to: movedTime, lane: targetLane)
                 game.adminSelectedNoteID = id
@@ -209,11 +214,15 @@ struct GameplayContainerView: NSViewRepresentable {
                     let targetTime = game.resolvedAdminScrubTime(for: previewTime)
                     game.seekTransport(to: targetTime)
                 }
-            case .draggingNote(let id):
+            case .draggingNote(let id, let startTime):
                 game.clearAdminNoteMovePreview(id)
                 if dragBegan {
                     let scenePoint = scene.convertPoint(fromView: viewPoint)
-                    let movedTime = game.adminNoteTime(at: scenePoint)
+                    let movedTime = game.adminDraggedNoteTime(
+                        from: startTime,
+                        translationHeight: translation.y,
+                        availableHeight: size.height
+                    )
                     let targetLane = scene.adminLane(at: scenePoint)
                     game.moveAdminNote(id, to: movedTime, lane: targetLane)
                 } else {
