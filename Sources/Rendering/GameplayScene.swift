@@ -213,10 +213,11 @@ final class GameplayScene: SKScene {
             let currentY = draggedAdminNotePreviewYByID[id] ?? targetY
             let delta = targetY - currentY
             let nextY: CGFloat
-            if abs(delta) < 0.5 {
+            if abs(delta) < 0.25 {
                 nextY = targetY
             } else {
-                nextY = currentY + (delta * 0.35)
+                let minimumStep = min(abs(delta), 2.0)
+                nextY = currentY + (delta * 0.5) + (delta.sign == .minus ? -minimumStep : minimumStep)
             }
             draggedAdminNotePreviewYByID[id] = nextY
         }
