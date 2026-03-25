@@ -64,6 +64,7 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var playbackDurationText: String = "0.00s"
     @Published private(set) var loopStatusText: String = "Loop Off"
     @Published var adminSelectedNoteID: UUID?
+    @Published private(set) var adminScrubPreviewTime: Double?
     @Published var bpm: Double = 120
     @Published var songOffset: Double = 0
 
@@ -104,8 +105,11 @@ final class PrototypeGameController: ObservableObject {
         self.chartName = initialChart.title
         self.adminNotes = initialChart.notes
 
-        self.scene.timeProvider = { [weak audio] in
-            audio?.currentTime ?? 0
+        self.scene.timeProvider = { [weak self, weak audio] in
+            if let previewTime = self?.adminScrubPreviewTime {
+                return previewTime
+            }
+            return audio?.currentTime ?? 0
         }
         self.inputRouter.onInput = { [weak self] event in self?.handleInput(event) }
         self.scene.onInput = { [weak self] event in self?.inputRouter.route(event) }
@@ -241,15 +245,33 @@ final class PrototypeGameController: ObservableObject {
 
     func seekTransport(to time: Double) {
         audio.seek(to: time)
+        finalizeAdminScrub(at: time, announce: false)
+        syncTransportState()
+        adminStatusText = "Seeked to \(playbackTimeText)"
+        refocusGameplay()
+    }
+
+    func updateAdminScrubPreview(to time: Double) {
+        adminScrubPreviewTime = time
+        moveStepCursor(to: time, seekPlayback: false)
+        refreshAdminVisibleNotes(at: time)
+        playbackTimeText = String(format: "%.2fs", time)
+        let position = MusicalTransport.position(at: time, bpm: bpm, songOffset: songOffset)
+        barBeatText = position.barBeatText
+        musicalSubdivisionText = String(position.subdivision)
+    }
+
+    func finalizeAdminScrub(at time: Double, announce: Bool = true) {
+        adminScrubPreviewTime = nil
         moveStepCursor(to: time, seekPlayback: false)
         if loopLength != .off {
             loopStartTime = quantizedLoopStart(for: time)
             updateLoopStatusText()
         }
         refreshAdminVisibleNotes(at: time)
-        syncTransportState()
-        adminStatusText = "Seeked to \(playbackTimeText)"
-        refocusGameplay()
+        if announce {
+            adminStatusText = "Scrubbed to \(String(format: "%.2f", time))s"
+        }
     }
 
     func setLoopLength(_ length: LoopLength) {

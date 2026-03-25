@@ -55,9 +55,16 @@ struct AdminChartEditorView: View {
                                     translationHeight: value.translation.height,
                                     availableHeight: geometry.size.height
                                 )
-                                game.seekTransport(to: targetTime)
+                                game.updateAdminScrubPreview(to: targetTime)
                             }
-                            .onEnded { _ in
+                            .onEnded { value in
+                                let startTime = laneScrubStartTime ?? game.currentPlaybackTime
+                                let targetTime = game.scrubTargetTime(
+                                    from: startTime,
+                                    translationHeight: value.translation.height,
+                                    availableHeight: geometry.size.height
+                                )
+                                game.seekTransport(to: targetTime)
                                 laneScrubStartTime = nil
                             }
                     )
