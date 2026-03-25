@@ -457,6 +457,7 @@ final class PrototypeGameController: ObservableObject {
         let position = MusicalTransport.position(at: currentTime, bpm: bpm, songOffset: songOffset)
         barBeatText = position.barBeatText
         musicalSubdivisionText = String(position.subdivision)
+        refreshAdminVisibleNotes(at: currentTime)
     }
 
     private func quantizedStepCursorTime() -> Double {
@@ -500,6 +501,11 @@ final class PrototypeGameController: ObservableObject {
 
     private func updatePlaybackRateText() {
         playbackRateText = "\(Int(audio.playbackRate * 100))%"
+    }
+
+    private func refreshAdminVisibleNotes(at time: Double? = nil) {
+        let visibleTime = time ?? audio.currentTime
+        scene.updateVisibleNotes(session.notes(visibleAt: visibleTime, leadTime: 3.0))
     }
 
     var playbackDuration: Double { audio.duration }
