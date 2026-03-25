@@ -63,7 +63,7 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var playbackRateText: String = "100%"
     @Published private(set) var playbackDurationText: String = "0.00s"
     @Published private(set) var loopStatusText: String = "Loop Off"
-    @Published private(set) var adminSelectedNoteID: UUID?
+    @Published var adminSelectedNoteID: UUID?
     @Published var bpm: Double = 120
     @Published var songOffset: Double = 0
 
