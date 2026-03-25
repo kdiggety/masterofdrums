@@ -96,6 +96,8 @@ final class PrototypeGameController: ObservableObject {
     private let laneSoundPlayer = LaneSoundPlayer()
     private let completionGracePeriod: TimeInterval = 0.5
     private let adminLaneScrubDurationMultiplier: Double = 0.08
+    private let adminScrubSmoothingFactor: Double = 0.35
+    private var adminScrubPreviewTargetTime: Double?
 
     var isAdminAuthoringActive: Bool { isAdminPageActive }
 
@@ -112,8 +114,8 @@ final class PrototypeGameController: ObservableObject {
         self.adminNotes = initialChart.notes
 
         self.scene.timeProvider = { [weak self, weak audio] in
-            if let previewTime = self?.adminScrubPreviewTime {
-                return previewTime
+            if let self {
+                return self.currentSceneTime(fallbackAudioTime: audio?.currentTime ?? 0)
             }
             return audio?.currentTime ?? 0
         }
@@ -258,15 +260,15 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func updateAdminScrubPreview(to time: Double) {
-        adminScrubPreviewTime = time
-        stepCursorTime = max(0, time)
-        playbackTimeText = String(format: "%.2fs", time)
-        let position = MusicalTransport.position(at: time, bpm: bpm, songOffset: songOffset)
-        barBeatText = position.barBeatText
-        musicalSubdivisionText = String(position.subdivision)
+        let clampedTime = max(0, min(playbackDuration, time))
+        if adminScrubPreviewTime == nil {
+            adminScrubPreviewTime = clampedTime
+        }
+        adminScrubPreviewTargetTime = clampedTime
     }
 
     func finalizeAdminScrub(at time: Double, announce: Bool = true) {
+        adminScrubPreviewTargetTime = nil
         adminScrubPreviewTime = nil
         moveStepCursor(to: time, seekPlayback: false)
         if loopLength != .off {
@@ -561,6 +563,24 @@ final class PrototypeGameController: ObservableObject {
             return session.chart.notes
         }
         return session.notes(visibleAt: time, leadTime: 3.0)
+    }
+
+    private func currentSceneTime(fallbackAudioTime: Double) -> Double {
+        guard let targetTime = adminScrubPreviewTargetTime else {
+            return adminScrubPreviewTime ?? fallbackAudioTime
+        }
+
+        let currentTime = adminScrubPreviewTime ?? targetTime
+        let delta = targetTime - currentTime
+        let nextTime: Double
+        if abs(delta) < 0.001 {
+            nextTime = targetTime
+        } else {
+            nextTime = currentTime + (delta * adminScrubSmoothingFactor)
+        }
+
+        adminScrubPreviewTime = nextTime
+        return nextTime
     }
 
     var currentPlaybackTime: Double { audio.currentTime }
