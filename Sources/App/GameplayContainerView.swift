@@ -17,23 +17,27 @@ final class GameplaySKView: SKView {
 
     override func mouseDown(with event: NSEvent) {
         window?.makeFirstResponder(self)
-        onAdminLeftMouseDown?(event.location(in: self), bounds.size)
+        let point = convert(event.locationInWindow, from: nil)
+        onAdminLeftMouseDown?(point, bounds.size)
         super.mouseDown(with: event)
     }
 
     override func mouseDragged(with event: NSEvent) {
-        onAdminLeftMouseDragged?(event.location(in: self), bounds.size)
+        let point = convert(event.locationInWindow, from: nil)
+        onAdminLeftMouseDragged?(point, bounds.size)
         super.mouseDragged(with: event)
     }
 
     override func mouseUp(with event: NSEvent) {
-        onAdminLeftMouseUp?(event.location(in: self), bounds.size)
+        let point = convert(event.locationInWindow, from: nil)
+        onAdminLeftMouseUp?(point, bounds.size)
         super.mouseUp(with: event)
     }
 
     override func rightMouseDown(with event: NSEvent) {
         window?.makeFirstResponder(self)
-        onAdminRightMouseDown?(event.location(in: self))
+        let point = convert(event.locationInWindow, from: nil)
+        onAdminRightMouseDown?(point)
     }
 
     override func keyDown(with event: NSEvent) {
