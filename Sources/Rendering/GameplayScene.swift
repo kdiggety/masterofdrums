@@ -86,6 +86,8 @@ final class GameplayScene: SKScene {
             noteNodes[id]?.removeFromParent()
             noteNodes.removeValue(forKey: id)
         }
+
+        updateNodePositions(songTime: currentSongTime)
     }
 
     func flashJudgment(_ judgment: Judgment) {

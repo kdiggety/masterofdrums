@@ -159,17 +159,6 @@ struct AdminChartEditorView: View {
     private var recordedNotesSection: some View {
         GroupBox("Recorded Notes") {
             VStack(alignment: .leading, spacing: 10) {
-                VStack(alignment: .leading, spacing: 8) {
-                    ForEach(Lane.allCases) { lane in
-                        HStack {
-                            Text(lane.displayName)
-                            Spacer()
-                            Text("\(game.noteCount(for: lane))")
-                                .font(.headline.monospacedDigit())
-                        }
-                    }
-                }
-
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 8) {
                         ForEach(game.adminNotes) { note in
