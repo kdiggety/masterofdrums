@@ -226,6 +226,15 @@ final class PrototypeGameController: ObservableObject {
         refocusGameplay()
     }
 
+    func addAdminNote(at time: Double, lane: Lane) {
+        let note = NoteEvent(lane: lane, time: max(0, min(playbackDuration, time)))
+        appendAdminNote(note)
+        adminSelectedLane = lane
+        adminNoteTime = note.time
+        adminStatusText = "Added \(note.lane.displayName) at \(String(format: "%.2f", note.time))s"
+        refocusGameplay()
+    }
+
     func placeStepNote(_ lane: Lane? = nil) {
         let selectedLane = lane ?? adminSelectedLane
         let note = NoteEvent(lane: selectedLane, time: quantizedStepCursorTime())
@@ -278,6 +287,12 @@ final class PrototypeGameController: ObservableObject {
         let scaledDuration = max(playbackDuration, 0) * adminLaneScrubDurationMultiplier
         let unclampedTargetTime = startTime + (normalizedDelta * scaledDuration)
         return max(0, min(playbackDuration, unclampedTargetTime))
+    }
+
+    func adminNoteTime(at scenePoint: CGPoint) -> Double {
+        let deltaY = Double(scenePoint.y - scene.hitLineYPosition)
+        let unclampedTime = scene.currentSongTime + (deltaY / adminAuthoringNoteSpeed)
+        return max(0, min(playbackDuration, unclampedTime))
     }
 
     func seekTransport(to time: Double) {

@@ -3,7 +3,7 @@ import SpriteKit
 import AppKit
 
 final class GameplaySKView: SKView {
-    var onAdminLeftMouseDown: ((CGPoint, CGSize) -> Void)?
+    var onAdminLeftMouseDown: ((CGPoint, CGSize, Int) -> Void)?
     var onAdminLeftMouseDragged: ((CGPoint, CGSize) -> Void)?
     var onAdminLeftMouseUp: ((CGPoint, CGSize) -> Void)?
     var onAdminRightMouseDown: ((CGPoint) -> Void)?
@@ -28,7 +28,7 @@ final class GameplaySKView: SKView {
             onAdminRightMouseDown?(point)
             return
         }
-        onAdminLeftMouseDown?(point, bounds.size)
+        onAdminLeftMouseDown?(point, bounds.size, event.clickCount)
     }
 
     override func mouseDragged(with event: NSEvent) {
@@ -116,8 +116,8 @@ struct GameplayContainerView: NSViewRepresentable {
         coordinator.isAdminInteractive = isAdminInteractive
         view.isAdminInteractive = isAdminInteractive
 
-        view.onAdminLeftMouseDown = { point, size in
-            coordinator.handleLeftMouseDown(at: point, in: size)
+        view.onAdminLeftMouseDown = { point, size, clickCount in
+            coordinator.handleLeftMouseDown(at: point, in: size, clickCount: clickCount)
         }
         view.onAdminLeftMouseDragged = { point, size in
             coordinator.handleLeftMouseDragged(at: point, in: size)
@@ -150,7 +150,7 @@ struct GameplayContainerView: NSViewRepresentable {
             self.scene = scene
         }
 
-        func handleLeftMouseDown(at viewPoint: CGPoint, in size: CGSize) {
+        func handleLeftMouseDown(at viewPoint: CGPoint, in size: CGSize, clickCount: Int) {
             guard isAdminInteractive, let game else { return }
             initialPoint = viewPoint
             dragBegan = false
@@ -159,6 +159,10 @@ struct GameplayContainerView: NSViewRepresentable {
             if let noteID = scene.adminNoteID(at: scenePoint) {
                 game.adminSelectedNoteID = noteID
                 interaction = .draggingNote(id: noteID)
+            } else if clickCount >= 2, let lane = scene.adminLane(at: scenePoint) {
+                let targetTime = game.adminNoteTime(at: scenePoint)
+                game.addAdminNote(at: targetTime, lane: lane)
+                interaction = nil
             } else {
                 interaction = .scrubbing(startTime: game.currentPlaybackTime)
             }
@@ -182,12 +186,8 @@ struct GameplayContainerView: NSViewRepresentable {
                 )
                 game.updateAdminScrubPreview(to: previewTime)
             case .draggingNote(let id):
-                let movedTime = game.scrubTargetTime(
-                    from: noteStartTime(for: id, in: game) ?? game.currentPlaybackTime,
-                    translationHeight: translation.y,
-                    availableHeight: size.height
-                )
                 let scenePoint = scene.convertPoint(fromView: viewPoint)
+                let movedTime = game.adminNoteTime(at: scenePoint)
                 let targetLane = scene.adminLane(at: scenePoint)
                 game.previewAdminNoteMove(id, to: movedTime, lane: targetLane)
                 game.adminSelectedNoteID = id
@@ -212,12 +212,8 @@ struct GameplayContainerView: NSViewRepresentable {
             case .draggingNote(let id):
                 game.clearAdminNoteMovePreview(id)
                 if dragBegan {
-                    let movedTime = game.scrubTargetTime(
-                        from: noteStartTime(for: id, in: game) ?? game.currentPlaybackTime,
-                        translationHeight: translation.y,
-                        availableHeight: size.height
-                    )
                     let scenePoint = scene.convertPoint(fromView: viewPoint)
+                    let movedTime = game.adminNoteTime(at: scenePoint)
                     let targetLane = scene.adminLane(at: scenePoint)
                     game.moveAdminNote(id, to: movedTime, lane: targetLane)
                 } else {
@@ -237,8 +233,5 @@ struct GameplayContainerView: NSViewRepresentable {
             game.deleteAdminNote(noteID)
         }
 
-        private func noteStartTime(for id: UUID, in game: PrototypeGameController) -> Double? {
-            game.adminNotes.first(where: { $0.id == id })?.time
-        }
     }
 }

@@ -32,6 +32,8 @@ final class GameplayScene: SKScene {
         timeProvider?() ?? 0
     }
 
+    var hitLineYPosition: CGFloat { hitLineY }
+
     init(chart: Chart, keyboardInputDevice: KeyboardInputDevice) {
         self.chart = chart
         self.keyboardInputDevice = keyboardInputDevice
