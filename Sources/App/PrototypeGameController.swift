@@ -90,7 +90,7 @@ final class PrototypeGameController: ObservableObject {
     private let chartFileStore = ChartFileStore()
     private let laneSoundPlayer = LaneSoundPlayer()
     private let completionGracePeriod: TimeInterval = 0.5
-    private let adminLaneScrubDurationMultiplier: Double = 0.2
+    private let adminLaneScrubDurationMultiplier: Double = 0.08
 
     var isAdminAuthoringActive: Bool { isAdminPageActive }
 
@@ -485,7 +485,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func syncTransportState() {
-        let currentTime = audio.currentTime
+        let currentTime = adminScrubPreviewTime ?? audio.currentTime
         transportStateText = audio.state.rawValue
         playbackTimeText = String(format: "%.2fs", currentTime)
         playbackDurationText = String(format: "%.2fs", audio.duration)
