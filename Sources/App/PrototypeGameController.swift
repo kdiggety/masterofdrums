@@ -90,7 +90,6 @@ final class PrototypeGameController: ObservableObject {
     private let laneSoundPlayer = LaneSoundPlayer()
     private let completionGracePeriod: TimeInterval = 0.5
     private let adminLaneScrubDurationMultiplier: Double = 0.2
-    private let adminVisibleLeadTime: TimeInterval = 8.0
 
     var isAdminAuthoringActive: Bool { isAdminPageActive }
 
@@ -455,7 +454,7 @@ final class PrototypeGameController: ObservableObject {
             lastJudgmentText = session.state.lastJudgment?.rawValue ?? "—"
             accuracyText = String(format: "%.0f%%", session.state.accuracy * 100)
         }
-        scene.updateVisibleNotes(session.notes(visibleAt: scene.currentSongTime, leadTime: visibleLeadTime))
+        scene.updateVisibleNotes(currentSceneNotes(at: scene.currentSongTime))
         trackName = audio.loadedTrackName ?? "Preview clock"
         chartName = session.chart.title
         adminNotes = session.chart.notes.sorted { $0.time < $1.time }
@@ -527,11 +526,14 @@ final class PrototypeGameController: ObservableObject {
 
     private func refreshAdminVisibleNotes(at time: Double? = nil) {
         let visibleTime = time ?? audio.currentTime
-        scene.updateVisibleNotes(session.notes(visibleAt: visibleTime, leadTime: visibleLeadTime))
+        scene.updateVisibleNotes(currentSceneNotes(at: visibleTime))
     }
 
-    private var visibleLeadTime: TimeInterval {
-        isAdminAuthoringActive ? adminVisibleLeadTime : 3.0
+    private func currentSceneNotes(at time: Double) -> [NoteEvent] {
+        if isAdminAuthoringActive {
+            return session.chart.notes
+        }
+        return session.notes(visibleAt: time, leadTime: 3.0)
     }
 
     var currentPlaybackTime: Double { audio.currentTime }
