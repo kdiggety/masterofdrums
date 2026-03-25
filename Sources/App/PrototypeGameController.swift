@@ -374,11 +374,6 @@ final class PrototypeGameController: ObservableObject {
     func previewAdminNoteMove(_ id: UUID, to time: Double, yPosition: CGFloat, lane: Lane? = nil) {
         let clampedTime = max(0, min(playbackDuration, time))
         scene.previewAdminNoteMove(id: id, time: clampedTime, yPosition: yPosition, lane: lane, smoothingFactor: adminNoteDragSmoothingFactor)
-        if let lane {
-            adminStatusText = "Moving note to \(lane.displayName) at \(String(format: "%.2f", clampedTime))s"
-        } else {
-            adminStatusText = "Moving note to \(String(format: "%.2f", clampedTime))s"
-        }
     }
 
     func clearAdminNoteMovePreview(_ id: UUID? = nil) {
