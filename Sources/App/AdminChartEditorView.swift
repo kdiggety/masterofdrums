@@ -9,11 +9,8 @@ struct AdminChartEditorView: View {
                 header
 
                 HStack(alignment: .top, spacing: 14) {
-                    GameplayContainerView(scene: game.scene, focusVersion: game.gameplayFocusVersion)
+                    leftPanel
                         .frame(maxWidth: .infinity)
-                        .frame(height: 480)
-                        .background(Color.black)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
 
                     rightPanel
                         .frame(width: 320)
@@ -35,6 +32,18 @@ struct AdminChartEditorView: View {
                     .foregroundStyle(.secondary)
             }
             Spacer()
+        }
+    }
+
+    private var leftPanel: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            GameplayContainerView(scene: game.scene, focusVersion: game.gameplayFocusVersion)
+                .frame(maxWidth: .infinity)
+                .frame(height: 480)
+                .background(Color.black)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+
+            recordedNotesSection
         }
     }
 
@@ -127,54 +136,6 @@ struct AdminChartEditorView: View {
                 }
             }
 
-            GroupBox("Recorded Notes") {
-                VStack(alignment: .leading, spacing: 10) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        ForEach(Lane.allCases) { lane in
-                            HStack {
-                                Text(lane.displayName)
-                                Spacer()
-                                Text("\(game.noteCount(for: lane))")
-                                    .font(.headline.monospacedDigit())
-                            }
-                        }
-                    }
-
-                    ScrollView {
-                        LazyVStack(alignment: .leading, spacing: 8) {
-                            ForEach(game.adminNotes) { note in
-                                HStack {
-                                    Text(note.lane.displayName)
-                                        .frame(width: 80, alignment: .leading)
-                                    Text(String(format: "%.2fs", note.time))
-                                        .monospacedDigit()
-                                    Spacer()
-                                    Button("Jump") {
-                                        game.adminSelectedNoteID = note.id
-                                        game.jumpToAdminNote(note.id)
-                                    }
-                                    .buttonStyle(.borderless)
-                                    .focusable(false)
-                                    Button("Delete") { game.deleteAdminNote(note.id) }
-                                        .buttonStyle(.borderless)
-                                        .focusable(false)
-                                }
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 6)
-                                .background(game.adminSelectedNoteID == note.id ? Color.accentColor.opacity(0.15) : Color.clear)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    game.adminSelectedNoteID = note.id
-                                    game.jumpToAdminNote(note.id)
-                                }
-                            }
-                        }
-                    }
-                    .frame(minHeight: 220, maxHeight: 260)
-                }
-            }
-
             GroupBox("Session") {
                 VStack(alignment: .leading, spacing: 8) {
                     statusRow("Audio", game.trackName)
@@ -191,6 +152,56 @@ struct AdminChartEditorView: View {
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
+            }
+        }
+    }
+
+    private var recordedNotesSection: some View {
+        GroupBox("Recorded Notes") {
+            VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(Lane.allCases) { lane in
+                        HStack {
+                            Text(lane.displayName)
+                            Spacer()
+                            Text("\(game.noteCount(for: lane))")
+                                .font(.headline.monospacedDigit())
+                        }
+                    }
+                }
+
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 8) {
+                        ForEach(game.adminNotes) { note in
+                            HStack {
+                                Text(note.lane.displayName)
+                                    .frame(width: 80, alignment: .leading)
+                                Text(String(format: "%.2fs", note.time))
+                                    .monospacedDigit()
+                                Spacer()
+                                Button("Jump") {
+                                    game.adminSelectedNoteID = note.id
+                                    game.jumpToAdminNote(note.id)
+                                }
+                                .buttonStyle(.borderless)
+                                .focusable(false)
+                                Button("Delete") { game.deleteAdminNote(note.id) }
+                                    .buttonStyle(.borderless)
+                                    .focusable(false)
+                            }
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 6)
+                            .background(game.adminSelectedNoteID == note.id ? Color.accentColor.opacity(0.15) : Color.clear)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                game.adminSelectedNoteID = note.id
+                                game.jumpToAdminNote(note.id)
+                            }
+                        }
+                    }
+                }
+                .frame(minHeight: 220, maxHeight: 260)
             }
         }
     }
