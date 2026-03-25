@@ -53,7 +53,11 @@ struct AdminChartEditorView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack(spacing: 10) {
                         adminButton("Choose Audio") { game.chooseAudioFile() }
-                        adminProminentButton("Play") { game.playTransport() }
+                        if game.transportStateText == "Playing" {
+                            adminProminentButton("Stop") { game.pauseTransport() }
+                        } else {
+                            adminProminentButton("Play") { game.playTransport() }
+                        }
                         adminButton("Pause") { game.pauseTransport() }
                     }
 
