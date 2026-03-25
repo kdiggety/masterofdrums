@@ -263,13 +263,14 @@ final class PrototypeGameController: ObservableObject {
             adminScrubPreviewTime = clampedTime
         }
         adminScrubPreviewTargetTime = clampedTime
-        adminSelectedNoteID = nearestAdminNote(to: clampedTime)?.id
     }
 
     func resolvedAdminScrubTime(for previewTime: Double) -> Double {
         guard isNoteLaneSnapEnabled, let nearestNote = nearestAdminNote(to: previewTime) else {
+            adminSelectedNoteID = nil
             return previewTime
         }
+        adminSelectedNoteID = nearestNote.id
         return nearestNote.time
     }
 
