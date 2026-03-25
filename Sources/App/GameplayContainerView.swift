@@ -194,7 +194,7 @@ struct GameplayContainerView: NSViewRepresentable {
                     availableHeight: size.height
                 )
                 let targetLane = scene.adminLane(at: scenePoint)
-                game.previewAdminNoteMove(id, to: movedTime, lane: targetLane)
+                game.previewAdminNoteMove(id, to: movedTime, yPosition: scenePoint.y, lane: targetLane)
                 game.adminSelectedNoteID = id
             }
         }
