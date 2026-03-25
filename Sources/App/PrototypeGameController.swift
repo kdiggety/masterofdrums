@@ -259,7 +259,7 @@ final class PrototypeGameController: ObservableObject {
 
     func updateAdminScrubPreview(to time: Double) {
         adminScrubPreviewTime = time
-        moveStepCursor(to: time, seekPlayback: false)
+        stepCursorTime = max(0, time)
         playbackTimeText = String(format: "%.2fs", time)
         let position = MusicalTransport.position(at: time, bpm: bpm, songOffset: songOffset)
         barBeatText = position.barBeatText
