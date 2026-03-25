@@ -293,7 +293,7 @@ final class PrototypeGameController: ObservableObject {
 
     func adminDraggedNoteTime(from startTime: Double, translationHeight: Double, availableHeight: Double) -> Double {
         let height = max(availableHeight, 1)
-        let normalizedDelta = translationHeight / height
+        let normalizedDelta = -translationHeight / height
         let scaledDuration = max(playbackDuration, 0) * adminNoteDragDurationMultiplier
         let unclampedTargetTime = startTime + (normalizedDelta * scaledDuration)
         return max(0, min(playbackDuration, unclampedTargetTime))
