@@ -7,6 +7,7 @@ final class GameplaySKView: SKView {
     var onAdminLeftMouseDragged: ((CGPoint, CGSize) -> Void)?
     var onAdminLeftMouseUp: ((CGPoint, CGSize) -> Void)?
     var onAdminRightMouseDown: ((CGPoint) -> Void)?
+    var isAdminInteractive = false
 
     override var acceptsFirstResponder: Bool { true }
 
@@ -17,28 +18,45 @@ final class GameplaySKView: SKView {
 
     override func mouseDown(with event: NSEvent) {
         window?.makeFirstResponder(self)
+        guard isAdminInteractive else {
+            super.mouseDown(with: event)
+            return
+        }
+
         let point = convert(event.locationInWindow, from: nil)
         if event.modifierFlags.contains(.control) {
             onAdminRightMouseDown?(point)
             return
         }
         onAdminLeftMouseDown?(point, bounds.size)
-        super.mouseDown(with: event)
     }
 
     override func mouseDragged(with event: NSEvent) {
+        guard isAdminInteractive else {
+            super.mouseDragged(with: event)
+            return
+        }
+
         let point = convert(event.locationInWindow, from: nil)
         onAdminLeftMouseDragged?(point, bounds.size)
-        super.mouseDragged(with: event)
     }
 
     override func mouseUp(with event: NSEvent) {
+        guard isAdminInteractive else {
+            super.mouseUp(with: event)
+            return
+        }
+
         let point = convert(event.locationInWindow, from: nil)
         onAdminLeftMouseUp?(point, bounds.size)
-        super.mouseUp(with: event)
     }
 
     override func rightMouseDown(with event: NSEvent) {
+        guard isAdminInteractive else {
+            super.rightMouseDown(with: event)
+            return
+        }
+
         window?.makeFirstResponder(self)
         let point = convert(event.locationInWindow, from: nil)
         onAdminRightMouseDown?(point)
@@ -96,6 +114,7 @@ struct GameplayContainerView: NSViewRepresentable {
         coordinator.scene = scene
         coordinator.game = game
         coordinator.isAdminInteractive = isAdminInteractive
+        view.isAdminInteractive = isAdminInteractive
 
         view.onAdminLeftMouseDown = { point, size in
             coordinator.handleLeftMouseDown(at: point, in: size)
