@@ -18,6 +18,7 @@ final class GameplayScene: SKScene {
     private let hitLineY: CGFloat = 110
     private let laneOrder: [Lane] = [.red, .yellow, .blue, .green, .kick]
     private var noteNodes: [UUID: SKShapeNode] = [:]
+    private var visibleNotes: [NoteEvent] = []
     private var laneHighlights: [Lane: SKShapeNode] = [:]
     var isAdminAuthoringMode: Bool = false
 
@@ -47,7 +48,7 @@ final class GameplayScene: SKScene {
     override func didChangeSize(_ oldSize: CGSize) {
         super.didChangeSize(oldSize)
         setupScene()
-        updateVisibleNotes(Array(noteNodes.keys.compactMap { id in chart.notes.first(where: { $0.id == id }) }))
+        updateVisibleNotes(visibleNotes)
     }
 
     override func update(_ currentTime: TimeInterval) {
@@ -66,6 +67,8 @@ final class GameplayScene: SKScene {
 
     func replaceChart(_ chart: Chart) {
         self.chart = chart
+        noteNodes.removeAll()
+        visibleNotes = []
         restartSong()
         updateVisibleNotes([])
     }
@@ -75,6 +78,7 @@ final class GameplayScene: SKScene {
     }
 
     func updateVisibleNotes(_ notes: [NoteEvent]) {
+        visibleNotes = notes
         let visibleIDs = Set(notes.map(\.id))
 
         for note in notes where noteNodes[note.id] == nil {
@@ -136,6 +140,7 @@ final class GameplayScene: SKScene {
     private func setupScene() {
         removeAllChildren()
         highway.removeAllChildren()
+        noteNodes.removeAll()
         laneHighlights.removeAll()
 
         addChild(highway)
