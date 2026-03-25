@@ -95,10 +95,12 @@ final class GameplayScene: SKScene {
 
         let staleIDs = noteNodes.keys.filter { !visibleIDs.contains($0) }
         for id in staleIDs {
+            draggedAdminNotePreviewTimeByID.removeValue(forKey: id)
             noteNodes[id]?.removeFromParent()
             noteNodes.removeValue(forKey: id)
         }
 
+        removeOrphanedNoteNodes(excluding: visibleIDs)
         updateSelectionAppearance()
         updateNodePositions(songTime: currentSongTime)
     }
@@ -282,6 +284,13 @@ final class GameplayScene: SKScene {
             currentNode = node.parent
         }
         return nil
+    }
+
+    private func removeOrphanedNoteNodes(excluding visibleIDs: Set<UUID>) {
+        for child in highway.children {
+            guard let noteID = noteID(from: child), !visibleIDs.contains(noteID) else { continue }
+            child.removeFromParent()
+        }
     }
 
     private func updateSelectionAppearance() {
