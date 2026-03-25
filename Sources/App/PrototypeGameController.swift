@@ -246,9 +246,7 @@ final class PrototypeGameController: ObservableObject {
         let normalizedDelta = translationHeight / height
         let scaledDuration = max(playbackDuration, 0) * adminLaneScrubDurationMultiplier
         let unclampedTargetTime = startTime + (normalizedDelta * scaledDuration)
-        let clampedTargetTime = max(0, min(playbackDuration, unclampedTargetTime))
-        guard isNoteLaneSnapEnabled, let nearestNote = nearestAdminNote(to: clampedTargetTime) else { return clampedTargetTime }
-        return nearestNote.time
+        return max(0, min(playbackDuration, unclampedTargetTime))
     }
 
     func seekTransport(to time: Double) {
@@ -265,7 +263,14 @@ final class PrototypeGameController: ObservableObject {
             adminScrubPreviewTime = clampedTime
         }
         adminScrubPreviewTargetTime = clampedTime
-        adminSelectedNoteID = nearestAdminNote(at: clampedTime)?.id
+        adminSelectedNoteID = nearestAdminNote(to: clampedTime)?.id
+    }
+
+    func resolvedAdminScrubTime(for previewTime: Double) -> Double {
+        guard isNoteLaneSnapEnabled, let nearestNote = nearestAdminNote(to: previewTime) else {
+            return previewTime
+        }
+        return nearestNote.time
     }
 
     func finalizeAdminScrub(at time: Double, announce: Bool = true) {
@@ -515,10 +520,6 @@ final class PrototypeGameController: ObservableObject {
         }
         let threshold = max(stepInterval, 0.12)
         return abs(nearestNote.time - time) <= threshold ? nearestNote : nil
-    }
-
-    private func nearestAdminNote(at time: Double, tolerance: Double = 0.001) -> NoteEvent? {
-        adminNotes.first(where: { abs($0.time - time) <= tolerance })
     }
 
     private var stepInterval: Double {

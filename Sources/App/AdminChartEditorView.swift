@@ -50,20 +50,21 @@ struct AdminChartEditorView: View {
                                 if laneScrubStartTime == nil {
                                     laneScrubStartTime = startTime
                                 }
-                                let targetTime = game.scrubTargetTime(
+                                let previewTime = game.scrubTargetTime(
                                     from: startTime,
                                     translationHeight: value.translation.height,
                                     availableHeight: geometry.size.height
                                 )
-                                game.updateAdminScrubPreview(to: targetTime)
+                                game.updateAdminScrubPreview(to: previewTime)
                             }
                             .onEnded { value in
                                 let startTime = laneScrubStartTime ?? game.currentPlaybackTime
-                                let targetTime = game.scrubTargetTime(
+                                let previewTime = game.scrubTargetTime(
                                     from: startTime,
                                     translationHeight: value.translation.height,
                                     availableHeight: geometry.size.height
                                 )
+                                let targetTime = game.resolvedAdminScrubTime(for: previewTime)
                                 game.seekTransport(to: targetTime)
                                 laneScrubStartTime = nil
                             }
