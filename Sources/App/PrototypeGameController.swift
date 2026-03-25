@@ -24,6 +24,8 @@ final class PrototypeGameController: ObservableObject {
         case off = "Off"
         case oneBar = "1 Bar"
         case twoBars = "2 Bars"
+        case fourBars = "4 Bars"
+        case eightBars = "8 Bars"
 
         var id: String { rawValue }
         var barCount: Int {
@@ -31,6 +33,8 @@ final class PrototypeGameController: ObservableObject {
             case .off: return 0
             case .oneBar: return 1
             case .twoBars: return 2
+            case .fourBars: return 4
+            case .eightBars: return 8
             }
         }
     }
