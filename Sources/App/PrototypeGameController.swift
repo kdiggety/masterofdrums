@@ -508,6 +508,7 @@ final class PrototypeGameController: ObservableObject {
         scene.updateVisibleNotes(session.notes(visibleAt: visibleTime, leadTime: 3.0))
     }
 
+    var currentPlaybackTime: Double { audio.currentTime }
     var playbackDuration: Double { audio.duration }
     var playbackProgress: Double {
         let duration = max(audio.duration, 0)

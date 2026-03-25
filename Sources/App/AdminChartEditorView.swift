@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AdminChartEditorView: View {
     @EnvironmentObject private var game: PrototypeGameController
+    @State private var laneScrubStartTime: Double?
 
     var body: some View {
         ScrollView {
@@ -46,8 +47,17 @@ struct AdminChartEditorView: View {
                         DragGesture(minimumDistance: 0)
                             .onChanged { value in
                                 let height = max(geometry.size.height, 1)
-                                let normalized = 1 - min(max(value.location.y / height, 0), 1)
-                                game.seekTransport(to: normalized * game.playbackDuration)
+                                let startTime = laneScrubStartTime ?? game.currentPlaybackTime
+                                if laneScrubStartTime == nil {
+                                    laneScrubStartTime = startTime
+                                }
+                                let normalizedDelta = -value.translation.height / height
+                                let timeDelta = normalizedDelta * game.playbackDuration
+                                let targetTime = max(0, min(game.playbackDuration, startTime + timeDelta))
+                                game.seekTransport(to: targetTime)
+                            }
+                            .onEnded { _ in
+                                laneScrubStartTime = nil
                             }
                     )
             }
