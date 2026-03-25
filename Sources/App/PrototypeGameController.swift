@@ -241,7 +241,7 @@ final class PrototypeGameController: ObservableObject {
 
     func scrubTargetTime(from startTime: Double, translationHeight: Double, availableHeight: Double) -> Double {
         let height = max(availableHeight, 1)
-        let normalizedDelta = -translationHeight / height
+        let normalizedDelta = translationHeight / height
         let scaledDuration = max(playbackDuration, 0) * adminLaneScrubDurationMultiplier
         let unclampedTargetTime = startTime + (normalizedDelta * scaledDuration)
         let clampedTargetTime = max(0, min(playbackDuration, unclampedTargetTime))
@@ -260,7 +260,6 @@ final class PrototypeGameController: ObservableObject {
     func updateAdminScrubPreview(to time: Double) {
         adminScrubPreviewTime = time
         moveStepCursor(to: time, seekPlayback: false)
-        refreshAdminVisibleNotes(at: time)
         playbackTimeText = String(format: "%.2fs", time)
         let position = MusicalTransport.position(at: time, bpm: bpm, songOffset: songOffset)
         barBeatText = position.barBeatText
