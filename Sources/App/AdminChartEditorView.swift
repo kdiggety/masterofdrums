@@ -118,14 +118,6 @@ struct AdminChartEditorView: View {
 
                     Divider()
 
-                    statusRow("Lane Scrub", game.scrubSensitivity.rawValue)
-                    Picker("Lane Scrub", selection: $game.scrubSensitivity) {
-                        ForEach(PrototypeGameController.ScrubSensitivity.allCases) { sensitivity in
-                            Text(sensitivity.rawValue).tag(sensitivity)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-
                     Toggle("Snap note lane scrub to nearby notes", isOn: $game.isNoteLaneSnapEnabled)
 
                     statusRow("Loop", game.loopStatusText)

@@ -39,21 +39,6 @@ final class PrototypeGameController: ObservableObject {
         }
     }
 
-    enum ScrubSensitivity: String, CaseIterable, Identifiable {
-        case fine = "Fine"
-        case normal = "Normal"
-        case fast = "Fast"
-
-        var id: String { rawValue }
-        var durationMultiplier: Double {
-            switch self {
-            case .fine: return 0.2
-            case .normal: return 0.5
-            case .fast: return 1.0
-            }
-        }
-    }
-
     @Published private(set) var score: Int = 0
     @Published private(set) var combo: Int = 0
     @Published private(set) var missCount: Int = 0
@@ -93,7 +78,6 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var stepCursorDisplayText: String = "1:1 · 0.00s"
     @Published var loopLength: LoopLength = .off
     @Published private(set) var loopStartTime: Double = 0
-    @Published var scrubSensitivity: ScrubSensitivity = .fine
     @Published var isNoteLaneSnapEnabled: Bool = true
 
     let scene: GameplayScene
@@ -105,6 +89,8 @@ final class PrototypeGameController: ObservableObject {
     private let chartFileStore = ChartFileStore()
     private let laneSoundPlayer = LaneSoundPlayer()
     private let completionGracePeriod: TimeInterval = 0.5
+    private let adminLaneScrubDurationMultiplier: Double = 0.2
+    private let adminVisibleLeadTime: TimeInterval = 8.0
 
     var isAdminAuthoringActive: Bool { isAdminPageActive }
 
@@ -247,7 +233,7 @@ final class PrototypeGameController: ObservableObject {
     func scrubTargetTime(from startTime: Double, translationHeight: Double, availableHeight: Double) -> Double {
         let height = max(availableHeight, 1)
         let normalizedDelta = -translationHeight / height
-        let scaledDuration = max(playbackDuration, 0) * scrubSensitivity.durationMultiplier
+        let scaledDuration = max(playbackDuration, 0) * adminLaneScrubDurationMultiplier
         let unclampedTargetTime = startTime + (normalizedDelta * scaledDuration)
         let clampedTargetTime = max(0, min(playbackDuration, unclampedTargetTime))
         guard isNoteLaneSnapEnabled else { return clampedTargetTime }
@@ -469,7 +455,7 @@ final class PrototypeGameController: ObservableObject {
             lastJudgmentText = session.state.lastJudgment?.rawValue ?? "—"
             accuracyText = String(format: "%.0f%%", session.state.accuracy * 100)
         }
-        scene.updateVisibleNotes(session.notes(visibleAt: scene.currentSongTime, leadTime: 3.0))
+        scene.updateVisibleNotes(session.notes(visibleAt: scene.currentSongTime, leadTime: visibleLeadTime))
         trackName = audio.loadedTrackName ?? "Preview clock"
         chartName = session.chart.title
         adminNotes = session.chart.notes.sorted { $0.time < $1.time }
@@ -541,7 +527,11 @@ final class PrototypeGameController: ObservableObject {
 
     private func refreshAdminVisibleNotes(at time: Double? = nil) {
         let visibleTime = time ?? audio.currentTime
-        scene.updateVisibleNotes(session.notes(visibleAt: visibleTime, leadTime: 3.0))
+        scene.updateVisibleNotes(session.notes(visibleAt: visibleTime, leadTime: visibleLeadTime))
+    }
+
+    private var visibleLeadTime: TimeInterval {
+        isAdminAuthoringActive ? adminVisibleLeadTime : 3.0
     }
 
     var currentPlaybackTime: Double { audio.currentTime }
