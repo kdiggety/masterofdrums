@@ -17,10 +17,15 @@ final class GameplayScene: SKScene {
     private let adminAuthoringNoteSpeed: CGFloat = 110
     private let hitLineY: CGFloat = 110
     private let laneOrder: [Lane] = [.red, .yellow, .blue, .green, .kick]
+    private let noteNodeNamePrefix = "note-"
     private var noteNodes: [UUID: SKShapeNode] = [:]
     private var visibleNotes: [NoteEvent] = []
     private var laneHighlights: [Lane: SKShapeNode] = [:]
+    private var draggedAdminNotePreviewTimeByID: [UUID: TimeInterval] = [:]
     var isAdminAuthoringMode: Bool = false
+    var selectedAdminNoteID: UUID? {
+        didSet { updateSelectionAppearance() }
+    }
 
     var currentSongTime: TimeInterval {
         timeProvider?() ?? 0
@@ -69,6 +74,7 @@ final class GameplayScene: SKScene {
         self.chart = chart
         noteNodes.removeAll()
         visibleNotes = []
+        draggedAdminNotePreviewTimeByID.removeAll()
         restartSong()
         updateVisibleNotes([])
     }
@@ -93,6 +99,7 @@ final class GameplayScene: SKScene {
             noteNodes.removeValue(forKey: id)
         }
 
+        updateSelectionAppearance()
         updateNodePositions(songTime: currentSongTime)
     }
 
@@ -135,6 +142,31 @@ final class GameplayScene: SKScene {
             .fadeAlpha(to: 0.8, duration: 0.01),
             .fadeAlpha(to: 0.0, duration: 0.16)
         ]))
+    }
+
+    func adminNoteID(at scenePoint: CGPoint) -> UUID? {
+        guard isAdminAuthoringMode else { return nil }
+        let nodesAtPoint = nodes(at: scenePoint)
+        for node in nodesAtPoint {
+            if let noteID = noteID(from: node) {
+                return noteID
+            }
+        }
+        return nil
+    }
+
+    func previewAdminNoteMove(id: UUID, time: TimeInterval) {
+        draggedAdminNotePreviewTimeByID[id] = time
+        updateNodePositions(songTime: currentSongTime)
+    }
+
+    func clearAdminNoteMovePreview(for id: UUID? = nil) {
+        if let id {
+            draggedAdminNotePreviewTimeByID.removeValue(forKey: id)
+        } else {
+            draggedAdminNotePreviewTimeByID.removeAll()
+        }
+        updateNodePositions(songTime: currentSongTime)
     }
 
     private func setupScene() {
@@ -204,7 +236,8 @@ final class GameplayScene: SKScene {
         for note in chart.notes {
             guard let node = noteNodes[note.id], let laneIndex = laneOrder.firstIndex(of: note.lane) else { continue }
             let laneFrame = frameForLane(at: laneIndex, startX: startX)
-            let timeUntilHit = note.time - songTime
+            let effectiveTime = draggedAdminNotePreviewTimeByID[note.id] ?? note.time
+            let timeUntilHit = effectiveTime - songTime
             node.position = CGPoint(x: laneFrame.midX, y: hitLineY + CGFloat(timeUntilHit) * activeNoteSpeed)
         }
     }
@@ -221,6 +254,7 @@ final class GameplayScene: SKScene {
     private func makeNoteNode(for note: NoteEvent) -> SKShapeNode {
         let radius: CGFloat = note.lane == .kick ? 28 : 24
         let node = SKShapeNode(circleOfRadius: radius)
+        node.name = noteNodeNamePrefix + note.id.uuidString
         node.fillColor = color(for: note.lane)
         node.strokeColor = .white
         node.lineWidth = 2
@@ -236,6 +270,32 @@ final class GameplayScene: SKScene {
         node.addChild(label)
 
         return node
+    }
+
+    private func noteID(from node: SKNode) -> UUID? {
+        var currentNode: SKNode? = node
+        while let node = currentNode {
+            if let name = node.name,
+               name.hasPrefix(noteNodeNamePrefix) {
+                return UUID(uuidString: String(name.dropFirst(noteNodeNamePrefix.count)))
+            }
+            currentNode = node.parent
+        }
+        return nil
+    }
+
+    private func updateSelectionAppearance() {
+        for (id, node) in noteNodes {
+            if id == selectedAdminNoteID {
+                node.lineWidth = 5
+                node.strokeColor = .systemPink
+                node.glowWidth = 8
+            } else {
+                node.lineWidth = 2
+                node.strokeColor = .white
+                node.glowWidth = 0
+            }
+        }
     }
 
     private func color(for lane: Lane) -> NSColor {

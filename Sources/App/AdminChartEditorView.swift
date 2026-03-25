@@ -2,7 +2,6 @@ import SwiftUI
 
 struct AdminChartEditorView: View {
     @EnvironmentObject private var game: PrototypeGameController
-    @State private var laneScrubStartTime: Double?
 
     var body: some View {
         ScrollView {
@@ -29,7 +28,7 @@ struct AdminChartEditorView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Admin Step + Record Mode")
                     .font(.title2.bold())
-                Text("Use real audio slowdown plus looping to chart small sections. Gameplay keys remain D, F, J, K, and Space.")
+                Text("Drag empty lane space to scrub. Drag a note to move it. Right-click a note to delete. Gameplay keys remain D, F, J, K, and Space.")
                     .foregroundStyle(.secondary)
             }
             Spacer()
@@ -38,38 +37,15 @@ struct AdminChartEditorView: View {
 
     private var leftPanel: some View {
         VStack(alignment: .leading, spacing: 12) {
-            GeometryReader { geometry in
-                GameplayContainerView(scene: game.scene, focusVersion: game.gameplayFocusVersion)
-                    .background(Color.black)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
-                    .contentShape(Rectangle())
-                    .gesture(
-                        DragGesture(minimumDistance: 0)
-                            .onChanged { value in
-                                let startTime = laneScrubStartTime ?? game.currentPlaybackTime
-                                if laneScrubStartTime == nil {
-                                    laneScrubStartTime = startTime
-                                }
-                                let previewTime = game.scrubTargetTime(
-                                    from: startTime,
-                                    translationHeight: value.translation.height,
-                                    availableHeight: geometry.size.height
-                                )
-                                game.updateAdminScrubPreview(to: previewTime)
-                            }
-                            .onEnded { value in
-                                let startTime = laneScrubStartTime ?? game.currentPlaybackTime
-                                let previewTime = game.scrubTargetTime(
-                                    from: startTime,
-                                    translationHeight: value.translation.height,
-                                    availableHeight: geometry.size.height
-                                )
-                                let targetTime = game.resolvedAdminScrubTime(for: previewTime)
-                                game.seekTransport(to: targetTime)
-                                laneScrubStartTime = nil
-                            }
-                    )
-            }
+            GameplayContainerView(
+                scene: game.scene,
+                focusVersion: game.gameplayFocusVersion,
+                game: game,
+                isAdminInteractive: true
+            )
+            .background(Color.black)
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .contentShape(Rectangle())
             .frame(maxWidth: .infinity)
             .frame(height: 480)
 

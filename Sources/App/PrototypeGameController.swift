@@ -63,7 +63,11 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var playbackRateText: String = "100%"
     @Published private(set) var playbackDurationText: String = "0.00s"
     @Published private(set) var loopStatusText: String = "Loop Off"
-    @Published var adminSelectedNoteID: UUID?
+    @Published var adminSelectedNoteID: UUID? {
+        didSet {
+            scene.selectedAdminNoteID = adminSelectedNoteID
+        }
+    }
     @Published private(set) var adminScrubPreviewTime: Double?
     @Published var bpm: Double = 120
     @Published var songOffset: Double = 0
@@ -71,6 +75,7 @@ final class PrototypeGameController: ObservableObject {
     @Published var isAdminPageActive = false {
         didSet {
             scene.isAdminAuthoringMode = isAdminPageActive
+            scene.selectedAdminNoteID = adminSelectedNoteID
             refreshAdminVisibleNotes(at: adminScrubPreviewTime ?? audio.currentTime)
         }
     }
@@ -130,6 +135,7 @@ final class PrototypeGameController: ObservableObject {
         updateStepCursorDisplay()
         updatePlaybackRateText()
         updateLoopStatusText()
+        scene.selectedAdminNoteID = adminSelectedNoteID
     }
 
     func chooseAudioFile() {
@@ -317,6 +323,41 @@ final class PrototypeGameController: ObservableObject {
         refocusGameplay()
     }
 
+    func previewAdminNoteMove(_ id: UUID, to time: Double) {
+        let clampedTime = max(0, min(playbackDuration, time))
+        scene.previewAdminNoteMove(id: id, time: clampedTime)
+        adminStatusText = "Moving note to \(String(format: "%.2f", clampedTime))s"
+    }
+
+    func clearAdminNoteMovePreview(_ id: UUID? = nil) {
+        scene.clearAdminNoteMovePreview(for: id)
+    }
+
+    func moveAdminNote(_ id: UUID, to time: Double) {
+        guard let existingNote = adminNotes.first(where: { $0.id == id }) else { return }
+        let clampedTime = max(0, min(playbackDuration, time))
+        let updated = adminNotes.map { note in
+            guard note.id == id else { return note }
+            return NoteEvent(id: id, lane: existingNote.lane, time: clampedTime)
+        }.sorted { lhs, rhs in
+            if abs(lhs.time - rhs.time) > 0.0001 {
+                return lhs.time < rhs.time
+            }
+            return lhs.lane.rawValue < rhs.lane.rawValue
+        }
+        let title = normalizedAdminChartTitle()
+        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Edited chart notes")
+        if let movedNote = adminNotes.first(where: { $0.id == id }) {
+            adminSelectedNoteID = movedNote.id
+            moveStepCursor(to: movedNote.time, seekPlayback: false)
+            adminStatusText = "Moved \(movedNote.lane.displayName) to \(String(format: "%.2f", movedNote.time))s"
+        } else {
+            adminStatusText = "Moved note to \(String(format: "%.2f", clampedTime))s"
+        }
+        syncTransportState()
+        refocusGameplay()
+    }
+
     func noteCount(for lane: Lane) -> Int { adminNotes.filter { $0.lane == lane }.count }
 
     func saveAdminChartDocument() {
@@ -420,6 +461,7 @@ final class PrototypeGameController: ObservableObject {
            !adminNotes.contains(where: { $0.id == selectedID }) {
             adminSelectedNoteID = nil
         }
+        scene.selectedAdminNoteID = adminSelectedNoteID
         session.reset()
         isRunComplete = false
         scene.restartSong()
@@ -493,6 +535,7 @@ final class PrototypeGameController: ObservableObject {
             accuracyText = String(format: "%.0f%%", session.state.accuracy * 100)
         }
         scene.updateVisibleNotes(currentSceneNotes(at: scene.currentSongTime))
+        scene.selectedAdminNoteID = adminSelectedNoteID
         trackName = audio.loadedTrackName ?? "Preview clock"
         chartName = session.chart.title
         adminNotes = session.chart.notes.sorted { $0.time < $1.time }

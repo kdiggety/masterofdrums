@@ -37,9 +37,15 @@ enum Judgment: String {
 }
 
 struct NoteEvent: Identifiable {
-    let id = UUID()
+    let id: UUID
     let lane: Lane
     let time: TimeInterval
+
+    init(id: UUID = UUID(), lane: Lane, time: TimeInterval) {
+        self.id = id
+        self.lane = lane
+        self.time = time
+    }
 }
 
 struct Chart {
