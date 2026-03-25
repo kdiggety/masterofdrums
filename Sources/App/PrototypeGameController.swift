@@ -3,6 +3,12 @@ import Combine
 import AppKit
 import UniformTypeIdentifiers
 
+private struct AdminChartHistoryEntry {
+    let chart: Chart
+    let bpm: Double
+    let selectedNoteID: UUID?
+}
+
 @MainActor
 final class PrototypeGameController: ObservableObject {
     enum StepResolution: String, CaseIterable, Identifiable {
@@ -84,6 +90,8 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var adminNotes: [NoteEvent] = []
     @Published private(set) var adminStatusText: String = "Open Admin to create or load a chart."
     @Published var isAdminRecordMode = false
+    @Published private(set) var canUndoAdminEdit = false
+    @Published private(set) var canRedoAdminEdit = false
     @Published var stepResolution: StepResolution = .sixteenth
     @Published var stepCursorTime: Double = 0
     @Published private(set) var stepCursorDisplayText: String = "1:1 · 0.00s"
@@ -105,6 +113,8 @@ final class PrototypeGameController: ObservableObject {
     private let adminAuthoringNoteSpeed: Double = 110
     private let noteLaneHitLineHeight: Double = 6
     private var adminScrubPreviewTargetTime: Double?
+    private var undoHistory: [AdminChartHistoryEntry] = []
+    private var redoHistory: [AdminChartHistoryEntry] = []
 
     var isAdminAuthoringActive: Bool { isAdminPageActive }
 
@@ -136,6 +146,7 @@ final class PrototypeGameController: ObservableObject {
         updatePlaybackRateText()
         updateLoopStatusText()
         scene.selectedAdminNoteID = adminSelectedNoteID
+        updateAdminHistoryAvailability()
     }
 
     func chooseAudioFile() {
@@ -171,7 +182,7 @@ final class PrototypeGameController: ObservableObject {
 
     func startAdminChart() {
         let chart = Chart(notes: [], title: trackName == "Preview clock" ? "Untitled Chart" : trackName)
-        applyChart(chart, bpmOverride: bpm, chartStatus: "Started empty admin chart")
+        applyChart(chart, bpmOverride: bpm, chartStatus: "Started empty admin chart", recordHistory: true)
         adminStatusText = "Started new chart. Use step mode or record mode."
         adminNoteTime = 0
         adminSelectedLane = .kick
@@ -187,9 +198,21 @@ final class PrototypeGameController: ObservableObject {
         refocusGameplay()
     }
 
+    func undoAdminEdit() {
+        guard let previous = undoHistory.popLast() else { return }
+        redoHistory.append(currentAdminHistoryEntry())
+        restoreAdminHistoryEntry(previous, statusText: "Undo chart edit")
+    }
+
+    func redoAdminEdit() {
+        guard let next = redoHistory.popLast() else { return }
+        undoHistory.append(currentAdminHistoryEntry())
+        restoreAdminHistoryEntry(next, statusText: "Redo chart edit")
+    }
+
     func clearAdminNotes() {
         let title = chartName == Chart.prototype.title ? "Admin Chart" : chartName
-        applyChart(Chart(notes: [], title: title), bpmOverride: bpm, chartStatus: "Cleared chart notes")
+        applyChart(Chart(notes: [], title: title), bpmOverride: bpm, chartStatus: "Cleared chart notes", recordHistory: true)
         adminStatusText = "Cleared chart notes."
         stepCursorTime = 0
         updateStepCursorDisplay()
@@ -315,7 +338,7 @@ final class PrototypeGameController: ObservableObject {
     func deleteAdminNote(_ id: UUID) {
         let updated = adminNotes.filter { $0.id != id }
         let title = normalizedAdminChartTitle()
-        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Edited chart notes")
+        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Edited chart notes", recordHistory: true)
         if adminSelectedNoteID == id {
             adminSelectedNoteID = nil
         }
@@ -346,7 +369,7 @@ final class PrototypeGameController: ObservableObject {
             return lhs.lane.rawValue < rhs.lane.rawValue
         }
         let title = normalizedAdminChartTitle()
-        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Edited chart notes")
+        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Edited chart notes", recordHistory: true)
         if let movedNote = adminNotes.first(where: { $0.id == id }) {
             adminSelectedNoteID = movedNote.id
             moveStepCursor(to: movedNote.time, seekPlayback: false)
@@ -376,7 +399,7 @@ final class PrototypeGameController: ObservableObject {
         guard let url = chartFileStore.chooseChartFileForOpen() else { refocusGameplay(); return }
         do {
             let loaded = try chartFileStore.loadChart(from: url)
-            applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)")
+            applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)", recordHistory: true)
             adminStatusText = "Loaded chart JSON \(url.lastPathComponent)"
             stepCursorTime = 0
             updateStepCursorDisplay()
@@ -420,7 +443,7 @@ final class PrototypeGameController: ObservableObject {
     private func loadChart(from url: URL) {
         do {
             let loaded = try midiLoader.loadChartData(from: url)
-            applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded \(loaded.chart.notes.count) notes from \(url.lastPathComponent)")
+            applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded \(loaded.chart.notes.count) notes from \(url.lastPathComponent)", recordHistory: true)
             if let bpm = loaded.bpm {
                 bpmSourceText = "MIDI"
                 midiTempoText = String(format: "%.1f BPM from MIDI", bpm)
@@ -442,7 +465,7 @@ final class PrototypeGameController: ObservableObject {
     private func appendAdminNote(_ note: NoteEvent) {
         let updated = (adminNotes + [note]).sorted { $0.time < $1.time }
         let title = normalizedAdminChartTitle()
-        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Recorded \(updated.count) chart notes")
+        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Recorded \(updated.count) chart notes", recordHistory: true)
         adminSelectedNoteID = note.id
     }
 
@@ -450,7 +473,36 @@ final class PrototypeGameController: ObservableObject {
         chartName == Chart.prototype.title ? (trackName == "Preview clock" ? "Admin Chart" : trackName) : chartName
     }
 
-    private func applyChart(_ chart: Chart, bpmOverride: Double?, chartStatus: String) {
+    private func currentAdminHistoryEntry() -> AdminChartHistoryEntry {
+        AdminChartHistoryEntry(
+            chart: Chart(notes: adminNotes, title: chartName),
+            bpm: bpm,
+            selectedNoteID: adminSelectedNoteID
+        )
+    }
+
+    private func restoreAdminHistoryEntry(_ entry: AdminChartHistoryEntry, statusText: String) {
+        adminSelectedNoteID = entry.selectedNoteID
+        applyChart(entry.chart, bpmOverride: entry.bpm, chartStatus: statusText, recordHistory: false)
+        if let selectedID = entry.selectedNoteID,
+           adminNotes.contains(where: { $0.id == selectedID }) {
+            adminSelectedNoteID = selectedID
+        }
+        adminStatusText = statusText
+        updateAdminHistoryAvailability()
+        refocusGameplay()
+    }
+
+    private func updateAdminHistoryAvailability() {
+        canUndoAdminEdit = !undoHistory.isEmpty
+        canRedoAdminEdit = !redoHistory.isEmpty
+    }
+
+    private func applyChart(_ chart: Chart, bpmOverride: Double?, chartStatus: String, recordHistory: Bool = false) {
+        if recordHistory {
+            undoHistory.append(currentAdminHistoryEntry())
+            redoHistory.removeAll()
+        }
         if let bpmOverride { bpm = bpmOverride }
         session.replaceChart(chart)
         scene.replaceChart(chart)
@@ -467,6 +519,7 @@ final class PrototypeGameController: ObservableObject {
         scene.restartSong()
         syncState()
         syncTransportState()
+        updateAdminHistoryAvailability()
     }
 
     private func handleTick(_ time: TimeInterval) {

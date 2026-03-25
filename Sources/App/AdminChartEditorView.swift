@@ -77,6 +77,15 @@ struct AdminChartEditorView: View {
                         adminButton("Load Chart JSON") { game.loadAdminChartDocument() }
                         adminButton("Save Chart JSON") { game.saveAdminChartDocument() }
                     }
+
+                    HStack(spacing: 10) {
+                        adminButton("Undo") { game.undoAdminEdit() }
+                            .disabled(!game.canUndoAdminEdit)
+                            .keyboardShortcut("z", modifiers: [.command])
+                        adminButton("Redo") { game.redoAdminEdit() }
+                            .disabled(!game.canRedoAdminEdit)
+                            .keyboardShortcut("Z", modifiers: [.command, .shift])
+                    }
                 }
             }
 
