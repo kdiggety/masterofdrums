@@ -179,9 +179,16 @@ final class GameplayScene: SKScene {
     func previewAdminNoteMove(id: UUID, time: TimeInterval, lane: Lane? = nil, smoothingFactor: Double = 0.45) {
         let clampedSmoothing = max(0, min(1, smoothingFactor))
         let currentTime = draggedAdminNotePreviewTimeByID[id] ?? time
-        let nextTime = currentTime + ((time - currentTime) * clampedSmoothing)
+        let delta = time - currentTime
+        let nextTime: TimeInterval
+        if abs(delta) < 0.0005 {
+            nextTime = time
+        } else {
+            let minimumStep = min(abs(delta), 0.0035)
+            nextTime = currentTime + (delta * clampedSmoothing) + (delta.sign == .minus ? -minimumStep : minimumStep)
+        }
         draggedAdminNotePreviewTargetTimeByID[id] = time
-        draggedAdminNotePreviewTimeByID[id] = nextTime
+        draggedAdminNotePreviewTimeByID[id] = max(0, nextTime)
         if let lane {
             draggedAdminNotePreviewLaneByID[id] = lane
         }
