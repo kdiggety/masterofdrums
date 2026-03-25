@@ -97,6 +97,8 @@ final class PrototypeGameController: ObservableObject {
     private let completionGracePeriod: TimeInterval = 0.5
     private let adminLaneScrubDurationMultiplier: Double = 0.08
     private let adminScrubSmoothingFactor: Double = 0.35
+    private let adminAuthoringNoteSpeed: Double = 110
+    private let noteLaneHitLineHeight: Double = 6
     private var adminScrubPreviewTargetTime: Double?
 
     var isAdminAuthoringActive: Bool { isAdminPageActive }
@@ -516,11 +518,21 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func nearestAdminNote(to time: Double) -> NoteEvent? {
-        guard let nearestNote = adminNotes.min(by: { abs($0.time - time) < abs($1.time - time) }) else {
-            return nil
+        let hitLineHalfHeight = noteLaneHitLineHeight / 2
+        let overlappingNotes = adminNotes.compactMap { note -> (note: NoteEvent, overlap: Double)? in
+            let noteRadius = note.lane == .kick ? 28.0 : 24.0
+            let distanceToHitLine = abs(note.time - time) * adminAuthoringNoteSpeed
+            let overlap = (noteRadius + hitLineHalfHeight) - distanceToHitLine
+            guard overlap >= 0 else { return nil }
+            return (note, overlap)
         }
-        let threshold = max(stepInterval, 0.12)
-        return abs(nearestNote.time - time) <= threshold ? nearestNote : nil
+
+        return overlappingNotes.max { lhs, rhs in
+            if abs(lhs.overlap - rhs.overlap) > 0.001 {
+                return lhs.overlap < rhs.overlap
+            }
+            return abs(lhs.note.time - time) > abs(rhs.note.time - time)
+        }?.note
     }
 
     private var stepInterval: Double {
