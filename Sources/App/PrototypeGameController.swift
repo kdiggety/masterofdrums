@@ -63,6 +63,7 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var playbackRateText: String = "100%"
     @Published private(set) var playbackDurationText: String = "0.00s"
     @Published private(set) var loopStatusText: String = "Loop Off"
+    @Published private(set) var adminSelectedNoteID: UUID?
     @Published var bpm: Double = 120
     @Published var songOffset: Double = 0
 
@@ -246,10 +247,21 @@ final class PrototypeGameController: ObservableObject {
         refocusGameplay()
     }
 
+    func jumpToAdminNote(_ id: UUID) {
+        guard let note = adminNotes.first(where: { $0.id == id }) else { return }
+        adminSelectedNoteID = id
+        seekTransport(to: note.time)
+        adminStatusText = "Jumped to \(note.lane.displayName) at \(String(format: "%.2f", note.time))s"
+        refocusGameplay()
+    }
+
     func deleteAdminNote(_ id: UUID) {
         let updated = adminNotes.filter { $0.id != id }
         let title = normalizedAdminChartTitle()
         applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Edited chart notes")
+        if adminSelectedNoteID == id {
+            adminSelectedNoteID = nil
+        }
         adminStatusText = "Deleted note. \(updated.count) notes remain."
         refocusGameplay()
     }
@@ -339,6 +351,7 @@ final class PrototypeGameController: ObservableObject {
         let updated = (adminNotes + [note]).sorted { $0.time < $1.time }
         let title = normalizedAdminChartTitle()
         applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Recorded \(updated.count) chart notes")
+        adminSelectedNoteID = note.id
     }
 
     private func normalizedAdminChartTitle() -> String {
@@ -352,6 +365,10 @@ final class PrototypeGameController: ObservableObject {
         chartName = chart.title
         chartStatusText = chartStatus
         adminNotes = chart.notes.sorted { $0.time < $1.time }
+        if let selectedID = adminSelectedNoteID,
+           !adminNotes.contains(where: { $0.id == selectedID }) {
+            adminSelectedNoteID = nil
+        }
         session.reset()
         isRunComplete = false
         scene.restartSong()

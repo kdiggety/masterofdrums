@@ -63,6 +63,7 @@ struct AdminChartEditorView: View {
 
             GroupBox("Playback") {
                 VStack(alignment: .leading, spacing: 10) {
+                    statusRow("BPM", String(format: "%.1f", game.bpm))
                     statusRow("Position", "\(game.playbackTimeText) / \(game.playbackDurationText)")
                     Slider(
                         value: Binding(
@@ -126,6 +127,43 @@ struct AdminChartEditorView: View {
                 }
             }
 
+            GroupBox("Recorded Notes") {
+                VStack(alignment: .leading, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(Lane.allCases) { lane in
+                            HStack {
+                                Text(lane.displayName)
+                                Spacer()
+                                Text("\(game.noteCount(for: lane))")
+                                    .font(.headline.monospacedDigit())
+                            }
+                        }
+                    }
+
+                    List(game.adminNotes, selection: $game.adminSelectedNoteID) { note in
+                        HStack {
+                            Text(note.lane.displayName)
+                                .frame(width: 80, alignment: .leading)
+                            Text(String(format: "%.2fs", note.time))
+                                .monospacedDigit()
+                            Spacer()
+                            Button("Jump") { game.jumpToAdminNote(note.id) }
+                                .buttonStyle(.borderless)
+                                .focusable(false)
+                            Button("Delete") { game.deleteAdminNote(note.id) }
+                                .buttonStyle(.borderless)
+                                .focusable(false)
+                        }
+                        .tag(note.id)
+                    }
+                    .frame(minHeight: 220)
+                    .onChange(of: game.adminSelectedNoteID) { selectedID in
+                        guard let selectedID else { return }
+                        game.jumpToAdminNote(selectedID)
+                    }
+                }
+            }
+
             GroupBox("Session") {
                 VStack(alignment: .leading, spacing: 8) {
                     statusRow("Audio", game.trackName)
@@ -143,65 +181,6 @@ struct AdminChartEditorView: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
-
-            GroupBox("Lane Summary") {
-                VStack(alignment: .leading, spacing: 8) {
-                    ForEach(Lane.allCases) { lane in
-                        HStack {
-                            Text(lane.displayName)
-                            Spacer()
-                            Text("\(game.noteCount(for: lane))")
-                                .font(.headline.monospacedDigit())
-                        }
-                    }
-                }
-            }
-
-            GroupBox("Manual Add / Fix") {
-                VStack(alignment: .leading, spacing: 10) {
-                    lanePicker
-                    timeField
-                    adminButton("Add Note") { game.addAdminNote() }
-                }
-            }
-
-            GroupBox("Recorded Notes") {
-                List {
-                    ForEach(game.adminNotes) { note in
-                        HStack {
-                            Text(note.lane.displayName)
-                                .frame(width: 80, alignment: .leading)
-                            Text(String(format: "%.2fs", note.time))
-                                .monospacedDigit()
-                            Spacer()
-                            Button("Delete") { game.deleteAdminNote(note.id) }
-                                .buttonStyle(.borderless)
-                                .focusable(false)
-                        }
-                    }
-                }
-                .frame(minHeight: 220)
-            }
-        }
-    }
-
-    private var lanePicker: some View {
-        Picker("Lane", selection: $game.adminSelectedLane) {
-            ForEach(Lane.allCases) { lane in Text(lane.displayName).tag(lane) }
-        }
-        .pickerStyle(.menu)
-    }
-
-    private var timeField: some View {
-        HStack(spacing: 6) {
-            Text("Time")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            TextField("0.00", value: $game.adminNoteTime, format: .number.precision(.fractionLength(2)))
-                .frame(width: 90)
-            Text("sec")
-                .font(.caption)
-                .foregroundStyle(.secondary)
         }
     }
 
