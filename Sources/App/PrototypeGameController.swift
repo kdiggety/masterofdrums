@@ -39,6 +39,21 @@ final class PrototypeGameController: ObservableObject {
         }
     }
 
+    enum ScrubSensitivity: String, CaseIterable, Identifiable {
+        case fine = "Fine"
+        case normal = "Normal"
+        case fast = "Fast"
+
+        var id: String { rawValue }
+        var durationMultiplier: Double {
+            switch self {
+            case .fine: return 0.2
+            case .normal: return 0.5
+            case .fast: return 1.0
+            }
+        }
+    }
+
     @Published private(set) var score: Int = 0
     @Published private(set) var combo: Int = 0
     @Published private(set) var missCount: Int = 0
@@ -78,6 +93,8 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var stepCursorDisplayText: String = "1:1 · 0.00s"
     @Published var loopLength: LoopLength = .off
     @Published private(set) var loopStartTime: Double = 0
+    @Published var scrubSensitivity: ScrubSensitivity = .fine
+    @Published var isNoteLaneSnapEnabled: Bool = true
 
     let scene: GameplayScene
     let audio: AudioPlaybackController
@@ -225,6 +242,16 @@ final class PrototypeGameController: ObservableObject {
         updatePlaybackRateText()
         adminStatusText = "Playback speed set to \(playbackRateText)"
         refocusGameplay()
+    }
+
+    func scrubTargetTime(from startTime: Double, translationHeight: Double, availableHeight: Double) -> Double {
+        let height = max(availableHeight, 1)
+        let normalizedDelta = -translationHeight / height
+        let scaledDuration = max(playbackDuration, 0) * scrubSensitivity.durationMultiplier
+        let unclampedTargetTime = startTime + (normalizedDelta * scaledDuration)
+        let clampedTargetTime = max(0, min(playbackDuration, unclampedTargetTime))
+        guard isNoteLaneSnapEnabled else { return clampedTargetTime }
+        return snappedAdminTime(near: clampedTargetTime)
     }
 
     func seekTransport(to time: Double) {
@@ -465,6 +492,14 @@ final class PrototypeGameController: ObservableObject {
         let interval = stepInterval
         guard interval > 0 else { return max(0, stepCursorTime) }
         return (stepCursorTime / interval).rounded() * interval
+    }
+
+    private func snappedAdminTime(near time: Double) -> Double {
+        guard let nearestNote = adminNotes.min(by: { abs($0.time - time) < abs($1.time - time) }) else {
+            return time
+        }
+        let threshold = max(stepInterval * 0.5, 0.04)
+        return abs(nearestNote.time - time) <= threshold ? nearestNote.time : time
     }
 
     private var stepInterval: Double {

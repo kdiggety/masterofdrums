@@ -46,14 +46,15 @@ struct AdminChartEditorView: View {
                     .gesture(
                         DragGesture(minimumDistance: 0)
                             .onChanged { value in
-                                let height = max(geometry.size.height, 1)
                                 let startTime = laneScrubStartTime ?? game.currentPlaybackTime
                                 if laneScrubStartTime == nil {
                                     laneScrubStartTime = startTime
                                 }
-                                let normalizedDelta = -value.translation.height / height
-                                let timeDelta = normalizedDelta * game.playbackDuration
-                                let targetTime = max(0, min(game.playbackDuration, startTime + timeDelta))
+                                let targetTime = game.scrubTargetTime(
+                                    from: startTime,
+                                    translationHeight: value.translation.height,
+                                    availableHeight: geometry.size.height
+                                )
                                 game.seekTransport(to: targetTime)
                             }
                             .onEnded { _ in
@@ -114,6 +115,18 @@ struct AdminChartEditorView: View {
                         playbackRateButton("75%", rate: 0.75)
                         playbackRateButton("50%", rate: 0.5)
                     }
+
+                    Divider()
+
+                    statusRow("Lane Scrub", game.scrubSensitivity.rawValue)
+                    Picker("Lane Scrub", selection: $game.scrubSensitivity) {
+                        ForEach(PrototypeGameController.ScrubSensitivity.allCases) { sensitivity in
+                            Text(sensitivity.rawValue).tag(sensitivity)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+
+                    Toggle("Snap note lane scrub to nearby notes", isOn: $game.isNoteLaneSnapEnabled)
 
                     statusRow("Loop", game.loopStatusText)
                     Picker("Loop", selection: $game.loopLength) {
