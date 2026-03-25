@@ -37,11 +37,22 @@ struct AdminChartEditorView: View {
 
     private var leftPanel: some View {
         VStack(alignment: .leading, spacing: 12) {
-            GameplayContainerView(scene: game.scene, focusVersion: game.gameplayFocusVersion)
-                .frame(maxWidth: .infinity)
-                .frame(height: 480)
-                .background(Color.black)
-                .clipShape(RoundedRectangle(cornerRadius: 14))
+            GeometryReader { geometry in
+                GameplayContainerView(scene: game.scene, focusVersion: game.gameplayFocusVersion)
+                    .background(Color.black)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    .contentShape(Rectangle())
+                    .gesture(
+                        DragGesture(minimumDistance: 0)
+                            .onChanged { value in
+                                let height = max(geometry.size.height, 1)
+                                let normalized = 1 - min(max(value.location.y / height, 0), 1)
+                                game.seekTransport(to: normalized * game.playbackDuration)
+                            }
+                    )
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 480)
 
             recordedNotesSection
         }
