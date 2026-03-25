@@ -125,14 +125,6 @@ struct AdminChartEditorView: View {
                         adminButton("← Bar") { game.jumpBackwardBar() }
                         adminButton("Bar →") { game.jumpForwardBar() }
                     }
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        adminButton("Place Kick") { game.placeStepNote(.kick) }
-                        adminButton("Place Snare") { game.placeStepNote(.red) }
-                        adminButton("Place Hat") { game.placeStepNote(.yellow) }
-                        adminButton("Place Blue") { game.placeStepNote(.blue) }
-                        adminButton("Place Green") { game.placeStepNote(.green) }
-                    }
                 }
             }
 
