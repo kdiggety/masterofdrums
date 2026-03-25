@@ -111,6 +111,7 @@ final class PrototypeGameController: ObservableObject {
     private let adminLaneScrubDurationMultiplier: Double = 0.08
     private let adminNoteDragDurationMultiplier: Double = 0.03
     private let adminScrubSmoothingFactor: Double = 0.35
+    private let adminNoteDragSmoothingFactor: Double = 0.45
     private let adminAuthoringNoteSpeed: Double = 110
     private let noteLaneHitLineHeight: Double = 6
     private var adminScrubPreviewTargetTime: Double?
@@ -292,7 +293,7 @@ final class PrototypeGameController: ObservableObject {
 
     func adminDraggedNoteTime(from startTime: Double, translationHeight: Double, availableHeight: Double) -> Double {
         let height = max(availableHeight, 1)
-        let normalizedDelta = -translationHeight / height
+        let normalizedDelta = translationHeight / height
         let scaledDuration = max(playbackDuration, 0) * adminNoteDragDurationMultiplier
         let unclampedTargetTime = startTime + (normalizedDelta * scaledDuration)
         return max(0, min(playbackDuration, unclampedTargetTime))
@@ -372,7 +373,7 @@ final class PrototypeGameController: ObservableObject {
 
     func previewAdminNoteMove(_ id: UUID, to time: Double, lane: Lane? = nil) {
         let clampedTime = max(0, min(playbackDuration, time))
-        scene.previewAdminNoteMove(id: id, time: clampedTime, lane: lane)
+        scene.previewAdminNoteMove(id: id, time: clampedTime, lane: lane, smoothingFactor: adminNoteDragSmoothingFactor)
         if let lane {
             adminStatusText = "Moving note to \(lane.displayName) at \(String(format: "%.2f", clampedTime))s"
         } else {
