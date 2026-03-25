@@ -140,27 +140,38 @@ struct AdminChartEditorView: View {
                         }
                     }
 
-                    List(game.adminNotes, selection: $game.adminSelectedNoteID) { note in
-                        HStack {
-                            Text(note.lane.displayName)
-                                .frame(width: 80, alignment: .leading)
-                            Text(String(format: "%.2fs", note.time))
-                                .monospacedDigit()
-                            Spacer()
-                            Button("Jump") { game.jumpToAdminNote(note.id) }
-                                .buttonStyle(.borderless)
-                                .focusable(false)
-                            Button("Delete") { game.deleteAdminNote(note.id) }
-                                .buttonStyle(.borderless)
-                                .focusable(false)
+                    ScrollView {
+                        LazyVStack(alignment: .leading, spacing: 8) {
+                            ForEach(game.adminNotes) { note in
+                                HStack {
+                                    Text(note.lane.displayName)
+                                        .frame(width: 80, alignment: .leading)
+                                    Text(String(format: "%.2fs", note.time))
+                                        .monospacedDigit()
+                                    Spacer()
+                                    Button("Jump") {
+                                        game.adminSelectedNoteID = note.id
+                                        game.jumpToAdminNote(note.id)
+                                    }
+                                    .buttonStyle(.borderless)
+                                    .focusable(false)
+                                    Button("Delete") { game.deleteAdminNote(note.id) }
+                                        .buttonStyle(.borderless)
+                                        .focusable(false)
+                                }
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 6)
+                                .background(game.adminSelectedNoteID == note.id ? Color.accentColor.opacity(0.15) : Color.clear)
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    game.adminSelectedNoteID = note.id
+                                    game.jumpToAdminNote(note.id)
+                                }
+                            }
                         }
-                        .tag(note.id)
                     }
-                    .frame(minHeight: 220)
-                    .onChange(of: game.adminSelectedNoteID) { selectedID in
-                        guard let selectedID else { return }
-                        game.jumpToAdminNote(selectedID)
-                    }
+                    .frame(minHeight: 220, maxHeight: 260)
                 }
             }
 
