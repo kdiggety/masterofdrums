@@ -86,6 +86,15 @@ struct AdminChartEditorView: View {
                             .disabled(!game.canRedoAdminEdit)
                             .keyboardShortcut("Z", modifiers: [.command, .shift])
                     }
+
+                    HStack(spacing: 10) {
+                        adminButton("Copy") { game.copySelectedAdminNotes() }
+                            .keyboardShortcut("c", modifiers: [.command])
+                        adminButton("Cut") { game.cutSelectedAdminNotes() }
+                            .keyboardShortcut("x", modifiers: [.command])
+                        adminButton("Paste") { game.pasteAdminNotes() }
+                            .keyboardShortcut("v", modifiers: [.command])
+                    }
                 }
             }
 
@@ -174,6 +183,11 @@ struct AdminChartEditorView: View {
     private var recordedNotesSection: some View {
         GroupBox("Recorded Notes") {
             VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 10) {
+                    adminButton("Delete Selected") { game.deleteSelectedAdminNotes() }
+                    adminButton("Clear Selection") { game.clearAdminSelection() }
+                }
+
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 8) {
                         ForEach(game.adminNotes) { note in
@@ -184,7 +198,7 @@ struct AdminChartEditorView: View {
                                     .monospacedDigit()
                                 Spacer()
                                 Button("Jump") {
-                                    game.adminSelectedNoteID = note.id
+                                    game.selectAdminNote(note.id)
                                     game.jumpToAdminNote(note.id)
                                 }
                                 .buttonStyle(.borderless)
@@ -195,12 +209,12 @@ struct AdminChartEditorView: View {
                             }
                             .padding(.horizontal, 8)
                             .padding(.vertical, 6)
-                            .background(game.adminSelectedNoteID == note.id ? Color.accentColor.opacity(0.15) : Color.clear)
+                            .background(game.adminSelectedNoteIDs.contains(note.id) ? Color.accentColor.opacity(0.15) : Color.clear)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                game.adminSelectedNoteID = note.id
-                                game.jumpToAdminNote(note.id)
+                                let extendSelection = NSEvent.modifierFlags.contains(.shift)
+                                game.selectAdminNote(note.id, extendSelection: extendSelection)
                             }
                         }
                     }
