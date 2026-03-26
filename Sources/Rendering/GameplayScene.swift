@@ -6,6 +6,7 @@ final class GameplayScene: SKScene {
         let bpm: Double
         let songOffset: TimeInterval
         let beatsPerBar: Int
+        let subdivisionsPerBeat: Int
     }
 
     var onInput: ((InputEvent) -> Void)?
@@ -244,22 +245,31 @@ final class GameplayScene: SKScene {
         let totalWidth = laneWidth * CGFloat(laneOrder.count)
         let startX = (size.width - totalWidth) / 2
         let beatDuration = 60.0 / configuration.bpm
+        let subdivisionDuration = beatDuration / Double(max(configuration.subdivisionsPerBeat, 1))
         let adjustedSongTime = songTime - configuration.songOffset
-        let currentBeatIndex = Int(floor(adjustedSongTime / beatDuration))
-        let beatsToDraw = 24
+        let currentSubdivisionIndex = Int(floor(adjustedSongTime / subdivisionDuration))
+        let subdivisionsToDraw = max(configuration.subdivisionsPerBeat * 24, 32)
 
-        for offset in -8...beatsToDraw {
-            let beatIndex = currentBeatIndex + offset
-            let beatTime = configuration.songOffset + (Double(beatIndex) * beatDuration)
-            let timeUntilBeat = beatTime - songTime
-            let y = hitLineY + CGFloat(timeUntilBeat) * activeNoteSpeed
+        for offset in -(configuration.subdivisionsPerBeat * 8)...subdivisionsToDraw {
+            let subdivisionIndex = currentSubdivisionIndex + offset
+            let subdivisionTime = configuration.songOffset + (Double(subdivisionIndex) * subdivisionDuration)
+            let timeUntilSubdivision = subdivisionTime - songTime
+            let y = hitLineY + CGFloat(timeUntilSubdivision) * activeNoteSpeed
             guard y >= 0, y <= size.height else { continue }
 
-            let isMeasureLine = beatIndex >= 0 && (beatIndex % configuration.beatsPerBar == 0)
+            let isBeatLine = subdivisionIndex % configuration.subdivisionsPerBeat == 0
+            let beatIndex = subdivisionIndex / configuration.subdivisionsPerBeat
+            let isMeasureLine = isBeatLine && beatIndex >= 0 && (beatIndex % configuration.beatsPerBar == 0)
             let lineRect = CGRect(x: startX + laneInset, y: y, width: totalWidth - (laneInset * 2), height: isMeasureLine ? 2 : 1)
             let line = SKShapeNode(rect: lineRect)
-            line.name = beatGuideNodeNamePrefix + "\(beatIndex)"
-            line.fillColor = isMeasureLine ? NSColor.white.withAlphaComponent(0.28) : NSColor.white.withAlphaComponent(0.12)
+            line.name = beatGuideNodeNamePrefix + "\(subdivisionIndex)"
+            if isMeasureLine {
+                line.fillColor = NSColor.white.withAlphaComponent(0.28)
+            } else if isBeatLine {
+                line.fillColor = NSColor.white.withAlphaComponent(0.12)
+            } else {
+                line.fillColor = NSColor.white.withAlphaComponent(0.06)
+            }
             line.strokeColor = .clear
             line.zPosition = -0.5
             highway.addChild(line)

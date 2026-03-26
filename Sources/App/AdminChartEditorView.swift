@@ -111,7 +111,7 @@ struct AdminChartEditorView: View {
 
                     Divider()
 
-                    Toggle("Snap note lane scrub to nearby notes", isOn: $game.isNoteLaneSnapEnabled)
+                    Toggle("Snap note lane scrub to beat grid", isOn: $game.isNoteLaneSnapEnabled)
 
                     statusRow("Loop", game.loopStatusText)
                     Picker("Loop", selection: $game.loopLength) {
