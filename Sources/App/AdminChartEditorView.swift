@@ -220,6 +220,12 @@ struct AdminChartEditorView: View {
                                 }
 
                                 HStack(spacing: 6) {
+                                    Menu(section.colorName.capitalized) {
+                                        ForEach(sectionColors, id: \.0) { colorName, _ in
+                                            Button(colorName.capitalized) { game.updateSongSectionColor(section.id, colorName: colorName) }
+                                        }
+                                    }
+                                    .buttonStyle(.borderless)
                                     Button("Jump") { game.jumpToSongSection(section.id) }
                                         .buttonStyle(.borderless)
                                     Button("Loop") { game.setLoopToSongSection(section.id) }
@@ -338,21 +344,40 @@ struct AdminChartEditorView: View {
                 )
         }
         .frame(width: width, height: 26)
-        .background(section.id == game.selectedAdminSectionID ? Color.accentColor.opacity(0.65) : Color.accentColor.opacity(0.35))
+        .background(sectionColor(section).opacity(section.id == game.selectedAdminSectionID ? 0.75 : 0.45))
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .contentShape(RoundedRectangle(cornerRadius: 8))
         .offset(x: min(startX, max(0, totalWidth - width)))
         .zIndex(section.id == game.selectedAdminSectionID ? 2 : 1)
         .onTapGesture {
-            game.selectSongSection(section.id)
+            game.selectSongSection(section.id, movePlayhead: true)
         }
         .onTapGesture(count: 2) {
             game.jumpToSongSection(section.id, playIfAlreadyPlaying: true)
         }
         .contextMenu {
             Button("Rename") { beginEditingSection(section) }
+            Menu("Color") {
+                ForEach(sectionColors, id: \.0) { colorName, _ in
+                    Button(colorName.capitalized) { game.updateSongSectionColor(section.id, colorName: colorName) }
+                }
+            }
             Button("Delete", role: .destructive) { game.deleteSongSection(section.id) }
         }
+    }
+
+    private let sectionColors: [(String, Color)] = [
+        ("blue", .blue),
+        ("green", .green),
+        ("orange", .orange),
+        ("purple", .purple),
+        ("pink", .pink),
+        ("red", .red),
+        ("yellow", .yellow)
+    ]
+
+    private func sectionColor(_ section: SongSection) -> Color {
+        sectionColors.first(where: { $0.0 == section.colorName })?.1 ?? .blue
     }
 
     private func beginEditingSection(_ section: SongSection) {

@@ -53,12 +53,14 @@ struct SongSection: Identifiable, Equatable {
     let name: String
     let startTime: TimeInterval
     let endTime: TimeInterval
+    let colorName: String
 
-    init(id: UUID = UUID(), name: String, startTime: TimeInterval, endTime: TimeInterval) {
+    init(id: UUID = UUID(), name: String, startTime: TimeInterval, endTime: TimeInterval, colorName: String = "blue") {
         self.id = id
         self.name = name
         self.startTime = startTime
         self.endTime = max(endTime, startTime)
+        self.colorName = colorName
     }
 }
 

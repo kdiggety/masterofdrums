@@ -285,7 +285,7 @@ final class PrototypeGameController: ObservableObject {
         }
 
         let sectionName = normalizedSectionName(name)
-        let section = SongSection(name: sectionName, startTime: startTime, endTime: endTime)
+        let section = SongSection(name: sectionName, startTime: startTime, endTime: endTime, colorName: nextSection?.colorName ?? "blue")
         let title = normalizedAdminChartTitle()
         applyChart(Chart(notes: adminNotes, title: title, sections: existingSections + [section]), bpmOverride: bpm, chartStatus: "Added song section", recordHistory: true)
         selectedAdminSectionID = section.id
@@ -299,7 +299,7 @@ final class PrototypeGameController: ObservableObject {
         guard !trimmedName.isEmpty else { return }
         guard let section = adminSections.first(where: { $0.id == id }), section.name != trimmedName else { return }
         let updatedSections = adminSections.map { item in
-            item.id == id ? SongSection(id: item.id, name: trimmedName, startTime: item.startTime, endTime: item.endTime) : item
+            item.id == id ? SongSection(id: item.id, name: trimmedName, startTime: item.startTime, endTime: item.endTime, colorName: item.colorName) : item
         }
         let title = normalizedAdminChartTitle()
         applyChart(Chart(notes: adminNotes, title: title, sections: updatedSections), bpmOverride: bpm, chartStatus: "Renamed song section", recordHistory: true)
@@ -307,8 +307,12 @@ final class PrototypeGameController: ObservableObject {
         adminStatusText = "Renamed section to \(trimmedName)"
     }
 
-    func selectSongSection(_ id: UUID?) {
+    func selectSongSection(_ id: UUID?, movePlayhead: Bool = false) {
         selectedAdminSectionID = id
+        if movePlayhead, let id, let section = adminSections.first(where: { $0.id == id }) {
+            moveStepCursor(to: section.startTime, seekPlayback: true)
+            adminStatusText = "Moved to \(section.name)"
+        }
     }
 
     func jumpToSongSection(_ id: UUID, playIfAlreadyPlaying: Bool = false) {
@@ -345,10 +349,10 @@ final class PrototypeGameController: ObservableObject {
             if let previous, abs(newStart - previous.endTime) <= snapThreshold {
                 newStart = previous.endTime
             }
-            updatedSection = SongSection(id: updatedSection.id, name: updatedSection.name, startTime: newStart, endTime: updatedSection.endTime)
+            updatedSection = SongSection(id: updatedSection.id, name: updatedSection.name, startTime: newStart, endTime: updatedSection.endTime, colorName: updatedSection.colorName)
             updatedSections[sortedIndex] = updatedSection
             if let previous, isAdjacent {
-                updatedSections[sortedIndex - 1] = SongSection(id: previous.id, name: previous.name, startTime: previous.startTime, endTime: newStart)
+                updatedSections[sortedIndex - 1] = SongSection(id: previous.id, name: previous.name, startTime: previous.startTime, endTime: newStart, colorName: previous.colorName)
             }
         case .end:
             let next = sortedIndex + 1 < sortedSections.count ? sortedSections[sortedIndex + 1] : nil
@@ -359,10 +363,10 @@ final class PrototypeGameController: ObservableObject {
             if let next, abs(newEnd - next.startTime) <= snapThreshold {
                 newEnd = next.startTime
             }
-            updatedSection = SongSection(id: updatedSection.id, name: updatedSection.name, startTime: updatedSection.startTime, endTime: newEnd)
+            updatedSection = SongSection(id: updatedSection.id, name: updatedSection.name, startTime: updatedSection.startTime, endTime: newEnd, colorName: updatedSection.colorName)
             updatedSections[sortedIndex] = updatedSection
             if let next, isAdjacent {
-                updatedSections[sortedIndex + 1] = SongSection(id: next.id, name: next.name, startTime: newEnd, endTime: next.endTime)
+                updatedSections[sortedIndex + 1] = SongSection(id: next.id, name: next.name, startTime: newEnd, endTime: next.endTime, colorName: next.colorName)
             }
         }
 
@@ -371,6 +375,17 @@ final class PrototypeGameController: ObservableObject {
         selectedAdminSectionID = id
         adminStatusText = "Adjusted \(updatedSection.name) \(sectionBarBeatText(for: updatedSection.startTime))–\(sectionBarBeatText(for: updatedSection.endTime))"
         refocusGameplay()
+    }
+
+    func updateSongSectionColor(_ id: UUID, colorName: String) {
+        guard let section = adminSections.first(where: { $0.id == id }), section.colorName != colorName else { return }
+        let updatedSections = adminSections.map { item in
+            item.id == id ? SongSection(id: item.id, name: item.name, startTime: item.startTime, endTime: item.endTime, colorName: colorName) : item
+        }
+        let title = normalizedAdminChartTitle()
+        applyChart(Chart(notes: adminNotes, title: title, sections: updatedSections), bpmOverride: bpm, chartStatus: "Changed section color", recordHistory: true)
+        selectedAdminSectionID = id
+        adminStatusText = "Changed \(section.name) color"
     }
 
     func deleteSongSection(_ id: UUID) {

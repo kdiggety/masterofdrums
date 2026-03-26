@@ -13,6 +13,7 @@ struct ChartDocument: Codable {
         let name: String
         let startTime: Double
         let endTime: Double?
+        let colorName: String?
     }
 
     let title: String
@@ -45,7 +46,7 @@ struct ChartFileStore {
             title: chart.title,
             bpm: bpm,
             notes: chart.notes.map { .init(lane: $0.lane.rawValue, time: $0.time) },
-            sections: chart.sections.map { .init(id: $0.id, name: $0.name, startTime: $0.startTime, endTime: $0.endTime) }
+            sections: chart.sections.map { .init(id: $0.id, name: $0.name, startTime: $0.startTime, endTime: $0.endTime, colorName: $0.colorName) }
         )
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -70,7 +71,8 @@ struct ChartFileStore {
                 id: item.id ?? UUID(),
                 name: item.name,
                 startTime: item.startTime,
-                endTime: item.endTime ?? fallbackEnd
+                endTime: item.endTime ?? fallbackEnd,
+                colorName: item.colorName ?? "blue"
             )
         }
         return (Chart(notes: notes.sorted { $0.time < $1.time }, title: document.title, sections: sections), document.bpm)
