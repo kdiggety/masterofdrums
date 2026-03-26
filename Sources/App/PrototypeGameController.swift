@@ -259,14 +259,25 @@ final class PrototypeGameController: ObservableObject {
     @discardableResult
     func addSongSection(at time: Double? = nil, named name: String? = nil) -> UUID? {
         let baseTime = time ?? stepCursorTime
-        let startTime = quantizedLoopStart(for: baseTime)
+        let desiredStart = quantizedLoopStart(for: baseTime)
         let defaultLength = max(barDuration * 4, barDuration)
-        let unclampedEndTime = startTime + defaultLength
         let existingSections = adminSections.sorted { $0.startTime < $1.startTime }
-        let priorSection = existingSections.last(where: { $0.endTime <= startTime + 0.0001 })
+        let snapThreshold = stepInterval
+
+        var startTime = desiredStart
+        if let adjacentEnd = existingSections
+            .map(\.endTime)
+            .min(by: { abs($0 - desiredStart) < abs($1 - desiredStart) }),
+           abs(adjacentEnd - desiredStart) <= snapThreshold {
+            startTime = adjacentEnd
+        }
+
         let nextSection = existingSections.first(where: { $0.startTime >= startTime - 0.0001 })
-        let endLimit = nextSection?.startTime ?? max(playbackDuration, adminNotes.map(\.time).max() ?? 0, unclampedEndTime)
-        let endTime = max(startTime + stepInterval, min(unclampedEndTime, endLimit))
+        let endLimit = nextSection?.startTime ?? max(playbackDuration, adminNotes.map(\.time).max() ?? 0, startTime + defaultLength)
+        var endTime = max(startTime + stepInterval, min(startTime + defaultLength, endLimit))
+        if let nextSection, abs(endTime - nextSection.startTime) <= snapThreshold {
+            endTime = nextSection.startTime
+        }
 
         if existingSections.contains(where: { startTime < $0.endTime - 0.0001 && endTime > $0.startTime + 0.0001 }) {
             adminStatusText = "New section overlaps an existing section"
@@ -274,18 +285,9 @@ final class PrototypeGameController: ObservableObject {
         }
 
         let sectionName = normalizedSectionName(name)
-        var newSections = existingSections
         let section = SongSection(name: sectionName, startTime: startTime, endTime: endTime)
-        newSections.append(section)
-        if let priorSection, abs(priorSection.endTime - startTime) <= stepInterval * 0.5 {
-            newSections = newSections.map { existing in
-                existing.id == priorSection.id
-                    ? SongSection(id: existing.id, name: existing.name, startTime: existing.startTime, endTime: startTime)
-                    : existing
-            }
-        }
         let title = normalizedAdminChartTitle()
-        applyChart(Chart(notes: adminNotes, title: title, sections: newSections), bpmOverride: bpm, chartStatus: "Added song section", recordHistory: true)
+        applyChart(Chart(notes: adminNotes, title: title, sections: existingSections + [section]), bpmOverride: bpm, chartStatus: "Added song section", recordHistory: true)
         selectedAdminSectionID = section.id
         adminStatusText = "Added \(section.name) \(sectionBarBeatText(for: section.startTime))–\(sectionBarBeatText(for: section.endTime))"
         refocusGameplay()
@@ -328,41 +330,39 @@ final class PrototypeGameController: ObservableObject {
         guard let sortedIndex = sortedSections.firstIndex(where: { $0.id == id }) else { return }
 
         let minDuration = stepInterval
+        let snapThreshold = stepInterval
         let snappedTime = quantizedAdminGridTime(for: max(0, time))
+        var updatedSections = sortedSections
         var updatedSection = sortedSections[sortedIndex]
 
         switch edge {
         case .start:
-            let previousEnd = sortedIndex > 0 ? sortedSections[sortedIndex - 1].endTime : 0
+            let previous = sortedIndex > 0 ? sortedSections[sortedIndex - 1] : nil
+            let minStart = previous?.endTime ?? 0
             let maxStart = updatedSection.endTime - minDuration
-            var newStart = min(max(snappedTime, previousEnd), maxStart)
-            if sortedIndex > 0, abs(newStart - previousEnd) <= minDuration {
-                newStart = previousEnd
+            var newStart = min(max(snappedTime, minStart), maxStart)
+            let isAdjacent = previous.map { abs($0.endTime - updatedSection.startTime) <= snapThreshold * 0.5 } ?? false
+            if let previous, abs(newStart - previous.endTime) <= snapThreshold {
+                newStart = previous.endTime
             }
             updatedSection = SongSection(id: updatedSection.id, name: updatedSection.name, startTime: newStart, endTime: updatedSection.endTime)
+            updatedSections[sortedIndex] = updatedSection
+            if let previous, isAdjacent {
+                updatedSections[sortedIndex - 1] = SongSection(id: previous.id, name: previous.name, startTime: previous.startTime, endTime: newStart)
+            }
         case .end:
-            let nextStart = sortedIndex + 1 < sortedSections.count ? sortedSections[sortedIndex + 1].startTime : max(playbackDuration, adminNotes.map(\.time).max() ?? 0, updatedSection.endTime)
+            let next = sortedIndex + 1 < sortedSections.count ? sortedSections[sortedIndex + 1] : nil
+            let maxEnd = next?.startTime ?? max(playbackDuration, adminNotes.map(\.time).max() ?? 0, updatedSection.endTime)
             let minEnd = updatedSection.startTime + minDuration
-            var newEnd = max(min(snappedTime, nextStart), minEnd)
-            if sortedIndex + 1 < sortedSections.count, abs(newEnd - nextStart) <= minDuration {
-                newEnd = nextStart
+            var newEnd = max(min(snappedTime, maxEnd), minEnd)
+            let isAdjacent = next.map { abs(updatedSection.endTime - $0.startTime) <= snapThreshold * 0.5 } ?? false
+            if let next, abs(newEnd - next.startTime) <= snapThreshold {
+                newEnd = next.startTime
             }
             updatedSection = SongSection(id: updatedSection.id, name: updatedSection.name, startTime: updatedSection.startTime, endTime: newEnd)
-        }
-
-        var updatedSections = sortedSections
-        updatedSections[sortedIndex] = updatedSection
-
-        if edge == .start, sortedIndex > 0 {
-            let previous = updatedSections[sortedIndex - 1]
-            if abs(previous.endTime - updatedSection.startTime) <= minDuration * 0.5 {
-                updatedSections[sortedIndex - 1] = SongSection(id: previous.id, name: previous.name, startTime: previous.startTime, endTime: updatedSection.startTime)
-            }
-        }
-        if edge == .end, sortedIndex + 1 < updatedSections.count {
-            let next = updatedSections[sortedIndex + 1]
-            if abs(updatedSection.endTime - next.startTime) <= minDuration * 0.5 {
-                updatedSections[sortedIndex + 1] = SongSection(id: next.id, name: next.name, startTime: updatedSection.endTime, endTime: next.endTime)
+            updatedSections[sortedIndex] = updatedSection
+            if let next, isAdjacent {
+                updatedSections[sortedIndex + 1] = SongSection(id: next.id, name: next.name, startTime: newEnd, endTime: next.endTime)
             }
         }
 
