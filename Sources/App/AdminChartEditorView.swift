@@ -66,7 +66,7 @@ struct AdminChartEditorView: View {
                         } else {
                             adminProminentButton("Play") { game.playTransport() }
                         }
-                        adminButton("Pause") { game.pauseTransport() }
+                        adminButton("Play from Start") { game.playFromStart() }
                     }
 
                     HStack(spacing: 10) {

@@ -653,6 +653,22 @@ final class PrototypeGameController: ObservableObject {
     func playTransport() { audio.play(); syncTransportState(); refocusGameplay() }
     func pauseTransport() { audio.pause(); syncTransportState(); refocusGameplay() }
 
+    func playFromStart() {
+        customLoopRange = nil
+        if loopLength != .off {
+            loopLength = .off
+            updateLoopStatusText()
+        }
+        moveStepCursor(to: 0, seekPlayback: false)
+        adminScrubPreviewTime = 0
+        adminScrubPreviewTargetTime = 0
+        audio.seek(to: 0)
+        audio.play()
+        syncTransportState()
+        adminStatusText = "Playing from start"
+        refocusGameplay()
+    }
+
     func nudgeBPM(by delta: Double) {
         bpm = max(40, min(240, bpm + delta))
         bpmSourceText = "Manual"
