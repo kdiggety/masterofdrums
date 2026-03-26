@@ -11,7 +11,7 @@ final class GameplayScene: SKScene {
     var onInput: ((InputEvent) -> Void)?
     var onTick: ((TimeInterval) -> Void)?
     var timeProvider: (() -> TimeInterval)?
-    var beatGuideConfiguration: (() -> BeatGuideConfiguration)?
+    var beatGuideConfiguration: (() -> BeatGuideConfiguration?)?
 
     private var chart: Chart
     private let keyboardInputDevice: KeyboardInputDevice
