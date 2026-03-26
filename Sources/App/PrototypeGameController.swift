@@ -7,6 +7,12 @@ private struct AdminChartHistoryEntry {
     let chart: Chart
     let bpm: Double
     let selectedNoteID: UUID?
+    let selectedNoteIDs: Set<UUID>
+}
+
+private struct AdminClipboardNote {
+    let lane: Lane
+    let relativeTime: TimeInterval
 }
 
 @MainActor
@@ -74,6 +80,15 @@ final class PrototypeGameController: ObservableObject {
             scene.selectedAdminNoteID = adminSelectedNoteID
         }
     }
+    @Published var adminSelectedNoteIDs: Set<UUID> = [] {
+        didSet {
+            if let selected = adminSelectedNoteID, !adminSelectedNoteIDs.contains(selected) {
+                adminSelectedNoteID = adminSelectedNoteIDs.first
+            } else if adminSelectedNoteID == nil {
+                adminSelectedNoteID = adminSelectedNoteIDs.first
+            }
+        }
+    }
     @Published private(set) var adminScrubPreviewTime: Double?
     @Published var bpm: Double = 120
     @Published var songOffset: Double = 0
@@ -117,6 +132,7 @@ final class PrototypeGameController: ObservableObject {
     private var adminScrubPreviewTargetTime: Double?
     private var undoHistory: [AdminChartHistoryEntry] = []
     private var redoHistory: [AdminChartHistoryEntry] = []
+    private var adminClipboard: [AdminClipboardNote] = []
 
     var isAdminAuthoringActive: Bool { isAdminPageActive }
 
@@ -364,8 +380,80 @@ final class PrototypeGameController: ObservableObject {
         refocusGameplay()
     }
 
+    func selectAdminNote(_ id: UUID, extendSelection: Bool = false) {
+        if extendSelection {
+            if adminSelectedNoteIDs.contains(id) {
+                adminSelectedNoteIDs.remove(id)
+            } else {
+                adminSelectedNoteIDs.insert(id)
+            }
+            adminSelectedNoteID = adminSelectedNoteIDs.first
+        } else {
+            adminSelectedNoteIDs = [id]
+            adminSelectedNoteID = id
+        }
+    }
+
+    func clearAdminSelection() {
+        adminSelectedNoteIDs = []
+        adminSelectedNoteID = nil
+    }
+
+    func copySelectedAdminNotes() {
+        let selectedNotes = adminNotes.filter { adminSelectedNoteIDs.contains($0.id) }.sorted { $0.time < $1.time }
+        guard let firstTime = selectedNotes.first?.time else {
+            adminStatusText = "No notes selected to copy"
+            return
+        }
+        adminClipboard = selectedNotes.map {
+            AdminClipboardNote(lane: $0.lane, relativeTime: $0.time - firstTime)
+        }
+        adminStatusText = "Copied \(selectedNotes.count) notes"
+    }
+
+    func cutSelectedAdminNotes() {
+        copySelectedAdminNotes()
+        deleteSelectedAdminNotes(statusPrefix: "Cut")
+    }
+
+    func pasteAdminNotes(at baseTime: Double? = nil) {
+        guard !adminClipboard.isEmpty else {
+            adminStatusText = "Clipboard is empty"
+            return
+        }
+        let anchorTime = baseTime ?? quantizedStepCursorTime()
+        let newNotes = adminClipboard.map {
+            NoteEvent(lane: $0.lane, time: isNoteLaneSnapEnabled ? quantizedAdminGridTime(for: anchorTime + $0.relativeTime) : max(0, anchorTime + $0.relativeTime))
+        }
+        let updated = (adminNotes + newNotes).sorted { lhs, rhs in
+            if abs(lhs.time - rhs.time) > 0.0001 { return lhs.time < rhs.time }
+            return lhs.lane.rawValue < rhs.lane.rawValue
+        }
+        let title = normalizedAdminChartTitle()
+        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Pasted \(newNotes.count) notes", recordHistory: true)
+        adminSelectedNoteIDs = Set(newNotes.map(\.id))
+        adminSelectedNoteID = newNotes.first?.id
+        adminStatusText = "Pasted \(newNotes.count) notes"
+        refocusGameplay()
+    }
+
+    func deleteSelectedAdminNotes(statusPrefix: String = "Deleted") {
+        guard !adminSelectedNoteIDs.isEmpty else {
+            adminStatusText = "No notes selected"
+            return
+        }
+        let updated = adminNotes.filter { !adminSelectedNoteIDs.contains($0.id) }
+        let removedCount = adminNotes.count - updated.count
+        let title = normalizedAdminChartTitle()
+        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Edited chart notes", recordHistory: true)
+        clearAdminSelection()
+        adminStatusText = "\(statusPrefix) \(removedCount) notes"
+        refocusGameplay()
+    }
+
     func jumpToAdminNote(_ id: UUID) {
         guard let note = adminNotes.first(where: { $0.id == id }) else { return }
+        adminSelectedNoteIDs = [id]
         adminSelectedNoteID = id
         seekTransport(to: note.time)
         adminStatusText = "Jumped to \(note.lane.displayName) at \(String(format: "%.2f", note.time))s"
@@ -376,8 +464,9 @@ final class PrototypeGameController: ObservableObject {
         let updated = adminNotes.filter { $0.id != id }
         let title = normalizedAdminChartTitle()
         applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Edited chart notes", recordHistory: true)
+        adminSelectedNoteIDs.remove(id)
         if adminSelectedNoteID == id {
-            adminSelectedNoteID = nil
+            adminSelectedNoteID = adminSelectedNoteIDs.first
         }
         adminStatusText = "Deleted note. \(updated.count) notes remain."
         refocusGameplay()
@@ -515,16 +604,22 @@ final class PrototypeGameController: ObservableObject {
         AdminChartHistoryEntry(
             chart: Chart(notes: adminNotes, title: chartName),
             bpm: bpm,
-            selectedNoteID: adminSelectedNoteID
+            selectedNoteID: adminSelectedNoteID,
+            selectedNoteIDs: adminSelectedNoteIDs
         )
     }
 
     private func restoreAdminHistoryEntry(_ entry: AdminChartHistoryEntry, statusText: String) {
         adminSelectedNoteID = entry.selectedNoteID
+        adminSelectedNoteIDs = entry.selectedNoteIDs
         applyChart(entry.chart, bpmOverride: entry.bpm, chartStatus: statusText, recordHistory: false)
+        let validSelectedIDs = entry.selectedNoteIDs.intersection(Set(adminNotes.map(\.id)))
+        adminSelectedNoteIDs = validSelectedIDs
         if let selectedID = entry.selectedNoteID,
            adminNotes.contains(where: { $0.id == selectedID }) {
             adminSelectedNoteID = selectedID
+        } else {
+            adminSelectedNoteID = validSelectedIDs.first
         }
         adminStatusText = statusText
         updateAdminHistoryAvailability()
