@@ -180,27 +180,53 @@ struct AdminChartEditorView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } else {
+                    Text("Drag the white left/right handles on each section block to set explicit start and end points. Boundaries snap to the grid and can snap flush to adjacent sections.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                     GeometryReader { geometry in
-                        let totalDuration = max(game.playbackDuration, game.adminNotes.map(\.time).max() ?? 0, game.adminSections.map(\.startTime).max() ?? 0, 1)
+                        let totalDuration = max(game.playbackDuration, game.adminNotes.map(\.time).max() ?? 0, game.adminSections.map(\.endTime).max() ?? 0, 1)
                         ZStack(alignment: .leading) {
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(Color.secondary.opacity(0.12))
-                            ForEach(Array(game.adminSections.enumerated()), id: \.element.id) { index, section in
-                                let nextStart = index + 1 < game.adminSections.count ? game.adminSections[index + 1].startTime : totalDuration
+                            ForEach(game.adminSections) { section in
                                 let startX = geometry.size.width * CGFloat(max(0, min(1, section.startTime / totalDuration)))
-                                let width = max(geometry.size.width * CGFloat(max(0.03, (nextStart - section.startTime) / totalDuration)), 44)
+                                let endX = geometry.size.width * CGFloat(max(0, min(1, section.endTime / totalDuration)))
+                                let width = max(endX - startX, 44)
                                 RoundedRectangle(cornerRadius: 8)
                                     .fill(section.id == game.selectedAdminSectionID ? Color.accentColor.opacity(0.65) : Color.accentColor.opacity(0.35))
                                     .frame(width: width, height: 26)
                                     .offset(x: min(startX, max(0, geometry.size.width - width)))
                                     .overlay(alignment: .leading) {
-                                        Text(section.name)
-                                            .font(.caption2.weight(.semibold))
-                                            .lineLimit(1)
-                                            .foregroundStyle(.primary)
-                                            .padding(.horizontal, 8)
-                                            .frame(width: width, alignment: .leading)
-                                            .offset(x: min(startX, max(0, geometry.size.width - width)))
+                                        HStack(spacing: 0) {
+                                            Rectangle()
+                                                .fill(Color.white.opacity(0.85))
+                                                .frame(width: 6)
+                                                .contentShape(Rectangle())
+                                                .gesture(
+                                                    DragGesture(minimumDistance: 0)
+                                                        .onChanged { value in
+                                                            let proposedTime = max(0, (startX + value.translation.width) / max(geometry.size.width, 1) * totalDuration)
+                                                            game.updateSongSectionBoundary(section.id, edge: .start, to: proposedTime)
+                                                        }
+                                                )
+                                            Text(section.name)
+                                                .font(.caption2.weight(.semibold))
+                                                .lineLimit(1)
+                                                .foregroundStyle(.primary)
+                                                .padding(.horizontal, 6)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                            Rectangle()
+                                                .fill(Color.white.opacity(0.85))
+                                                .frame(width: 6)
+                                                .contentShape(Rectangle())
+                                                .gesture(
+                                                    DragGesture(minimumDistance: 0)
+                                                        .onChanged { value in
+                                                            let proposedTime = max(0, (endX + value.translation.width) / max(geometry.size.width, 1) * totalDuration)
+                                                            game.updateSongSectionBoundary(section.id, edge: .end, to: proposedTime)
+                                                        }
+                                                )
+                                        }
                                     }
                                     .onTapGesture {
                                         game.selectSongSection(section.id)
@@ -228,11 +254,13 @@ struct AdminChartEditorView: View {
                                 )
                                 .textFieldStyle(.roundedBorder)
 
-                                HStack(spacing: 6) {
-                                    Text("\(game.sectionBarBeatText(for: section.startTime)) · \(game.displayTimeText(for: section.startTime))")
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Start: \(game.sectionBarBeatText(for: section.startTime)) · \(game.displayTimeText(for: section.startTime))")
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
-                                    Spacer()
+                                    Text("End: \(game.sectionBarBeatText(for: section.endTime)) · \(game.displayTimeText(for: section.endTime))")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
                                 }
 
                                 HStack(spacing: 6) {

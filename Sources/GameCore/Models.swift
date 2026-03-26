@@ -52,11 +52,13 @@ struct SongSection: Identifiable, Equatable {
     let id: UUID
     let name: String
     let startTime: TimeInterval
+    let endTime: TimeInterval
 
-    init(id: UUID = UUID(), name: String, startTime: TimeInterval) {
+    init(id: UUID = UUID(), name: String, startTime: TimeInterval, endTime: TimeInterval) {
         self.id = id
         self.name = name
         self.startTime = startTime
+        self.endTime = max(endTime, startTime)
     }
 }
 
@@ -72,7 +74,7 @@ struct Chart {
     }
 
     var endTime: TimeInterval {
-        max(notes.map(\.time).max() ?? 0, sections.map(\.startTime).max() ?? 0)
+        max(notes.map(\.time).max() ?? 0, sections.map(\.endTime).max() ?? 0)
     }
 
     static let prototype: Chart = {

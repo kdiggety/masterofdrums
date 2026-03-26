@@ -12,6 +12,7 @@ struct ChartDocument: Codable {
         let id: UUID?
         let name: String
         let startTime: Double
+        let endTime: Double?
     }
 
     let title: String
@@ -44,7 +45,7 @@ struct ChartFileStore {
             title: chart.title,
             bpm: bpm,
             notes: chart.notes.map { .init(lane: $0.lane.rawValue, time: $0.time) },
-            sections: chart.sections.map { .init(id: $0.id, name: $0.name, startTime: $0.startTime) }
+            sections: chart.sections.map { .init(id: $0.id, name: $0.name, startTime: $0.startTime, endTime: $0.endTime) }
         )
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -60,8 +61,17 @@ struct ChartFileStore {
             guard let lane = Lane(rawValue: item.lane) else { return nil }
             return NoteEvent(lane: lane, time: item.time)
         }
-        let sections = (document.sections ?? []).map {
-            SongSection(id: $0.id ?? UUID(), name: $0.name, startTime: $0.startTime)
+        let sortedRawSections = (document.sections ?? []).sorted { $0.startTime < $1.startTime }
+        let sections = sortedRawSections.enumerated().map { index, item in
+            let fallbackEnd = index + 1 < sortedRawSections.count
+                ? sortedRawSections[index + 1].startTime
+                : max(notes.map(\.time).max() ?? item.startTime, item.startTime + 1)
+            return SongSection(
+                id: item.id ?? UUID(),
+                name: item.name,
+                startTime: item.startTime,
+                endTime: item.endTime ?? fallbackEnd
+            )
         }
         return (Chart(notes: notes.sorted { $0.time < $1.time }, title: document.title, sections: sections), document.bpm)
     }

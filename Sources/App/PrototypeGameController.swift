@@ -16,6 +16,11 @@ private struct AdminClipboardNote {
     let relativeTime: TimeInterval
 }
 
+enum SongSectionEdge {
+    case start
+    case end
+}
+
 @MainActor
 final class PrototypeGameController: ObservableObject {
     enum StepResolution: String, CaseIterable, Identifiable {
@@ -254,18 +259,34 @@ final class PrototypeGameController: ObservableObject {
     func addSongSection(at time: Double? = nil, named name: String? = nil) {
         let baseTime = time ?? stepCursorTime
         let startTime = quantizedLoopStart(for: baseTime)
-        if let existing = adminSections.first(where: { abs($0.startTime - startTime) < 0.0001 }) {
-            selectedAdminSectionID = existing.id
-            adminStatusText = "Section already exists at \(String(format: "%.2f", startTime))s"
+        let defaultLength = max(barDuration * 4, barDuration)
+        let unclampedEndTime = startTime + defaultLength
+        let existingSections = adminSections.sorted { $0.startTime < $1.startTime }
+        let priorSection = existingSections.last(where: { $0.endTime <= startTime + 0.0001 })
+        let nextSection = existingSections.first(where: { $0.startTime >= startTime - 0.0001 })
+        let endLimit = nextSection?.startTime ?? max(playbackDuration, adminNotes.map(\.time).max() ?? 0, unclampedEndTime)
+        let endTime = max(startTime + stepInterval, min(unclampedEndTime, endLimit))
+
+        if existingSections.contains(where: { startTime < $0.endTime - 0.0001 && endTime > $0.startTime + 0.0001 }) {
+            adminStatusText = "New section overlaps an existing section"
             return
         }
 
         let sectionName = normalizedSectionName(name)
-        let section = SongSection(name: sectionName, startTime: startTime)
+        var newSections = existingSections
+        let section = SongSection(name: sectionName, startTime: startTime, endTime: endTime)
+        newSections.append(section)
+        if let priorSection, abs(priorSection.endTime - startTime) <= stepInterval * 0.5 {
+            newSections = newSections.map { existing in
+                existing.id == priorSection.id
+                    ? SongSection(id: existing.id, name: existing.name, startTime: existing.startTime, endTime: startTime)
+                    : existing
+            }
+        }
         let title = normalizedAdminChartTitle()
-        applyChart(Chart(notes: adminNotes, title: title, sections: adminSections + [section]), bpmOverride: bpm, chartStatus: "Added song section", recordHistory: true)
+        applyChart(Chart(notes: adminNotes, title: title, sections: newSections), bpmOverride: bpm, chartStatus: "Added song section", recordHistory: true)
         selectedAdminSectionID = section.id
-        adminStatusText = "Added \(section.name) at \(sectionBarBeatText(for: section.startTime))"
+        adminStatusText = "Added \(section.name) \(sectionBarBeatText(for: section.startTime))–\(sectionBarBeatText(for: section.endTime))"
         refocusGameplay()
     }
 
@@ -274,7 +295,7 @@ final class PrototypeGameController: ObservableObject {
         guard !trimmedName.isEmpty else { return }
         guard let section = adminSections.first(where: { $0.id == id }), section.name != trimmedName else { return }
         let updatedSections = adminSections.map { item in
-            item.id == id ? SongSection(id: item.id, name: trimmedName, startTime: item.startTime) : item
+            item.id == id ? SongSection(id: item.id, name: trimmedName, startTime: item.startTime, endTime: item.endTime) : item
         }
         let title = normalizedAdminChartTitle()
         applyChart(Chart(notes: adminNotes, title: title, sections: updatedSections), bpmOverride: bpm, chartStatus: "Renamed song section", recordHistory: true)
@@ -291,6 +312,56 @@ final class PrototypeGameController: ObservableObject {
         selectedAdminSectionID = id
         moveStepCursor(to: section.startTime, seekPlayback: true)
         adminStatusText = "Jumped to \(section.name) at \(sectionBarBeatText(for: section.startTime))"
+        refocusGameplay()
+    }
+
+    func updateSongSectionBoundary(_ id: UUID, edge: SongSectionEdge, to time: Double) {
+        let sortedSections = adminSections.sorted { $0.startTime < $1.startTime }
+        guard let sortedIndex = sortedSections.firstIndex(where: { $0.id == id }) else { return }
+
+        let minDuration = stepInterval
+        let snappedTime = quantizedAdminGridTime(for: max(0, time))
+        var updatedSection = sortedSections[sortedIndex]
+
+        switch edge {
+        case .start:
+            let previousEnd = sortedIndex > 0 ? sortedSections[sortedIndex - 1].endTime : 0
+            let maxStart = updatedSection.endTime - minDuration
+            var newStart = min(max(snappedTime, previousEnd), maxStart)
+            if sortedIndex > 0, abs(newStart - previousEnd) <= minDuration {
+                newStart = previousEnd
+            }
+            updatedSection = SongSection(id: updatedSection.id, name: updatedSection.name, startTime: newStart, endTime: updatedSection.endTime)
+        case .end:
+            let nextStart = sortedIndex + 1 < sortedSections.count ? sortedSections[sortedIndex + 1].startTime : max(playbackDuration, adminNotes.map(\.time).max() ?? 0, updatedSection.endTime)
+            let minEnd = updatedSection.startTime + minDuration
+            var newEnd = max(min(snappedTime, nextStart), minEnd)
+            if sortedIndex + 1 < sortedSections.count, abs(newEnd - nextStart) <= minDuration {
+                newEnd = nextStart
+            }
+            updatedSection = SongSection(id: updatedSection.id, name: updatedSection.name, startTime: updatedSection.startTime, endTime: newEnd)
+        }
+
+        var updatedSections = sortedSections
+        updatedSections[sortedIndex] = updatedSection
+
+        if edge == .start, sortedIndex > 0 {
+            let previous = updatedSections[sortedIndex - 1]
+            if abs(previous.endTime - updatedSection.startTime) <= minDuration * 0.5 {
+                updatedSections[sortedIndex - 1] = SongSection(id: previous.id, name: previous.name, startTime: previous.startTime, endTime: updatedSection.startTime)
+            }
+        }
+        if edge == .end, sortedIndex + 1 < updatedSections.count {
+            let next = updatedSections[sortedIndex + 1]
+            if abs(updatedSection.endTime - next.startTime) <= minDuration * 0.5 {
+                updatedSections[sortedIndex + 1] = SongSection(id: next.id, name: next.name, startTime: updatedSection.endTime, endTime: next.endTime)
+            }
+        }
+
+        let title = normalizedAdminChartTitle()
+        applyChart(Chart(notes: adminNotes, title: title, sections: updatedSections), bpmOverride: bpm, chartStatus: "Adjusted song section", recordHistory: true)
+        selectedAdminSectionID = id
+        adminStatusText = "Adjusted \(updatedSection.name) \(sectionBarBeatText(for: updatedSection.startTime))–\(sectionBarBeatText(for: updatedSection.endTime))"
         refocusGameplay()
     }
 
@@ -995,11 +1066,8 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func songSectionRange(id: UUID) -> ClosedRange<Double>? {
-        guard let index = adminSections.firstIndex(where: { $0.id == id }) else { return nil }
-        let section = adminSections[index]
-        let nextStartTime = index + 1 < adminSections.count ? adminSections[index + 1].startTime : max(playbackDuration, adminNotes.map(\.time).max() ?? section.startTime, section.startTime + barDuration)
-        let endTime = max(nextStartTime, section.startTime + 0.001)
-        return section.startTime...endTime
+        guard let section = adminSections.first(where: { $0.id == id }) else { return nil }
+        return section.startTime...max(section.endTime, section.startTime + 0.001)
     }
 
     func displayTimeText(for time: Double) -> String {
