@@ -47,7 +47,7 @@ struct AdminChartEditorView: View {
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .contentShape(Rectangle())
             .frame(maxWidth: .infinity)
-            .frame(height: 480)
+            .frame(height: 440)
 
             recordedNotesSection
         }
@@ -205,7 +205,7 @@ struct AdminChartEditorView: View {
                         }
                     }
                 }
-                .frame(minHeight: 220, maxHeight: 260)
+                .frame(minHeight: 250, maxHeight: 320)
             }
         }
     }

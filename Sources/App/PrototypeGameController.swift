@@ -679,6 +679,11 @@ final class PrototypeGameController: ObservableObject {
         updateLoopStatusText()
         if seekPlayback {
             audio.seek(to: stepCursorTime)
+            if isAdminAuthoringActive {
+                adminScrubPreviewTime = stepCursorTime
+                adminScrubPreviewTargetTime = stepCursorTime
+                refreshAdminVisibleNotes(at: stepCursorTime)
+            }
             syncTransportState()
         }
     }
