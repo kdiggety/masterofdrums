@@ -138,6 +138,14 @@ final class PrototypeGameController: ObservableObject {
             }
             return audio?.currentTime ?? 0
         }
+        self.scene.beatGuideConfiguration = { [weak self] in
+            guard let self else { return nil }
+            return GameplayScene.BeatGuideConfiguration(
+                bpm: self.bpm,
+                songOffset: self.songOffset,
+                beatsPerBar: 4
+            )
+        }
         self.inputRouter.onInput = { [weak self] event in self?.handleInput(event) }
         self.scene.onInput = { [weak self] event in self?.inputRouter.route(event) }
         self.scene.onTick = { [weak self] time in self?.handleTick(time) }
