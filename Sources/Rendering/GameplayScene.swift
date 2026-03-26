@@ -2,9 +2,17 @@ import SpriteKit
 import AppKit
 
 final class GameplayScene: SKScene {
+    struct BeatGuideConfiguration {
+        let bpm: Double
+        let songOffset: TimeInterval
+        let beatsPerBar: Int
+        let subdivisionsPerBeat: Int
+    }
+
     var onInput: ((InputEvent) -> Void)?
     var onTick: ((TimeInterval) -> Void)?
     var timeProvider: (() -> TimeInterval)?
+    var beatGuideConfiguration: (() -> BeatGuideConfiguration?)?
 
     private var chart: Chart
     private let keyboardInputDevice: KeyboardInputDevice
@@ -18,6 +26,7 @@ final class GameplayScene: SKScene {
     private let hitLineY: CGFloat = 110
     private let laneOrder: [Lane] = [.red, .yellow, .blue, .green, .kick]
     private let noteNodeNamePrefix = "note-"
+    private let beatGuideNodeNamePrefix = "beat-guide-"
     private var noteNodes: [UUID: SKShapeNode] = [:]
     private var visibleNotes: [NoteEvent] = []
     private var laneHighlights: [Lane: SKShapeNode] = [:]
@@ -65,6 +74,7 @@ final class GameplayScene: SKScene {
         let songTime = currentSongTime
         onTick?(songTime)
         advanceDraggedNotePreviewPositions()
+        updateBeatGuideLines(songTime: songTime)
         updateNodePositions(songTime: songTime)
     }
 
@@ -220,6 +230,49 @@ final class GameplayScene: SKScene {
                 nextY = currentY + (delta * 0.5) + (delta.sign == .minus ? -minimumStep : minimumStep)
             }
             draggedAdminNotePreviewYByID[id] = nextY
+        }
+    }
+
+    private func updateBeatGuideLines(songTime: TimeInterval) {
+        highway.children
+            .filter { $0.name?.hasPrefix(beatGuideNodeNamePrefix) == true }
+            .forEach { $0.removeFromParent() }
+
+        guard isAdminAuthoringMode,
+              let configuration = beatGuideConfiguration?(),
+              configuration.bpm > 0 else { return }
+
+        let totalWidth = laneWidth * CGFloat(laneOrder.count)
+        let startX = (size.width - totalWidth) / 2
+        let beatDuration = 60.0 / configuration.bpm
+        let subdivisionDuration = beatDuration / Double(max(configuration.subdivisionsPerBeat, 1))
+        let adjustedSongTime = songTime - configuration.songOffset
+        let currentSubdivisionIndex = Int(floor(adjustedSongTime / subdivisionDuration))
+        let subdivisionsToDraw = max(configuration.subdivisionsPerBeat * 24, 32)
+
+        for offset in -(configuration.subdivisionsPerBeat * 8)...subdivisionsToDraw {
+            let subdivisionIndex = currentSubdivisionIndex + offset
+            let subdivisionTime = configuration.songOffset + (Double(subdivisionIndex) * subdivisionDuration)
+            let timeUntilSubdivision = subdivisionTime - songTime
+            let y = hitLineY + CGFloat(timeUntilSubdivision) * activeNoteSpeed
+            guard y >= 0, y <= size.height else { continue }
+
+            let isBeatLine = subdivisionIndex % configuration.subdivisionsPerBeat == 0
+            let beatIndex = subdivisionIndex / configuration.subdivisionsPerBeat
+            let isMeasureLine = isBeatLine && beatIndex >= 0 && (beatIndex % configuration.beatsPerBar == 0)
+            let lineRect = CGRect(x: startX + laneInset, y: y, width: totalWidth - (laneInset * 2), height: isMeasureLine ? 2 : 1)
+            let line = SKShapeNode(rect: lineRect)
+            line.name = beatGuideNodeNamePrefix + "\(subdivisionIndex)"
+            if isMeasureLine {
+                line.fillColor = NSColor.white.withAlphaComponent(0.28)
+            } else if isBeatLine {
+                line.fillColor = NSColor.white.withAlphaComponent(0.12)
+            } else {
+                line.fillColor = NSColor.white.withAlphaComponent(0.06)
+            }
+            line.strokeColor = .clear
+            line.zPosition = -0.5
+            highway.addChild(line)
         }
     }
 

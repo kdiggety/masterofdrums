@@ -138,6 +138,15 @@ final class PrototypeGameController: ObservableObject {
             }
             return audio?.currentTime ?? 0
         }
+        self.scene.beatGuideConfiguration = { [weak self] in
+            guard let self else { return nil }
+            return GameplayScene.BeatGuideConfiguration(
+                bpm: self.bpm,
+                songOffset: self.songOffset,
+                beatsPerBar: 4,
+                subdivisionsPerBeat: self.stepResolution.subdivisionsPerBeat
+            )
+        }
         self.inputRouter.onInput = { [weak self] event in self?.handleInput(event) }
         self.scene.onInput = { [weak self] event in self?.inputRouter.route(event) }
         self.scene.onTick = { [weak self] time in self?.handleTick(time) }
@@ -222,14 +231,17 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func addAdminNote() {
-        let note = NoteEvent(lane: adminSelectedLane, time: max(0, adminNoteTime))
+        let snappedTime = isNoteLaneSnapEnabled ? quantizedAdminGridTime(for: adminNoteTime) : max(0, adminNoteTime)
+        let note = NoteEvent(lane: adminSelectedLane, time: snappedTime)
         appendAdminNote(note)
         adminStatusText = "Added \(note.lane.displayName) at \(String(format: "%.2f", note.time))s"
         refocusGameplay()
     }
 
     func addAdminNote(at time: Double, lane: Lane) {
-        let note = NoteEvent(lane: lane, time: max(0, min(playbackDuration, time)))
+        let baseTime = max(0, min(playbackDuration, time))
+        let snappedTime = isNoteLaneSnapEnabled ? quantizedAdminGridTime(for: baseTime) : baseTime
+        let note = NoteEvent(lane: lane, time: snappedTime)
         appendAdminNote(note)
         adminSelectedLane = lane
         adminNoteTime = note.time
@@ -322,12 +334,12 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func resolvedAdminScrubTime(for previewTime: Double) -> Double {
-        guard isNoteLaneSnapEnabled, let nearestNote = nearestAdminNote(to: previewTime) else {
+        guard isNoteLaneSnapEnabled else {
             adminSelectedNoteID = nil
             return previewTime
         }
-        adminSelectedNoteID = nearestNote.id
-        return nearestNote.time
+        adminSelectedNoteID = nil
+        return quantizedAdminGridTime(for: previewTime)
     }
 
     func finalizeAdminScrub(at time: Double, announce: Bool = true) {
@@ -382,7 +394,8 @@ final class PrototypeGameController: ObservableObject {
 
     func moveAdminNote(_ id: UUID, to time: Double, lane: Lane? = nil) {
         guard let existingNote = adminNotes.first(where: { $0.id == id }) else { return }
-        let clampedTime = max(0, min(playbackDuration, time))
+        let baseTime = max(0, min(playbackDuration, time))
+        let clampedTime = isNoteLaneSnapEnabled ? quantizedAdminGridTime(for: baseTime) : baseTime
         let targetLane = lane ?? existingNote.lane
         let updated = adminNotes.map { note in
             guard note.id == id else { return note }
@@ -633,27 +646,15 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func quantizedStepCursorTime() -> Double {
-        let interval = stepInterval
-        guard interval > 0 else { return max(0, stepCursorTime) }
-        return (stepCursorTime / interval).rounded() * interval
+        quantizedAdminGridTime(for: stepCursorTime)
     }
 
-    private func nearestAdminNote(to time: Double) -> NoteEvent? {
-        let hitLineHalfHeight = noteLaneHitLineHeight / 2
-        let overlappingNotes = adminNotes.compactMap { note -> (note: NoteEvent, overlap: Double)? in
-            let noteRadius = note.lane == .kick ? 28.0 : 24.0
-            let distanceToHitLine = abs(note.time - time) * adminAuthoringNoteSpeed
-            let overlap = (noteRadius + hitLineHalfHeight) - distanceToHitLine
-            guard overlap >= 0 else { return nil }
-            return (note, overlap)
-        }
-
-        return overlappingNotes.max { lhs, rhs in
-            if abs(lhs.overlap - rhs.overlap) > 0.001 {
-                return lhs.overlap < rhs.overlap
-            }
-            return abs(lhs.note.time - time) > abs(rhs.note.time - time)
-        }?.note
+    private func quantizedAdminGridTime(for time: Double) -> Double {
+        let interval = stepInterval
+        guard interval > 0 else { return max(0, time) }
+        let adjustedTime = time - songOffset
+        let quantizedAdjustedTime = (adjustedTime / interval).rounded() * interval
+        return max(0, quantizedAdjustedTime + songOffset)
     }
 
     private var stepInterval: Double {
