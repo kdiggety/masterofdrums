@@ -231,14 +231,17 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func addAdminNote() {
-        let note = NoteEvent(lane: adminSelectedLane, time: max(0, adminNoteTime))
+        let snappedTime = isNoteLaneSnapEnabled ? quantizedAdminGridTime(for: adminNoteTime) : max(0, adminNoteTime)
+        let note = NoteEvent(lane: adminSelectedLane, time: snappedTime)
         appendAdminNote(note)
         adminStatusText = "Added \(note.lane.displayName) at \(String(format: "%.2f", note.time))s"
         refocusGameplay()
     }
 
     func addAdminNote(at time: Double, lane: Lane) {
-        let note = NoteEvent(lane: lane, time: max(0, min(playbackDuration, time)))
+        let baseTime = max(0, min(playbackDuration, time))
+        let snappedTime = isNoteLaneSnapEnabled ? quantizedAdminGridTime(for: baseTime) : baseTime
+        let note = NoteEvent(lane: lane, time: snappedTime)
         appendAdminNote(note)
         adminSelectedLane = lane
         adminNoteTime = note.time
@@ -391,7 +394,8 @@ final class PrototypeGameController: ObservableObject {
 
     func moveAdminNote(_ id: UUID, to time: Double, lane: Lane? = nil) {
         guard let existingNote = adminNotes.first(where: { $0.id == id }) else { return }
-        let clampedTime = max(0, min(playbackDuration, time))
+        let baseTime = max(0, min(playbackDuration, time))
+        let clampedTime = isNoteLaneSnapEnabled ? quantizedAdminGridTime(for: baseTime) : baseTime
         let targetLane = lane ?? existingNote.lane
         let updated = adminNotes.map { note in
             guard note.id == id else { return note }
