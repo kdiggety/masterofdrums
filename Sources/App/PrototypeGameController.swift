@@ -659,10 +659,11 @@ final class PrototypeGameController: ObservableObject {
             loopLength = .off
             updateLoopStatusText()
         }
+        adminScrubPreviewTargetTime = nil
+        adminScrubPreviewTime = nil
         moveStepCursor(to: 0, seekPlayback: false)
-        adminScrubPreviewTime = 0
-        adminScrubPreviewTargetTime = 0
         audio.seek(to: 0)
+        refreshAdminVisibleNotes(at: 0)
         audio.play()
         syncTransportState()
         adminStatusText = "Playing from start"
