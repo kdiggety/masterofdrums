@@ -196,68 +196,7 @@ struct AdminChartEditorView: View {
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(Color.secondary.opacity(0.12))
                             ForEach(game.adminSections) { section in
-                                let startX = geometry.size.width * CGFloat(max(0, min(1, section.startTime / totalDuration)))
-                                let endX = geometry.size.width * CGFloat(max(0, min(1, section.endTime / totalDuration)))
-                                let width = max(endX - startX, 44)
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(section.id == game.selectedAdminSectionID ? Color.accentColor.opacity(0.65) : Color.accentColor.opacity(0.35))
-                                    .frame(width: width, height: 26)
-                                    .offset(x: min(startX, max(0, geometry.size.width - width)))
-                                    .overlay(alignment: .leading) {
-                                        HStack(spacing: 0) {
-                                            Rectangle()
-                                                .fill(Color.white.opacity(0.85))
-                                                .frame(width: 6)
-                                                .contentShape(Rectangle())
-                                                .gesture(
-                                                    DragGesture(minimumDistance: 0)
-                                                        .onChanged { value in
-                                                            let proposedTime = max(0, (startX + value.translation.width) / max(geometry.size.width, 1) * totalDuration)
-                                                            game.updateSongSectionBoundary(section.id, edge: .start, to: proposedTime)
-                                                        }
-                                                )
-                                            Group {
-                                                if editingSectionID == section.id {
-                                                    TextField(
-                                                        "Section name",
-                                                        text: $editingSectionName,
-                                                        onCommit: { commitSectionName(for: section) }
-                                                    )
-                                                    .textFieldStyle(.plain)
-                                                    .font(.caption2.weight(.semibold))
-                                                    .padding(.horizontal, 6)
-                                                } else {
-                                                    Text(section.name)
-                                                        .font(.caption2.weight(.semibold))
-                                                        .lineLimit(1)
-                                                        .foregroundStyle(.primary)
-                                                        .padding(.horizontal, 6)
-                                                }
-                                            }
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                            Rectangle()
-                                                .fill(Color.white.opacity(0.85))
-                                                .frame(width: 6)
-                                                .contentShape(Rectangle())
-                                                .gesture(
-                                                    DragGesture(minimumDistance: 0)
-                                                        .onChanged { value in
-                                                            let proposedTime = max(0, (endX + value.translation.width) / max(geometry.size.width, 1) * totalDuration)
-                                                            game.updateSongSectionBoundary(section.id, edge: .end, to: proposedTime)
-                                                        }
-                                                )
-                                        }
-                                    }
-                                    .onTapGesture {
-                                        game.selectSongSection(section.id)
-                                    }
-                                    .onTapGesture(count: 2) {
-                                        game.jumpToSongSection(section.id, playIfAlreadyPlaying: true)
-                                    }
-                                    .contextMenu {
-                                        Button("Rename") { beginEditingSection(section) }
-                                        Button("Delete", role: .destructive) { game.deleteSongSection(section.id) }
-                                    }
+                                sectionStripBlock(section, in: geometry.size.width, totalDuration: totalDuration)
                             }
                             Rectangle()
                                 .fill(Color.white.opacity(0.9))
@@ -346,6 +285,73 @@ struct AdminChartEditorView: View {
                 }
                 .frame(minHeight: 250, maxHeight: 320)
             }
+        }
+    }
+
+    @ViewBuilder
+    private func sectionStripBlock(_ section: SongSection, in totalWidth: CGFloat, totalDuration: Double) -> some View {
+        let startX = totalWidth * CGFloat(max(0, min(1, section.startTime / totalDuration)))
+        let endX = totalWidth * CGFloat(max(0, min(1, section.endTime / totalDuration)))
+        let width = max(endX - startX, 44)
+
+        HStack(spacing: 0) {
+            Rectangle()
+                .fill(Color.white.opacity(0.85))
+                .frame(width: 8)
+                .contentShape(Rectangle())
+                .gesture(
+                    DragGesture(minimumDistance: 0)
+                        .onChanged { value in
+                            let proposedTime = max(0, (startX + value.translation.width) / max(totalWidth, 1) * totalDuration)
+                            game.updateSongSectionBoundary(section.id, edge: .start, to: proposedTime)
+                        }
+                )
+            Group {
+                if editingSectionID == section.id {
+                    TextField(
+                        "Section name",
+                        text: $editingSectionName,
+                        onCommit: { commitSectionName(for: section) }
+                    )
+                    .textFieldStyle(.plain)
+                    .font(.caption2.weight(.semibold))
+                    .padding(.horizontal, 6)
+                } else {
+                    Text(section.name)
+                        .font(.caption2.weight(.semibold))
+                        .lineLimit(1)
+                        .foregroundStyle(.primary)
+                        .padding(.horizontal, 6)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            Rectangle()
+                .fill(Color.white.opacity(0.85))
+                .frame(width: 8)
+                .contentShape(Rectangle())
+                .gesture(
+                    DragGesture(minimumDistance: 0)
+                        .onChanged { value in
+                            let proposedTime = max(0, (endX + value.translation.width) / max(totalWidth, 1) * totalDuration)
+                            game.updateSongSectionBoundary(section.id, edge: .end, to: proposedTime)
+                        }
+                )
+        }
+        .frame(width: width, height: 26)
+        .background(section.id == game.selectedAdminSectionID ? Color.accentColor.opacity(0.65) : Color.accentColor.opacity(0.35))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .contentShape(RoundedRectangle(cornerRadius: 8))
+        .offset(x: min(startX, max(0, totalWidth - width)))
+        .zIndex(section.id == game.selectedAdminSectionID ? 2 : 1)
+        .onTapGesture {
+            game.selectSongSection(section.id)
+        }
+        .onTapGesture(count: 2) {
+            game.jumpToSongSection(section.id, playIfAlreadyPlaying: true)
+        }
+        .contextMenu {
+            Button("Rename") { beginEditingSection(section) }
+            Button("Delete", role: .destructive) { game.deleteSongSection(section.id) }
         }
     }
 
