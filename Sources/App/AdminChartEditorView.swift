@@ -37,7 +37,7 @@ struct AdminChartEditorView: View {
 
     private var leftPanel: some View {
         VStack(alignment: .leading, spacing: 12) {
-            songSectionsStrip
+            songSectionsSection
 
             GameplayContainerView(
                 scene: game.scene,
@@ -80,23 +80,6 @@ struct AdminChartEditorView: View {
                         adminButton("Save Chart JSON") { game.saveAdminChartDocument() }
                     }
 
-                    HStack(spacing: 10) {
-                        adminButton("Undo") { game.undoAdminEdit() }
-                            .disabled(!game.canUndoAdminEdit)
-                            .keyboardShortcut("z", modifiers: [.command])
-                        adminButton("Redo") { game.redoAdminEdit() }
-                            .disabled(!game.canRedoAdminEdit)
-                            .keyboardShortcut("Z", modifiers: [.command, .shift])
-                    }
-
-                    HStack(spacing: 10) {
-                        adminButton("Copy") { game.copySelectedAdminNotes() }
-                            .keyboardShortcut("c", modifiers: [.command])
-                        adminButton("Cut") { game.cutSelectedAdminNotes() }
-                            .keyboardShortcut("x", modifiers: [.command])
-                        adminButton("Paste") { game.pasteAdminNotes() }
-                            .keyboardShortcut("v", modifiers: [.command])
-                    }
                 }
             }
 
@@ -162,8 +145,6 @@ struct AdminChartEditorView: View {
                 }
             }
 
-            songSectionsSection
-
             GroupBox("Session") {
                 VStack(alignment: .leading, spacing: 8) {
                     statusRow("Audio", game.trackName)
@@ -184,18 +165,21 @@ struct AdminChartEditorView: View {
         }
     }
 
-    private var songSectionsStrip: some View {
+    private var songSectionsSection: some View {
         GroupBox("Song Sections") {
-            if game.adminSections.isEmpty {
-                HStack {
-                    Text("No sections yet. Add one at the current bar to create reusable anchors for looping and paste targets.")
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 8) {
+                    adminProminentButton("Add Section Here") { game.addSongSection() }
+                    if game.customLoopRange != nil {
+                        adminButton("Clear Loop") { game.clearSongSectionLoop() }
+                    }
+                }
+
+                if game.adminSections.isEmpty {
+                    Text("Create named song regions like Intro, Verse, and Chorus to speed up navigation, looping, and paste targets.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Spacer()
-                    adminButton("Add Section Here") { game.addSongSection() }
-                }
-            } else {
-                VStack(alignment: .leading, spacing: 8) {
+                } else {
                     GeometryReader { geometry in
                         let totalDuration = max(game.playbackDuration, game.adminNotes.map(\.time).max() ?? 0, game.adminSections.map(\.startTime).max() ?? 0, 1)
                         ZStack(alignment: .leading) {
@@ -204,10 +188,10 @@ struct AdminChartEditorView: View {
                             ForEach(Array(game.adminSections.enumerated()), id: \.element.id) { index, section in
                                 let nextStart = index + 1 < game.adminSections.count ? game.adminSections[index + 1].startTime : totalDuration
                                 let startX = geometry.size.width * CGFloat(max(0, min(1, section.startTime / totalDuration)))
-                                let width = max(geometry.size.width * CGFloat(max(0.03, (nextStart - section.startTime) / totalDuration)), 36)
+                                let width = max(geometry.size.width * CGFloat(max(0.03, (nextStart - section.startTime) / totalDuration)), 44)
                                 RoundedRectangle(cornerRadius: 8)
                                     .fill(section.id == game.selectedAdminSectionID ? Color.accentColor.opacity(0.65) : Color.accentColor.opacity(0.35))
-                                    .frame(width: width, height: 24)
+                                    .frame(width: width, height: 26)
                                     .offset(x: min(startX, max(0, geometry.size.width - width)))
                                     .overlay(alignment: .leading) {
                                         Text(section.name)
@@ -229,34 +213,8 @@ struct AdminChartEditorView: View {
                                 .offset(x: min(max(0, geometry.size.width * CGFloat(game.currentPlaybackTime / totalDuration)), geometry.size.width - 2))
                         }
                     }
-                    .frame(height: 28)
+                    .frame(height: 30)
 
-                    HStack(spacing: 8) {
-                        adminButton("Add Section Here") { game.addSongSection() }
-                        if game.customLoopRange != nil {
-                            adminButton("Clear Section Loop") { game.clearSongSectionLoop() }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private var songSectionsSection: some View {
-        GroupBox("Song Sections") {
-            VStack(alignment: .leading, spacing: 10) {
-                HStack(spacing: 8) {
-                    adminButton("Add Section Here") { game.addSongSection() }
-                    if game.customLoopRange != nil {
-                        adminButton("Clear Loop") { game.clearSongSectionLoop() }
-                    }
-                }
-
-                if game.adminSections.isEmpty {
-                    Text("Create named song regions like Intro, Verse, and Chorus to speed up navigation, looping, and paste targets.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } else {
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(game.adminSections) { section in
                             let isSelected = section.id == game.selectedAdminSectionID
