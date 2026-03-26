@@ -213,7 +213,8 @@ struct AdminChartEditorView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                game.selectAdminNote(note.id)
+                                let extendSelection = NSEvent.modifierFlags.contains(.shift)
+                                game.selectAdminNote(note.id, extendSelection: extendSelection)
                             }
                         }
                     }
