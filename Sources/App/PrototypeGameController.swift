@@ -256,7 +256,8 @@ final class PrototypeGameController: ObservableObject {
         refocusGameplay()
     }
 
-    func addSongSection(at time: Double? = nil, named name: String? = nil) {
+    @discardableResult
+    func addSongSection(at time: Double? = nil, named name: String? = nil) -> UUID? {
         let baseTime = time ?? stepCursorTime
         let startTime = quantizedLoopStart(for: baseTime)
         let defaultLength = max(barDuration * 4, barDuration)
@@ -269,7 +270,7 @@ final class PrototypeGameController: ObservableObject {
 
         if existingSections.contains(where: { startTime < $0.endTime - 0.0001 && endTime > $0.startTime + 0.0001 }) {
             adminStatusText = "New section overlaps an existing section"
-            return
+            return nil
         }
 
         let sectionName = normalizedSectionName(name)
@@ -288,6 +289,7 @@ final class PrototypeGameController: ObservableObject {
         selectedAdminSectionID = section.id
         adminStatusText = "Added \(section.name) \(sectionBarBeatText(for: section.startTime))–\(sectionBarBeatText(for: section.endTime))"
         refocusGameplay()
+        return section.id
     }
 
     func renameSongSection(_ id: UUID, to newName: String) {
@@ -307,11 +309,17 @@ final class PrototypeGameController: ObservableObject {
         selectedAdminSectionID = id
     }
 
-    func jumpToSongSection(_ id: UUID) {
+    func jumpToSongSection(_ id: UUID, playIfAlreadyPlaying: Bool = false) {
         guard let section = adminSections.first(where: { $0.id == id }) else { return }
+        let wasPlaying = audio.state == .playing
         selectedAdminSectionID = id
         moveStepCursor(to: section.startTime, seekPlayback: true)
-        adminStatusText = "Jumped to \(section.name) at \(sectionBarBeatText(for: section.startTime))"
+        if playIfAlreadyPlaying && wasPlaying {
+            audio.play()
+        }
+        adminStatusText = wasPlaying && playIfAlreadyPlaying
+            ? "Playing from \(section.name)"
+            : "Jumped to \(section.name) at \(sectionBarBeatText(for: section.startTime))"
         refocusGameplay()
     }
 

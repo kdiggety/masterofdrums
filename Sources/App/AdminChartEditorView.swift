@@ -2,6 +2,8 @@ import SwiftUI
 
 struct AdminChartEditorView: View {
     @EnvironmentObject private var game: PrototypeGameController
+    @State private var editingSectionID: UUID?
+    @State private var editingSectionName: String = ""
 
     var body: some View {
         ScrollView {
@@ -169,7 +171,12 @@ struct AdminChartEditorView: View {
         GroupBox("Song Sections") {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 8) {
-                    adminProminentButton("Add Section Here") { game.addSongSection() }
+                    adminProminentButton("Add Section Here") {
+                        if let sectionID = game.addSongSection(),
+                           let section = game.adminSections.first(where: { $0.id == sectionID }) {
+                            beginEditingSection(section)
+                        }
+                    }
                     if game.customLoopRange != nil {
                         adminButton("Clear Loop") { game.clearSongSectionLoop() }
                     }
@@ -209,12 +216,25 @@ struct AdminChartEditorView: View {
                                                             game.updateSongSectionBoundary(section.id, edge: .start, to: proposedTime)
                                                         }
                                                 )
-                                            Text(section.name)
-                                                .font(.caption2.weight(.semibold))
-                                                .lineLimit(1)
-                                                .foregroundStyle(.primary)
-                                                .padding(.horizontal, 6)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                            Group {
+                                                if editingSectionID == section.id {
+                                                    TextField(
+                                                        "Section name",
+                                                        text: $editingSectionName,
+                                                        onCommit: { commitSectionName(for: section) }
+                                                    )
+                                                    .textFieldStyle(.plain)
+                                                    .font(.caption2.weight(.semibold))
+                                                    .padding(.horizontal, 6)
+                                                } else {
+                                                    Text(section.name)
+                                                        .font(.caption2.weight(.semibold))
+                                                        .lineLimit(1)
+                                                        .foregroundStyle(.primary)
+                                                        .padding(.horizontal, 6)
+                                                }
+                                            }
+                                            .frame(maxWidth: .infinity, alignment: .leading)
                                             Rectangle()
                                                 .fill(Color.white.opacity(0.85))
                                                 .frame(width: 6)
@@ -230,7 +250,13 @@ struct AdminChartEditorView: View {
                                     }
                                     .onTapGesture {
                                         game.selectSongSection(section.id)
-                                        game.jumpToSongSection(section.id)
+                                    }
+                                    .onTapGesture(count: 2) {
+                                        game.jumpToSongSection(section.id, playIfAlreadyPlaying: true)
+                                    }
+                                    .contextMenu {
+                                        Button("Rename") { beginEditingSection(section) }
+                                        Button("Delete", role: .destructive) { game.deleteSongSection(section.id) }
                                     }
                             }
                             Rectangle()
@@ -245,15 +271,6 @@ struct AdminChartEditorView: View {
                         ForEach(game.adminSections) { section in
                             let isSelected = section.id == game.selectedAdminSectionID
                             VStack(alignment: .leading, spacing: 6) {
-                                TextField(
-                                    "Section name",
-                                    text: Binding(
-                                        get: { section.name },
-                                        set: { game.renameSongSection(section.id, to: $0) }
-                                    )
-                                )
-                                .textFieldStyle(.roundedBorder)
-
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text("Start: \(game.sectionBarBeatText(for: section.startTime)) · \(game.displayTimeText(for: section.startTime))")
                                         .font(.caption)
@@ -330,6 +347,20 @@ struct AdminChartEditorView: View {
                 .frame(minHeight: 250, maxHeight: 320)
             }
         }
+    }
+
+    private func beginEditingSection(_ section: SongSection) {
+        editingSectionID = section.id
+        editingSectionName = section.name
+        game.selectSongSection(section.id)
+    }
+
+    private func commitSectionName(for section: SongSection) {
+        let trimmedName = editingSectionName.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedName.isEmpty {
+            game.renameSongSection(section.id, to: trimmedName)
+        }
+        editingSectionID = nil
     }
 
     private func statusRow(_ title: String, _ value: String) -> some View {
