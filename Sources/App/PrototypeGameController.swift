@@ -8,6 +8,7 @@ private struct AdminChartHistoryEntry {
     let bpm: Double
     let selectedNoteID: UUID?
     let selectedNoteIDs: Set<UUID>
+    let selectedSectionID: UUID?
 }
 
 private struct AdminClipboardNote {
@@ -107,11 +108,14 @@ final class PrototypeGameController: ObservableObject {
     @Published var isAdminRecordMode = false
     @Published private(set) var canUndoAdminEdit = false
     @Published private(set) var canRedoAdminEdit = false
+    @Published private(set) var adminSections: [SongSection] = []
+    @Published var selectedAdminSectionID: UUID?
     @Published var stepResolution: StepResolution = .sixteenth
     @Published var stepCursorTime: Double = 0
     @Published private(set) var stepCursorDisplayText: String = "1:1 · 0.00s"
     @Published var loopLength: LoopLength = .off
     @Published private(set) var loopStartTime: Double = 0
+    @Published private(set) var customLoopRange: ClosedRange<Double>?
     @Published var isNoteLaneSnapEnabled: Bool = true
 
     let scene: GameplayScene
@@ -147,6 +151,7 @@ final class PrototypeGameController: ObservableObject {
         self.activeInputSourceName = keyboard.source.rawValue
         self.chartName = initialChart.title
         self.adminNotes = initialChart.notes
+        self.adminSections = initialChart.sections
 
         self.scene.timeProvider = { [weak self, weak audio] in
             if let self {
@@ -208,7 +213,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func startAdminChart() {
-        let chart = Chart(notes: [], title: trackName == "Preview clock" ? "Untitled Chart" : trackName)
+        let chart = Chart(notes: [], title: trackName == "Preview clock" ? "Untitled Chart" : trackName, sections: [])
         applyChart(chart, bpmOverride: bpm, chartStatus: "Started empty admin chart", recordHistory: true)
         adminStatusText = "Started new chart. Use step mode or record mode."
         adminNoteTime = 0
@@ -239,11 +244,118 @@ final class PrototypeGameController: ObservableObject {
 
     func clearAdminNotes() {
         let title = chartName == Chart.prototype.title ? "Admin Chart" : chartName
-        applyChart(Chart(notes: [], title: title), bpmOverride: bpm, chartStatus: "Cleared chart notes", recordHistory: true)
+        applyChart(Chart(notes: [], title: title, sections: adminSections), bpmOverride: bpm, chartStatus: "Cleared chart notes", recordHistory: true)
         adminStatusText = "Cleared chart notes."
         stepCursorTime = 0
         updateStepCursorDisplay()
         refocusGameplay()
+    }
+
+    func addSongSection(at time: Double? = nil, named name: String? = nil) {
+        let baseTime = time ?? stepCursorTime
+        let startTime = quantizedLoopStart(for: baseTime)
+        if let existing = adminSections.first(where: { abs($0.startTime - startTime) < 0.0001 }) {
+            selectedAdminSectionID = existing.id
+            adminStatusText = "Section already exists at \(String(format: "%.2f", startTime))s"
+            return
+        }
+
+        let sectionName = normalizedSectionName(name)
+        let section = SongSection(name: sectionName, startTime: startTime)
+        let title = normalizedAdminChartTitle()
+        applyChart(Chart(notes: adminNotes, title: title, sections: adminSections + [section]), bpmOverride: bpm, chartStatus: "Added song section", recordHistory: true)
+        selectedAdminSectionID = section.id
+        adminStatusText = "Added \(section.name) at \(sectionBarBeatText(for: section.startTime))"
+        refocusGameplay()
+    }
+
+    func renameSongSection(_ id: UUID, to newName: String) {
+        let trimmedName = newName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedName.isEmpty else { return }
+        guard let section = adminSections.first(where: { $0.id == id }), section.name != trimmedName else { return }
+        let updatedSections = adminSections.map { item in
+            item.id == id ? SongSection(id: item.id, name: trimmedName, startTime: item.startTime) : item
+        }
+        let title = normalizedAdminChartTitle()
+        applyChart(Chart(notes: adminNotes, title: title, sections: updatedSections), bpmOverride: bpm, chartStatus: "Renamed song section", recordHistory: true)
+        selectedAdminSectionID = id
+        adminStatusText = "Renamed section to \(trimmedName)"
+    }
+
+    func selectSongSection(_ id: UUID?) {
+        selectedAdminSectionID = id
+    }
+
+    func jumpToSongSection(_ id: UUID) {
+        guard let section = adminSections.first(where: { $0.id == id }) else { return }
+        selectedAdminSectionID = id
+        moveStepCursor(to: section.startTime, seekPlayback: true)
+        adminStatusText = "Jumped to \(section.name) at \(sectionBarBeatText(for: section.startTime))"
+        refocusGameplay()
+    }
+
+    func deleteSongSection(_ id: UUID) {
+        guard let section = adminSections.first(where: { $0.id == id }) else { return }
+        let updatedSections = adminSections.filter { $0.id != id }
+        let title = normalizedAdminChartTitle()
+        applyChart(Chart(notes: adminNotes, title: title, sections: updatedSections), bpmOverride: bpm, chartStatus: "Deleted song section", recordHistory: true)
+        if selectedAdminSectionID == id {
+            selectedAdminSectionID = nil
+        }
+        if customLoopRange != nil, section.id == id {
+            customLoopRange = nil
+        }
+        adminStatusText = "Deleted section \(section.name)"
+        refocusGameplay()
+    }
+
+    func setLoopToSongSection(_ id: UUID) {
+        guard let range = songSectionRange(id: id), let section = adminSections.first(where: { $0.id == id }) else { return }
+        selectedAdminSectionID = id
+        loopLength = .off
+        customLoopRange = range
+        loopStartTime = range.lowerBound
+        updateLoopStatusText()
+        adminStatusText = "Looping \(section.name)"
+        refocusGameplay()
+    }
+
+    func clearSongSectionLoop() {
+        guard customLoopRange != nil else { return }
+        customLoopRange = nil
+        updateLoopStatusText()
+        adminStatusText = "Loop disabled"
+        refocusGameplay()
+    }
+
+    func copySongSectionNotes(_ id: UUID) {
+        guard let range = songSectionRange(id: id) else {
+            adminStatusText = "Unable to determine section range"
+            return
+        }
+        let selectedNotes = adminNotes.filter { note in
+            note.time >= range.lowerBound && note.time < range.upperBound
+        }.sorted { $0.time < $1.time }
+        guard let firstTime = selectedNotes.first?.time else {
+            adminStatusText = "No notes found in section"
+            return
+        }
+        adminClipboard = selectedNotes.map { AdminClipboardNote(lane: $0.lane, relativeTime: $0.time - firstTime) }
+        adminSelectedNoteIDs = Set(selectedNotes.map(\.id))
+        adminSelectedNoteID = selectedNotes.first?.id
+        if let section = adminSections.first(where: { $0.id == id }) {
+            selectedAdminSectionID = id
+            adminStatusText = "Copied \(selectedNotes.count) notes from \(section.name)"
+        } else {
+            adminStatusText = "Copied \(selectedNotes.count) section notes"
+        }
+        refocusGameplay()
+    }
+
+    func pasteSongSectionNotes(atSection id: UUID) {
+        guard let section = adminSections.first(where: { $0.id == id }) else { return }
+        selectedAdminSectionID = id
+        pasteAdminNotes(at: section.startTime)
     }
 
     func addAdminNote() {
@@ -373,6 +485,8 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func setLoopLength(_ length: LoopLength) {
+        customLoopRange = nil
+        selectedAdminSectionID = nil
         loopLength = length
         loopStartTime = quantizedLoopStart(for: audio.currentTime)
         updateLoopStatusText()
@@ -430,7 +544,7 @@ final class PrototypeGameController: ObservableObject {
             return lhs.lane.rawValue < rhs.lane.rawValue
         }
         let title = normalizedAdminChartTitle()
-        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Pasted \(newNotes.count) notes", recordHistory: true)
+        applyChart(Chart(notes: updated, title: title, sections: adminSections), bpmOverride: bpm, chartStatus: "Pasted \(newNotes.count) notes", recordHistory: true)
         adminSelectedNoteIDs = Set(newNotes.map(\.id))
         adminSelectedNoteID = newNotes.first?.id
         adminStatusText = "Pasted \(newNotes.count) notes"
@@ -445,7 +559,7 @@ final class PrototypeGameController: ObservableObject {
         let updated = adminNotes.filter { !adminSelectedNoteIDs.contains($0.id) }
         let removedCount = adminNotes.count - updated.count
         let title = normalizedAdminChartTitle()
-        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Edited chart notes", recordHistory: true)
+        applyChart(Chart(notes: updated, title: title, sections: adminSections), bpmOverride: bpm, chartStatus: "Edited chart notes", recordHistory: true)
         clearAdminSelection()
         adminStatusText = "\(statusPrefix) \(removedCount) notes"
         refocusGameplay()
@@ -463,7 +577,7 @@ final class PrototypeGameController: ObservableObject {
     func deleteAdminNote(_ id: UUID) {
         let updated = adminNotes.filter { $0.id != id }
         let title = normalizedAdminChartTitle()
-        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Edited chart notes", recordHistory: true)
+        applyChart(Chart(notes: updated, title: title, sections: adminSections), bpmOverride: bpm, chartStatus: "Edited chart notes", recordHistory: true)
         adminSelectedNoteIDs.remove(id)
         if adminSelectedNoteID == id {
             adminSelectedNoteID = adminSelectedNoteIDs.first
@@ -496,7 +610,7 @@ final class PrototypeGameController: ObservableObject {
             return lhs.lane.rawValue < rhs.lane.rawValue
         }
         let title = normalizedAdminChartTitle()
-        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Edited chart notes", recordHistory: true)
+        applyChart(Chart(notes: updated, title: title, sections: adminSections), bpmOverride: bpm, chartStatus: "Edited chart notes", recordHistory: true)
         if let movedNote = adminNotes.first(where: { $0.id == id }) {
             adminSelectedNoteID = movedNote.id
             moveStepCursor(to: movedNote.time, seekPlayback: false)
@@ -592,7 +706,7 @@ final class PrototypeGameController: ObservableObject {
     private func appendAdminNote(_ note: NoteEvent) {
         let updated = (adminNotes + [note]).sorted { $0.time < $1.time }
         let title = normalizedAdminChartTitle()
-        applyChart(Chart(notes: updated, title: title), bpmOverride: bpm, chartStatus: "Recorded \(updated.count) chart notes", recordHistory: true)
+        applyChart(Chart(notes: updated, title: title, sections: adminSections), bpmOverride: bpm, chartStatus: "Recorded \(updated.count) chart notes", recordHistory: true)
         adminSelectedNoteID = note.id
     }
 
@@ -602,16 +716,18 @@ final class PrototypeGameController: ObservableObject {
 
     private func currentAdminHistoryEntry() -> AdminChartHistoryEntry {
         AdminChartHistoryEntry(
-            chart: Chart(notes: adminNotes, title: chartName),
+            chart: Chart(notes: adminNotes, title: chartName, sections: adminSections),
             bpm: bpm,
             selectedNoteID: adminSelectedNoteID,
-            selectedNoteIDs: adminSelectedNoteIDs
+            selectedNoteIDs: adminSelectedNoteIDs,
+            selectedSectionID: selectedAdminSectionID
         )
     }
 
     private func restoreAdminHistoryEntry(_ entry: AdminChartHistoryEntry, statusText: String) {
         adminSelectedNoteID = entry.selectedNoteID
         adminSelectedNoteIDs = entry.selectedNoteIDs
+        selectedAdminSectionID = entry.selectedSectionID
         applyChart(entry.chart, bpmOverride: entry.bpm, chartStatus: statusText, recordHistory: false)
         let validSelectedIDs = entry.selectedNoteIDs.intersection(Set(adminNotes.map(\.id)))
         adminSelectedNoteIDs = validSelectedIDs
@@ -642,9 +758,14 @@ final class PrototypeGameController: ObservableObject {
         chartName = chart.title
         chartStatusText = chartStatus
         adminNotes = chart.notes.sorted { $0.time < $1.time }
+        adminSections = chart.sections.sorted { $0.startTime < $1.startTime }
         if let selectedID = adminSelectedNoteID,
            !adminNotes.contains(where: { $0.id == selectedID }) {
             adminSelectedNoteID = nil
+        }
+        if let selectedSectionID = selectedAdminSectionID,
+           !adminSections.contains(where: { $0.id == selectedSectionID }) {
+            selectedAdminSectionID = nil
         }
         scene.selectedAdminNoteID = adminSelectedNoteID
         session.reset()
@@ -701,7 +822,14 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func applyLoopIfNeeded(at time: TimeInterval) {
-        guard loopLength != .off, audio.state == .playing else { return }
+        guard audio.state == .playing else { return }
+        if let customLoopRange {
+            if time >= customLoopRange.upperBound {
+                audio.seek(to: customLoopRange.lowerBound)
+            }
+            return
+        }
+        guard loopLength != .off else { return }
         let start = loopStartTime
         let end = start + (barDuration * Double(loopLength.barCount))
         if time >= end {
@@ -725,6 +853,7 @@ final class PrototypeGameController: ObservableObject {
         trackName = audio.loadedTrackName ?? "Preview clock"
         chartName = session.chart.title
         adminNotes = session.chart.notes.sorted { $0.time < $1.time }
+        adminSections = session.chart.sections.sorted { $0.startTime < $1.startTime }
         bpmAnalysisStatusText = audio.analysisDebug.status
         bpmAnalysisDetailText = audio.analysisDebug.detail
     }
@@ -837,13 +966,44 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func updateLoopStatusText() {
-        if loopLength == .off {
+        if let customLoopRange {
+            loopStatusText = "Section Loop · \(String(format: "%.2f", customLoopRange.lowerBound))s–\(String(format: "%.2f", customLoopRange.upperBound))s"
+        } else if loopLength == .off {
             loopStatusText = "Loop Off"
         } else {
             let start = loopStartTime
             let end = start + (barDuration * Double(loopLength.barCount))
             loopStatusText = "\(loopLength.rawValue) · \(String(format: "%.2f", start))s–\(String(format: "%.2f", end))s"
         }
+    }
+
+    func songSectionRange(id: UUID) -> ClosedRange<Double>? {
+        guard let index = adminSections.firstIndex(where: { $0.id == id }) else { return nil }
+        let section = adminSections[index]
+        let nextStartTime = index + 1 < adminSections.count ? adminSections[index + 1].startTime : max(playbackDuration, adminNotes.map(\.time).max() ?? section.startTime, section.startTime + barDuration)
+        let endTime = max(nextStartTime, section.startTime + 0.001)
+        return section.startTime...endTime
+    }
+
+    func displayTimeText(for time: Double) -> String {
+        String(format: "%.2fs", time)
+    }
+
+    func sectionBarBeatText(for time: Double) -> String {
+        MusicalTransport.position(at: time, bpm: bpm, songOffset: songOffset).barBeatText
+    }
+
+    private func normalizedSectionName(_ proposedName: String?) -> String {
+        let trimmed = proposedName?.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let trimmed, !trimmed.isEmpty {
+            return trimmed
+        }
+        let defaults = ["Intro", "Verse", "Chorus", "Bridge", "Fill", "Outro"]
+        let usedNames = Set(adminSections.map(\.name))
+        for name in defaults where !usedNames.contains(name) {
+            return name
+        }
+        return "Section \(adminSections.count + 1)"
     }
 
     private func refocusGameplay() { gameplayFocusVersion += 1 }

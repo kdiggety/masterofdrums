@@ -37,6 +37,8 @@ struct AdminChartEditorView: View {
 
     private var leftPanel: some View {
         VStack(alignment: .leading, spacing: 12) {
+            songSectionsStrip
+
             GameplayContainerView(
                 scene: game.scene,
                 focusVersion: game.gameplayFocusVersion,
@@ -160,6 +162,8 @@ struct AdminChartEditorView: View {
                 }
             }
 
+            songSectionsSection
+
             GroupBox("Session") {
                 VStack(alignment: .leading, spacing: 8) {
                     statusRow("Audio", game.trackName)
@@ -175,6 +179,124 @@ struct AdminChartEditorView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        }
+    }
+
+    private var songSectionsStrip: some View {
+        GroupBox("Song Sections") {
+            if game.adminSections.isEmpty {
+                HStack {
+                    Text("No sections yet. Add one at the current bar to create reusable anchors for looping and paste targets.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    adminButton("Add Section Here") { game.addSongSection() }
+                }
+            } else {
+                VStack(alignment: .leading, spacing: 8) {
+                    GeometryReader { geometry in
+                        let totalDuration = max(game.playbackDuration, game.adminNotes.map(\.time).max() ?? 0, game.adminSections.map(\.startTime).max() ?? 0, 1)
+                        ZStack(alignment: .leading) {
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color.secondary.opacity(0.12))
+                            ForEach(Array(game.adminSections.enumerated()), id: \.element.id) { index, section in
+                                let nextStart = index + 1 < game.adminSections.count ? game.adminSections[index + 1].startTime : totalDuration
+                                let startX = geometry.size.width * CGFloat(max(0, min(1, section.startTime / totalDuration)))
+                                let width = max(geometry.size.width * CGFloat(max(0.03, (nextStart - section.startTime) / totalDuration)), 36)
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(section.id == game.selectedAdminSectionID ? Color.accentColor.opacity(0.65) : Color.accentColor.opacity(0.35))
+                                    .frame(width: width, height: 24)
+                                    .offset(x: min(startX, max(0, geometry.size.width - width)))
+                                    .overlay(alignment: .leading) {
+                                        Text(section.name)
+                                            .font(.caption2.weight(.semibold))
+                                            .lineLimit(1)
+                                            .foregroundStyle(.primary)
+                                            .padding(.horizontal, 8)
+                                            .frame(width: width, alignment: .leading)
+                                            .offset(x: min(startX, max(0, geometry.size.width - width)))
+                                    }
+                                    .onTapGesture {
+                                        game.selectSongSection(section.id)
+                                        game.jumpToSongSection(section.id)
+                                    }
+                            }
+                            Rectangle()
+                                .fill(Color.white.opacity(0.9))
+                                .frame(width: 2)
+                                .offset(x: min(max(0, geometry.size.width * CGFloat(game.currentPlaybackTime / totalDuration)), geometry.size.width - 2))
+                        }
+                    }
+                    .frame(height: 28)
+
+                    HStack(spacing: 8) {
+                        adminButton("Add Section Here") { game.addSongSection() }
+                        if game.customLoopRange != nil {
+                            adminButton("Clear Section Loop") { game.clearSongSectionLoop() }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private var songSectionsSection: some View {
+        GroupBox("Song Sections") {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 8) {
+                    adminButton("Add Section Here") { game.addSongSection() }
+                    if game.customLoopRange != nil {
+                        adminButton("Clear Loop") { game.clearSongSectionLoop() }
+                    }
+                }
+
+                if game.adminSections.isEmpty {
+                    Text("Create named song regions like Intro, Verse, and Chorus to speed up navigation, looping, and paste targets.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(game.adminSections) { section in
+                            let isSelected = section.id == game.selectedAdminSectionID
+                            VStack(alignment: .leading, spacing: 6) {
+                                TextField(
+                                    "Section name",
+                                    text: Binding(
+                                        get: { section.name },
+                                        set: { game.renameSongSection(section.id, to: $0) }
+                                    )
+                                )
+                                .textFieldStyle(.roundedBorder)
+
+                                HStack(spacing: 6) {
+                                    Text("\(game.sectionBarBeatText(for: section.startTime)) · \(game.displayTimeText(for: section.startTime))")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                    Spacer()
+                                }
+
+                                HStack(spacing: 6) {
+                                    Button("Jump") { game.jumpToSongSection(section.id) }
+                                        .buttonStyle(.borderless)
+                                    Button("Loop") { game.setLoopToSongSection(section.id) }
+                                        .buttonStyle(.borderless)
+                                    Button("Copy Notes") { game.copySongSectionNotes(section.id) }
+                                        .buttonStyle(.borderless)
+                                    Button("Paste Here") { game.pasteSongSectionNotes(atSection: section.id) }
+                                        .buttonStyle(.borderless)
+                                    Button("Delete") { game.deleteSongSection(section.id) }
+                                        .buttonStyle(.borderless)
+                                }
+                            }
+                            .padding(8)
+                            .background(isSelected ? Color.accentColor.opacity(0.12) : Color.secondary.opacity(0.06))
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .contentShape(Rectangle())
+                            .onTapGesture { game.selectSongSection(section.id) }
+                        }
+                    }
                 }
             }
         }

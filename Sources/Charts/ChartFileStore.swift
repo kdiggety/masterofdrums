@@ -8,9 +8,16 @@ struct ChartDocument: Codable {
         let time: Double
     }
 
+    struct Section: Codable {
+        let id: UUID?
+        let name: String
+        let startTime: Double
+    }
+
     let title: String
     let bpm: Double
     let notes: [Note]
+    let sections: [Section]?
 }
 
 @MainActor
@@ -36,7 +43,8 @@ struct ChartFileStore {
         let document = ChartDocument(
             title: chart.title,
             bpm: bpm,
-            notes: chart.notes.map { .init(lane: $0.lane.rawValue, time: $0.time) }
+            notes: chart.notes.map { .init(lane: $0.lane.rawValue, time: $0.time) },
+            sections: chart.sections.map { .init(id: $0.id, name: $0.name, startTime: $0.startTime) }
         )
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -52,7 +60,10 @@ struct ChartFileStore {
             guard let lane = Lane(rawValue: item.lane) else { return nil }
             return NoteEvent(lane: lane, time: item.time)
         }
-        return (Chart(notes: notes.sorted { $0.time < $1.time }, title: document.title), document.bpm)
+        let sections = (document.sections ?? []).map {
+            SongSection(id: $0.id ?? UUID(), name: $0.name, startTime: $0.startTime)
+        }
+        return (Chart(notes: notes.sorted { $0.time < $1.time }, title: document.title, sections: sections), document.bpm)
     }
 
     private var chartContentTypes: [UTType] {
