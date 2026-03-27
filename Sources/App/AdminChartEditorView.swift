@@ -4,6 +4,7 @@ struct AdminChartEditorView: View {
     @EnvironmentObject private var game: PrototypeGameController
     @State private var editingSectionID: UUID?
     @State private var editingSectionName: String = ""
+    @State private var activeSectionDrag: (id: UUID, edge: SongSectionEdge, anchorTime: Double)?
 
     var body: some View {
         ScrollView {
@@ -205,46 +206,6 @@ struct AdminChartEditorView: View {
                         }
                     }
                     .frame(height: 30)
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        ForEach(game.adminSections) { section in
-                            let isSelected = section.id == game.selectedAdminSectionID
-                            VStack(alignment: .leading, spacing: 6) {
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text("Start: \(game.sectionBarBeatText(for: section.startTime)) · \(game.displayTimeText(for: section.startTime))")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                    Text("End: \(game.sectionBarBeatText(for: section.endTime)) · \(game.displayTimeText(for: section.endTime))")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-
-                                HStack(spacing: 6) {
-                                    Menu(section.colorName.capitalized) {
-                                        ForEach(sectionColors, id: \.0) { colorName, _ in
-                                            Button(colorName.capitalized) { game.updateSongSectionColor(section.id, colorName: colorName) }
-                                        }
-                                    }
-                                    .buttonStyle(.borderless)
-                                    Button("Jump") { game.jumpToSongSection(section.id) }
-                                        .buttonStyle(.borderless)
-                                    Button("Loop") { game.setLoopToSongSection(section.id) }
-                                        .buttonStyle(.borderless)
-                                    Button("Copy Notes") { game.copySongSectionNotes(section.id) }
-                                        .buttonStyle(.borderless)
-                                    Button("Paste Here") { game.pasteSongSectionNotes(atSection: section.id) }
-                                        .buttonStyle(.borderless)
-                                    Button("Delete") { game.deleteSongSection(section.id) }
-                                        .buttonStyle(.borderless)
-                                }
-                            }
-                            .padding(8)
-                            .background(isSelected ? Color.accentColor.opacity(0.12) : Color.secondary.opacity(0.06))
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .contentShape(Rectangle())
-                            .onTapGesture { game.selectSongSection(section.id) }
-                        }
-                    }
                 }
             }
         }
@@ -308,8 +269,15 @@ struct AdminChartEditorView: View {
                 .gesture(
                     DragGesture(minimumDistance: 0)
                         .onChanged { value in
-                            let proposedTime = max(0, (startX + value.translation.width) / max(totalWidth, 1) * totalDuration)
+                            if activeSectionDrag?.id != section.id || activeSectionDrag?.edge != .start {
+                                activeSectionDrag = (section.id, .start, section.startTime)
+                            }
+                            let anchorTime = activeSectionDrag?.anchorTime ?? section.startTime
+                            let proposedTime = max(0, anchorTime + (Double(value.translation.width / max(totalWidth, 1)) * totalDuration))
                             game.updateSongSectionBoundary(section.id, edge: .start, to: proposedTime)
+                        }
+                        .onEnded { _ in
+                            activeSectionDrag = nil
                         }
                 )
             Group {
@@ -338,8 +306,15 @@ struct AdminChartEditorView: View {
                 .gesture(
                     DragGesture(minimumDistance: 0)
                         .onChanged { value in
-                            let proposedTime = max(0, (endX + value.translation.width) / max(totalWidth, 1) * totalDuration)
+                            if activeSectionDrag?.id != section.id || activeSectionDrag?.edge != .end {
+                                activeSectionDrag = (section.id, .end, section.endTime)
+                            }
+                            let anchorTime = activeSectionDrag?.anchorTime ?? section.endTime
+                            let proposedTime = max(0, anchorTime + (Double(value.translation.width / max(totalWidth, 1)) * totalDuration))
                             game.updateSongSectionBoundary(section.id, edge: .end, to: proposedTime)
+                        }
+                        .onEnded { _ in
+                            activeSectionDrag = nil
                         }
                 )
         }
@@ -355,6 +330,7 @@ struct AdminChartEditorView: View {
         .onTapGesture(count: 2) {
             game.jumpToSongSection(section.id, playIfAlreadyPlaying: true)
         }
+        .help("\(section.name)\nStart: \(game.sectionBarBeatText(for: section.startTime)) · \(game.displayTimeText(for: section.startTime))\nEnd: \(game.sectionBarBeatText(for: section.endTime)) · \(game.displayTimeText(for: section.endTime))")
         .contextMenu {
             Button("Rename") { beginEditingSection(section) }
             Menu("Color") {
@@ -362,6 +338,9 @@ struct AdminChartEditorView: View {
                     Button(colorName.capitalized) { game.updateSongSectionColor(section.id, colorName: colorName) }
                 }
             }
+            Button("Loop") { game.setLoopToSongSection(section.id) }
+            Button("Copy Notes") { game.copySongSectionNotes(section.id) }
+            Button("Paste Here") { game.pasteSongSectionNotes(atSection: section.id) }
             Button("Delete", role: .destructive) { game.deleteSongSection(section.id) }
         }
     }

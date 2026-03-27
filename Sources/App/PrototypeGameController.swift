@@ -354,8 +354,17 @@ final class PrototypeGameController: ObservableObject {
     func selectSongSection(_ id: UUID?, movePlayhead: Bool = false) {
         selectedAdminSectionID = id
         if movePlayhead, let id, let section = adminSections.first(where: { $0.id == id }) {
-            moveStepCursor(to: section.startTime, seekPlayback: true)
-            adminStatusText = "Moved to \(section.name)"
+            let wasPlaying = audio.state == .playing
+            adminScrubPreviewTargetTime = nil
+            adminScrubPreviewTime = nil
+            audio.seek(to: section.startTime)
+            moveStepCursor(to: section.startTime, seekPlayback: false)
+            refreshAdminVisibleNotes(at: section.startTime)
+            if wasPlaying {
+                audio.play()
+            }
+            syncTransportState()
+            adminStatusText = wasPlaying ? "Playing from \(section.name)" : "Moved to \(section.name)"
         }
     }
 
@@ -1058,11 +1067,19 @@ final class PrototypeGameController: ObservableObject {
         updateStepCursorDisplay()
         updateLoopStatusText()
         if seekPlayback {
+            let wasPlaying = audio.state == .playing
             audio.seek(to: stepCursorTime)
             if isAdminAuthoringActive {
-                adminScrubPreviewTime = stepCursorTime
-                adminScrubPreviewTargetTime = stepCursorTime
-                refreshAdminVisibleNotes(at: stepCursorTime)
+                if wasPlaying {
+                    adminScrubPreviewTime = nil
+                    adminScrubPreviewTargetTime = nil
+                    refreshAdminVisibleNotes(at: stepCursorTime)
+                    audio.play()
+                } else {
+                    adminScrubPreviewTime = stepCursorTime
+                    adminScrubPreviewTargetTime = stepCursorTime
+                    refreshAdminVisibleNotes(at: stepCursorTime)
+                }
             }
             syncTransportState()
         }
