@@ -214,6 +214,13 @@ struct AdminChartEditorView: View {
                                         break
                                     }
                                 }
+                                .simultaneousGesture(
+                                    DragGesture(minimumDistance: 0)
+                                        .onChanged { value in
+                                            let normalized = min(max(value.location.x / max(geometry.size.width, 1), 0), 1)
+                                            sectionStripTargetTime = Double(normalized) * totalDuration
+                                        }
+                                )
                                 .gesture(
                                     SpatialTapGesture()
                                         .onEnded { value in

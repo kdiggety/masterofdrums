@@ -577,11 +577,11 @@ final class PrototypeGameController: ObservableObject {
         if let containingSection = existingSections.first(where: { desiredStart > $0.startTime + 0.0001 && desiredStart < $0.endTime - 0.0001 }) {
             let availableRight = containingSection.endTime - desiredStart
             guard availableRight >= duration else {
-                adminStatusText = "Not enough room to paste section here"
+                adminStatusText = "Not enough room to insert copied section inside \(containingSection.name)"
                 return
             }
             guard desiredStart - containingSection.startTime >= minimumLength else {
-                adminStatusText = "Not enough room to split this section here"
+                adminStatusText = "Need at least one grid step before the split point in \(containingSection.name)"
                 return
             }
 
@@ -611,7 +611,7 @@ final class PrototypeGameController: ObservableObject {
             selectedAdminSectionID = pastedSection.id
             adminSelectedNoteIDs = Set(newNotes.map(\.id))
             adminSelectedNoteID = newNotes.first?.id
-            adminStatusText = "Pasted section at playhead"
+            adminStatusText = "Inserted copied section inside \(containingSection.name)"
             refocusGameplay()
             return
         }
@@ -622,7 +622,7 @@ final class PrototypeGameController: ObservableObject {
         let endLimit = nextSection?.startTime ?? max(playbackDuration, adminNotes.map(\.time).max() ?? 0, startTime + duration)
         let endTime = startTime + duration
         guard endTime <= endLimit + 0.0001 else {
-            adminStatusText = "No room to paste section at playhead"
+            adminStatusText = "No open gap large enough for the copied section here"
             return
         }
         guard !existingSections.contains(where: { startTime < $0.endTime - 0.0001 && endTime > $0.startTime + 0.0001 }) else {
