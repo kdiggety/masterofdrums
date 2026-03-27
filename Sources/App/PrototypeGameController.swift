@@ -531,35 +531,87 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func pasteSongSection(atSection id: UUID) {
-        guard let targetSection = adminSections.first(where: { $0.id == id }),
-              let clipboard = adminSectionClipboard else {
+        guard let clipboard = adminSectionClipboard else {
             adminStatusText = "No copied section available"
             return
         }
 
-        let newSection = SongSection(
-            name: clipboard.name,
-            startTime: targetSection.startTime,
-            endTime: min(targetSection.startTime + clipboard.duration, targetSection.endTime),
-            colorName: clipboard.colorName
-        )
-        let replacementSections = adminSections.map { section in
-            section.id == id ? SongSection(id: section.id, name: newSection.name, startTime: section.startTime, endTime: section.endTime, colorName: newSection.colorName) : section
+        let liveTime = audio.state == .playing ? audio.currentTime : stepCursorTime
+        let desiredStart = quantizedLoopStart(for: liveTime)
+        let duration = max(clipboard.duration, stepInterval)
+        let existingSections = adminSections.sorted { $0.startTime < $1.startTime }
+        let minimumLength = stepInterval
+
+        if let containingSection = existingSections.first(where: { desiredStart > $0.startTime + 0.0001 && desiredStart < $0.endTime - 0.0001 }) {
+            let availableRight = containingSection.endTime - desiredStart
+            guard availableRight >= duration else {
+                adminStatusText = "Not enough room to paste section here"
+                return
+            }
+            guard desiredStart - containingSection.startTime >= minimumLength else {
+                adminStatusText = "Not enough room to split this section here"
+                return
+            }
+
+            let pastedSection = SongSection(name: clipboard.name, startTime: desiredStart, endTime: desiredStart + duration, colorName: clipboard.colorName)
+            var updatedSections: [SongSection] = []
+            for section in existingSections {
+                guard section.id == containingSection.id else {
+                    updatedSections.append(section)
+                    continue
+                }
+                updatedSections.append(SongSection(id: section.id, name: section.name, startTime: section.startTime, endTime: desiredStart, colorName: section.colorName))
+                updatedSections.append(pastedSection)
+                if containingSection.endTime - pastedSection.endTime >= minimumLength {
+                    updatedSections.append(SongSection(name: normalizedSectionName(nil), startTime: pastedSection.endTime, endTime: containingSection.endTime, colorName: containingSection.colorName))
+                }
+            }
+
+            let newNotes = clipboard.notes.map {
+                NoteEvent(lane: $0.lane, time: isNoteLaneSnapEnabled ? quantizedAdminGridTime(for: pastedSection.startTime + $0.relativeTime) : max(0, pastedSection.startTime + $0.relativeTime))
+            }.filter { $0.time < pastedSection.endTime + 0.0001 }
+            let updatedNotes = (adminNotes + newNotes).sorted { lhs, rhs in
+                if abs(lhs.time - rhs.time) > 0.0001 { return lhs.time < rhs.time }
+                return lhs.lane.rawValue < rhs.lane.rawValue
+            }
+            let title = normalizedAdminChartTitle()
+            applyChart(Chart(notes: updatedNotes, title: title, sections: updatedSections), bpmOverride: bpm, chartStatus: "Pasted section", recordHistory: true)
+            selectedAdminSectionID = pastedSection.id
+            adminSelectedNoteIDs = Set(newNotes.map(\.id))
+            adminSelectedNoteID = newNotes.first?.id
+            adminStatusText = "Pasted section at playhead"
+            refocusGameplay()
+            return
         }
+
+        let previousSection = existingSections.last(where: { $0.endTime <= desiredStart + 0.0001 })
+        let nextSection = existingSections.first(where: { $0.startTime >= desiredStart - 0.0001 })
+        let startTime = max(desiredStart, previousSection?.endTime ?? desiredStart)
+        let endLimit = nextSection?.startTime ?? max(playbackDuration, adminNotes.map(\.time).max() ?? 0, startTime + duration)
+        let endTime = startTime + duration
+        guard endTime <= endLimit + 0.0001 else {
+            adminStatusText = "No room to paste section at playhead"
+            return
+        }
+        guard !existingSections.contains(where: { startTime < $0.endTime - 0.0001 && endTime > $0.startTime + 0.0001 }) else {
+            adminStatusText = "Pasted section would overlap an existing section"
+            return
+        }
+
+        let pastedSection = SongSection(name: clipboard.name, startTime: startTime, endTime: endTime, colorName: clipboard.colorName)
         let newNotes = clipboard.notes.map {
-            NoteEvent(lane: $0.lane, time: isNoteLaneSnapEnabled ? quantizedAdminGridTime(for: targetSection.startTime + $0.relativeTime) : max(0, targetSection.startTime + $0.relativeTime))
-        }.filter { $0.time < targetSection.endTime + 0.0001 }
-        let filteredNotes = adminNotes.filter { !($0.time >= targetSection.startTime && $0.time < targetSection.endTime) }
-        let updatedNotes = (filteredNotes + newNotes).sorted { lhs, rhs in
+            NoteEvent(lane: $0.lane, time: isNoteLaneSnapEnabled ? quantizedAdminGridTime(for: pastedSection.startTime + $0.relativeTime) : max(0, pastedSection.startTime + $0.relativeTime))
+        }.filter { $0.time < pastedSection.endTime + 0.0001 }
+        let updatedNotes = (adminNotes + newNotes).sorted { lhs, rhs in
             if abs(lhs.time - rhs.time) > 0.0001 { return lhs.time < rhs.time }
             return lhs.lane.rawValue < rhs.lane.rawValue
         }
         let title = normalizedAdminChartTitle()
-        applyChart(Chart(notes: updatedNotes, title: title, sections: replacementSections), bpmOverride: bpm, chartStatus: "Pasted section", recordHistory: true)
-        selectedAdminSectionID = id
+        applyChart(Chart(notes: updatedNotes, title: title, sections: existingSections + [pastedSection]), bpmOverride: bpm, chartStatus: "Pasted section", recordHistory: true)
+        selectedAdminSectionID = pastedSection.id
         adminSelectedNoteIDs = Set(newNotes.map(\.id))
         adminSelectedNoteID = newNotes.first?.id
-        adminStatusText = "Pasted section into \(targetSection.name)"
+        adminStatusText = "Pasted section at playhead"
     }
 
     func copySongSectionNotes(_ id: UUID) {
