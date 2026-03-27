@@ -263,6 +263,40 @@ final class PrototypeGameController: ObservableObject {
         let defaultLength = max(barDuration * 4, barDuration)
         let existingSections = adminSections.sorted { $0.startTime < $1.startTime }
         let snapThreshold = stepInterval
+        let minimumLength = stepInterval
+
+        if let containingSection = existingSections.first(where: { desiredStart > $0.startTime + 0.0001 && desiredStart < $0.endTime - 0.0001 }) {
+            guard desiredStart - containingSection.startTime >= minimumLength,
+                  containingSection.endTime - desiredStart >= minimumLength else {
+                adminStatusText = "Not enough room to split this section here"
+                return nil
+            }
+
+            let sectionName = normalizedSectionName(name)
+            let splitSection = SongSection(
+                name: sectionName,
+                startTime: desiredStart,
+                endTime: containingSection.endTime,
+                colorName: containingSection.colorName
+            )
+            let updatedSections = existingSections.map { section in
+                guard section.id == containingSection.id else { return section }
+                return SongSection(
+                    id: section.id,
+                    name: section.name,
+                    startTime: section.startTime,
+                    endTime: desiredStart,
+                    colorName: section.colorName
+                )
+            } + [splitSection]
+
+            let title = normalizedAdminChartTitle()
+            applyChart(Chart(notes: adminNotes, title: title, sections: updatedSections), bpmOverride: bpm, chartStatus: "Split song section", recordHistory: true)
+            selectedAdminSectionID = splitSection.id
+            adminStatusText = "Split at \(sectionBarBeatText(for: desiredStart)) into \(containingSection.name) and \(splitSection.name)"
+            refocusGameplay()
+            return splitSection.id
+        }
 
         var startTime = desiredStart
         if let adjacentEnd = existingSections
@@ -272,11 +306,21 @@ final class PrototypeGameController: ObservableObject {
             startTime = adjacentEnd
         }
 
+        let previousSection = existingSections.last(where: { $0.endTime <= startTime + 0.0001 })
         let nextSection = existingSections.first(where: { $0.startTime >= startTime - 0.0001 })
+        let gapStart = previousSection.map { max(startTime, $0.endTime) } ?? startTime
+        startTime = gapStart
         let endLimit = nextSection?.startTime ?? max(playbackDuration, adminNotes.map(\.time).max() ?? 0, startTime + defaultLength)
-        var endTime = max(startTime + stepInterval, min(startTime + defaultLength, endLimit))
+        var endTime = min(startTime + defaultLength, endLimit)
         if let nextSection, abs(endTime - nextSection.startTime) <= snapThreshold {
             endTime = nextSection.startTime
+        }
+
+        guard endTime - startTime >= minimumLength else {
+            adminStatusText = nextSection == nil
+                ? "Not enough open space to create a section here"
+                : "No room here — try a gap or split the current section"
+            return nil
         }
 
         if existingSections.contains(where: { startTime < $0.endTime - 0.0001 && endTime > $0.startTime + 0.0001 }) {
@@ -285,7 +329,7 @@ final class PrototypeGameController: ObservableObject {
         }
 
         let sectionName = normalizedSectionName(name)
-        let section = SongSection(name: sectionName, startTime: startTime, endTime: endTime, colorName: nextSection?.colorName ?? "blue")
+        let section = SongSection(name: sectionName, startTime: startTime, endTime: endTime, colorName: nextSection?.colorName ?? previousSection?.colorName ?? "blue")
         let title = normalizedAdminChartTitle()
         applyChart(Chart(notes: adminNotes, title: title, sections: existingSections + [section]), bpmOverride: bpm, chartStatus: "Added song section", recordHistory: true)
         selectedAdminSectionID = section.id
