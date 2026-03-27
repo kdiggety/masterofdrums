@@ -502,6 +502,14 @@ final class PrototypeGameController: ObservableObject {
         refocusGameplay()
     }
 
+    func copySongSection(_ id: UUID) {
+        copySongSectionNotes(id)
+    }
+
+    func pasteSongSection(atSection id: UUID) {
+        pasteSongSectionNotes(atSection: id)
+    }
+
     func copySongSectionNotes(_ id: UUID) {
         guard let range = songSectionRange(id: id) else {
             adminStatusText = "Unable to determine section range"
