@@ -432,8 +432,7 @@ final class PrototypeGameController: ObservableObject {
             updatedSection = SongSection(id: updatedSection.id, name: updatedSection.name, startTime: newStart, endTime: updatedSection.endTime, colorName: updatedSection.colorName)
             updatedSections[sortedIndex] = updatedSection
             if let previous, isAdjacent {
-                let previousEnd = min(newStart, previous.endTime + (updatedSection.startTime - previous.startTime))
-                updatedSections[sortedIndex - 1] = SongSection(id: previous.id, name: previous.name, startTime: previous.startTime, endTime: previousEnd, colorName: previous.colorName)
+                updatedSections[sortedIndex - 1] = SongSection(id: previous.id, name: previous.name, startTime: previous.startTime, endTime: newStart, colorName: previous.colorName)
             }
         case .end:
             let next = sortedIndex + 1 < sortedSections.count ? sortedSections[sortedIndex + 1] : nil
@@ -447,8 +446,7 @@ final class PrototypeGameController: ObservableObject {
             updatedSection = SongSection(id: updatedSection.id, name: updatedSection.name, startTime: updatedSection.startTime, endTime: newEnd, colorName: updatedSection.colorName)
             updatedSections[sortedIndex] = updatedSection
             if let next, isAdjacent {
-                let nextStart = max(newEnd, next.startTime - (next.endTime - updatedSection.endTime))
-                updatedSections[sortedIndex + 1] = SongSection(id: next.id, name: next.name, startTime: nextStart, endTime: next.endTime, colorName: next.colorName)
+                updatedSections[sortedIndex + 1] = SongSection(id: next.id, name: next.name, startTime: newEnd, endTime: next.endTime, colorName: next.colorName)
             }
         }
 
