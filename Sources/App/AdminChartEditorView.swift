@@ -211,6 +211,15 @@ struct AdminChartEditorView: View {
                                             game.seekSectionTimeline(to: Double(normalized) * totalDuration)
                                         }
                                 )
+                                .contextMenu {
+                                    Button("Paste Section at Playhead") { game.pasteSongSectionAtPlayhead() }
+                                    Button("Add Section Here") {
+                                        if let sectionID = game.addSongSection(),
+                                           let section = game.adminSections.first(where: { $0.id == sectionID }) {
+                                            beginEditingSection(section)
+                                        }
+                                    }
+                                }
                             ForEach(game.adminSections) { section in
                                 sectionStripBlock(section, in: geometry.size.width, totalDuration: totalDuration)
                             }
@@ -385,7 +394,7 @@ struct AdminChartEditorView: View {
             Button("Paste Section Notes") { game.pasteSongSectionNotes(atSection: section.id) }
             Divider()
             Button("Copy Section") { game.copySongSection(section.id) }
-            Button("Paste Section") { game.pasteSongSection(atSection: section.id) }
+            Button("Paste Section Into This Section") { game.pasteSongSection(atSection: section.id) }
             Button("Delete", role: .destructive) { game.deleteSongSection(section.id) }
         }
     }

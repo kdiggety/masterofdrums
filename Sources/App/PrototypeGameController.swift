@@ -531,6 +531,34 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func pasteSongSection(atSection id: UUID) {
+        guard let clipboard = adminSectionClipboard,
+              let targetSection = adminSections.first(where: { $0.id == id }) else {
+            adminStatusText = "No copied section available"
+            return
+        }
+
+        let newNotes = clipboard.notes.map {
+            NoteEvent(lane: $0.lane, time: isNoteLaneSnapEnabled ? quantizedAdminGridTime(for: targetSection.startTime + $0.relativeTime) : max(0, targetSection.startTime + $0.relativeTime))
+        }.filter { $0.time < targetSection.endTime + 0.0001 }
+
+        let replacementSections = adminSections.map { section in
+            guard section.id == id else { return section }
+            return SongSection(id: section.id, name: clipboard.name, startTime: section.startTime, endTime: section.endTime, colorName: clipboard.colorName)
+        }
+        let filteredNotes = adminNotes.filter { !($0.time >= targetSection.startTime && $0.time < targetSection.endTime) }
+        let updatedNotes = (filteredNotes + newNotes).sorted { lhs, rhs in
+            if abs(lhs.time - rhs.time) > 0.0001 { return lhs.time < rhs.time }
+            return lhs.lane.rawValue < rhs.lane.rawValue
+        }
+        let title = normalizedAdminChartTitle()
+        applyChart(Chart(notes: updatedNotes, title: title, sections: replacementSections), bpmOverride: bpm, chartStatus: "Pasted section into target", recordHistory: true)
+        selectedAdminSectionID = id
+        adminSelectedNoteIDs = Set(newNotes.map(\.id))
+        adminSelectedNoteID = newNotes.first?.id
+        adminStatusText = "Pasted section into \(targetSection.name)"
+    }
+
+    func pasteSongSectionAtPlayhead() {
         guard let clipboard = adminSectionClipboard else {
             adminStatusText = "No copied section available"
             return
