@@ -362,10 +362,6 @@ struct AdminChartEditorView: View {
                         .lineLimit(1)
                         .foregroundStyle(.primary)
                         .padding(.horizontal, 6)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            beginEditingSection(section)
-                        }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -420,7 +416,7 @@ struct AdminChartEditorView: View {
             game.selectSongSection(section.id, movePlayhead: true)
         }
         .onTapGesture(count: 2) {
-            game.jumpToSongSection(section.id, playIfAlreadyPlaying: true)
+            beginEditingSection(section)
         }
         .help("\(section.name)\nStart: \(game.sectionBarBeatText(for: section.startTime)) · \(game.displayTimeText(for: section.startTime))\nEnd: \(game.sectionBarBeatText(for: section.endTime)) · \(game.displayTimeText(for: section.endTime))")
         .contextMenu {
