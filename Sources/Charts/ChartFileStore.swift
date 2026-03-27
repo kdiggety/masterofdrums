@@ -4,6 +4,7 @@ import UniformTypeIdentifiers
 
 struct ChartDocument: Codable {
     struct Note: Codable {
+        let id: UUID?
         let lane: Int
         let time: Double
     }
@@ -45,7 +46,7 @@ struct ChartFileStore {
         let document = ChartDocument(
             title: chart.title,
             bpm: bpm,
-            notes: chart.notes.map { .init(lane: $0.lane.rawValue, time: $0.time) },
+            notes: chart.notes.map { .init(id: $0.id, lane: $0.lane.rawValue, time: $0.time) },
             sections: chart.sections.map { .init(id: $0.id, name: $0.name, startTime: $0.startTime, endTime: $0.endTime, colorName: $0.colorName) }
         )
         let encoder = JSONEncoder()
@@ -60,7 +61,7 @@ struct ChartFileStore {
         let document = try decoder.decode(ChartDocument.self, from: data)
         let notes = document.notes.compactMap { item -> NoteEvent? in
             guard let lane = Lane(rawValue: item.lane) else { return nil }
-            return NoteEvent(lane: lane, time: item.time)
+            return NoteEvent(id: item.id ?? UUID(), lane: lane, time: item.time)
         }
         let sortedRawSections = (document.sections ?? []).sorted { $0.startTime < $1.startTime }
         let sections = sortedRawSections.enumerated().map { index, item in

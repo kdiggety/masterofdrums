@@ -362,6 +362,10 @@ struct AdminChartEditorView: View {
                         .lineLimit(1)
                         .foregroundStyle(.primary)
                         .padding(.horizontal, 6)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            beginEditingSection(section)
+                        }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
