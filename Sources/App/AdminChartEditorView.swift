@@ -5,6 +5,7 @@ struct AdminChartEditorView: View {
     @State private var editingSectionID: UUID?
     @State private var editingSectionName: String = ""
     @State private var activeSectionDrag: (id: UUID, edge: SongSectionEdge, anchorTime: Double)?
+    @State private var sectionStripTargetTime: Double?
     @FocusState private var focusedSectionEditorID: UUID?
 
     var body: some View {
@@ -204,18 +205,39 @@ struct AdminChartEditorView: View {
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(Color.secondary.opacity(0.12))
                                 .contentShape(RoundedRectangle(cornerRadius: 10))
+                                .onContinuousHover { phase in
+                                    switch phase {
+                                    case .active(let location):
+                                        let normalized = min(max(location.x / max(geometry.size.width, 1), 0), 1)
+                                        sectionStripTargetTime = Double(normalized) * totalDuration
+                                    case .ended:
+                                        break
+                                    }
+                                }
                                 .gesture(
                                     SpatialTapGesture()
                                         .onEnded { value in
                                             let normalized = min(max(value.location.x / max(geometry.size.width, 1), 0), 1)
-                                            game.seekSectionTimeline(to: Double(normalized) * totalDuration)
+                                            let targetTime = Double(normalized) * totalDuration
+                                            sectionStripTargetTime = targetTime
+                                            game.seekSectionTimeline(to: targetTime)
                                         }
                                 )
                                 .contextMenu {
-                                    Button("Paste Section at Playhead") { game.pasteSongSectionAtPlayhead() }
+                                    Button("Paste Section Here") {
+                                        if let targetTime = sectionStripTargetTime {
+                                            game.pasteSongSection(atTime: targetTime)
+                                        } else {
+                                            game.pasteSongSectionAtPlayhead()
+                                        }
+                                    }
                                     Button("Add Section Here") {
-                                        if let sectionID = game.addSongSection(),
+                                        if let targetTime = sectionStripTargetTime,
+                                           let sectionID = game.addSongSection(at: targetTime),
                                            let section = game.adminSections.first(where: { $0.id == sectionID }) {
+                                            beginEditingSection(section)
+                                        } else if let sectionID = game.addSongSection(),
+                                                  let section = game.adminSections.first(where: { $0.id == sectionID }) {
                                             beginEditingSection(section)
                                         }
                                     }

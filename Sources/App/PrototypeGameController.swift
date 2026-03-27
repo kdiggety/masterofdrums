@@ -559,13 +559,17 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func pasteSongSectionAtPlayhead() {
+        let liveTime = audio.state == .playing ? audio.currentTime : stepCursorTime
+        pasteSongSection(atTime: liveTime)
+    }
+
+    func pasteSongSection(atTime time: Double) {
         guard let clipboard = adminSectionClipboard else {
             adminStatusText = "No copied section available"
             return
         }
 
-        let liveTime = audio.state == .playing ? audio.currentTime : stepCursorTime
-        let desiredStart = quantizedAdminGridTime(for: liveTime)
+        let desiredStart = quantizedAdminGridTime(for: time)
         let duration = max(clipboard.duration, stepInterval)
         let existingSections = adminSections.sorted { $0.startTime < $1.startTime }
         let minimumLength = stepInterval
