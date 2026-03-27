@@ -1002,22 +1002,35 @@ final class PrototypeGameController: ObservableObject {
 
     private func loadChart(from url: URL) {
         do {
-            let loaded = try midiLoader.loadChartData(from: url)
-            applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded \(loaded.chart.notes.count) notes from \(url.lastPathComponent)", recordHistory: true)
-            if let bpm = loaded.bpm {
-                bpmSourceText = "MIDI"
-                midiTempoText = String(format: "%.1f BPM from MIDI", bpm)
+            let isJSONChart = url.pathExtension.lowercased() == "json"
+            if isJSONChart {
+                let loaded = try chartFileStore.loadChart(from: url)
+                applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)", recordHistory: true)
+                if let bpm = loaded.bpm {
+                    bpmSourceText = "Chart JSON"
+                    midiTempoText = String(format: "%.1f BPM from chart", bpm)
+                }
+                statusMessage = "Loaded chart \(loaded.chart.title)"
+                adminStatusText = "Loaded chart JSON \(url.lastPathComponent)"
             } else {
-                midiTempoText = "No MIDI tempo event"
+                let loaded = try midiLoader.loadChartData(from: url)
+                applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded \(loaded.chart.notes.count) notes from \(url.lastPathComponent)", recordHistory: true)
+                if let bpm = loaded.bpm {
+                    bpmSourceText = "MIDI"
+                    midiTempoText = String(format: "%.1f BPM from MIDI", bpm)
+                } else {
+                    midiTempoText = "No MIDI tempo event"
+                }
+                statusMessage = "Loaded chart \(loaded.chart.title)"
+                adminStatusText = "Imported MIDI chart \(url.lastPathComponent)"
             }
-            statusMessage = "Loaded chart \(loaded.chart.title)"
-            adminStatusText = "Imported MIDI chart \(url.lastPathComponent)"
             stepCursorTime = 0
             updateStepCursorDisplay()
             updateLoopStatusText()
         } catch {
             chartStatusText = "Chart load failed"
             statusMessage = error.localizedDescription
+            adminStatusText = "Load failed: \(error.localizedDescription)"
         }
         refocusGameplay()
     }
@@ -1334,6 +1347,7 @@ final class PrototypeGameController: ObservableObject {
 
     private var chartContentTypes: [UTType] {
         var types: [UTType] = []
+        if let json = UTType.json as UTType? { types.append(json) }
         if let midi = UTType(filenameExtension: "midi") { types.append(midi) }
         if let mid = UTType(filenameExtension: "mid") { types.append(mid) }
         return types.isEmpty ? [.data] : types
