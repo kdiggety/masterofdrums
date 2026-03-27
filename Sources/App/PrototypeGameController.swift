@@ -410,7 +410,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func updateSongSectionBoundary(_ id: UUID, edge: SongSectionEdge, to time: Double) {
-        let sortedSections = (activeSectionDragSnapshot ?? adminSections).sorted { $0.startTime < $1.startTime }
+        let sortedSections = adminSections.sorted { $0.startTime < $1.startTime }
         guard let sortedIndex = sortedSections.firstIndex(where: { $0.id == id }) else { return }
 
         let minDuration = stepInterval
@@ -422,31 +422,33 @@ final class PrototypeGameController: ObservableObject {
         switch edge {
         case .start:
             let previous = sortedIndex > 0 ? sortedSections[sortedIndex - 1] : nil
-            let minStart = previous?.endTime ?? 0
+            let isAdjacent = previous.map { abs($0.endTime - updatedSection.startTime) <= snapThreshold * 0.5 } ?? false
+            let minStart = previous.map { isAdjacent ? $0.startTime + minDuration : $0.endTime } ?? 0
             let maxStart = updatedSection.endTime - minDuration
             var newStart = min(max(snappedTime, minStart), maxStart)
-            let isAdjacent = previous.map { abs($0.endTime - updatedSection.startTime) <= snapThreshold * 0.5 } ?? false
-            if let previous, abs(newStart - previous.endTime) <= snapThreshold {
+            if let previous, !isAdjacent, abs(newStart - previous.endTime) <= snapThreshold {
                 newStart = previous.endTime
             }
             updatedSection = SongSection(id: updatedSection.id, name: updatedSection.name, startTime: newStart, endTime: updatedSection.endTime, colorName: updatedSection.colorName)
             updatedSections[sortedIndex] = updatedSection
             if let previous, isAdjacent {
-                updatedSections[sortedIndex - 1] = SongSection(id: previous.id, name: previous.name, startTime: previous.startTime, endTime: newStart, colorName: previous.colorName)
+                let previousEnd = min(newStart, previous.endTime + (updatedSection.startTime - previous.startTime))
+                updatedSections[sortedIndex - 1] = SongSection(id: previous.id, name: previous.name, startTime: previous.startTime, endTime: previousEnd, colorName: previous.colorName)
             }
         case .end:
             let next = sortedIndex + 1 < sortedSections.count ? sortedSections[sortedIndex + 1] : nil
-            let maxEnd = next?.startTime ?? max(playbackDuration, adminNotes.map(\.time).max() ?? 0, updatedSection.endTime)
+            let isAdjacent = next.map { abs(updatedSection.endTime - $0.startTime) <= snapThreshold * 0.5 } ?? false
+            let maxEnd = next.map { isAdjacent ? $0.endTime - minDuration : $0.startTime } ?? max(playbackDuration, adminNotes.map(\.time).max() ?? 0, updatedSection.endTime)
             let minEnd = updatedSection.startTime + minDuration
             var newEnd = max(min(snappedTime, maxEnd), minEnd)
-            let isAdjacent = next.map { abs(updatedSection.endTime - $0.startTime) <= snapThreshold * 0.5 } ?? false
-            if let next, abs(newEnd - next.startTime) <= snapThreshold {
+            if let next, !isAdjacent, abs(newEnd - next.startTime) <= snapThreshold {
                 newEnd = next.startTime
             }
             updatedSection = SongSection(id: updatedSection.id, name: updatedSection.name, startTime: updatedSection.startTime, endTime: newEnd, colorName: updatedSection.colorName)
             updatedSections[sortedIndex] = updatedSection
             if let next, isAdjacent {
-                updatedSections[sortedIndex + 1] = SongSection(id: next.id, name: next.name, startTime: newEnd, endTime: next.endTime, colorName: next.colorName)
+                let nextStart = max(newEnd, next.startTime - (next.endTime - updatedSection.endTime))
+                updatedSections[sortedIndex + 1] = SongSection(id: next.id, name: next.name, startTime: nextStart, endTime: next.endTime, colorName: next.colorName)
             }
         }
 

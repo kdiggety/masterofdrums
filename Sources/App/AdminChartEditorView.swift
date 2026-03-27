@@ -7,19 +7,25 @@ struct AdminChartEditorView: View {
     @State private var activeSectionDrag: (id: UUID, edge: SongSectionEdge, anchorTime: Double)?
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
-                header
+        ZStack {
+            keyboardShortcutBindings
+                .frame(width: 0, height: 0)
+                .opacity(0)
 
-                HStack(alignment: .top, spacing: 14) {
-                    leftPanel
-                        .frame(maxWidth: .infinity)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    header
 
-                    rightPanel
-                        .frame(width: 320)
+                    HStack(alignment: .top, spacing: 14) {
+                        leftPanel
+                            .frame(maxWidth: .infinity)
+
+                        rightPanel
+                            .frame(width: 320)
+                    }
                 }
+                .padding(16)
             }
-            .padding(16)
         }
         .background(Color(nsColor: .windowBackgroundColor))
         .onAppear { game.isAdminPageActive = true }
@@ -209,6 +215,23 @@ struct AdminChartEditorView: View {
                 }
             }
         }
+    }
+
+    private var keyboardShortcutBindings: some View {
+        VStack {
+            Button("Undo") { game.undoAdminEdit() }
+                .keyboardShortcut("z", modifiers: [.command])
+            Button("Redo") { game.redoAdminEdit() }
+                .keyboardShortcut("Z", modifiers: [.command, .shift])
+            Button("Copy") { game.copySelectedAdminNotes() }
+                .keyboardShortcut("c", modifiers: [.command])
+            Button("Cut") { game.cutSelectedAdminNotes() }
+                .keyboardShortcut("x", modifiers: [.command])
+            Button("Paste") { game.pasteAdminNotes() }
+                .keyboardShortcut("v", modifiers: [.command])
+        }
+        .buttonStyle(.plain)
+        .allowsHitTesting(false)
     }
 
     private var recordedNotesSection: some View {
