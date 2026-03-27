@@ -203,6 +203,14 @@ struct AdminChartEditorView: View {
                         ZStack(alignment: .leading) {
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(Color.secondary.opacity(0.12))
+                                .contentShape(RoundedRectangle(cornerRadius: 10))
+                                .gesture(
+                                    SpatialTapGesture()
+                                        .onEnded { value in
+                                            let normalized = min(max(value.location.x / max(geometry.size.width, 1), 0), 1)
+                                            game.seekSectionTimeline(to: Double(normalized) * totalDuration)
+                                        }
+                                )
                             ForEach(game.adminSections) { section in
                                 sectionStripBlock(section, in: geometry.size.width, totalDuration: totalDuration)
                             }

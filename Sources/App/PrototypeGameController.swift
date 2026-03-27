@@ -537,7 +537,7 @@ final class PrototypeGameController: ObservableObject {
         }
 
         let liveTime = audio.state == .playing ? audio.currentTime : stepCursorTime
-        let desiredStart = quantizedLoopStart(for: liveTime)
+        let desiredStart = quantizedAdminGridTime(for: liveTime)
         let duration = max(clipboard.duration, stepInterval)
         let existingSections = adminSections.sorted { $0.startTime < $1.startTime }
         let minimumLength = stepInterval
@@ -642,6 +642,24 @@ final class PrototypeGameController: ObservableObject {
         guard let section = adminSections.first(where: { $0.id == id }) else { return }
         selectedAdminSectionID = id
         pasteAdminNotes(at: section.startTime)
+    }
+
+    func seekSectionTimeline(to time: Double) {
+        let targetTime = isNoteLaneSnapEnabled ? quantizedAdminGridTime(for: time) : max(0, min(playbackDuration, time))
+        clearAdminSelection()
+        selectSongSection(nil)
+        let wasPlaying = audio.state == .playing
+        adminScrubPreviewTargetTime = nil
+        adminScrubPreviewTime = nil
+        audio.seek(to: targetTime)
+        moveStepCursor(to: targetTime, seekPlayback: false)
+        refreshAdminVisibleNotes(at: targetTime)
+        if wasPlaying {
+            audio.play()
+        }
+        syncTransportState()
+        adminStatusText = "Moved to \(sectionBarBeatText(for: targetTime))"
+        refocusGameplay()
     }
 
     func addAdminNote() {
