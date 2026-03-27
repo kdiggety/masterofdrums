@@ -5,6 +5,7 @@ struct AdminChartEditorView: View {
     @State private var editingSectionID: UUID?
     @State private var editingSectionName: String = ""
     @State private var activeSectionDrag: (id: UUID, edge: SongSectionEdge, anchorTime: Double)?
+    @FocusState private var focusedSectionEditorID: UUID?
 
     var body: some View {
         ZStack {
@@ -315,6 +316,7 @@ struct AdminChartEditorView: View {
                     .textFieldStyle(.plain)
                     .font(.caption2.weight(.semibold))
                     .padding(.horizontal, 6)
+                    .focused($focusedSectionEditorID, equals: section.id)
                 } else {
                     Text(section.name)
                         .font(.caption2.weight(.semibold))
@@ -360,11 +362,16 @@ struct AdminChartEditorView: View {
         .help("\(section.name)\nStart: \(game.sectionBarBeatText(for: section.startTime)) · \(game.displayTimeText(for: section.startTime))\nEnd: \(game.sectionBarBeatText(for: section.endTime)) · \(game.displayTimeText(for: section.endTime))")
         .contextMenu {
             Button("Rename") { beginEditingSection(section) }
-            Menu("Color") {
-                ForEach(sectionColors, id: \.0) { colorName, _ in
-                    Button(colorName.capitalized) { game.updateSongSectionColor(section.id, colorName: colorName) }
+            Divider()
+            ForEach(sectionColors, id: \.0) { colorName, color in
+                Button {
+                    game.updateSongSectionColor(section.id, colorName: colorName)
+                } label: {
+                    Label(colorName.capitalized, systemImage: section.colorName == colorName ? "checkmark.circle.fill" : "circle.fill")
+                        .foregroundStyle(color)
                 }
             }
+            Divider()
             Button("Loop") { game.setLoopToSongSection(section.id) }
             Button("Copy Notes") { game.copySongSectionNotes(section.id) }
             Button("Paste Here") { game.pasteSongSectionNotes(atSection: section.id) }
@@ -390,6 +397,9 @@ struct AdminChartEditorView: View {
         editingSectionID = section.id
         editingSectionName = section.name
         game.selectSongSection(section.id)
+        DispatchQueue.main.async {
+            focusedSectionEditorID = section.id
+        }
     }
 
     private func commitSectionName(for section: SongSection) {
@@ -398,6 +408,7 @@ struct AdminChartEditorView: View {
             game.renameSongSection(section.id, to: trimmedName)
         }
         editingSectionID = nil
+        focusedSectionEditorID = nil
     }
 
     private func statusRow(_ title: String, _ value: String) -> some View {
