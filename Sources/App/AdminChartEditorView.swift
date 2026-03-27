@@ -373,6 +373,9 @@ struct AdminChartEditorView: View {
             }
             Divider()
             Button("Loop") { game.setLoopToSongSection(section.id) }
+            Button("Copy Section Notes") { game.copySongSectionNotes(section.id) }
+            Button("Paste Section Notes") { game.pasteSongSectionNotes(atSection: section.id) }
+            Divider()
             Button("Copy Section") { game.copySongSection(section.id) }
             Button("Paste Section") { game.pasteSongSection(atSection: section.id) }
             Button("Delete", role: .destructive) { game.deleteSongSection(section.id) }
