@@ -365,6 +365,26 @@ struct AdminChartEditorView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { value in
+                        guard editingSectionID != section.id else { return }
+                        if activeSectionDrag?.id != section.id || activeSectionDrag?.edge != .move {
+                            activeSectionDrag = (section.id, .move, section.startTime)
+                            game.beginSongSectionDrag()
+                        }
+                        let anchorTime = activeSectionDrag?.anchorTime ?? section.startTime
+                        let proposedTime = max(0, anchorTime + (Double(value.translation.width / max(totalWidth, 1)) * totalDuration))
+                        game.updateSongSectionBoundary(section.id, edge: .move, to: proposedTime)
+                    }
+                    .onEnded { _ in
+                        if activeSectionDrag?.id == section.id, activeSectionDrag?.edge == .move {
+                            activeSectionDrag = nil
+                            game.endSongSectionDrag()
+                        }
+                    }
+            )
             Rectangle()
                 .fill(Color.white.opacity(0.85))
                 .frame(width: 8)

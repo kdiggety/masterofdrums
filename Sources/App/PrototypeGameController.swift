@@ -26,6 +26,7 @@ private struct AdminSectionClipboard {
 enum SongSectionEdge {
     case start
     case end
+    case move
 }
 
 @MainActor
@@ -428,6 +429,33 @@ final class PrototypeGameController: ObservableObject {
         var updatedSection = sortedSections[sortedIndex]
 
         switch edge {
+        case .move:
+            let previous = sortedIndex > 0 ? sortedSections[sortedIndex - 1] : nil
+            let next = sortedIndex + 1 < sortedSections.count ? sortedSections[sortedIndex + 1] : nil
+            let duration = updatedSection.endTime - updatedSection.startTime
+            let minStart = previous?.endTime ?? 0
+            let maxStart = (next?.startTime ?? max(playbackDuration, adminNotes.map(\.time).max() ?? 0, updatedSection.endTime)) - duration
+            let newStart = min(max(snappedTime, minStart), maxStart)
+            let delta = newStart - updatedSection.startTime
+            let newEnd = newStart + duration
+            updatedSection = SongSection(id: updatedSection.id, name: updatedSection.name, startTime: newStart, endTime: newEnd, colorName: updatedSection.colorName)
+            updatedSections[sortedIndex] = updatedSection
+
+            let sectionRange = sortedSections[sortedIndex].startTime..<sortedSections[sortedIndex].endTime
+            let updatedNotes = adminNotes.map { note in
+                guard sectionRange.contains(note.time) else { return note }
+                let movedTime = isNoteLaneSnapEnabled ? quantizedAdminGridTime(for: note.time + delta) : max(0, note.time + delta)
+                return NoteEvent(id: note.id, lane: note.lane, time: movedTime)
+            }.sorted { lhs, rhs in
+                if abs(lhs.time - rhs.time) > 0.0001 { return lhs.time < rhs.time }
+                return lhs.lane.rawValue < rhs.lane.rawValue
+            }
+            let title = normalizedAdminChartTitle()
+            applyChart(Chart(notes: updatedNotes, title: title, sections: updatedSections), bpmOverride: bpm, chartStatus: "Moved song section", recordHistory: false)
+            selectedAdminSectionID = id
+            adminStatusText = "Moved \(updatedSection.name) to \(sectionBarBeatText(for: updatedSection.startTime))"
+            refocusGameplay()
+            return
         case .start:
             let previous = sortedIndex > 0 ? sortedSections[sortedIndex - 1] : nil
             let isAdjacent = previous.map { abs($0.endTime - updatedSection.startTime) <= snapThreshold * 0.5 } ?? false
