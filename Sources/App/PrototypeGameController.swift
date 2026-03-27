@@ -139,6 +139,7 @@ final class PrototypeGameController: ObservableObject {
     private let adminAuthoringNoteSpeed: Double = 110
     private let noteLaneHitLineHeight: Double = 6
     private var adminScrubPreviewTargetTime: Double?
+    private var activeSectionDragSnapshot: [SongSection]?
     private var undoHistory: [AdminChartHistoryEntry] = []
     private var redoHistory: [AdminChartHistoryEntry] = []
     private var adminClipboard: [AdminClipboardNote] = []
@@ -258,7 +259,8 @@ final class PrototypeGameController: ObservableObject {
 
     @discardableResult
     func addSongSection(at time: Double? = nil, named name: String? = nil) -> UUID? {
-        let baseTime = time ?? stepCursorTime
+        let liveTime = audio.state == .playing ? audio.currentTime : stepCursorTime
+        let baseTime = time ?? liveTime
         let desiredStart = quantizedLoopStart(for: baseTime)
         let defaultLength = max(barDuration * 4, barDuration)
         let existingSections = adminSections.sorted { $0.startTime < $1.startTime }
@@ -382,8 +384,33 @@ final class PrototypeGameController: ObservableObject {
         refocusGameplay()
     }
 
+    func beginSongSectionDrag() {
+        if activeSectionDragSnapshot == nil {
+            activeSectionDragSnapshot = adminSections.sorted { $0.startTime < $1.startTime }
+        }
+    }
+
+    func endSongSectionDrag() {
+        guard let snapshot = activeSectionDragSnapshot else { return }
+        activeSectionDragSnapshot = nil
+        let current = adminSections.sorted { $0.startTime < $1.startTime }
+        guard snapshot != current else { return }
+        undoHistory.append(
+            AdminChartHistoryEntry(
+                chart: Chart(notes: adminNotes, title: chartName, sections: snapshot),
+                bpm: bpm,
+                selectedNoteID: adminSelectedNoteID,
+                selectedNoteIDs: adminSelectedNoteIDs,
+                selectedSectionID: selectedAdminSectionID
+            )
+        )
+        redoHistory.removeAll()
+        canUndoAdminEdit = !undoHistory.isEmpty
+        canRedoAdminEdit = !redoHistory.isEmpty
+    }
+
     func updateSongSectionBoundary(_ id: UUID, edge: SongSectionEdge, to time: Double) {
-        let sortedSections = adminSections.sorted { $0.startTime < $1.startTime }
+        let sortedSections = (activeSectionDragSnapshot ?? adminSections).sorted { $0.startTime < $1.startTime }
         guard let sortedIndex = sortedSections.firstIndex(where: { $0.id == id }) else { return }
 
         let minDuration = stepInterval
@@ -424,7 +451,7 @@ final class PrototypeGameController: ObservableObject {
         }
 
         let title = normalizedAdminChartTitle()
-        applyChart(Chart(notes: adminNotes, title: title, sections: updatedSections), bpmOverride: bpm, chartStatus: "Adjusted song section", recordHistory: true)
+        applyChart(Chart(notes: adminNotes, title: title, sections: updatedSections), bpmOverride: bpm, chartStatus: "Adjusted song section", recordHistory: false)
         selectedAdminSectionID = id
         adminStatusText = "Adjusted \(updatedSection.name) \(sectionBarBeatText(for: updatedSection.startTime))–\(sectionBarBeatText(for: updatedSection.endTime))"
         refocusGameplay()
@@ -774,7 +801,8 @@ final class PrototypeGameController: ObservableObject {
     func saveAdminChartDocument() {
         guard let url = chartFileStore.chooseChartFileForSave(defaultName: chartName) else { refocusGameplay(); return }
         do {
-            try chartFileStore.save(chart: session.chart, bpm: bpm, to: url)
+            let currentChart = Chart(notes: adminNotes, title: chartName, sections: adminSections)
+            try chartFileStore.save(chart: currentChart, bpm: bpm, to: url)
             adminStatusText = "Saved chart to \(url.lastPathComponent)"
             chartStatusText = "Saved chart file \(url.lastPathComponent)"
         } catch {

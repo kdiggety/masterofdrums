@@ -271,6 +271,7 @@ struct AdminChartEditorView: View {
                         .onChanged { value in
                             if activeSectionDrag?.id != section.id || activeSectionDrag?.edge != .start {
                                 activeSectionDrag = (section.id, .start, section.startTime)
+                                game.beginSongSectionDrag()
                             }
                             let anchorTime = activeSectionDrag?.anchorTime ?? section.startTime
                             let proposedTime = max(0, anchorTime + (Double(value.translation.width / max(totalWidth, 1)) * totalDuration))
@@ -278,6 +279,7 @@ struct AdminChartEditorView: View {
                         }
                         .onEnded { _ in
                             activeSectionDrag = nil
+                            game.endSongSectionDrag()
                         }
                 )
             Group {
@@ -308,6 +310,7 @@ struct AdminChartEditorView: View {
                         .onChanged { value in
                             if activeSectionDrag?.id != section.id || activeSectionDrag?.edge != .end {
                                 activeSectionDrag = (section.id, .end, section.endTime)
+                                game.beginSongSectionDrag()
                             }
                             let anchorTime = activeSectionDrag?.anchorTime ?? section.endTime
                             let proposedTime = max(0, anchorTime + (Double(value.translation.width / max(totalWidth, 1)) * totalDuration))
@@ -315,6 +318,7 @@ struct AdminChartEditorView: View {
                         }
                         .onEnded { _ in
                             activeSectionDrag = nil
+                            game.endSongSectionDrag()
                         }
                 )
         }
