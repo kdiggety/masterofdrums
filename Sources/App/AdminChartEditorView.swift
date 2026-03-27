@@ -217,6 +217,14 @@ struct AdminChartEditorView: View {
                                 .gesture(
                                     SpatialTapGesture()
                                         .onEnded { value in
+                                            let hitSection = game.adminSections.contains { section in
+                                                let startX = geometry.size.width * CGFloat(max(0, min(1, section.startTime / totalDuration)))
+                                                let endX = geometry.size.width * CGFloat(max(0, min(1, section.endTime / totalDuration)))
+                                                let width = max(endX - startX, 44)
+                                                let offsetX = min(startX, max(0, geometry.size.width - width))
+                                                return value.location.x >= offsetX && value.location.x <= offsetX + width
+                                            }
+                                            guard !hitSection else { return }
                                             let normalized = min(max(value.location.x / max(geometry.size.width, 1), 0), 1)
                                             let targetTime = Double(normalized) * totalDuration
                                             sectionStripTargetTime = targetTime
@@ -330,7 +338,7 @@ struct AdminChartEditorView: View {
                 .frame(width: 8)
                 .contentShape(Rectangle())
                 .gesture(
-                    DragGesture(minimumDistance: 0)
+                    DragGesture(minimumDistance: 3)
                         .onChanged { value in
                             if activeSectionDrag?.id != section.id || activeSectionDrag?.edge != .start {
                                 activeSectionDrag = (section.id, .start, section.startTime)
@@ -367,7 +375,7 @@ struct AdminChartEditorView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())
             .gesture(
-                DragGesture(minimumDistance: 0)
+                DragGesture(minimumDistance: 3)
                     .onChanged { value in
                         guard editingSectionID != section.id else { return }
                         if activeSectionDrag?.id != section.id || activeSectionDrag?.edge != .move {
@@ -390,7 +398,7 @@ struct AdminChartEditorView: View {
                 .frame(width: 8)
                 .contentShape(Rectangle())
                 .gesture(
-                    DragGesture(minimumDistance: 0)
+                    DragGesture(minimumDistance: 3)
                         .onChanged { value in
                             if activeSectionDrag?.id != section.id || activeSectionDrag?.edge != .end {
                                 activeSectionDrag = (section.id, .end, section.endTime)
