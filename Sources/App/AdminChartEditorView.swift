@@ -214,13 +214,6 @@ struct AdminChartEditorView: View {
                                         break
                                     }
                                 }
-                                .simultaneousGesture(
-                                    DragGesture(minimumDistance: 0)
-                                        .onChanged { value in
-                                            let normalized = min(max(value.location.x / max(geometry.size.width, 1), 0), 1)
-                                            sectionStripTargetTime = Double(normalized) * totalDuration
-                                        }
-                                )
                                 .gesture(
                                     SpatialTapGesture()
                                         .onEnded { value in
@@ -231,7 +224,7 @@ struct AdminChartEditorView: View {
                                         }
                                 )
                                 .contextMenu {
-                                    Button("Paste Section Here") {
+                                    Button("Paste Section") {
                                         if let targetTime = sectionStripTargetTime {
                                             game.pasteSongSection(atTime: targetTime)
                                         } else {
@@ -423,7 +416,6 @@ struct AdminChartEditorView: View {
             Button("Paste Section Notes") { game.pasteSongSectionNotes(atSection: section.id) }
             Divider()
             Button("Copy Section") { game.copySongSection(section.id) }
-            Button("Paste Section Into This Section") { game.pasteSongSection(atSection: section.id) }
             Button("Delete", role: .destructive) { game.deleteSongSection(section.id) }
         }
     }

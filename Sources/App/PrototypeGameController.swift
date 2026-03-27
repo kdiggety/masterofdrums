@@ -530,34 +530,6 @@ final class PrototypeGameController: ObservableObject {
         adminStatusText = "Copied section \(section.name)"
     }
 
-    func pasteSongSection(atSection id: UUID) {
-        guard let clipboard = adminSectionClipboard,
-              let targetSection = adminSections.first(where: { $0.id == id }) else {
-            adminStatusText = "No copied section available"
-            return
-        }
-
-        let newNotes = clipboard.notes.map {
-            NoteEvent(lane: $0.lane, time: isNoteLaneSnapEnabled ? quantizedAdminGridTime(for: targetSection.startTime + $0.relativeTime) : max(0, targetSection.startTime + $0.relativeTime))
-        }.filter { $0.time < targetSection.endTime + 0.0001 }
-
-        let replacementSections = adminSections.map { section in
-            guard section.id == id else { return section }
-            return SongSection(id: section.id, name: clipboard.name, startTime: section.startTime, endTime: section.endTime, colorName: clipboard.colorName)
-        }
-        let filteredNotes = adminNotes.filter { !($0.time >= targetSection.startTime && $0.time < targetSection.endTime) }
-        let updatedNotes = (filteredNotes + newNotes).sorted { lhs, rhs in
-            if abs(lhs.time - rhs.time) > 0.0001 { return lhs.time < rhs.time }
-            return lhs.lane.rawValue < rhs.lane.rawValue
-        }
-        let title = normalizedAdminChartTitle()
-        applyChart(Chart(notes: updatedNotes, title: title, sections: replacementSections), bpmOverride: bpm, chartStatus: "Pasted section into target", recordHistory: true)
-        selectedAdminSectionID = id
-        adminSelectedNoteIDs = Set(newNotes.map(\.id))
-        adminSelectedNoteID = newNotes.first?.id
-        adminStatusText = "Pasted section into \(targetSection.name)"
-    }
-
     func pasteSongSectionAtPlayhead() {
         let liveTime = audio.state == .playing ? audio.currentTime : stepCursorTime
         pasteSongSection(atTime: liveTime)
@@ -574,55 +546,20 @@ final class PrototypeGameController: ObservableObject {
         let existingSections = adminSections.sorted { $0.startTime < $1.startTime }
         let minimumLength = stepInterval
 
+        let effectiveStart: Double
         if let containingSection = existingSections.first(where: { desiredStart > $0.startTime + 0.0001 && desiredStart < $0.endTime - 0.0001 }) {
-            let availableRight = containingSection.endTime - desiredStart
-            guard availableRight >= duration else {
-                adminStatusText = "Not enough room to insert copied section inside \(containingSection.name)"
-                return
-            }
-            guard desiredStart - containingSection.startTime >= minimumLength else {
-                adminStatusText = "Need at least one grid step before the split point in \(containingSection.name)"
-                return
-            }
-
-            let pastedSection = SongSection(name: clipboard.name, startTime: desiredStart, endTime: desiredStart + duration, colorName: clipboard.colorName)
-            var updatedSections: [SongSection] = []
-            for section in existingSections {
-                guard section.id == containingSection.id else {
-                    updatedSections.append(section)
-                    continue
-                }
-                updatedSections.append(SongSection(id: section.id, name: section.name, startTime: section.startTime, endTime: desiredStart, colorName: section.colorName))
-                updatedSections.append(pastedSection)
-                if containingSection.endTime - pastedSection.endTime >= minimumLength {
-                    updatedSections.append(SongSection(name: normalizedSectionName(nil), startTime: pastedSection.endTime, endTime: containingSection.endTime, colorName: containingSection.colorName))
-                }
-            }
-
-            let newNotes = clipboard.notes.map {
-                NoteEvent(lane: $0.lane, time: isNoteLaneSnapEnabled ? quantizedAdminGridTime(for: pastedSection.startTime + $0.relativeTime) : max(0, pastedSection.startTime + $0.relativeTime))
-            }.filter { $0.time < pastedSection.endTime + 0.0001 }
-            let updatedNotes = (adminNotes + newNotes).sorted { lhs, rhs in
-                if abs(lhs.time - rhs.time) > 0.0001 { return lhs.time < rhs.time }
-                return lhs.lane.rawValue < rhs.lane.rawValue
-            }
-            let title = normalizedAdminChartTitle()
-            applyChart(Chart(notes: updatedNotes, title: title, sections: updatedSections), bpmOverride: bpm, chartStatus: "Pasted section", recordHistory: true)
-            selectedAdminSectionID = pastedSection.id
-            adminSelectedNoteIDs = Set(newNotes.map(\.id))
-            adminSelectedNoteID = newNotes.first?.id
-            adminStatusText = "Inserted copied section inside \(containingSection.name)"
-            refocusGameplay()
-            return
+            effectiveStart = containingSection.endTime
+        } else {
+            effectiveStart = desiredStart
         }
 
-        let previousSection = existingSections.last(where: { $0.endTime <= desiredStart + 0.0001 })
-        let nextSection = existingSections.first(where: { $0.startTime >= desiredStart - 0.0001 })
-        let startTime = max(desiredStart, previousSection?.endTime ?? desiredStart)
+        let previousSection = existingSections.last(where: { $0.endTime <= effectiveStart + 0.0001 })
+        let nextSection = existingSections.first(where: { $0.startTime >= effectiveStart - 0.0001 })
+        let startTime = max(effectiveStart, previousSection?.endTime ?? effectiveStart)
         let endLimit = nextSection?.startTime ?? max(playbackDuration, adminNotes.map(\.time).max() ?? 0, startTime + duration)
         let endTime = startTime + duration
         guard endTime <= endLimit + 0.0001 else {
-            adminStatusText = "No open gap large enough for the copied section here"
+            adminStatusText = "No room to paste copied section at or after the playhead"
             return
         }
         guard !existingSections.contains(where: { startTime < $0.endTime - 0.0001 && endTime > $0.startTime + 0.0001 }) else {
