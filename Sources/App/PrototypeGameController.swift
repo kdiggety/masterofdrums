@@ -148,6 +148,7 @@ final class PrototypeGameController: ObservableObject {
     private let noteLaneHitLineHeight: Double = 6
     private var adminScrubPreviewTargetTime: Double?
     private var activeSectionDragSnapshot: [SongSection]?
+    private var activeAdminChartURL: URL?
     private var undoHistory: [AdminChartHistoryEntry] = []
     private var redoHistory: [AdminChartHistoryEntry] = []
     private var adminClipboard: [AdminClipboardNote] = []
@@ -228,6 +229,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func startAdminChart() {
+        activeAdminChartURL = nil
         let chart = Chart(notes: [], title: trackName == "Preview clock" ? "Untitled Chart" : trackName, sections: [])
         applyChart(chart, bpmOverride: bpm, chartStatus: "Started empty admin chart", recordHistory: true)
         adminStatusText = "Started new chart. Use step mode or record mode."
@@ -930,6 +932,7 @@ final class PrototypeGameController: ObservableObject {
         do {
             let currentChart = Chart(notes: adminNotes, title: chartName, sections: adminSections)
             try chartFileStore.save(chart: currentChart, bpm: bpm, to: url)
+            activeAdminChartURL = url
             adminStatusText = "Saved chart to \(url.lastPathComponent)"
             chartStatusText = "Saved chart file \(url.lastPathComponent)"
         } catch {
@@ -942,7 +945,8 @@ final class PrototypeGameController: ObservableObject {
         guard let url = chartFileStore.chooseChartFileForOpen() else { refocusGameplay(); return }
         do {
             let loaded = try chartFileStore.loadChart(from: url)
-            applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)", recordHistory: true)
+            activeAdminChartURL = url
+            applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)", recordHistory: true, persistLoadedChart: false)
             adminStatusText = "Loaded chart JSON \(url.lastPathComponent)"
             stepCursorTime = 0
             updateStepCursorDisplay()
@@ -1005,7 +1009,8 @@ final class PrototypeGameController: ObservableObject {
             let isJSONChart = url.pathExtension.lowercased() == "json"
             if isJSONChart {
                 let loaded = try chartFileStore.loadChart(from: url)
-                applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)", recordHistory: true)
+                activeAdminChartURL = url
+                applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)", recordHistory: true, persistLoadedChart: false)
                 if let bpm = loaded.bpm {
                     bpmSourceText = "Chart JSON"
                     midiTempoText = String(format: "%.1f BPM from chart", bpm)
@@ -1014,7 +1019,8 @@ final class PrototypeGameController: ObservableObject {
                 adminStatusText = "Loaded chart JSON \(url.lastPathComponent)"
             } else {
                 let loaded = try midiLoader.loadChartData(from: url)
-                applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded \(loaded.chart.notes.count) notes from \(url.lastPathComponent)", recordHistory: true)
+                activeAdminChartURL = nil
+                applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded \(loaded.chart.notes.count) notes from \(url.lastPathComponent)", recordHistory: true, persistLoadedChart: false)
                 if let bpm = loaded.bpm {
                     bpmSourceText = "MIDI"
                     midiTempoText = String(format: "%.1f BPM from MIDI", bpm)
@@ -1040,6 +1046,17 @@ final class PrototypeGameController: ObservableObject {
         let title = normalizedAdminChartTitle()
         applyChart(Chart(notes: updated, title: title, sections: adminSections), bpmOverride: bpm, chartStatus: "Recorded \(updated.count) chart notes", recordHistory: true)
         adminSelectedNoteID = note.id
+    }
+
+    private func autosaveLoadedAdminChartIfPossible() {
+        guard let url = activeAdminChartURL else { return }
+        do {
+            let currentChart = Chart(notes: adminNotes, title: chartName, sections: adminSections)
+            try chartFileStore.save(chart: currentChart, bpm: bpm, to: url)
+        } catch {
+            chartStatusText = "Autosave failed"
+            adminStatusText = "Autosave failed: \(error.localizedDescription)"
+        }
     }
 
     private func normalizedAdminChartTitle() -> String {
@@ -1079,7 +1096,7 @@ final class PrototypeGameController: ObservableObject {
         canRedoAdminEdit = !redoHistory.isEmpty
     }
 
-    private func applyChart(_ chart: Chart, bpmOverride: Double?, chartStatus: String, recordHistory: Bool = false) {
+    private func applyChart(_ chart: Chart, bpmOverride: Double?, chartStatus: String, recordHistory: Bool = false, persistLoadedChart: Bool = true) {
         if recordHistory {
             undoHistory.append(currentAdminHistoryEntry())
             redoHistory.removeAll()
@@ -1106,6 +1123,9 @@ final class PrototypeGameController: ObservableObject {
         syncState()
         syncTransportState()
         updateAdminHistoryAvailability()
+        if persistLoadedChart {
+            autosaveLoadedAdminChartIfPossible()
+        }
     }
 
     private func handleTick(_ time: TimeInterval) {
