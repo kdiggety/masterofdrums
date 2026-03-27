@@ -19,6 +19,7 @@ struct ChartDocument: Codable {
 
     let title: String
     let bpm: Double
+    let timelineDuration: Double?
     let notes: [Note]
     let sections: [Section]?
 }
@@ -42,10 +43,11 @@ struct ChartFileStore {
         return panel.runModal() == .OK ? panel.url : nil
     }
 
-    func save(chart: Chart, bpm: Double, to url: URL) throws {
+    func save(chart: Chart, bpm: Double, timelineDuration: Double? = nil, to url: URL) throws {
         let document = ChartDocument(
             title: chart.title,
             bpm: bpm,
+            timelineDuration: timelineDuration,
             notes: chart.notes.map { .init(id: $0.id, lane: $0.lane.rawValue, time: $0.time) },
             sections: chart.sections.map { .init(id: $0.id, name: $0.name, startTime: $0.startTime, endTime: $0.endTime, colorName: $0.colorName) }
         )
@@ -55,7 +57,7 @@ struct ChartFileStore {
         try data.write(to: url)
     }
 
-    func loadChart(from url: URL) throws -> (chart: Chart, bpm: Double?) {
+    func loadChart(from url: URL) throws -> (chart: Chart, bpm: Double?, timelineDuration: Double?) {
         let data = try Data(contentsOf: url)
         let decoder = JSONDecoder()
         let document = try decoder.decode(ChartDocument.self, from: data)
@@ -76,7 +78,7 @@ struct ChartFileStore {
                 colorName: item.colorName ?? "blue"
             )
         }
-        return (Chart(notes: notes.sorted { $0.time < $1.time }, title: document.title, sections: sections), document.bpm)
+        return (Chart(notes: notes.sorted { $0.time < $1.time }, title: document.title, sections: sections), document.bpm, document.timelineDuration)
     }
 
     private var chartContentTypes: [UTType] {

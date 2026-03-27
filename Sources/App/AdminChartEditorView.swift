@@ -200,7 +200,7 @@ struct AdminChartEditorView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     GeometryReader { geometry in
-                        let totalDuration = max(game.playbackDuration, game.adminNotes.map(\.time).max() ?? 0, game.adminSections.map(\.endTime).max() ?? 0, 1)
+                        let totalDuration = max(game.adminTimelineDuration, 1)
                         ZStack(alignment: .leading) {
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(Color.secondary.opacity(0.12))

@@ -89,6 +89,7 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var playbackRateText: String = "100%"
     @Published private(set) var playbackDurationText: String = "0.00s"
     @Published private(set) var loopStatusText: String = "Loop Off"
+    @Published private(set) var adminTimelineDuration: Double = 1
     @Published var adminSelectedNoteID: UUID? {
         didSet {
             scene.selectedAdminNoteID = adminSelectedNoteID
@@ -230,6 +231,7 @@ final class PrototypeGameController: ObservableObject {
 
     func startAdminChart() {
         activeAdminChartURL = nil
+        adminTimelineDuration = max(playbackDuration, 1)
         let chart = Chart(notes: [], title: trackName == "Preview clock" ? "Untitled Chart" : trackName, sections: [])
         applyChart(chart, bpmOverride: bpm, chartStatus: "Started empty admin chart", recordHistory: true)
         adminStatusText = "Started new chart. Use step mode or record mode."
@@ -931,7 +933,7 @@ final class PrototypeGameController: ObservableObject {
         guard let url = chartFileStore.chooseChartFileForSave(defaultName: chartName) else { refocusGameplay(); return }
         do {
             let currentChart = Chart(notes: adminNotes, title: chartName, sections: adminSections)
-            try chartFileStore.save(chart: currentChart, bpm: bpm, to: url)
+            try chartFileStore.save(chart: currentChart, bpm: bpm, timelineDuration: adminTimelineDuration, to: url)
             activeAdminChartURL = url
             adminStatusText = "Saved chart to \(url.lastPathComponent)"
             chartStatusText = "Saved chart file \(url.lastPathComponent)"
@@ -946,6 +948,7 @@ final class PrototypeGameController: ObservableObject {
         do {
             let loaded = try chartFileStore.loadChart(from: url)
             activeAdminChartURL = url
+            adminTimelineDuration = max(loaded.timelineDuration ?? 0, loaded.chart.endTime, playbackDuration, 1)
             applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)", recordHistory: true, persistLoadedChart: false)
             adminStatusText = "Loaded chart JSON \(url.lastPathComponent)"
             stepCursorTime = 0
@@ -1010,6 +1013,7 @@ final class PrototypeGameController: ObservableObject {
             if isJSONChart {
                 let loaded = try chartFileStore.loadChart(from: url)
                 activeAdminChartURL = url
+                adminTimelineDuration = max(loaded.timelineDuration ?? 0, loaded.chart.endTime, playbackDuration, 1)
                 applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)", recordHistory: true, persistLoadedChart: false)
                 if let bpm = loaded.bpm {
                     bpmSourceText = "Chart JSON"
@@ -1020,6 +1024,7 @@ final class PrototypeGameController: ObservableObject {
             } else {
                 let loaded = try midiLoader.loadChartData(from: url)
                 activeAdminChartURL = nil
+                adminTimelineDuration = max(playbackDuration, loaded.chart.endTime, 1)
                 applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded \(loaded.chart.notes.count) notes from \(url.lastPathComponent)", recordHistory: true, persistLoadedChart: false)
                 if let bpm = loaded.bpm {
                     bpmSourceText = "MIDI"
@@ -1052,7 +1057,7 @@ final class PrototypeGameController: ObservableObject {
         guard let url = activeAdminChartURL else { return }
         do {
             let currentChart = Chart(notes: adminNotes, title: chartName, sections: adminSections)
-            try chartFileStore.save(chart: currentChart, bpm: bpm, to: url)
+            try chartFileStore.save(chart: currentChart, bpm: bpm, timelineDuration: adminTimelineDuration, to: url)
         } catch {
             chartStatusText = "Autosave failed"
             adminStatusText = "Autosave failed: \(error.localizedDescription)"
@@ -1108,6 +1113,7 @@ final class PrototypeGameController: ObservableObject {
         chartStatusText = chartStatus
         adminNotes = chart.notes.sorted { $0.time < $1.time }
         adminSections = chart.sections.sorted { $0.startTime < $1.startTime }
+        adminTimelineDuration = max(adminTimelineDuration, chart.endTime, 1)
         if let selectedID = adminSelectedNoteID,
            !adminNotes.contains(where: { $0.id == selectedID }) {
             adminSelectedNoteID = nil
