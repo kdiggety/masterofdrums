@@ -68,6 +68,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
     @Published private(set) var state: TransportState = .stopped
     @Published private(set) var loadedTrackName: String?
     @Published private(set) var statusText: String = "Preview clock"
+    private(set) var currentFileURL: URL?
     @Published private(set) var detectedBPM: BPMDetectionResult?
     @Published private(set) var analysisDebug = BPMAnalysisDebug(status: "Idle", detail: "No file analyzed yet")
     @Published private(set) var playbackRate: Float = 1.0
@@ -103,6 +104,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
             player.prepareToPlay()
             player.delegate = self
             audioPlayer = player
+            currentFileURL = url
             loadedTrackName = url.lastPathComponent
             state = .stopped
             previewClock.stop()
@@ -121,6 +123,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
             }
         } catch {
             audioPlayer = nil
+            currentFileURL = nil
             loadedTrackName = nil
             detectedBPM = nil
             state = .stopped

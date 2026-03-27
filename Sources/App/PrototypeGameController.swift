@@ -31,6 +31,11 @@ enum SongSectionEdge {
 
 @MainActor
 final class PrototypeGameController: ObservableObject {
+    private enum PersistenceKeys {
+        static let lastAudioFilePath = "PrototypeGameController.lastAudioFilePath"
+        static let lastChartFilePath = "PrototypeGameController.lastChartFilePath"
+    }
+
     enum StepResolution: String, CaseIterable, Identifiable {
         case quarter = "1/4"
         case eighth = "1/8"
@@ -74,9 +79,9 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var isRunComplete: Bool = false
     @Published private(set) var statusMessage: String = "Ready"
     @Published private(set) var accuracyText: String = "0%"
-    @Published private(set) var trackName: String = "Preview clock"
-    @Published private(set) var chartName: String = Chart.prototype.title
-    @Published private(set) var chartStatusText: String = "Prototype chart loaded"
+    @Published private(set) var trackName: String = "No audio loaded"
+    @Published private(set) var chartName: String = "Untitled Chart"
+    @Published private(set) var chartStatusText: String = "No chart loaded"
     @Published private(set) var transportStateText: String = TransportState.stopped.rawValue
     @Published private(set) var playbackTimeText: String = "0.00s"
     @Published private(set) var barBeatText: String = "1:1"
@@ -158,7 +163,7 @@ final class PrototypeGameController: ObservableObject {
     var isAdminAuthoringActive: Bool { isAdminPageActive }
 
     init() {
-        let initialChart = Chart.prototype
+        let initialChart = Chart(notes: [], title: "Untitled Chart", sections: [])
         self.session = GameSession(chart: initialChart)
         let keyboard = KeyboardInputDevice()
         self.inputRouter = InputRouter(activeDevice: keyboard)
@@ -167,6 +172,8 @@ final class PrototypeGameController: ObservableObject {
         self.scene.isAdminAuthoringMode = false
         self.activeInputSourceName = keyboard.source.rawValue
         self.chartName = initialChart.title
+        self.chartStatusText = "No chart loaded"
+        self.adminStatusText = "Open Admin to create or load a chart."
         self.adminNotes = initialChart.notes
         self.adminSections = initialChart.sections
 
@@ -196,24 +203,15 @@ final class PrototypeGameController: ObservableObject {
         updateLoopStatusText()
         scene.selectedAdminNoteID = adminSelectedNoteID
         updateAdminHistoryAvailability()
+        restoreLastOpenedSessionIfPossible()
     }
 
     func chooseAudioFile() {
         audio.chooseAudioFile()
-        if let loadedTrackName = audio.loadedTrackName {
-            trackName = loadedTrackName
-            statusMessage = "Loaded \(loadedTrackName)"
+        if audio.loadedTrackName != nil {
+            updateAudioMetadataAfterLoad()
+            persistLastOpenedAudioURL(audio.currentFileURL)
         }
-        if let detected = audio.detectedBPM {
-            bpm = detected.bpm
-            bpmSourceText = detected.source.capitalized
-        } else {
-            bpmSourceText = "Manual"
-        }
-        bpmAnalysisStatusText = audio.analysisDebug.status
-        bpmAnalysisDetailText = audio.analysisDebug.detail
-        updateStepCursorDisplay()
-        syncTransportState()
         refocusGameplay()
     }
 
@@ -229,10 +227,64 @@ final class PrototypeGameController: ObservableObject {
         loadChart(from: url)
     }
 
+    private func updateAudioMetadataAfterLoad() {
+        if let loadedTrackName = audio.loadedTrackName {
+            trackName = loadedTrackName
+            statusMessage = "Loaded \(loadedTrackName)"
+        } else {
+            trackName = "No audio loaded"
+            statusMessage = "Ready"
+        }
+        if let detected = audio.detectedBPM {
+            bpm = detected.bpm
+            bpmSourceText = detected.source.capitalized
+        } else {
+            bpmSourceText = "Manual"
+        }
+        bpmAnalysisStatusText = audio.analysisDebug.status
+        bpmAnalysisDetailText = audio.analysisDebug.detail
+        updateStepCursorDisplay()
+        syncTransportState()
+    }
+
+    private func persistLastOpenedAudioURL(_ url: URL?) {
+        let defaults = UserDefaults.standard
+        if let path = url?.path {
+            defaults.set(path, forKey: PersistenceKeys.lastAudioFilePath)
+        } else {
+            defaults.removeObject(forKey: PersistenceKeys.lastAudioFilePath)
+        }
+    }
+
+    private func persistLastOpenedChartURL(_ url: URL?) {
+        let defaults = UserDefaults.standard
+        if let path = url?.path {
+            defaults.set(path, forKey: PersistenceKeys.lastChartFilePath)
+        } else {
+            defaults.removeObject(forKey: PersistenceKeys.lastChartFilePath)
+        }
+    }
+
+    private func restoreLastOpenedSessionIfPossible() {
+        let defaults = UserDefaults.standard
+        let fileManager = FileManager.default
+
+        if let audioPath = defaults.string(forKey: PersistenceKeys.lastAudioFilePath),
+           fileManager.fileExists(atPath: audioPath) {
+            audio.loadAudioFile(from: URL(fileURLWithPath: audioPath))
+            updateAudioMetadataAfterLoad()
+        }
+
+        if let chartPath = defaults.string(forKey: PersistenceKeys.lastChartFilePath),
+           fileManager.fileExists(atPath: chartPath) {
+            loadChart(from: URL(fileURLWithPath: chartPath))
+        }
+    }
+
     func startAdminChart() {
         activeAdminChartURL = nil
         adminTimelineDuration = max(playbackDuration, 1)
-        let chart = Chart(notes: [], title: trackName == "Preview clock" ? "Untitled Chart" : trackName, sections: [])
+        let chart = Chart(notes: [], title: trackName == "No audio loaded" ? "Untitled Chart" : trackName, sections: [])
         applyChart(chart, bpmOverride: bpm, chartStatus: "Started empty admin chart", recordHistory: true)
         adminStatusText = "Started new chart. Use step mode or record mode."
         adminNoteTime = 0
@@ -262,7 +314,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func clearAdminNotes() {
-        let title = chartName == Chart.prototype.title ? "Admin Chart" : chartName
+        let title = chartName == "Untitled Chart" ? "Admin Chart" : chartName
         applyChart(Chart(notes: [], title: title, sections: adminSections), bpmOverride: bpm, chartStatus: "Cleared chart notes", recordHistory: true)
         adminStatusText = "Cleared chart notes."
         stepCursorTime = 0
@@ -935,6 +987,7 @@ final class PrototypeGameController: ObservableObject {
             let currentChart = Chart(notes: adminNotes, title: chartName, sections: adminSections)
             try chartFileStore.save(chart: currentChart, bpm: bpm, timelineDuration: adminTimelineDuration, to: url)
             activeAdminChartURL = url
+            persistLastOpenedChartURL(url)
             adminStatusText = "Saved chart to \(url.lastPathComponent)"
             chartStatusText = "Saved chart file \(url.lastPathComponent)"
         } catch {
@@ -948,6 +1001,7 @@ final class PrototypeGameController: ObservableObject {
         do {
             let loaded = try chartFileStore.loadChart(from: url)
             activeAdminChartURL = url
+            persistLastOpenedChartURL(url)
             adminTimelineDuration = max(loaded.timelineDuration ?? 0, loaded.chart.endTime, playbackDuration, 1)
             applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)", recordHistory: true, persistLoadedChart: false)
             adminStatusText = "Loaded chart JSON \(url.lastPathComponent)"
@@ -1013,6 +1067,7 @@ final class PrototypeGameController: ObservableObject {
             if isJSONChart {
                 let loaded = try chartFileStore.loadChart(from: url)
                 activeAdminChartURL = url
+                persistLastOpenedChartURL(url)
                 adminTimelineDuration = max(loaded.timelineDuration ?? 0, loaded.chart.endTime, playbackDuration, 1)
                 applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)", recordHistory: true, persistLoadedChart: false)
                 if let bpm = loaded.bpm {
@@ -1024,6 +1079,7 @@ final class PrototypeGameController: ObservableObject {
             } else {
                 let loaded = try midiLoader.loadChartData(from: url)
                 activeAdminChartURL = nil
+                persistLastOpenedChartURL(nil)
                 adminTimelineDuration = max(playbackDuration, loaded.chart.endTime, 1)
                 applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded \(loaded.chart.notes.count) notes from \(url.lastPathComponent)", recordHistory: true, persistLoadedChart: false)
                 if let bpm = loaded.bpm {
@@ -1065,7 +1121,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func normalizedAdminChartTitle() -> String {
-        chartName == Chart.prototype.title ? (trackName == "Preview clock" ? "Admin Chart" : trackName) : chartName
+        chartName == "Untitled Chart" ? (trackName == "No audio loaded" ? "Admin Chart" : trackName) : chartName
     }
 
     private func currentAdminHistoryEntry() -> AdminChartHistoryEntry {
@@ -1208,7 +1264,7 @@ final class PrototypeGameController: ObservableObject {
         }
         scene.updateVisibleNotes(currentSceneNotes(at: scene.currentSongTime))
         scene.selectedAdminNoteID = adminSelectedNoteID
-        trackName = audio.loadedTrackName ?? "Preview clock"
+        trackName = audio.loadedTrackName ?? "No audio loaded"
         chartName = session.chart.title
         adminNotes = session.chart.notes.sorted { $0.time < $1.time }
         adminSections = session.chart.sections.sorted { $0.startTime < $1.startTime }
