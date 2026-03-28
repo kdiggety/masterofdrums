@@ -97,6 +97,16 @@ struct AdminChartEditorView: View {
             GroupBox("Playback") {
                 VStack(alignment: .leading, spacing: 10) {
                     statusRow("BPM", String(format: "%.1f", game.bpm))
+                    statusRow("BPM Source", game.bpmSourceText)
+                    Text(game.midiTempoText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    statusRow("Analysis", game.bpmAnalysisStatusText)
+                    Text(game.bpmAnalysisDetailText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                     statusRow("Position", "\(game.playbackTimeText) / \(game.playbackDurationText)")
                     Slider(
                         value: Binding(
@@ -115,6 +125,22 @@ struct AdminChartEditorView: View {
                     }
 
                     Divider()
+
+                    HStack(spacing: 8) {
+                        adminButton("BPM −") { game.nudgeBPM(by: -1) }
+                        Text(String(format: "%.1f", game.bpm))
+                            .font(.subheadline.monospacedDigit())
+                            .frame(minWidth: 62, alignment: .center)
+                        adminButton("BPM +") { game.nudgeBPM(by: 1) }
+                    }
+
+                    HStack(spacing: 8) {
+                        adminButton("Offset −") { game.nudgeOffset(by: -0.01) }
+                        Text(String(format: "%.2fs", game.songOffset))
+                            .font(.subheadline.monospacedDigit())
+                            .frame(minWidth: 62, alignment: .center)
+                        adminButton("Offset +") { game.nudgeOffset(by: 0.01) }
+                    }
 
                     Toggle("Snap note lane scrub to beat grid", isOn: $game.isNoteLaneSnapEnabled)
 

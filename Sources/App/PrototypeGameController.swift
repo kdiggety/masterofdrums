@@ -155,6 +155,7 @@ final class PrototypeGameController: ObservableObject {
     private var adminScrubPreviewTargetTime: Double?
     private var activeSectionDragSnapshot: [SongSection]?
     private var activeAdminChartURL: URL?
+    private var cancellables: Set<AnyCancellable> = []
     private var undoHistory: [AdminChartHistoryEntry] = []
     private var redoHistory: [AdminChartHistoryEntry] = []
     private var adminClipboard: [AdminClipboardNote] = []
@@ -196,6 +197,15 @@ final class PrototypeGameController: ObservableObject {
         self.scene.onInput = { [weak self] event in self?.inputRouter.route(event) }
         self.scene.onTick = { [weak self] time in self?.handleTick(time) }
 
+        audio.$detectedBPM
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.syncBPMStateFromCurrentSources() }
+            .store(in: &cancellables)
+        audio.$analysisDebug
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.syncBPMStateFromCurrentSources() }
+            .store(in: &cancellables)
+
         syncState()
         syncTransportState()
         updateStepCursorDisplay()
@@ -235,15 +245,29 @@ final class PrototypeGameController: ObservableObject {
             trackName = "No audio loaded"
             statusMessage = "Ready"
         }
-        if let detected = audio.detectedBPM {
+        syncBPMStateFromCurrentSources()
+        updateStepCursorDisplay()
+        syncTransportState()
+    }
+
+    private func syncBPMStateFromCurrentSources() {
+        if let activeAdminChartURL {
+            bpmSourceText = "Chart JSON"
+            midiTempoText = String(format: "%.1f BPM from chart", bpm)
+        } else if let detected = audio.detectedBPM {
             bpm = detected.bpm
             bpmSourceText = detected.source.capitalized
+            midiTempoText = String(format: "%.1f BPM from \(detected.source)", detected.bpm)
         } else {
             bpmSourceText = "Manual"
+            if midiTempoText == "Not loaded" || midiTempoText.contains("from chart") || midiTempoText.contains("from MIDI") || midiTempoText.contains("from metadata") || midiTempoText.contains("from filename") || midiTempoText.contains("from analysis") {
+                midiTempoText = audio.loadedTrackName == nil ? "Not loaded" : "No BPM detected yet"
+            }
         }
         bpmAnalysisStatusText = audio.analysisDebug.status
         bpmAnalysisDetailText = audio.analysisDebug.detail
         updateStepCursorDisplay()
+        updateLoopStatusText()
         syncTransportState()
     }
 
@@ -1036,6 +1060,7 @@ final class PrototypeGameController: ObservableObject {
     func nudgeBPM(by delta: Double) {
         bpm = max(40, min(240, bpm + delta))
         bpmSourceText = "Manual"
+        midiTempoText = String(format: "%.1f BPM manual", bpm)
         updateStepCursorDisplay()
         updateLoopStatusText()
         syncTransportState()
