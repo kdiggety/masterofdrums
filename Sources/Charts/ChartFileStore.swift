@@ -76,7 +76,7 @@ struct ChartFileStore {
         return panel.runModal() == .OK ? panel.url : nil
     }
 
-    func save(chart: Chart, bpm: Double, songOffset: Double = 0, timelineDuration: Double? = nil, timingContractVersion: Int? = nil, ticksPerBeat: Int = 480, timeSignatureNumerator: Int = 4, timeSignatureDenominator: Int = 4, timingSource: String = "manual", to url: URL) throws {
+    func save(chart: Chart, bpm: Double, songOffset: Double = 0, timelineDuration: Double? = nil, timingContractVersion: String? = nil, ticksPerBeat: Int = 480, timeSignatureNumerator: Int = 4, timeSignatureDenominator: Int = 4, timingSource: String = "manual", to url: URL) throws {
         let timing = ChartDocument.Timing(
             bpm: bpm,
             offsetSeconds: songOffset,

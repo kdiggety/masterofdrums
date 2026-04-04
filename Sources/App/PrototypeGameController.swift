@@ -277,7 +277,7 @@ final class PrototypeGameController: ObservableObject {
             timeSignatureDenominator = max(1, importedChartTiming.timeSignatureDenominator)
             ticksPerBeat = max(1, importedChartTiming.ticksPerBeat)
             bpmSourceText = "Chart JSON"
-            timingSourceText = "Chart Timing v\(importedChartTiming.contractVersion ?? 0) · \(importedChartTiming.sourceLabel)"
+            timingSourceText = "Chart Timing v\(importedChartTiming.contractVersion ?? "0.1.0") · \(importedChartTiming.sourceLabel)"
             timingOverrideStatusText = "Chart timing loaded"
             midiTempoText = String(format: "%.1f BPM / %.2fs from chart timing", bpm, songOffset)
         } else if let detected = audio.detectedBPM, importedChartTiming == nil {
@@ -1188,7 +1188,7 @@ final class PrototypeGameController: ObservableObject {
         guard let url = activeAdminChartURL else { return }
         do {
             let currentChart = Chart(notes: adminNotes, title: chartName, sections: adminSections)
-            try chartFileStore.save(chart: currentChart, bpm: bpm, songOffset: songOffset, timelineDuration: adminTimelineDuration, timingContractVersion: importedChartTiming?.contractVersion ?? 1, ticksPerBeat: ticksPerBeat, timeSignatureNumerator: beatsPerBar, timeSignatureDenominator: timeSignatureDenominator, timingSource: hasManualTimingOverride ? "manual_override" : (importedChartTiming?.source ?? "manual"), to: url)
+            try chartFileStore.save(chart: currentChart, bpm: bpm, songOffset: songOffset, timelineDuration: adminTimelineDuration, timingContractVersion: importedChartTiming?.contractVersion ?? "0.1.0", ticksPerBeat: ticksPerBeat, timeSignatureNumerator: beatsPerBar, timeSignatureDenominator: timeSignatureDenominator, timingSource: hasManualTimingOverride ? "manual_override" : (importedChartTiming?.source ?? "manual"), to: url)
         } catch {
             chartStatusText = "Autosave failed"
             adminStatusText = "Autosave failed: \(error.localizedDescription)"
