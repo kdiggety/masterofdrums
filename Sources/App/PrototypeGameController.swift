@@ -87,6 +87,10 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var barBeatText: String = "1:1"
     @Published private(set) var musicalSubdivisionText: String = "1"
     @Published private(set) var bpmSourceText: String = "Manual"
+    @Published private(set) var timingSourceText: String = "Manual"
+    @Published private(set) var timingOverrideStatusText: String = "Using manual timing"
+    @Published private(set) var timeSignatureText: String = "4/4"
+    @Published private(set) var ticksPerBeatText: String = "480"
     @Published private(set) var bpmAnalysisStatusText: String = "Idle"
     @Published private(set) var bpmAnalysisDetailText: String = "No file analyzed yet"
     @Published private(set) var midiTempoText: String = "Not loaded"
@@ -112,6 +116,9 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var adminScrubPreviewTime: Double?
     @Published var bpm: Double = 120
     @Published var songOffset: Double = 0
+    @Published private(set) var beatsPerBar: Int = 4
+    @Published private(set) var timeSignatureDenominator: Int = 4
+    @Published private(set) var ticksPerBeat: Int = 480
 
     @Published var isAdminPageActive = false {
         didSet {
@@ -160,6 +167,8 @@ final class PrototypeGameController: ObservableObject {
     private var redoHistory: [AdminChartHistoryEntry] = []
     private var adminClipboard: [AdminClipboardNote] = []
     private var adminSectionClipboard: AdminSectionClipboard?
+    private var importedChartTiming: ImportedChartTiming?
+    private var hasManualTimingOverride = false
 
     var isAdminAuthoringActive: Bool { isAdminPageActive }
 
@@ -189,7 +198,7 @@ final class PrototypeGameController: ObservableObject {
             return GameplayScene.BeatGuideConfiguration(
                 bpm: self.bpm,
                 songOffset: self.songOffset,
-                beatsPerBar: 4,
+                beatsPerBar: self.beatsPerBar,
                 subdivisionsPerBeat: self.stepResolution.subdivisionsPerBeat
             )
         }
@@ -251,21 +260,48 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func syncBPMStateFromCurrentSources() {
-        if let activeAdminChartURL {
+        if let importedChartTiming, importedChartTiming.isGenerated, !hasManualTimingOverride {
+            bpm = importedChartTiming.bpm
+            songOffset = importedChartTiming.offsetSeconds
+            beatsPerBar = max(1, importedChartTiming.timeSignatureNumerator)
+            timeSignatureDenominator = max(1, importedChartTiming.timeSignatureDenominator)
+            ticksPerBeat = max(1, importedChartTiming.ticksPerBeat)
             bpmSourceText = "Chart JSON"
-            midiTempoText = String(format: "%.1f BPM from chart", bpm)
-        } else if let detected = audio.detectedBPM {
+            timingSourceText = "Chart Timing v\(importedChartTiming.contractVersion ?? 0) · \(importedChartTiming.sourceLabel)"
+            timingOverrideStatusText = "Generated chart timing is authoritative"
+            midiTempoText = String(format: "%.1f BPM / %.2fs from chart timing", bpm, songOffset)
+        } else if let importedChartTiming, !hasManualTimingOverride {
+            bpm = importedChartTiming.bpm
+            songOffset = importedChartTiming.offsetSeconds
+            beatsPerBar = max(1, importedChartTiming.timeSignatureNumerator)
+            timeSignatureDenominator = max(1, importedChartTiming.timeSignatureDenominator)
+            ticksPerBeat = max(1, importedChartTiming.ticksPerBeat)
+            bpmSourceText = "Chart JSON"
+            timingSourceText = "Chart Timing v\(importedChartTiming.contractVersion ?? 0) · \(importedChartTiming.sourceLabel)"
+            timingOverrideStatusText = "Chart timing loaded"
+            midiTempoText = String(format: "%.1f BPM / %.2fs from chart timing", bpm, songOffset)
+        } else if let detected = audio.detectedBPM, importedChartTiming == nil {
             bpm = detected.bpm
             bpmSourceText = detected.source.capitalized
+            timingSourceText = detected.source.capitalized
+            timingOverrideStatusText = "Using detected audio BPM"
             midiTempoText = String(format: "%.1f BPM from \(detected.source)", detected.bpm)
         } else {
-            bpmSourceText = "Manual"
-            if midiTempoText == "Not loaded" || midiTempoText.contains("from chart") || midiTempoText.contains("from MIDI") || midiTempoText.contains("from metadata") || midiTempoText.contains("from filename") || midiTempoText.contains("from analysis") {
+            bpmSourceText = hasManualTimingOverride ? "Manual Override" : "Manual"
+            timingSourceText = hasManualTimingOverride ? "Manual Override" : "Manual"
+            timingOverrideStatusText = hasManualTimingOverride
+                ? "Manual override active — chart timing kept visible for reference"
+                : "Using manual timing"
+            if importedChartTiming == nil, (midiTempoText == "Not loaded" || midiTempoText.contains("from chart") || midiTempoText.contains("from MIDI") || midiTempoText.contains("from metadata") || midiTempoText.contains("from filename") || midiTempoText.contains("from analysis")) {
                 midiTempoText = audio.loadedTrackName == nil ? "Not loaded" : "No BPM detected yet"
             }
         }
-        bpmAnalysisStatusText = audio.analysisDebug.status
-        bpmAnalysisDetailText = audio.analysisDebug.detail
+        timeSignatureText = "\(beatsPerBar)/\(timeSignatureDenominator)"
+        ticksPerBeatText = "\(ticksPerBeat)"
+        bpmAnalysisStatusText = importedChartTiming?.isGenerated == true ? "Diagnostic Only" : audio.analysisDebug.status
+        bpmAnalysisDetailText = importedChartTiming?.isGenerated == true
+            ? (audio.detectedBPM.map { String(format: "Audio analysis suggests %.1f BPM from %@", $0.bpm, $0.source) } ?? audio.analysisDebug.detail)
+            : audio.analysisDebug.detail
         updateStepCursorDisplay()
         updateLoopStatusText()
         syncTransportState()
@@ -307,6 +343,8 @@ final class PrototypeGameController: ObservableObject {
 
     func startAdminChart() {
         activeAdminChartURL = nil
+        importedChartTiming = nil
+        hasManualTimingOverride = false
         adminTimelineDuration = max(playbackDuration, 1)
         let chart = Chart(notes: [], title: trackName == "No audio loaded" ? "Untitled Chart" : trackName, sections: [])
         applyChart(chart, bpmOverride: bpm, chartStatus: "Started empty admin chart", recordHistory: true)
@@ -1009,7 +1047,7 @@ final class PrototypeGameController: ObservableObject {
         guard let url = chartFileStore.chooseChartFileForSave(defaultName: chartName) else { refocusGameplay(); return }
         do {
             let currentChart = Chart(notes: adminNotes, title: chartName, sections: adminSections)
-            try chartFileStore.save(chart: currentChart, bpm: bpm, timelineDuration: adminTimelineDuration, to: url)
+            try chartFileStore.save(chart: currentChart, bpm: bpm, songOffset: songOffset, timelineDuration: adminTimelineDuration, timingContractVersion: importedChartTiming?.contractVersion ?? 1, ticksPerBeat: ticksPerBeat, timeSignatureNumerator: beatsPerBar, timeSignatureDenominator: timeSignatureDenominator, timingSource: hasManualTimingOverride ? "manual_override" : (importedChartTiming?.source ?? "manual"), to: url)
             activeAdminChartURL = url
             persistLastOpenedChartURL(url)
             adminStatusText = "Saved chart to \(url.lastPathComponent)"
@@ -1025,9 +1063,12 @@ final class PrototypeGameController: ObservableObject {
         do {
             let loaded = try chartFileStore.loadChart(from: url)
             activeAdminChartURL = url
+            importedChartTiming = loaded.timing
+            hasManualTimingOverride = false
             persistLastOpenedChartURL(url)
             adminTimelineDuration = max(loaded.timelineDuration ?? 0, loaded.chart.endTime, playbackDuration, 1)
             applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)", recordHistory: true, persistLoadedChart: false)
+            syncBPMStateFromCurrentSources()
             adminStatusText = "Loaded chart JSON \(url.lastPathComponent)"
             stepCursorTime = 0
             updateStepCursorDisplay()
@@ -1059,7 +1100,10 @@ final class PrototypeGameController: ObservableObject {
 
     func nudgeBPM(by delta: Double) {
         bpm = max(40, min(240, bpm + delta))
-        bpmSourceText = "Manual"
+        hasManualTimingOverride = true
+        bpmSourceText = "Manual Override"
+        timingSourceText = "Manual Override"
+        timingOverrideStatusText = importedChartTiming == nil ? "Using manual timing" : "Manual override active — chart timing kept visible for reference"
         midiTempoText = String(format: "%.1f BPM manual", bpm)
         updateStepCursorDisplay()
         updateLoopStatusText()
@@ -1069,6 +1113,11 @@ final class PrototypeGameController: ObservableObject {
 
     func nudgeOffset(by delta: Double) {
         songOffset = max(-2, min(2, songOffset + delta))
+        hasManualTimingOverride = true
+        bpmSourceText = "Manual Override"
+        timingSourceText = "Manual Override"
+        timingOverrideStatusText = importedChartTiming == nil ? "Using manual timing" : "Manual override active — chart timing kept visible for reference"
+        midiTempoText = String(format: "%.1f BPM / %.2fs manual", bpm, songOffset)
         updateStepCursorDisplay()
         syncTransportState()
         refocusGameplay()
@@ -1092,18 +1141,19 @@ final class PrototypeGameController: ObservableObject {
             if isJSONChart {
                 let loaded = try chartFileStore.loadChart(from: url)
                 activeAdminChartURL = url
+                importedChartTiming = loaded.timing
+                hasManualTimingOverride = false
                 persistLastOpenedChartURL(url)
                 adminTimelineDuration = max(loaded.timelineDuration ?? 0, loaded.chart.endTime, playbackDuration, 1)
                 applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)", recordHistory: true, persistLoadedChart: false)
-                if let bpm = loaded.bpm {
-                    bpmSourceText = "Chart JSON"
-                    midiTempoText = String(format: "%.1f BPM from chart", bpm)
-                }
+                syncBPMStateFromCurrentSources()
                 statusMessage = "Loaded chart \(loaded.chart.title)"
                 adminStatusText = "Loaded chart JSON \(url.lastPathComponent)"
             } else {
                 let loaded = try midiLoader.loadChartData(from: url)
                 activeAdminChartURL = nil
+                importedChartTiming = nil
+                hasManualTimingOverride = false
                 persistLastOpenedChartURL(nil)
                 adminTimelineDuration = max(playbackDuration, loaded.chart.endTime, 1)
                 applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded \(loaded.chart.notes.count) notes from \(url.lastPathComponent)", recordHistory: true, persistLoadedChart: false)
@@ -1138,7 +1188,7 @@ final class PrototypeGameController: ObservableObject {
         guard let url = activeAdminChartURL else { return }
         do {
             let currentChart = Chart(notes: adminNotes, title: chartName, sections: adminSections)
-            try chartFileStore.save(chart: currentChart, bpm: bpm, timelineDuration: adminTimelineDuration, to: url)
+            try chartFileStore.save(chart: currentChart, bpm: bpm, songOffset: songOffset, timelineDuration: adminTimelineDuration, timingContractVersion: importedChartTiming?.contractVersion ?? 1, ticksPerBeat: ticksPerBeat, timeSignatureNumerator: beatsPerBar, timeSignatureDenominator: timeSignatureDenominator, timingSource: hasManualTimingOverride ? "manual_override" : (importedChartTiming?.source ?? "manual"), to: url)
         } catch {
             chartStatusText = "Autosave failed"
             adminStatusText = "Autosave failed: \(error.localizedDescription)"
@@ -1293,8 +1343,6 @@ final class PrototypeGameController: ObservableObject {
         chartName = session.chart.title
         adminNotes = session.chart.notes.sorted { $0.time < $1.time }
         adminSections = session.chart.sections.sorted { $0.startTime < $1.startTime }
-        bpmAnalysisStatusText = audio.analysisDebug.status
-        bpmAnalysisDetailText = audio.analysisDebug.detail
     }
 
     private func syncTransportState() {
@@ -1302,7 +1350,7 @@ final class PrototypeGameController: ObservableObject {
         transportStateText = audio.state.rawValue
         playbackTimeText = String(format: "%.2fs", currentTime)
         playbackDurationText = String(format: "%.2fs", audio.duration)
-        let position = MusicalTransport.position(at: currentTime, bpm: bpm, songOffset: songOffset)
+        let position = MusicalTransport.position(at: currentTime, bpm: bpm, songOffset: songOffset, beatsPerBar: beatsPerBar)
         barBeatText = position.barBeatText
         musicalSubdivisionText = String(position.subdivision)
         refreshAdminVisibleNotes(at: currentTime)
@@ -1325,7 +1373,7 @@ final class PrototypeGameController: ObservableObject {
         return beatDuration / Double(stepResolution.subdivisionsPerBeat)
     }
 
-    private var barDuration: Double { (60.0 / max(1, bpm)) * 4.0 }
+    private var barDuration: Double { (60.0 / max(1, bpm)) * Double(max(1, beatsPerBar)) }
 
     private var currentBarStartTime: Double {
         let bar = floor(max(0, stepCursorTime - songOffset) / barDuration)
@@ -1361,7 +1409,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func updateStepCursorDisplay() {
-        let position = MusicalTransport.position(at: stepCursorTime, bpm: bpm, songOffset: songOffset, subdivisionsPerBeat: max(stepResolution.subdivisionsPerBeat, 1))
+        let position = MusicalTransport.position(at: stepCursorTime, bpm: bpm, songOffset: songOffset, beatsPerBar: beatsPerBar, subdivisionsPerBeat: max(stepResolution.subdivisionsPerBeat, 1))
         let subText = stepResolution == .quarter ? "" : ".\(position.subdivision)"
         stepCursorDisplayText = "\(position.bar):\(position.beat)\(subText) · \(String(format: "%.2f", quantizedStepCursorTime()))s"
     }
@@ -1434,7 +1482,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func sectionBarBeatText(for time: Double) -> String {
-        MusicalTransport.position(at: time, bpm: bpm, songOffset: songOffset).barBeatText
+        MusicalTransport.position(at: time, bpm: bpm, songOffset: songOffset, beatsPerBar: beatsPerBar).barBeatText
     }
 
     private func normalizedSectionName(_ proposedName: String?) -> String {

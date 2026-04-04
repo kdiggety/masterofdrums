@@ -98,6 +98,13 @@ struct AdminChartEditorView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     statusRow("BPM", String(format: "%.1f", game.bpm))
                     statusRow("BPM Source", game.bpmSourceText)
+                    statusRow("Timing", game.timingSourceText)
+                    statusRow("Time Sig", game.timeSignatureText)
+                    statusRow("Ticks/Beat", game.ticksPerBeatText)
+                    Text(game.timingOverrideStatusText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(game.midiTempoText)
                         .font(.caption)
                         .foregroundStyle(.secondary)

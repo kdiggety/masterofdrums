@@ -3,6 +3,19 @@ import AppKit
 import UniformTypeIdentifiers
 
 struct ChartDocument: Codable {
+    struct TimeSignature: Codable, Equatable {
+        let numerator: Int
+        let denominator: Int
+    }
+
+    struct Timing: Codable, Equatable {
+        let bpm: Double
+        let offsetSeconds: Double
+        let ticksPerBeat: Int
+        let timeSignature: TimeSignature
+        let source: String
+    }
+
     struct Note: Codable {
         let id: UUID?
         let lane: Int
@@ -18,10 +31,30 @@ struct ChartDocument: Codable {
     }
 
     let title: String
-    let bpm: Double
+    let bpm: Double?
+    let timingContractVersion: Int?
+    let timing: Timing?
     let timelineDuration: Double?
     let notes: [Note]
     let sections: [Section]?
+}
+
+struct ImportedChartTiming: Equatable {
+    let contractVersion: Int?
+    let bpm: Double
+    let offsetSeconds: Double
+    let ticksPerBeat: Int
+    let timeSignatureNumerator: Int
+    let timeSignatureDenominator: Int
+    let source: String
+
+    var sourceLabel: String {
+        source.replacingOccurrences(of: "_", with: " ").capitalized
+    }
+
+    var isGenerated: Bool {
+        source.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() == "generated"
+    }
 }
 
 @MainActor
@@ -43,10 +76,19 @@ struct ChartFileStore {
         return panel.runModal() == .OK ? panel.url : nil
     }
 
-    func save(chart: Chart, bpm: Double, timelineDuration: Double? = nil, to url: URL) throws {
+    func save(chart: Chart, bpm: Double, songOffset: Double = 0, timelineDuration: Double? = nil, timingContractVersion: Int? = nil, ticksPerBeat: Int = 480, timeSignatureNumerator: Int = 4, timeSignatureDenominator: Int = 4, timingSource: String = "manual", to url: URL) throws {
+        let timing = ChartDocument.Timing(
+            bpm: bpm,
+            offsetSeconds: songOffset,
+            ticksPerBeat: ticksPerBeat,
+            timeSignature: .init(numerator: timeSignatureNumerator, denominator: timeSignatureDenominator),
+            source: timingSource
+        )
         let document = ChartDocument(
             title: chart.title,
             bpm: bpm,
+            timingContractVersion: timingContractVersion,
+            timing: timing,
             timelineDuration: timelineDuration,
             notes: chart.notes.map { .init(id: $0.id, lane: $0.lane.rawValue, time: $0.time) },
             sections: chart.sections.map { .init(id: $0.id, name: $0.name, startTime: $0.startTime, endTime: $0.endTime, colorName: $0.colorName) }
@@ -57,7 +99,7 @@ struct ChartFileStore {
         try data.write(to: url)
     }
 
-    func loadChart(from url: URL) throws -> (chart: Chart, bpm: Double?, timelineDuration: Double?) {
+    func loadChart(from url: URL) throws -> (chart: Chart, bpm: Double?, timelineDuration: Double?, timing: ImportedChartTiming?) {
         let data = try Data(contentsOf: url)
         let decoder = JSONDecoder()
         let document = try decoder.decode(ChartDocument.self, from: data)
@@ -78,7 +120,23 @@ struct ChartFileStore {
                 colorName: item.colorName ?? "blue"
             )
         }
-        return (Chart(notes: notes.sorted { $0.time < $1.time }, title: document.title, sections: sections), document.bpm, document.timelineDuration)
+        let timing = document.timing.map {
+            ImportedChartTiming(
+                contractVersion: document.timingContractVersion,
+                bpm: $0.bpm,
+                offsetSeconds: $0.offsetSeconds,
+                ticksPerBeat: $0.ticksPerBeat,
+                timeSignatureNumerator: $0.timeSignature.numerator,
+                timeSignatureDenominator: $0.timeSignature.denominator,
+                source: $0.source
+            )
+        }
+        return (
+            Chart(notes: notes.sorted { $0.time < $1.time }, title: document.title, sections: sections),
+            timing?.bpm ?? document.bpm,
+            document.timelineDuration,
+            timing
+        )
     }
 
     private var chartContentTypes: [UTType] {
