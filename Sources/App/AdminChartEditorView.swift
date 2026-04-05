@@ -311,7 +311,7 @@ struct AdminChartEditorView: View {
             Button("Paste") { game.pasteAdminNotes() }
                 .keyboardShortcut("v", modifiers: [.command])
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PlainButtonStyle())
         .allowsHitTesting(false)
     }
 
@@ -336,10 +336,10 @@ struct AdminChartEditorView: View {
                                     game.selectAdminNote(note.id)
                                     game.jumpToAdminNote(note.id)
                                 }
-                                .buttonStyle(.borderless)
+                                .buttonStyle(BorderlessButtonStyle())
                                 .focusable(false)
                                 Button("Delete") { game.deleteAdminNote(note.id) }
-                                    .buttonStyle(.borderless)
+                                    .buttonStyle(BorderlessButtonStyle())
                                     .focusable(false)
                             }
                             .padding(.horizontal, 8)
@@ -527,7 +527,7 @@ struct AdminChartEditorView: View {
 
     private func adminButton(_ title: String, action: @escaping () -> Void) -> some View {
         Button(title, action: action)
-            .buttonStyle(.bordered)
+            .buttonStyle(BorderedButtonStyle())
             .focusable(false)
     }
 
