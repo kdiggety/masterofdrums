@@ -131,21 +131,31 @@ struct ChartFileStore {
 
                 let stem = candidateURL.deletingPathExtension().deletingPathExtension().lastPathComponent
                 let normalizedStem = normalizedLookupKey(stem)
+                let sameFolder = candidateURL.deletingLastPathComponent() == audioDirectory
+                let inDedicatedChartsFolder = ["charts", "Charts"].contains(candidateURL.deletingLastPathComponent().lastPathComponent)
+                let isModChartJSON = filename.hasSuffix(".modchart.json")
 
                 var score = 0
-                var reason = ""
+                var reasons: [String] = []
                 if stem.caseInsensitiveCompare(audioBaseName) == .orderedSame {
-                    let sameFolder = candidateURL.deletingLastPathComponent() == audioDirectory
-                    score = sameFolder ? 100 : 92
-                    reason = sameFolder ? "Same-folder basename match" : "Nearby basename match"
+                    score += sameFolder ? 100 : 92
+                    reasons.append(sameFolder ? "same-folder basename" : "nearby basename")
                 } else if normalizedStem == normalizedAudioBaseName {
-                    let sameFolder = candidateURL.deletingLastPathComponent() == audioDirectory
-                    score = sameFolder ? 84 : 74
-                    reason = sameFolder ? "Same-folder normalized title match" : "Nearby normalized title match"
+                    score += sameFolder ? 84 : 74
+                    reasons.append(sameFolder ? "same-folder normalized title" : "nearby normalized title")
+                }
+                if isModChartJSON {
+                    score += 6
+                    reasons.append("modchart artifact")
+                }
+                if inDedicatedChartsFolder {
+                    score += 4
+                    reasons.append("charts folder")
                 }
                 guard score > 0 else { continue }
 
                 let key = candidateURL.resolvingSymlinksInPath().path
+                let reason = reasons.joined(separator: " + ")
                 if let existing = ranked[key], existing.score >= score { continue }
                 ranked[key] = ChartMatchCandidate(url: candidateURL, score: score, reason: reason)
             }

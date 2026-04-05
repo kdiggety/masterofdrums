@@ -101,6 +101,7 @@ struct RootView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
+                        .help(game.chartAssociationStatusText)
 
                     HStack(spacing: 8) {
                         Button("Play") {

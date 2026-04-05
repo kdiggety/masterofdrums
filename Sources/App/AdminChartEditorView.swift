@@ -204,6 +204,7 @@ struct AdminChartEditorView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
+                        .help(game.chartAssociationStatusText)
                     Text(game.adminStatusText)
                         .font(.caption)
                         .foregroundStyle(.secondary)

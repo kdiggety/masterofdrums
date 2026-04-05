@@ -1176,6 +1176,8 @@ final class PrototypeGameController: ObservableObject {
                 activeAdminChartURL = url
                 importedChartTiming = loaded.timing
                 hasManualTimingOverride = false
+                chartMatchCandidates = []
+                isChartMatchPickerPresented = false
                 chartAssociationStatusText = "Loaded chart: \(url.lastPathComponent)"
                 persistLastOpenedChartURL(url)
                 adminTimelineDuration = max(loaded.timelineDuration ?? 0, loaded.chart.endTime, playbackDuration, 1)
