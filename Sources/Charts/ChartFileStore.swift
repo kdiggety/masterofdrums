@@ -32,7 +32,7 @@ struct ChartDocument: Codable {
 
     let title: String
     let bpm: Double?
-    let timingContractVersion: Int?
+    let timingContractVersion: String?
     let timing: Timing?
     let timelineDuration: Double?
     let notes: [Note]
@@ -40,7 +40,7 @@ struct ChartDocument: Codable {
 }
 
 struct ImportedChartTiming: Equatable {
-    let contractVersion: Int?
+    let contractVersion: String?
     let bpm: Double
     let offsetSeconds: Double
     let ticksPerBeat: Int

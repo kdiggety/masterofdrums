@@ -267,7 +267,7 @@ final class PrototypeGameController: ObservableObject {
             timeSignatureDenominator = max(1, importedChartTiming.timeSignatureDenominator)
             ticksPerBeat = max(1, importedChartTiming.ticksPerBeat)
             bpmSourceText = "Chart JSON"
-            timingSourceText = "Chart Timing v\(importedChartTiming.contractVersion ?? 0) · \(importedChartTiming.sourceLabel)"
+            timingSourceText = "Chart Timing v\(importedChartTiming.contractVersion ?? "0.1.0") · \(importedChartTiming.sourceLabel)"
             timingOverrideStatusText = "Generated chart timing is authoritative"
             midiTempoText = String(format: "%.1f BPM / %.2fs from chart timing", bpm, songOffset)
         } else if let importedChartTiming, !hasManualTimingOverride {
@@ -1047,7 +1047,7 @@ final class PrototypeGameController: ObservableObject {
         guard let url = chartFileStore.chooseChartFileForSave(defaultName: chartName) else { refocusGameplay(); return }
         do {
             let currentChart = Chart(notes: adminNotes, title: chartName, sections: adminSections)
-            try chartFileStore.save(chart: currentChart, bpm: bpm, songOffset: songOffset, timelineDuration: adminTimelineDuration, timingContractVersion: importedChartTiming?.contractVersion ?? 1, ticksPerBeat: ticksPerBeat, timeSignatureNumerator: beatsPerBar, timeSignatureDenominator: timeSignatureDenominator, timingSource: hasManualTimingOverride ? "manual_override" : (importedChartTiming?.source ?? "manual"), to: url)
+            try chartFileStore.save(chart: currentChart, bpm: bpm, songOffset: songOffset, timelineDuration: adminTimelineDuration, timingContractVersion: importedChartTiming?.contractVersion ?? "0.1.0", ticksPerBeat: ticksPerBeat, timeSignatureNumerator: beatsPerBar, timeSignatureDenominator: timeSignatureDenominator, timingSource: hasManualTimingOverride ? "manual_override" : (importedChartTiming?.source ?? "manual"), to: url)
             activeAdminChartURL = url
             persistLastOpenedChartURL(url)
             adminStatusText = "Saved chart to \(url.lastPathComponent)"
