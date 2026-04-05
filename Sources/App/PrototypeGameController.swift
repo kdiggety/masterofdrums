@@ -83,6 +83,8 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var chartName: String = "Untitled Chart"
     @Published private(set) var chartStatusText: String = "No chart loaded"
     @Published private(set) var chartAssociationStatusText: String = "Load audio to auto-match a chart."
+    @Published private(set) var chartMatchCandidates: [ChartMatchCandidate] = []
+    @Published var isChartMatchPickerPresented: Bool = false
     @Published private(set) var transportStateText: String = TransportState.stopped.rawValue
     @Published private(set) var playbackTimeText: String = "0.00s"
     @Published private(set) var barBeatText: String = "1:1"
@@ -249,6 +251,21 @@ final class PrototypeGameController: ObservableObject {
     func findMatchingChartForCurrentAudio() {
         attemptChartAutoMatchForCurrentAudio(userInitiated: true)
         refocusGameplay()
+    }
+
+    func selectChartMatch(_ candidate: ChartMatchCandidate) {
+        isChartMatchPickerPresented = false
+        chartMatchCandidates = []
+        chartAssociationStatusText = "Selected chart: \(candidate.url.lastPathComponent) · \(candidate.reason)"
+        loadChart(from: candidate.url)
+        refocusGameplay()
+    }
+
+    func dismissChartMatchPicker() {
+        isChartMatchPickerPresented = false
+        chartAssociationStatusText = chartMatchCandidates.isEmpty
+            ? chartAssociationStatusText
+            : "Chart match selection dismissed. Use Choose Chart if you want to pick manually."
     }
 
     private func updateAudioMetadataAfterLoad() {
