@@ -57,10 +57,18 @@ struct ImportedChartTiming: Equatable {
     }
 }
 
-struct ChartMatchCandidate: Equatable {
+struct ChartMatchCandidate: Equatable, Identifiable {
+    let id: String
     let url: URL
     let score: Int
     let reason: String
+
+    init(url: URL, score: Int, reason: String) {
+        self.id = url.resolvingSymlinksInPath().path
+        self.url = url
+        self.score = score
+        self.reason = reason
+    }
 }
 
 @MainActor
