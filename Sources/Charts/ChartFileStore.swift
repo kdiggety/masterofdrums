@@ -57,14 +57,21 @@ struct ImportedChartTiming: Equatable {
     }
 }
 
+struct ChartMatchCandidate: Equatable {
+    let url: URL
+    let score: Int
+    let reason: String
+}
+
 @MainActor
 struct ChartFileStore {
-    func chooseChartFileForOpen() -> URL? {
+    func chooseChartFileForOpen(startingDirectory: URL? = nil) -> URL? {
         let panel = NSOpenPanel()
         panel.title = "Choose chart file"
         panel.allowedContentTypes = chartContentTypes
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
+        panel.directoryURL = startingDirectory
         return panel.runModal() == .OK ? panel.url : nil
     }
 
@@ -97,6 +104,59 @@ struct ChartFileStore {
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         let data = try encoder.encode(document)
         try data.write(to: url)
+    }
+
+    func findMatchingCharts(forAudioURL audioURL: URL) -> [ChartMatchCandidate] {
+        let fileManager = FileManager.default
+        let audioDirectory = audioURL.deletingLastPathComponent()
+        let audioBaseName = audioURL.deletingPathExtension().lastPathComponent
+        let normalizedAudioBaseName = normalizedLookupKey(audioBaseName)
+
+        let searchDirectories = [
+            audioDirectory,
+            audioDirectory.appendingPathComponent("charts", isDirectory: true),
+            audioDirectory.appendingPathComponent("Charts", isDirectory: true),
+            audioDirectory.deletingLastPathComponent().appendingPathComponent("charts", isDirectory: true),
+            audioDirectory.deletingLastPathComponent().appendingPathComponent("Charts", isDirectory: true)
+        ]
+
+        var ranked: [String: ChartMatchCandidate] = [:]
+        for directory in searchDirectories {
+            guard fileManager.fileExists(atPath: directory.path) else { continue }
+            guard let enumerator = fileManager.enumerator(at: directory, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles]) else { continue }
+            for case let candidateURL as URL in enumerator {
+                guard candidateURL.pathExtension.lowercased() == "json" else { continue }
+                let filename = candidateURL.lastPathComponent.lowercased()
+                guard filename.hasSuffix(".modchart.json") || filename.hasSuffix(".json") else { continue }
+
+                let stem = candidateURL.deletingPathExtension().deletingPathExtension().lastPathComponent
+                let normalizedStem = normalizedLookupKey(stem)
+
+                var score = 0
+                var reason = ""
+                if stem.caseInsensitiveCompare(audioBaseName) == .orderedSame {
+                    let sameFolder = candidateURL.deletingLastPathComponent() == audioDirectory
+                    score = sameFolder ? 100 : 92
+                    reason = sameFolder ? "Same-folder basename match" : "Nearby basename match"
+                } else if normalizedStem == normalizedAudioBaseName {
+                    let sameFolder = candidateURL.deletingLastPathComponent() == audioDirectory
+                    score = sameFolder ? 84 : 74
+                    reason = sameFolder ? "Same-folder normalized title match" : "Nearby normalized title match"
+                }
+                guard score > 0 else { continue }
+
+                let key = candidateURL.resolvingSymlinksInPath().path
+                if let existing = ranked[key], existing.score >= score { continue }
+                ranked[key] = ChartMatchCandidate(url: candidateURL, score: score, reason: reason)
+            }
+        }
+
+        return ranked.values.sorted {
+            if $0.score == $1.score {
+                return $0.url.lastPathComponent.localizedCaseInsensitiveCompare($1.url.lastPathComponent) == .orderedAscending
+            }
+            return $0.score > $1.score
+        }
     }
 
     func loadChart(from url: URL) throws -> (chart: Chart, bpm: Double?, timelineDuration: Double?, timing: ImportedChartTiming?) {
@@ -137,6 +197,12 @@ struct ChartFileStore {
             document.timelineDuration,
             timing
         )
+    }
+
+    private func normalizedLookupKey(_ value: String) -> String {
+        value
+            .folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
+            .replacingOccurrences(of: "[^a-z0-9]+", with: "", options: .regularExpression)
     }
 
     private var chartContentTypes: [UTType] {

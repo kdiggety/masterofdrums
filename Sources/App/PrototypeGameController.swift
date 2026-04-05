@@ -82,6 +82,7 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var trackName: String = "No audio loaded"
     @Published private(set) var chartName: String = "Untitled Chart"
     @Published private(set) var chartStatusText: String = "No chart loaded"
+    @Published private(set) var chartAssociationStatusText: String = "Load audio to auto-match a chart."
     @Published private(set) var transportStateText: String = TransportState.stopped.rawValue
     @Published private(set) var playbackTimeText: String = "0.00s"
     @Published private(set) var barBeatText: String = "1:1"
@@ -230,20 +231,24 @@ final class PrototypeGameController: ObservableObject {
         if audio.loadedTrackName != nil {
             updateAudioMetadataAfterLoad()
             persistLastOpenedAudioURL(audio.currentFileURL)
+            attemptChartAutoMatchForCurrentAudio(userInitiated: false)
+        } else {
+            chartAssociationStatusText = "Audio selection cancelled."
         }
         refocusGameplay()
     }
 
     func chooseChartFile() {
-        let panel = NSOpenPanel()
-        panel.title = "Choose chart file"
-        panel.allowedContentTypes = chartContentTypes
-        panel.allowsMultipleSelection = false
-        panel.canChooseDirectories = false
-        guard panel.runModal() == .OK, let url = panel.url else {
+        let startingDirectory = suggestedChartDirectoryForCurrentAudio()
+        guard let url = chartFileStore.chooseChartFileForOpen(startingDirectory: startingDirectory) else {
             refocusGameplay(); return
         }
         loadChart(from: url)
+    }
+
+    func findMatchingChartForCurrentAudio() {
+        attemptChartAutoMatchForCurrentAudio(userInitiated: true)
+        refocusGameplay()
     }
 
     private func updateAudioMetadataAfterLoad() {
@@ -307,6 +312,32 @@ final class PrototypeGameController: ObservableObject {
         syncTransportState()
     }
 
+    private func suggestedChartDirectoryForCurrentAudio() -> URL? {
+        guard let currentAudioURL = audio.currentFileURL else { return nil }
+        let candidates = chartFileStore.findMatchingCharts(forAudioURL: currentAudioURL)
+        return candidates.first?.url.deletingLastPathComponent() ?? currentAudioURL.deletingLastPathComponent()
+    }
+
+    private func attemptChartAutoMatchForCurrentAudio(userInitiated: Bool) {
+        guard let currentAudioURL = audio.currentFileURL else {
+            chartAssociationStatusText = "Choose audio first to search for a matching chart."
+            return
+        }
+        let candidates = chartFileStore.findMatchingCharts(forAudioURL: currentAudioURL)
+        if let best = candidates.first, candidates.count == 1 {
+            chartAssociationStatusText = "Matched chart: \(best.url.lastPathComponent) · \(best.reason.lowercased())"
+            loadChart(from: best.url)
+            return
+        }
+        if let best = candidates.first {
+            chartAssociationStatusText = "Found \(candidates.count) chart candidates. Best match: \(best.url.lastPathComponent) · \(best.reason.lowercased()). Use Choose Chart to confirm."
+        } else {
+            chartAssociationStatusText = userInitiated
+                ? "No matching chart found near \(currentAudioURL.lastPathComponent). Use Choose Chart to pick one manually."
+                : "No matching chart found automatically for \(currentAudioURL.lastPathComponent)."
+        }
+    }
+
     private func persistLastOpenedAudioURL(_ url: URL?) {
         let defaults = UserDefaults.standard
         if let path = url?.path {
@@ -338,6 +369,8 @@ final class PrototypeGameController: ObservableObject {
         if let chartPath = defaults.string(forKey: PersistenceKeys.lastChartFilePath),
            fileManager.fileExists(atPath: chartPath) {
             loadChart(from: URL(fileURLWithPath: chartPath))
+        } else if audio.currentFileURL != nil {
+            attemptChartAutoMatchForCurrentAudio(userInitiated: false)
         }
     }
 
@@ -1143,6 +1176,7 @@ final class PrototypeGameController: ObservableObject {
                 activeAdminChartURL = url
                 importedChartTiming = loaded.timing
                 hasManualTimingOverride = false
+                chartAssociationStatusText = "Loaded chart: \(url.lastPathComponent)"
                 persistLastOpenedChartURL(url)
                 adminTimelineDuration = max(loaded.timelineDuration ?? 0, loaded.chart.endTime, playbackDuration, 1)
                 applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)", recordHistory: true, persistLoadedChart: false)
@@ -1154,6 +1188,7 @@ final class PrototypeGameController: ObservableObject {
                 activeAdminChartURL = nil
                 importedChartTiming = nil
                 hasManualTimingOverride = false
+                chartAssociationStatusText = "Imported MIDI chart manually: \(url.lastPathComponent)"
                 persistLastOpenedChartURL(nil)
                 adminTimelineDuration = max(playbackDuration, loaded.chart.endTime, 1)
                 applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded \(loaded.chart.notes.count) notes from \(url.lastPathComponent)", recordHistory: true, persistLoadedChart: false)
@@ -1499,14 +1534,6 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func refocusGameplay() { gameplayFocusVersion += 1 }
-
-    private var chartContentTypes: [UTType] {
-        var types: [UTType] = []
-        if let json = UTType.json as UTType? { types.append(json) }
-        if let midi = UTType(filenameExtension: "midi") { types.append(midi) }
-        if let mid = UTType(filenameExtension: "mid") { types.append(mid) }
-        return types.isEmpty ? [.data] : types
-    }
 
     private func completionMessage() -> String {
         "Run complete · \(hitCount) hits · \(missCount) misses · \(accuracyText) accuracy"

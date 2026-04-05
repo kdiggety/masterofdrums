@@ -86,11 +86,21 @@ struct RootView: View {
                         }
                         .buttonStyle(BorderedButtonStyle())
 
+                        Button("Find Matching Chart") {
+                            game.findMatchingChartForCurrentAudio()
+                        }
+                        .buttonStyle(BorderedButtonStyle())
+
                         Button("Choose Chart") {
                             game.chooseChartFile()
                         }
                         .buttonStyle(BorderedButtonStyle())
                     }
+
+                    Text(game.chartAssociationStatusText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
 
                     HStack(spacing: 8) {
                         Button("Play") {
