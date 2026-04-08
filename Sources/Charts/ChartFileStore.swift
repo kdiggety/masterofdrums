@@ -108,7 +108,7 @@ struct ChartDocument: Codable {
         self.timelineDuration = timelineDuration
         self.notes = pipelineChart.notes.compactMap { item in
             guard let lane = Self.laneIndex(forPipelineLane: item.lane) else { return nil }
-            return Note(id: item.noteID, lane: lane, time: item.startSeconds)
+            return Note(id: item.noteID, lane: lane, time: item.startSeconds, label: Self.displayLabel(forPipelineLane: item.lane))
         }
         self.sections = sections
     }
@@ -139,6 +139,13 @@ struct ChartDocument: Codable {
         default:
             return nil
         }
+    }
+
+    private static func displayLabel(forPipelineLane rawLane: String) -> String {
+        rawLane
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: "_", with: " ")
+            .capitalized
     }
 }
 
@@ -286,7 +293,7 @@ struct ChartFileStore {
         let document = try decoder.decode(ChartDocument.self, from: data)
         let notes = document.notes.compactMap { item -> NoteEvent? in
             guard let lane = Lane(rawValue: item.lane) else { return nil }
-            return NoteEvent(id: item.id ?? UUID(), lane: lane, time: item.time)
+            return NoteEvent(id: item.id ?? UUID(), lane: lane, time: item.time, label: nil)
         }
         let sortedRawSections = (document.sections ?? []).sorted { $0.startTime < $1.startTime }
         let sections = sortedRawSections.enumerated().map { index, item in
