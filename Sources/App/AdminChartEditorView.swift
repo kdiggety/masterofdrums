@@ -332,7 +332,7 @@ struct AdminChartEditorView: View {
                     LazyVStack(alignment: .leading, spacing: 8) {
                         ForEach(game.adminNotes) { note in
                             HStack {
-                                Text(note.lane.displayName)
+                                Text(note.displayLabel)
                                     .frame(width: 80, alignment: .leading)
                                 Text(String(format: "%.2fs", note.time))
                                     .monospacedDigit()

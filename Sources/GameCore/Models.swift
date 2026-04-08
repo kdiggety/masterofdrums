@@ -40,11 +40,17 @@ struct NoteEvent: Identifiable {
     let id: UUID
     let lane: Lane
     let time: TimeInterval
+    let label: String?
 
-    init(id: UUID = UUID(), lane: Lane, time: TimeInterval) {
+    init(id: UUID = UUID(), lane: Lane, time: TimeInterval, label: String? = nil) {
         self.id = id
         self.lane = lane
         self.time = time
+        self.label = label
+    }
+
+    var displayLabel: String {
+        label ?? lane.displayName
     }
 }
 
