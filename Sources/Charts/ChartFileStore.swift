@@ -58,6 +58,41 @@ struct ChartDocument: Codable {
         case source
     }
 
+    struct Section: Codable {
+        let id: UUID?
+        let name: String
+        let startTime: Double
+        let endTime: Double?
+        let colorName: String?
+    }
+
+    struct PipelineNote: Decodable {
+        let noteID: UUID?
+        let lane: String
+        let startSeconds: Double
+    }
+
+    struct PipelineChart: Decodable {
+        let notes: [PipelineNote]
+    }
+
+    struct PipelineSource: Decodable {
+        let sourceAudio: String?
+        let title: String?
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case title
+        case bpm
+        case timingContractVersion
+        case timing
+        case timelineDuration
+        case notes
+        case sections
+        case chart
+        case source
+    }
+
     let title: String
     let bpm: Double?
     let timingContractVersion: String?
