@@ -84,24 +84,35 @@ struct RootView: View {
                         Button("Choose Audio") {
                             game.chooseAudioFile()
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(BorderedButtonStyle())
+
+                        Button("Find Matching Chart") {
+                            game.findMatchingChartForCurrentAudio()
+                        }
+                        .buttonStyle(BorderedButtonStyle())
 
                         Button("Choose Chart") {
                             game.chooseChartFile()
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(BorderedButtonStyle())
                     }
+
+                    Text(game.chartAssociationStatusText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .help(game.chartAssociationStatusText)
 
                     HStack(spacing: 8) {
                         Button("Play") {
                             game.playTransport()
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(BorderedProminentButtonStyle())
 
                         Button("Pause") {
                             game.pauseTransport()
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(BorderedButtonStyle())
                     }
                 }
             }
@@ -109,6 +120,13 @@ struct RootView: View {
             GroupBox("Tempo") {
                 VStack(alignment: .leading, spacing: 10) {
                     infoRow("BPM Source", game.bpmSourceText)
+                    infoRow("Timing", game.timingSourceText)
+                    infoRow("Time Sig", game.timeSignatureText)
+                    infoRow("Ticks/Beat", game.ticksPerBeatText)
+                    Text(game.timingOverrideStatusText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(game.midiTempoText)
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -138,7 +156,7 @@ struct RootView: View {
                     Button(game.isRunComplete ? "Restart Run" : "Reset Run") {
                         game.restartRun()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(BorderedProminentButtonStyle())
 
                     Text("D red · F yellow · J blue · K green · Space kick")
                         .font(.subheadline)
@@ -209,13 +227,13 @@ struct RootView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
             Button("−", action: decrement)
-                .buttonStyle(.bordered)
+                .buttonStyle(BorderedButtonStyle())
                 .controlSize(.mini)
             Text(value)
                 .font(.subheadline.monospacedDigit())
                 .frame(minWidth: 62, alignment: .center)
             Button("+", action: increment)
-                .buttonStyle(.bordered)
+                .buttonStyle(BorderedButtonStyle())
                 .controlSize(.mini)
         }
     }

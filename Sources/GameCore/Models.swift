@@ -48,12 +48,35 @@ struct NoteEvent: Identifiable {
     }
 }
 
+struct SongSection: Identifiable, Equatable {
+    let id: UUID
+    let name: String
+    let startTime: TimeInterval
+    let endTime: TimeInterval
+    let colorName: String
+
+    init(id: UUID = UUID(), name: String, startTime: TimeInterval, endTime: TimeInterval, colorName: String = "blue") {
+        self.id = id
+        self.name = name
+        self.startTime = startTime
+        self.endTime = max(endTime, startTime)
+        self.colorName = colorName
+    }
+}
+
 struct Chart {
     let notes: [NoteEvent]
     let title: String
+    let sections: [SongSection]
+
+    init(notes: [NoteEvent], title: String, sections: [SongSection] = []) {
+        self.notes = notes
+        self.title = title
+        self.sections = sections.sorted { $0.startTime < $1.startTime }
+    }
 
     var endTime: TimeInterval {
-        notes.map(\.time).max() ?? 0
+        max(notes.map(\.time).max() ?? 0, sections.map(\.endTime).max() ?? 0)
     }
 
     static let prototype: Chart = {
