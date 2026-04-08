@@ -2,7 +2,7 @@ import Foundation
 import AppKit
 import UniformTypeIdentifiers
 
-struct ChartDocument: Codable {
+struct ChartDocument: Decodable {
     struct TimeSignature: Codable, Equatable {
         let numerator: Int
         let denominator: Int
