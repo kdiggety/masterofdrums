@@ -292,10 +292,33 @@ struct ChartFileStore {
         let data = try Data(contentsOf: url)
         let decoder = JSONDecoder()
         let document = try decoder.decode(ChartDocument.self, from: data)
-        let notes = document.notes.compactMap { item -> NoteEvent? in
+        var notes = document.notes.compactMap { item -> NoteEvent? in
             guard let lane = Lane(rawValue: item.lane) else { return nil }
             return NoteEvent(id: item.id ?? UUID(), lane: lane, time: item.time, label: item.label)
         }
+
+        if notes.isEmpty,
+           let raw = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let chart = raw["chart"] as? [String: Any],
+           let pipelineNotes = chart["notes"] as? [[String: Any]] {
+            notes = pipelineNotes.compactMap { item in
+                guard let rawLane = item["lane"] as? String,
+                      let laneIndex = ChartDocument.laneIndex(forPipelineLane: rawLane),
+                      let lane = Lane(rawValue: laneIndex) else {
+                    return nil
+                }
+                let noteID = (item["noteID"] as? String).flatMap(UUID.init(uuidString:))
+                let time = (item["startSeconds"] as? NSNumber)?.doubleValue ?? (item["time"] as? NSNumber)?.doubleValue
+                guard let time else { return nil }
+                return NoteEvent(
+                    id: noteID ?? UUID(),
+                    lane: lane,
+                    time: time,
+                    label: ChartDocument.displayLabel(forPipelineLane: rawLane)
+                )
+            }
+        }
+
         let sortedRawSections = (document.sections ?? []).sorted { $0.startTime < $1.startTime }
         let sections = sortedRawSections.enumerated().map { index, item in
             let fallbackEnd = index + 1 < sortedRawSections.count
