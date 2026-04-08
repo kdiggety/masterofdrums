@@ -125,7 +125,7 @@ struct ChartDocument: Codable {
         try container.encodeIfPresent(sections, forKey: .sections)
     }
 
-    private static func laneIndex(forPipelineLane rawLane: String) -> Int? {
+    fileprivate static func laneIndex(forPipelineLane rawLane: String) -> Int? {
         switch rawLane.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
         case "kick":
             return Lane.kick.rawValue
@@ -142,7 +142,7 @@ struct ChartDocument: Codable {
         }
     }
 
-    private static func displayLabel(forPipelineLane rawLane: String) -> String {
+    fileprivate static func displayLabel(forPipelineLane rawLane: String) -> String {
         rawLane
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .replacingOccurrences(of: "_", with: " ")
