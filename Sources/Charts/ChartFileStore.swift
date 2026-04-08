@@ -30,6 +30,33 @@ struct ChartDocument: Codable {
         let colorName: String?
     }
 
+    struct PipelineNote: Decodable {
+        let noteID: UUID?
+        let lane: String
+        let startSeconds: Double
+    }
+
+    struct PipelineChart: Decodable {
+        let notes: [PipelineNote]
+    }
+
+    struct PipelineSource: Decodable {
+        let sourceAudio: String?
+        let title: String?
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case title
+        case bpm
+        case timingContractVersion
+        case timing
+        case timelineDuration
+        case notes
+        case sections
+        case chart
+        case source
+    }
+
     let title: String
     let bpm: Double?
     let timingContractVersion: String?
@@ -37,6 +64,71 @@ struct ChartDocument: Codable {
     let timelineDuration: Double?
     let notes: [Note]
     let sections: [Section]?
+
+    init(title: String, bpm: Double?, timingContractVersion: String?, timing: Timing?, timelineDuration: Double?, notes: [Note], sections: [Section]?) {
+        self.title = title
+        self.bpm = bpm
+        self.timingContractVersion = timingContractVersion
+        self.timing = timing
+        self.timelineDuration = timelineDuration
+        self.notes = notes
+        self.sections = sections
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let bpm = try container.decodeIfPresent(Double.self, forKey: .bpm)
+        let timingContractVersion = try container.decodeIfPresent(String.self, forKey: .timingContractVersion)
+        let timing = try container.decodeIfPresent(Timing.self, forKey: .timing)
+        let timelineDuration = try container.decodeIfPresent(Double.self, forKey: .timelineDuration)
+        let sections = try container.decodeIfPresent([Section].self, forKey: .sections)
+
+        if let legacyNotes = try container.decodeIfPresent([Note].self, forKey: .notes) {
+            self.title = try container.decodeIfPresent(String.self, forKey: .title) ?? "Imported Chart"
+            self.bpm = bpm
+            self.timingContractVersion = timingContractVersion
+            self.timing = timing
+            self.timelineDuration = timelineDuration
+            self.notes = legacyNotes
+            self.sections = sections
+            return
+        }
+
+        let pipelineChart = try container.decode(PipelineChart.self, forKey: .chart)
+        let pipelineSource = try container.decodeIfPresent(PipelineSource.self, forKey: .source)
+        self.title = try container.decodeIfPresent(String.self, forKey: .title)
+            ?? pipelineSource?.title
+            ?? pipelineSource?.sourceAudio
+                .flatMap { URL(fileURLWithPath: $0).deletingPathExtension().lastPathComponent }
+            ?? "Imported Chart"
+        self.bpm = bpm
+        self.timingContractVersion = timingContractVersion
+        self.timing = timing
+        self.timelineDuration = timelineDuration
+        self.notes = pipelineChart.notes.compactMap { item in
+            guard let lane = Self.laneIndex(forPipelineLane: item.lane) else { return nil }
+            return Note(id: item.noteID, lane: lane, time: item.startSeconds)
+        }
+        self.sections = sections
+    }
+
+    private static func laneIndex(forPipelineLane rawLane: String) -> Int? {
+        switch rawLane.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
+        case "kick":
+            return Lane.kick.rawValue
+        case "snare", "red":
+            return Lane.red.rawValue
+        case "hihat_closed", "hi_hat_closed", "hihat_open", "hi_hat_open", "yellow", "crash", "ride":
+            return Lane.yellow.rawValue
+        case "tom_high", "blue":
+            return Lane.blue.rawValue
+        case "tom_mid", "tom_low", "green":
+            return Lane.green.rawValue
+        default:
+            return nil
+        }
+    }
 }
 
 struct ImportedChartTiming: Equatable {
