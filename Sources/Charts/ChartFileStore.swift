@@ -20,6 +20,7 @@ struct ChartDocument: Codable {
         let id: UUID?
         let lane: Int
         let time: Double
+        let label: String?
     }
 
     struct Section: Codable {
@@ -215,7 +216,7 @@ struct ChartFileStore {
             timingContractVersion: timingContractVersion,
             timing: timing,
             timelineDuration: timelineDuration,
-            notes: chart.notes.map { .init(id: $0.id, lane: $0.lane.rawValue, time: $0.time) },
+            notes: chart.notes.map { .init(id: $0.id, lane: $0.lane.rawValue, time: $0.time, label: $0.label) },
             sections: chart.sections.map { .init(id: $0.id, name: $0.name, startTime: $0.startTime, endTime: $0.endTime, colorName: $0.colorName) }
         )
         let encoder = JSONEncoder()
@@ -293,7 +294,7 @@ struct ChartFileStore {
         let document = try decoder.decode(ChartDocument.self, from: data)
         let notes = document.notes.compactMap { item -> NoteEvent? in
             guard let lane = Lane(rawValue: item.lane) else { return nil }
-            return NoteEvent(id: item.id ?? UUID(), lane: lane, time: item.time, label: nil)
+            return NoteEvent(id: item.id ?? UUID(), lane: lane, time: item.time, label: item.label)
         }
         let sortedRawSections = (document.sections ?? []).sorted { $0.startTime < $1.startTime }
         let sections = sortedRawSections.enumerated().map { index, item in
