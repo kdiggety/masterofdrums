@@ -305,14 +305,23 @@ final class GameplayScene: SKScene {
             highway.addChild(highlightNode)
             laneHighlights[lane] = highlightNode
 
-            let laneLabel = SKLabelNode(fontNamed: "SF Pro Rounded")
-            laneLabel.text = lane.keyLabel
-            laneLabel.fontColor = .white.withAlphaComponent(0.9)
-            laneLabel.fontSize = lane == .kick ? 22 : 24
-            laneLabel.position = CGPoint(x: laneFrame.midX, y: hitLineY - 36)
-            laneLabel.verticalAlignmentMode = .center
-            laneLabel.horizontalAlignmentMode = .center
-            highway.addChild(laneLabel)
+            let keyLabel = SKLabelNode(fontNamed: "SF Pro Rounded")
+            keyLabel.text = lane.keyLabel
+            keyLabel.fontColor = .white.withAlphaComponent(0.92)
+            keyLabel.fontSize = lane == .kick ? 22 : 24
+            keyLabel.position = CGPoint(x: laneFrame.midX, y: hitLineY - 30)
+            keyLabel.verticalAlignmentMode = .center
+            keyLabel.horizontalAlignmentMode = .center
+            highway.addChild(keyLabel)
+
+            let drumLabel = SKLabelNode(fontNamed: "SF Pro Rounded")
+            drumLabel.text = lane.laneLabel
+            drumLabel.fontColor = .white.withAlphaComponent(0.76)
+            drumLabel.fontSize = 12
+            drumLabel.position = CGPoint(x: laneFrame.midX, y: hitLineY - 48)
+            drumLabel.verticalAlignmentMode = .center
+            drumLabel.horizontalAlignmentMode = .center
+            highway.addChild(drumLabel)
         }
 
         let hitLineFrame = CGRect(
