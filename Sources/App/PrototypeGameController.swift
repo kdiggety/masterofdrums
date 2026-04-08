@@ -1198,10 +1198,10 @@ final class PrototypeGameController: ObservableObject {
                 chartAssociationStatusText = "Loaded chart: \(url.lastPathComponent)"
                 persistLastOpenedChartURL(url)
                 adminTimelineDuration = max(loaded.timelineDuration ?? 0, loaded.chart.endTime, playbackDuration, 1)
-                applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent)", recordHistory: true, persistLoadedChart: false)
+                applyChart(loaded.chart, bpmOverride: loaded.bpm, chartStatus: "Loaded chart file \(url.lastPathComponent) (\(loaded.chart.notes.count) notes)", recordHistory: true, persistLoadedChart: false)
                 syncBPMStateFromCurrentSources()
-                statusMessage = "Loaded chart \(loaded.chart.title)"
-                adminStatusText = "Loaded chart JSON \(url.lastPathComponent)"
+                statusMessage = "Loaded chart \(loaded.chart.title) (\(loaded.chart.notes.count) notes)"
+                adminStatusText = "Loaded chart JSON \(url.lastPathComponent) with \(loaded.chart.notes.count) notes"
             } else {
                 let loaded = try midiLoader.loadChartData(from: url)
                 activeAdminChartURL = nil
