@@ -27,6 +27,7 @@ final class GameplayScene: SKScene {
     private var laneOrder: [ChartLane] { chart.displayLanes }
     private let noteNodeNamePrefix = "note-"
     private let beatGuideNodeNamePrefix = "beat-guide-"
+    private let beatGuideLabelNodeNamePrefix = "beat-guide-label-"
     private var noteNodes: [UUID: SKShapeNode] = [:]
     private var visibleNotes: [NoteEvent] = []
     private var laneHighlights: [String: SKShapeNode] = [:]
@@ -235,7 +236,10 @@ final class GameplayScene: SKScene {
 
     private func updateBeatGuideLines(songTime: TimeInterval) {
         highway.children
-            .filter { $0.name?.hasPrefix(beatGuideNodeNamePrefix) == true }
+            .filter {
+                ($0.name?.hasPrefix(beatGuideNodeNamePrefix) == true) ||
+                ($0.name?.hasPrefix(beatGuideLabelNodeNamePrefix) == true)
+            }
             .forEach { $0.removeFromParent() }
 
         guard isAdminAuthoringMode,
@@ -244,6 +248,8 @@ final class GameplayScene: SKScene {
 
         let totalWidth = laneWidth * CGFloat(laneOrder.count)
         let startX = (size.width - totalWidth) / 2
+        let guideStartX = startX + laneInset
+        let guideWidth = totalWidth - (laneInset * 2)
         let beatDuration = 60.0 / configuration.bpm
         let subdivisionDuration = beatDuration / Double(max(configuration.subdivisionsPerBeat, 1))
         let adjustedSongTime = songTime - configuration.songOffset
@@ -260,19 +266,34 @@ final class GameplayScene: SKScene {
             let isBeatLine = subdivisionIndex % configuration.subdivisionsPerBeat == 0
             let beatIndex = subdivisionIndex / configuration.subdivisionsPerBeat
             let isMeasureLine = isBeatLine && beatIndex >= 0 && (beatIndex % configuration.beatsPerBar == 0)
-            let lineRect = CGRect(x: startX + laneInset, y: y, width: totalWidth - (laneInset * 2), height: isMeasureLine ? 2 : 1)
+            let lineHeight: CGFloat = isMeasureLine ? 3 : (isBeatLine ? 1.5 : 1)
+            let lineRect = CGRect(x: guideStartX, y: y, width: guideWidth, height: lineHeight)
             let line = SKShapeNode(rect: lineRect)
             line.name = beatGuideNodeNamePrefix + "\(subdivisionIndex)"
             if isMeasureLine {
-                line.fillColor = NSColor.white.withAlphaComponent(0.28)
+                line.fillColor = NSColor.white.withAlphaComponent(0.52)
             } else if isBeatLine {
-                line.fillColor = NSColor.white.withAlphaComponent(0.12)
+                line.fillColor = NSColor.white.withAlphaComponent(0.22)
             } else {
-                line.fillColor = NSColor.white.withAlphaComponent(0.06)
+                line.fillColor = NSColor.white.withAlphaComponent(0.08)
             }
             line.strokeColor = .clear
             line.zPosition = -0.5
             highway.addChild(line)
+
+            if isMeasureLine {
+                let barNumber = max(1, (beatIndex / max(configuration.beatsPerBar, 1)) + 1)
+                let label = SKLabelNode(fontNamed: "SF Pro Rounded")
+                label.name = beatGuideLabelNodeNamePrefix + "\(subdivisionIndex)"
+                label.text = "Bar \(barNumber)"
+                label.fontColor = .white.withAlphaComponent(0.68)
+                label.fontSize = 11
+                label.horizontalAlignmentMode = .left
+                label.verticalAlignmentMode = .bottom
+                label.position = CGPoint(x: guideStartX + 6, y: min(size.height - 14, y + 4))
+                label.zPosition = -0.4
+                highway.addChild(label)
+            }
         }
     }
 
