@@ -77,17 +77,18 @@ struct AdminChartEditorView: View {
                     }
 
                     HStack(spacing: 10) {
+                        adminButton(game.isChartMuted ? "Unmute Chart" : "Mute Chart") { game.toggleChartMute() }
+                        adminButton("Unload Chart") { game.unloadChart() }
+                        adminButton(game.isMetronomeEnabled ? "Metronome On" : "Metronome Off") { game.toggleMetronome() }
+                    }
+
+                    HStack(spacing: 10) {
                         if game.transportStateText == "Playing" || game.transportStateText == "Chart Preview" {
                             adminProminentButton("Stop") { game.pauseTransport() }
                         } else {
                             adminProminentButton("Play") { game.playTransport() }
                         }
                         adminButton("Play from Start") { game.playFromStart() }
-                    }
-
-                    HStack(spacing: 10) {
-                        adminButton(game.isMetronomeEnabled ? "Metronome On" : "Metronome Off") { game.toggleMetronome() }
-                        adminButton(game.isChartOnlyPlaybackEnabled ? "Stop Chart Preview" : "Play Chart Only") { game.toggleChartOnlyPlayback() }
                     }
 
                     HStack(spacing: 10) {

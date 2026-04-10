@@ -104,6 +104,7 @@ final class PrototypeGameController: ObservableObject {
     @Published var isMetronomeEnabled: Bool = false
     @Published private(set) var isChartOnlyPlaybackEnabled: Bool = false
     @Published private(set) var isAudioMuted: Bool = false
+    @Published private(set) var isChartMuted: Bool = false
     @Published private(set) var adminTimelineDuration: Double = 1
     @Published var adminSelectedNoteID: UUID? {
         didSet {
@@ -1145,8 +1146,35 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func playTransport() {
-        stopChartOnlyPlaybackIfNeeded(resetTime: false)
-        audio.play()
+        let hasAudio = audio.loadedTrackName != nil
+        let hasChart = !session.chart.notes.isEmpty
+        guard hasAudio || hasChart else {
+            adminStatusText = "Load audio or chart first"
+            refocusGameplay()
+            return
+        }
+
+        let startTime = adminScrubPreviewTime ?? activeTransportTime
+        adminScrubPreviewTime = nil
+        adminScrubPreviewTargetTime = nil
+
+        if hasAudio {
+            stopChartOnlyPlaybackIfNeeded(resetTime: false)
+            audio.seek(to: startTime)
+            audio.play()
+        } else {
+            chartPreviewClock.stop()
+            chartPreviewClock.seek(to: startTime)
+            isChartOnlyPlaybackEnabled = true
+            chartPreviewClock.play()
+        }
+
+        if hasChart && !isChartMuted {
+            lastChartPlaybackTriggeredNoteIDs.removeAll()
+            chartPreviewLastAuditionTime = max(0, startTime - 0.02)
+            startChartPreviewTimer()
+        }
+
         syncTransportState()
         refocusGameplay()
     }
@@ -1173,8 +1201,8 @@ final class PrototypeGameController: ObservableObject {
             stopChartOnlyPlaybackIfNeeded(resetTime: false)
             adminStatusText = "Chart-only playback off"
         } else {
-            guard audio.loadedTrackName != nil || !session.chart.notes.isEmpty else {
-                adminStatusText = "Load a chart or audio file first"
+            guard !session.chart.notes.isEmpty else {
+                adminStatusText = "Load a chart first"
                 refocusGameplay()
                 return
             }
@@ -1189,7 +1217,9 @@ final class PrototypeGameController: ObservableObject {
             lastMetronomeSubdivisionIndex = nil
             isChartOnlyPlaybackEnabled = true
             chartPreviewClock.play()
-            startChartPreviewTimer()
+            if !isChartMuted {
+                startChartPreviewTimer()
+            }
             refreshAdminVisibleNotes(at: startTime)
             adminStatusText = "Chart-only playback on at \(displayPositionText(for: startTime))"
         }
@@ -1201,6 +1231,30 @@ final class PrototypeGameController: ObservableObject {
         audio.toggleMute()
         isAudioMuted = audio.isMuted
         adminStatusText = isAudioMuted ? "Audio muted" : "Audio unmuted"
+        refocusGameplay()
+    }
+
+    func toggleChartMute() {
+        isChartMuted.toggle()
+        if isChartMuted {
+            chartPreviewTimerCancellable?.cancel()
+            chartPreviewTimerCancellable = nil
+        } else if activeTransportState == .playing && !session.chart.notes.isEmpty {
+            chartPreviewLastAuditionTime = max(0, activeTransportTime - 0.02)
+            startChartPreviewTimer()
+        }
+        adminStatusText = isChartMuted ? "Chart muted" : "Chart unmuted"
+        refocusGameplay()
+    }
+
+    func unloadChart() {
+        stopChartOnlyPlaybackIfNeeded(resetTime: true)
+        activeAdminChartURL = nil
+        importedChartTiming = nil
+        hasManualTimingOverride = false
+        let title = trackName == "No audio loaded" ? "Untitled Chart" : trackName
+        applyChart(Chart(notes: [], title: title, sections: []), bpmOverride: bpm, chartStatus: "Chart unloaded", recordHistory: true, persistLoadedChart: false)
+        adminStatusText = "Chart unloaded"
         refocusGameplay()
     }
 
@@ -1719,7 +1773,7 @@ final class PrototypeGameController: ObservableObject {
             lastChartPlaybackTriggeredNoteIDs.insert(note.id)
         }
         chartPreviewLastAuditionTime = time
-        if time >= max(session.chart.endTime + 0.05, 0.05) {
+        if isChartOnlyPlaybackEnabled && time >= max(session.chart.endTime + 0.05, 0.05) {
             stopChartOnlyPlaybackIfNeeded(resetTime: true)
             adminStatusText = "Chart-only playback finished"
         }
