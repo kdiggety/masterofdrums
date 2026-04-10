@@ -78,6 +78,10 @@ struct RootView: View {
                     infoRow("State", game.transportStateText)
                     infoRow("Time", game.playbackTimeText)
                     infoRow("Position", game.barBeatText)
+                        .help("Position format: Bar.Beat.Division.Tick")
+                    Text("Format: Bar.Beat.Division.Tick")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
                     infoRow("Sub", game.musicalSubdivisionText)
 
                     HStack(spacing: 8) {
