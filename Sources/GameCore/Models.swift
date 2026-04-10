@@ -134,7 +134,24 @@ struct Chart {
             }
         }
 
-        return lanes
+        return orderedDisplayLanes(lanes)
+    }
+
+    private func orderedDisplayLanes(_ lanes: [ChartLane]) -> [ChartLane] {
+        let snareLane = lanes.filter { isSnareLane($0) }
+        let kickLane = lanes.filter { isKickLane($0) && !isSnareLane($0) }
+        let middleLanes = lanes.filter { !isSnareLane($0) && !isKickLane($0) }
+        return snareLane + middleLanes + kickLane
+    }
+
+    private func isSnareLane(_ lane: ChartLane) -> Bool {
+        let normalized = lane.label.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return lane.sourceLane == .red || normalized.contains("snare")
+    }
+
+    private func isKickLane(_ lane: ChartLane) -> Bool {
+        let normalized = lane.label.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return lane.sourceLane == .kick || normalized.contains("kick")
     }
 
     static let prototype: Chart = {
