@@ -24,12 +24,12 @@ final class GameplayScene: SKScene {
     private let defaultNoteSpeed: CGFloat = 260
     private let adminAuthoringNoteSpeed: CGFloat = 110
     private let hitLineY: CGFloat = 110
-    private let laneOrder: [Lane] = [.red, .yellow, .blue, .green, .kick]
+    private var laneOrder: [ChartLane] { chart.displayLanes }
     private let noteNodeNamePrefix = "note-"
     private let beatGuideNodeNamePrefix = "beat-guide-"
     private var noteNodes: [UUID: SKShapeNode] = [:]
     private var visibleNotes: [NoteEvent] = []
-    private var laneHighlights: [Lane: SKShapeNode] = [:]
+    private var laneHighlights: [String: SKShapeNode] = [:]
     private var draggedAdminNotePreviewTimeByID: [UUID: TimeInterval] = [:]
     private var draggedAdminNotePreviewYByID: [UUID: CGFloat] = [:]
     private var draggedAdminNotePreviewTargetYByID: [UUID: CGFloat] = [:]
@@ -159,7 +159,7 @@ final class GameplayScene: SKScene {
     }
 
     func flashLane(_ lane: Lane) {
-        guard let highlight = laneHighlights[lane] else { return }
+        guard let highlight = laneHighlights[chart.displayLanes.first(where: { $0.sourceLane == lane })?.id ?? lane.displayName.lowercased()] else { return }
         highlight.removeAllActions()
         highlight.alpha = 0.8
         highlight.run(.sequence([
@@ -184,7 +184,7 @@ final class GameplayScene: SKScene {
         let startX = (size.width - totalWidth) / 2
         for (index, lane) in laneOrder.enumerated() {
             if frameForLane(at: index, startX: startX).contains(scenePoint) {
-                return lane
+                return lane.sourceLane
             }
         }
         return nil
@@ -294,28 +294,30 @@ final class GameplayScene: SKScene {
 
             let laneNode = SKShapeNode(rect: laneFrame, cornerRadius: 4)
             laneNode.strokeColor = .darkGray
-            laneNode.fillColor = color(for: lane).withAlphaComponent(0.17)
+            laneNode.fillColor = color(for: lane.sourceLane).withAlphaComponent(0.17)
             highway.addChild(laneNode)
 
             let highlightNode = SKShapeNode(rect: laneFrame, cornerRadius: 4)
-            highlightNode.strokeColor = color(for: lane).withAlphaComponent(0.8)
+            highlightNode.strokeColor = color(for: lane.sourceLane).withAlphaComponent(0.8)
             highlightNode.lineWidth = 2
-            highlightNode.fillColor = color(for: lane).withAlphaComponent(0.35)
+            highlightNode.fillColor = color(for: lane.sourceLane).withAlphaComponent(0.35)
             highlightNode.alpha = 0.0
             highway.addChild(highlightNode)
-            laneHighlights[lane] = highlightNode
+            laneHighlights[lane.id] = highlightNode
 
-            let keyLabel = SKLabelNode(fontNamed: "SF Pro Rounded")
-            keyLabel.text = lane.keyLabel
-            keyLabel.fontColor = .white.withAlphaComponent(0.92)
-            keyLabel.fontSize = lane == .kick ? 22 : 24
-            keyLabel.position = CGPoint(x: laneFrame.midX, y: hitLineY - 30)
-            keyLabel.verticalAlignmentMode = .center
-            keyLabel.horizontalAlignmentMode = .center
-            highway.addChild(keyLabel)
+            if let key = lane.keyLabel {
+                let keyLabel = SKLabelNode(fontNamed: "SF Pro Rounded")
+                keyLabel.text = key
+                keyLabel.fontColor = .white.withAlphaComponent(0.92)
+                keyLabel.fontSize = lane.sourceLane == .kick ? 22 : 24
+                keyLabel.position = CGPoint(x: laneFrame.midX, y: hitLineY - 30)
+                keyLabel.verticalAlignmentMode = .center
+                keyLabel.horizontalAlignmentMode = .center
+                highway.addChild(keyLabel)
+            }
 
             let drumLabel = SKLabelNode(fontNamed: "SF Pro Rounded")
-            drumLabel.text = lane.laneLabel
+            drumLabel.text = lane.label
             drumLabel.fontColor = .white.withAlphaComponent(0.76)
             drumLabel.fontSize = 12
             drumLabel.position = CGPoint(x: laneFrame.midX, y: hitLineY - 48)
@@ -352,7 +354,10 @@ final class GameplayScene: SKScene {
         for note in chart.notes {
             guard let node = noteNodes[note.id] else { continue }
             let effectiveLane = draggedAdminNotePreviewLaneByID[note.id] ?? note.lane
-            guard let laneIndex = laneOrder.firstIndex(of: effectiveLane) else { continue }
+            let effectiveLaneID = draggedAdminNotePreviewLaneByID[note.id].map { lane in
+                chart.displayLanes.first(where: { $0.sourceLane == lane })?.id ?? lane.displayName.lowercased()
+            } ?? note.displayLaneID
+            guard let laneIndex = laneOrder.firstIndex(where: { $0.id == effectiveLaneID || ($0.sourceLane == effectiveLane && note.label == nil) }) else { continue }
             let laneFrame = frameForLane(at: laneIndex, startX: startX)
             let yPosition: CGFloat
             if let previewY = draggedAdminNotePreviewYByID[note.id] {
@@ -383,15 +388,17 @@ final class GameplayScene: SKScene {
         node.strokeColor = .white
         node.lineWidth = 2
 
-        let label = SKLabelNode(fontNamed: "SF Pro Rounded")
-        label.text = note.lane.keyLabel
-        label.fontColor = .white
-        label.fontSize = note.lane == .kick ? 22 : 24
-        label.verticalAlignmentMode = .center
-        label.horizontalAlignmentMode = .center
-        label.position = CGPoint(x: 0, y: note.lane == .kick ? 1 : 0)
-        label.zPosition = 1
-        node.addChild(label)
+        if note.label == nil {
+            let label = SKLabelNode(fontNamed: "SF Pro Rounded")
+            label.text = note.lane.keyLabel
+            label.fontColor = .white
+            label.fontSize = note.lane == .kick ? 22 : 24
+            label.verticalAlignmentMode = .center
+            label.horizontalAlignmentMode = .center
+            label.position = CGPoint(x: 0, y: note.lane == .kick ? 1 : 0)
+            label.zPosition = 1
+            node.addChild(label)
+        }
 
         return node
     }

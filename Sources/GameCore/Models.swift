@@ -62,6 +62,21 @@ struct NoteEvent: Identifiable {
     var displayLabel: String {
         label ?? lane.displayName
     }
+
+    var displayLaneID: String {
+        displayLabel
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+            .replacingOccurrences(of: "[^a-z0-9]+", with: "-", options: .regularExpression)
+            .trimmingCharacters(in: CharacterSet(charactersIn: "-"))
+    }
+}
+
+struct ChartLane: Identifiable, Equatable {
+    let id: String
+    let label: String
+    let sourceLane: Lane
+    let keyLabel: String?
 }
 
 struct SongSection: Identifiable, Equatable {
@@ -93,6 +108,33 @@ struct Chart {
 
     var endTime: TimeInterval {
         max(notes.map(\.time).max() ?? 0, sections.map(\.endTime).max() ?? 0)
+    }
+
+    var displayLanes: [ChartLane] {
+        var lanes: [ChartLane] = []
+        var seen = Set<String>()
+        for note in notes {
+            let id = note.displayLaneID.isEmpty ? note.lane.displayName.lowercased() : note.displayLaneID
+            guard !seen.contains(id) else { continue }
+            seen.insert(id)
+            let isCanonicalLaneLabel = note.label == nil || note.displayLabel.caseInsensitiveCompare(note.lane.laneLabel) == .orderedSame || note.displayLabel.caseInsensitiveCompare(note.lane.displayName) == .orderedSame
+            lanes.append(
+                ChartLane(
+                    id: id,
+                    label: note.displayLabel,
+                    sourceLane: note.lane,
+                    keyLabel: isCanonicalLaneLabel ? note.lane.keyLabel : nil
+                )
+            )
+        }
+
+        if lanes.isEmpty {
+            lanes = Lane.allCases.map {
+                ChartLane(id: $0.displayName.lowercased(), label: $0.laneLabel, sourceLane: $0, keyLabel: $0.keyLabel)
+            }
+        }
+
+        return lanes
     }
 
     static let prototype: Chart = {
