@@ -758,7 +758,6 @@ final class PrototypeGameController: ObservableObject {
         let desiredStart = quantizedAdminGridTime(for: time)
         let duration = max(clipboard.duration, stepInterval)
         let existingSections = adminSections.sorted { $0.startTime < $1.startTime }
-        let minimumLength = stepInterval
 
         let effectiveStart: Double
         if let containingSection = existingSections.first(where: { desiredStart > $0.startTime + 0.0001 && desiredStart < $0.endTime - 0.0001 }) {
