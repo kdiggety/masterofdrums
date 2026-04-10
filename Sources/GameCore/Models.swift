@@ -99,11 +99,13 @@ struct Chart {
     let notes: [NoteEvent]
     let title: String
     let sections: [SongSection]
+    let displayLaneBlueprint: [ChartLane]?
 
-    init(notes: [NoteEvent], title: String, sections: [SongSection] = []) {
+    init(notes: [NoteEvent], title: String, sections: [SongSection] = [], displayLaneBlueprint: [ChartLane]? = nil) {
         self.notes = notes
         self.title = title
         self.sections = sections.sorted { $0.startTime < $1.startTime }
+        self.displayLaneBlueprint = displayLaneBlueprint
     }
 
     var endTime: TimeInterval {
@@ -111,8 +113,8 @@ struct Chart {
     }
 
     var displayLanes: [ChartLane] {
-        var lanes: [ChartLane] = []
-        var seen = Set<String>()
+        var lanes: [ChartLane] = displayLaneBlueprint ?? []
+        var seen = Set(lanes.map(\.id))
         for note in notes {
             let id = note.displayLaneID.isEmpty ? note.lane.displayName.lowercased() : note.displayLaneID
             guard !seen.contains(id) else { continue }

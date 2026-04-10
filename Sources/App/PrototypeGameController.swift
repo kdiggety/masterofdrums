@@ -182,6 +182,7 @@ final class PrototypeGameController: ObservableObject {
     private var adminSectionClipboard: AdminSectionClipboard?
     private var importedChartTiming: ImportedChartTiming?
     private var hasManualTimingOverride = false
+    private var activeDisplayLaneBlueprint: [ChartLane]?
 
     var isAdminAuthoringActive: Bool { isAdminPageActive }
 
@@ -410,7 +411,8 @@ final class PrototypeGameController: ObservableObject {
         importedChartTiming = nil
         hasManualTimingOverride = false
         adminTimelineDuration = max(playbackDuration, 1)
-        let chart = Chart(notes: [], title: trackName == "No audio loaded" ? "Untitled Chart" : trackName, sections: [])
+        activeDisplayLaneBlueprint = nil
+        let chart = Chart(notes: [], title: trackName == "No audio loaded" ? "Untitled Chart" : trackName, sections: [], displayLaneBlueprint: nil)
         applyChart(chart, bpmOverride: bpm, chartStatus: "Started empty admin chart", recordHistory: true)
         adminStatusText = "Started new chart. Use step mode or record mode."
         adminNoteTime = 0
@@ -441,7 +443,7 @@ final class PrototypeGameController: ObservableObject {
 
     func clearAdminNotes() {
         let title = chartName == "Untitled Chart" ? "Admin Chart" : chartName
-        applyChart(Chart(notes: [], title: title, sections: adminSections), bpmOverride: bpm, chartStatus: "Cleared chart notes", recordHistory: true)
+        applyChart(Chart(notes: [], title: title, sections: adminSections, displayLaneBlueprint: activeDisplayLaneBlueprint), bpmOverride: bpm, chartStatus: "Cleared chart notes", recordHistory: true)
         adminStatusText = "Cleared chart notes."
         stepCursorTime = 0
         updateStepCursorDisplay()
@@ -1230,7 +1232,8 @@ final class PrototypeGameController: ObservableObject {
         importedChartTiming = nil
         hasManualTimingOverride = false
         let title = trackName == "No audio loaded" ? "Untitled Chart" : trackName
-        applyChart(Chart(notes: [], title: title, sections: []), bpmOverride: bpm, chartStatus: "Chart unloaded", recordHistory: true, persistLoadedChart: false)
+        activeDisplayLaneBlueprint = nil
+        applyChart(Chart(notes: [], title: title, sections: [], displayLaneBlueprint: nil), bpmOverride: bpm, chartStatus: "Chart unloaded", recordHistory: true, persistLoadedChart: false)
         adminStatusText = "Chart unloaded"
         refocusGameplay()
     }
@@ -1410,13 +1413,16 @@ final class PrototypeGameController: ObservableObject {
             redoHistory.removeAll()
         }
         if let bpmOverride { bpm = bpmOverride }
-        session.replaceChart(chart)
-        scene.replaceChart(chart)
-        chartName = chart.title
+        let resolvedLaneBlueprint = chart.displayLaneBlueprint ?? activeDisplayLaneBlueprint ?? chart.displayLanes
+        let resolvedChart = Chart(notes: chart.notes, title: chart.title, sections: chart.sections, displayLaneBlueprint: resolvedLaneBlueprint)
+        activeDisplayLaneBlueprint = resolvedLaneBlueprint
+        session.replaceChart(resolvedChart)
+        scene.replaceChart(resolvedChart)
+        chartName = resolvedChart.title
         chartStatusText = chartStatus
-        adminNotes = chart.notes.sorted { $0.time < $1.time }
-        adminSections = chart.sections.sorted { $0.startTime < $1.startTime }
-        adminTimelineDuration = max(adminTimelineDuration, chart.endTime, 1)
+        adminNotes = resolvedChart.notes.sorted { $0.time < $1.time }
+        adminSections = resolvedChart.sections.sorted { $0.startTime < $1.startTime }
+        adminTimelineDuration = max(adminTimelineDuration, resolvedChart.endTime, 1)
         if let selectedID = adminSelectedNoteID,
            !adminNotes.contains(where: { $0.id == selectedID }) {
             adminSelectedNoteID = nil
