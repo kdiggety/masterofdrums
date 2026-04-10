@@ -19,7 +19,7 @@ final class LaneSoundPlayer {
     }
 
     func play(lane: Lane) {
-        schedule(buffer: makeBuffer(for: lane), interrupt: true)
+        schedule(buffer: makeBuffer(for: lane), interrupt: false)
     }
 
     func playMetronome(isDownbeat: Bool) {

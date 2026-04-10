@@ -1152,7 +1152,8 @@ final class PrototypeGameController: ObservableObject {
     }
     func pauseTransport() {
         if isChartOnlyPlaybackEnabled {
-            chartPreviewClock.pause()
+            stopChartOnlyPlaybackIfNeeded(resetTime: false)
+            adminStatusText = "Chart-only playback off"
         } else {
             audio.pause()
         }
@@ -1317,7 +1318,11 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func appendAdminNote(_ note: NoteEvent) {
-        let updated = (adminNotes + [note]).sorted { $0.time < $1.time }
+        let occupancyTolerance = max(stepInterval * 0.45, 0.02)
+        let filteredExisting = adminNotes.filter { existing in
+            !(existing.lane == note.lane && abs(existing.time - note.time) <= occupancyTolerance)
+        }
+        let updated = (filteredExisting + [note]).sorted { $0.time < $1.time }
         let title = normalizedAdminChartTitle()
         applyChart(Chart(notes: updated, title: title, sections: adminSections), bpmOverride: bpm, chartStatus: "Recorded \(updated.count) chart notes", recordHistory: true)
         adminSelectedNoteID = note.id
@@ -1714,8 +1719,8 @@ final class PrototypeGameController: ObservableObject {
             lastChartPlaybackTriggeredNoteIDs.insert(note.id)
         }
         chartPreviewLastAuditionTime = time
-        if time >= max(session.chart.endTime, 0.01) {
-            stopChartOnlyPlaybackIfNeeded(resetTime: false)
+        if time >= max(session.chart.endTime + 0.05, 0.05) {
+            stopChartOnlyPlaybackIfNeeded(resetTime: true)
             adminStatusText = "Chart-only playback finished"
         }
     }
