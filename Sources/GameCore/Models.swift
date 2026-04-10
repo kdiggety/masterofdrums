@@ -138,19 +138,71 @@ struct Chart {
     }
 
     private func orderedDisplayLanes(_ lanes: [ChartLane]) -> [ChartLane] {
-        let snareLane = lanes.filter { isSnareLane($0) }
-        let kickLane = lanes.filter { isKickLane($0) && !isSnareLane($0) }
-        let middleLanes = lanes.filter { !isSnareLane($0) && !isKickLane($0) }
-        return snareLane + middleLanes + kickLane
+        lanes.enumerated()
+            .sorted { lhs, rhs in
+                let lhsPriority = lanePriority(lhs.element)
+                let rhsPriority = lanePriority(rhs.element)
+                if lhsPriority == rhsPriority {
+                    return lhs.offset < rhs.offset
+                }
+                return lhsPriority < rhsPriority
+            }
+            .map(\.element)
+    }
+
+    private func lanePriority(_ lane: ChartLane) -> Int {
+        if isSnareLane(lane) { return 0 }
+        if isClosedHiHatLane(lane) { return 1 }
+        if isOpenHiHatLane(lane) { return 2 }
+        if isCymbalLane(lane) { return 3 }
+        if isTomHighLane(lane) { return 4 }
+        if isTomMidLane(lane) { return 5 }
+        if isTomLowLane(lane) { return 6 }
+        if isKickLane(lane) { return 99 }
+        return 50
+    }
+
+    private func normalizedLaneLabel(_ lane: ChartLane) -> String {
+        lane.label.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
     }
 
     private func isSnareLane(_ lane: ChartLane) -> Bool {
-        let normalized = lane.label.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let normalized = normalizedLaneLabel(lane)
         return lane.sourceLane == .red || normalized.contains("snare")
     }
 
+    private func isClosedHiHatLane(_ lane: ChartLane) -> Bool {
+        let normalized = normalizedLaneLabel(lane)
+        return normalized.contains("hihat closed") || normalized.contains("hi hat closed") || normalized.contains("closed hat") || normalized.contains("closed hihat") || normalized == "hihat" || normalized == "hi hat"
+    }
+
+    private func isOpenHiHatLane(_ lane: ChartLane) -> Bool {
+        let normalized = normalizedLaneLabel(lane)
+        return normalized.contains("hihat open") || normalized.contains("hi hat open") || normalized.contains("open hat") || normalized.contains("open hihat")
+    }
+
+    private func isCymbalLane(_ lane: ChartLane) -> Bool {
+        let normalized = normalizedLaneLabel(lane)
+        return normalized.contains("crash") || normalized.contains("ride") || normalized.contains("cymbal") || normalized.contains("symbol")
+    }
+
+    private func isTomHighLane(_ lane: ChartLane) -> Bool {
+        let normalized = normalizedLaneLabel(lane)
+        return normalized.contains("tom high") || normalized.contains("high tom")
+    }
+
+    private func isTomMidLane(_ lane: ChartLane) -> Bool {
+        let normalized = normalizedLaneLabel(lane)
+        return normalized.contains("tom mid") || normalized.contains("mid tom") || normalized.contains("tom")
+    }
+
+    private func isTomLowLane(_ lane: ChartLane) -> Bool {
+        let normalized = normalizedLaneLabel(lane)
+        return normalized.contains("tom low") || normalized.contains("low tom") || normalized.contains("floor tom")
+    }
+
     private func isKickLane(_ lane: ChartLane) -> Bool {
-        let normalized = lane.label.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let normalized = normalizedLaneLabel(lane)
         return lane.sourceLane == .kick || normalized.contains("kick")
     }
 
