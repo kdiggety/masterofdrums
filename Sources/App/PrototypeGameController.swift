@@ -161,6 +161,7 @@ final class PrototypeGameController: ObservableObject {
     private let chartPreviewClock = PreviewPlaybackClock()
     private var lastMetronomeSubdivisionIndex: Int?
     private var lastChartPlaybackTriggeredNoteIDs: Set<UUID> = []
+    private var chartPreviewTimerCancellable: AnyCancellable?
     private let completionGracePeriod: TimeInterval = 0.5
     private let adminLaneScrubDurationMultiplier: Double = 0.08
     private let adminNoteDragDurationMultiplier: Double = 0.03
@@ -1185,6 +1186,7 @@ final class PrototypeGameController: ObservableObject {
             lastMetronomeSubdivisionIndex = nil
             isChartOnlyPlaybackEnabled = true
             chartPreviewClock.play()
+            startChartPreviewTimer()
             refreshAdminVisibleNotes(at: startTime)
             adminStatusText = "Chart-only playback on"
         }
@@ -1675,6 +1677,8 @@ final class PrototypeGameController: ObservableObject {
         adminScrubPreviewTime = nil
         adminScrubPreviewTargetTime = nil
         isChartOnlyPlaybackEnabled = false
+        chartPreviewTimerCancellable?.cancel()
+        chartPreviewTimerCancellable = nil
         lastChartPlaybackTriggeredNoteIDs.removeAll()
         lastMetronomeSubdivisionIndex = nil
     }
@@ -1707,6 +1711,18 @@ final class PrototypeGameController: ObservableObject {
             stopChartOnlyPlaybackIfNeeded(resetTime: false)
             adminStatusText = "Chart-only playback finished"
         }
+    }
+
+    private func startChartPreviewTimer() {
+        chartPreviewTimerCancellable?.cancel()
+        chartPreviewTimerCancellable = Timer.publish(every: 1.0 / 60.0, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                guard let self else { return }
+                let time = self.chartPreviewClock.currentTime
+                self.handleChartOnlyPlaybackTick(at: time)
+                self.syncTransportState()
+            }
     }
 
     private func auditionNotesNearStepCursor() {
