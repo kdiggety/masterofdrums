@@ -42,6 +42,8 @@ final class PrototypeGameController: ObservableObject {
         case eighthTriplet = "1/8T"
         case sixteenth = "1/16"
         case sixteenthTriplet = "1/16T"
+        case thirtySecond = "1/32"
+        case thirtySecondTriplet = "1/32T"
 
         var id: String { rawValue }
         var subdivisionsPerBeat: Int {
@@ -51,6 +53,8 @@ final class PrototypeGameController: ObservableObject {
             case .eighthTriplet: return 3
             case .sixteenth: return 4
             case .sixteenthTriplet: return 6
+            case .thirtySecond: return 8
+            case .thirtySecondTriplet: return 12
             }
         }
 
@@ -61,6 +65,8 @@ final class PrototypeGameController: ObservableObject {
             case .eighthTriplet: return "Eighth-note triplet grid"
             case .sixteenth: return "Straight sixteenth-note grid"
             case .sixteenthTriplet: return "Sixteenth-note triplet grid"
+            case .thirtySecond: return "Straight thirty-second-note grid"
+            case .thirtySecondTriplet: return "Thirty-second-note triplet grid"
             }
         }
     }

@@ -402,21 +402,22 @@ final class GameplayScene: SKScene {
     }
 
     private func makeNoteNode(for note: NoteEvent) -> SKShapeNode {
-        let radius: CGFloat = note.lane == .kick ? 28 : 24
-        let node = SKShapeNode(circleOfRadius: radius)
+        let noteSize = CGSize(width: note.lane == .kick ? 60 : 52, height: note.lane == .kick ? 14 : 12)
+        let noteRect = CGRect(x: -noteSize.width / 2, y: -noteSize.height / 2, width: noteSize.width, height: noteSize.height)
+        let node = SKShapeNode(rect: noteRect, cornerRadius: 3)
         node.name = noteNodeNamePrefix + note.id.uuidString
         node.fillColor = color(for: note.lane)
-        node.strokeColor = .white
-        node.lineWidth = 2
+        node.strokeColor = .white.withAlphaComponent(0.9)
+        node.lineWidth = 1.5
 
         if note.label == nil {
             let label = SKLabelNode(fontNamed: "SF Pro Rounded")
             label.text = note.lane.keyLabel
             label.fontColor = .white
-            label.fontSize = note.lane == .kick ? 22 : 24
+            label.fontSize = note.lane == .kick ? 12 : 11
             label.verticalAlignmentMode = .center
             label.horizontalAlignmentMode = .center
-            label.position = CGPoint(x: 0, y: note.lane == .kick ? 1 : 0)
+            label.position = CGPoint(x: 0, y: 0)
             label.zPosition = 1
             node.addChild(label)
         }
