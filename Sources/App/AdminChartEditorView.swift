@@ -72,6 +72,11 @@ struct AdminChartEditorView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack(spacing: 10) {
                         adminButton("Choose Audio") { game.chooseAudioFile() }
+                        adminButton(game.isAudioMuted ? "Unmute Audio" : "Mute Audio") { game.toggleAudioMute() }
+                        adminButton("Unload Audio") { game.unloadAudio() }
+                    }
+
+                    HStack(spacing: 10) {
                         if game.transportStateText == "Playing" || game.transportStateText == "Chart Preview" {
                             adminProminentButton("Stop") { game.pauseTransport() }
                         } else {

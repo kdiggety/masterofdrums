@@ -103,6 +103,7 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var loopStatusText: String = "Loop Off"
     @Published var isMetronomeEnabled: Bool = false
     @Published private(set) var isChartOnlyPlaybackEnabled: Bool = false
+    @Published private(set) var isAudioMuted: Bool = false
     @Published private(set) var adminTimelineDuration: Double = 1
     @Published var adminSelectedNoteID: UUID? {
         didSet {
@@ -221,6 +222,10 @@ final class PrototypeGameController: ObservableObject {
         audio.$analysisDebug
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in self?.syncBPMStateFromCurrentSources() }
+            .store(in: &cancellables)
+        audio.$isMuted
+            .receive(on: RunLoop.main)
+            .sink { [weak self] value in self?.isAudioMuted = value }
             .store(in: &cancellables)
 
         syncState()
@@ -1165,6 +1170,11 @@ final class PrototypeGameController: ObservableObject {
             stopChartOnlyPlaybackIfNeeded(resetTime: false)
             adminStatusText = "Chart-only playback off"
         } else {
+            guard audio.loadedTrackName != nil || !session.chart.notes.isEmpty else {
+                adminStatusText = "Load a chart or audio file first"
+                refocusGameplay()
+                return
+            }
             audio.pause()
             chartPreviewClock.stop()
             chartPreviewClock.seek(to: adminScrubPreviewTime ?? audio.currentTime)
@@ -1174,6 +1184,25 @@ final class PrototypeGameController: ObservableObject {
             chartPreviewClock.play()
             adminStatusText = "Chart-only playback on"
         }
+        syncTransportState()
+        refocusGameplay()
+    }
+
+    func toggleAudioMute() {
+        audio.toggleMute()
+        isAudioMuted = audio.isMuted
+        adminStatusText = isAudioMuted ? "Audio muted" : "Audio unmuted"
+        refocusGameplay()
+    }
+
+    func unloadAudio() {
+        stopChartOnlyPlaybackIfNeeded(resetTime: true)
+        audio.unloadAudio()
+        isAudioMuted = audio.isMuted
+        chartAssociationStatusText = "Load audio to auto-match a chart."
+        trackName = "No audio loaded"
+        adminStatusText = "Audio unloaded"
+        syncBPMStateFromCurrentSources()
         syncTransportState()
         refocusGameplay()
     }

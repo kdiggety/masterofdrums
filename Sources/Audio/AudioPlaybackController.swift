@@ -72,6 +72,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
     @Published private(set) var detectedBPM: BPMDetectionResult?
     @Published private(set) var analysisDebug = BPMAnalysisDebug(status: "Idle", detail: "No file analyzed yet")
     @Published private(set) var playbackRate: Float = 1.0
+    @Published private(set) var isMuted: Bool = false
 
     private let previewClock = PreviewPlaybackClock()
     private var audioPlayer: AVAudioPlayer?
@@ -103,6 +104,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
             player.rate = playbackRate
             player.prepareToPlay()
             player.delegate = self
+            player.volume = isMuted ? 0 : 1
             audioPlayer = player
             currentFileURL = url
             loadedTrackName = url.lastPathComponent
@@ -178,6 +180,24 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
             audioPlayer.rate = playbackRate
         }
         statusText = "Playback speed \(Int(playbackRate * 100))%"
+    }
+
+    func toggleMute() {
+        isMuted.toggle()
+        audioPlayer?.volume = isMuted ? 0 : 1
+        statusText = isMuted ? "Audio muted" : "Audio unmuted"
+    }
+
+    func unloadAudio() {
+        audioPlayer?.stop()
+        audioPlayer = nil
+        currentFileURL = nil
+        loadedTrackName = nil
+        detectedBPM = nil
+        state = .stopped
+        previewClock.stop()
+        analysisDebug = BPMAnalysisDebug(status: "Idle", detail: "No file analyzed yet")
+        statusText = "Audio unloaded"
     }
 
     func seek(to time: TimeInterval) {
