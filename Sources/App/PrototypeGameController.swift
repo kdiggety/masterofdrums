@@ -87,6 +87,8 @@ final class PrototypeGameController: ObservableObject {
     @Published var isChartMatchPickerPresented: Bool = false
     @Published private(set) var transportStateText: String = TransportState.stopped.rawValue
     @Published private(set) var playbackTimeText: String = "0.00s"
+    @Published private(set) var currentPlaybackNoteID: UUID?
+    @Published var isRecordedNotesAutoscrollEnabled: Bool = true
     @Published private(set) var barBeatText: String = "1:1"
     @Published private(set) var musicalSubdivisionText: String = "1"
     @Published private(set) var bpmSourceText: String = "Manual"
@@ -1446,7 +1448,6 @@ final class PrototypeGameController: ObservableObject {
     private func handleTick(_ time: TimeInterval) {
         playbackTimeText = String(format: "%.2fs", time)
         handleMetronomeTick(at: time)
-        handleChartOnlyPlaybackTick(at: time)
 
         if isAdminAuthoringActive {
             applyLoopIfNeeded(at: time)
@@ -1552,7 +1553,16 @@ final class PrototypeGameController: ObservableObject {
         let position = MusicalTransport.position(at: currentTime, bpm: bpm, songOffset: songOffset, beatsPerBar: beatsPerBar, subdivisionsPerBeat: max(stepResolution.subdivisionsPerBeat, 1), ticksPerBeat: ticksPerBeat)
         barBeatText = position.barBeatDivisionTickText
         musicalSubdivisionText = String(position.subdivision)
+        currentPlaybackNoteID = playbackNoteID(near: currentTime)
         refreshAdminVisibleNotes(at: currentTime)
+    }
+
+    private func playbackNoteID(near time: Double) -> UUID? {
+        let tolerance = max(stepInterval * 0.5, 0.05)
+        if let nearestActive = session.chart.notes.first(where: { abs($0.time - time) <= tolerance }) {
+            return nearestActive.id
+        }
+        return session.chart.notes.last(where: { $0.time <= time + 0.02 })?.id
     }
 
     private func quantizedStepCursorTime() -> Double {

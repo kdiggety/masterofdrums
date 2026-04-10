@@ -340,46 +340,58 @@ struct AdminChartEditorView: View {
                 HStack(spacing: 10) {
                     adminButton("Delete Selected") { game.deleteSelectedAdminNotes() }
                     adminButton("Clear Selection") { game.clearAdminSelection() }
+                    adminButton(game.isRecordedNotesAutoscrollEnabled ? "Autoscroll On" : "Autoscroll Off") {
+                        game.isRecordedNotesAutoscrollEnabled.toggle()
+                    }
                 }
 
-                ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 8) {
-                        ForEach(game.adminNotes) { note in
-                            HStack {
-                                Text(note.displayLabel)
-                                    .frame(width: 80, alignment: .leading)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(game.displayPositionText(for: note.time))
-                                        .monospacedDigit()
-                                    Text(String(format: "%.2fs", note.time))
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                        .monospacedDigit()
-                                }
-                                Spacer()
-                                Button("Jump") {
-                                    game.selectAdminNote(note.id)
-                                    game.jumpToAdminNote(note.id)
-                                }
-                                .buttonStyle(BorderlessButtonStyle())
-                                .focusable(false)
-                                Button("Delete") { game.deleteAdminNote(note.id) }
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        LazyVStack(alignment: .leading, spacing: 8) {
+                            ForEach(game.adminNotes) { note in
+                                HStack {
+                                    Text(note.displayLabel)
+                                        .frame(width: 80, alignment: .leading)
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(game.displayPositionText(for: note.time))
+                                            .monospacedDigit()
+                                        Text(String(format: "%.2fs", note.time))
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                            .monospacedDigit()
+                                    }
+                                    Spacer()
+                                    Button("Jump") {
+                                        game.selectAdminNote(note.id)
+                                        game.jumpToAdminNote(note.id)
+                                    }
                                     .buttonStyle(BorderlessButtonStyle())
                                     .focusable(false)
-                            }
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 6)
-                            .background(game.adminSelectedNoteIDs.contains(note.id) ? Color.accentColor.opacity(0.15) : Color.clear)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                let extendSelection = NSEvent.modifierFlags.contains(.shift)
-                                game.selectAdminNote(note.id, extendSelection: extendSelection)
+                                    Button("Delete") { game.deleteAdminNote(note.id) }
+                                        .buttonStyle(BorderlessButtonStyle())
+                                        .focusable(false)
+                                }
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 6)
+                                .background((game.adminSelectedNoteIDs.contains(note.id) || game.currentPlaybackNoteID == note.id) ? Color.accentColor.opacity(game.currentPlaybackNoteID == note.id ? 0.22 : 0.15) : Color.clear)
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .contentShape(Rectangle())
+                                .id(note.id)
+                                .onTapGesture {
+                                    let extendSelection = NSEvent.modifierFlags.contains(.shift)
+                                    game.selectAdminNote(note.id, extendSelection: extendSelection)
+                                }
                             }
                         }
                     }
+                    .frame(minHeight: 250, maxHeight: 320)
+                    .onChange(of: game.currentPlaybackNoteID) { _, noteID in
+                        guard game.isRecordedNotesAutoscrollEnabled, let noteID else { return }
+                        withAnimation(.easeInOut(duration: 0.18)) {
+                            proxy.scrollTo(noteID, anchor: .center)
+                        }
+                    }
                 }
-                .frame(minHeight: 250, maxHeight: 320)
             }
         }
     }
