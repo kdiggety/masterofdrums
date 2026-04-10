@@ -1147,40 +1147,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func playTransport() {
-        let hasAudio = audio.loadedTrackName != nil
-        let hasChart = !session.chart.notes.isEmpty
-        guard hasAudio || hasChart else {
-            adminStatusText = "Load audio or chart first"
-            refocusGameplay()
-            return
-        }
-
-        let startTime = adminScrubPreviewTime ?? activeTransportTime
-        adminScrubPreviewTime = nil
-        adminScrubPreviewTargetTime = nil
-
-        if hasAudio {
-            stopChartOnlyPlaybackIfNeeded(resetTime: false)
-            audio.seek(to: startTime)
-            audio.play()
-        } else {
-            chartPreviewClock.stop()
-            chartPreviewClock.seek(to: startTime)
-            isChartOnlyPlaybackEnabled = true
-            chartPreviewClock.play()
-        }
-
-        if hasChart && !isChartMuted {
-            isChartAuditionActive = true
-            lastChartPlaybackTriggeredNoteIDs.removeAll()
-            chartPreviewLastAuditionTime = max(0, startTime - 0.02)
-            startChartPreviewTimer()
-        } else {
-            isChartAuditionActive = false
-        }
-
-        syncTransportState()
-        refocusGameplay()
+        startTransport(at: adminScrubPreviewTime ?? activeTransportTime)
     }
     func pauseTransport() {
         isChartAuditionActive = false
@@ -1289,11 +1256,8 @@ final class PrototypeGameController: ObservableObject {
         adminScrubPreviewTargetTime = nil
         adminScrubPreviewTime = nil
         moveStepCursor(to: 0, seekPlayback: false)
-        audio.seek(to: 0)
         refreshAdminVisibleNotes(at: 0)
-        stopChartOnlyPlaybackIfNeeded(resetTime: true)
-        audio.play()
-        syncTransportState()
+        startTransport(at: 0)
         adminStatusText = "Playing from start"
         refocusGameplay()
     }
@@ -1775,9 +1739,9 @@ final class PrototypeGameController: ObservableObject {
 
     private func handleChartOnlyPlaybackTick(at time: Double) {
         guard isChartAuditionActive else { return }
-        let previousTime = chartPreviewLastAuditionTime ?? max(0, time - 0.02)
+        let previousTime = chartPreviewLastAuditionTime ?? (time - 0.02)
         let dueNotes = session.chart.notes.filter { note in
-            note.time > previousTime && note.time <= time + 0.02
+            note.time >= previousTime && note.time <= time + 0.02
         }
         for note in dueNotes {
             laneSoundPlayer.play(lane: note.lane)
@@ -1792,6 +1756,43 @@ final class PrototypeGameController: ObservableObject {
             chartPreviewTimerCancellable?.cancel()
             chartPreviewTimerCancellable = nil
         }
+    }
+
+    private func startTransport(at startTime: Double) {
+        let hasAudio = audio.loadedTrackName != nil
+        let hasChart = !session.chart.notes.isEmpty
+        guard hasAudio || hasChart else {
+            adminStatusText = "Load audio or chart first"
+            refocusGameplay()
+            return
+        }
+
+        adminScrubPreviewTime = nil
+        adminScrubPreviewTargetTime = nil
+
+        if hasAudio {
+            stopChartOnlyPlaybackIfNeeded(resetTime: false)
+            audio.seek(to: startTime)
+            audio.play()
+        } else {
+            chartPreviewClock.stop()
+            chartPreviewClock.seek(to: startTime)
+            isChartOnlyPlaybackEnabled = true
+            chartPreviewClock.play()
+        }
+
+        if hasChart && !isChartMuted {
+            isChartAuditionActive = true
+            lastChartPlaybackTriggeredNoteIDs.removeAll()
+            chartPreviewLastAuditionTime = startTime - 0.02
+            handleChartOnlyPlaybackTick(at: startTime)
+            startChartPreviewTimer()
+        } else {
+            isChartAuditionActive = false
+        }
+
+        syncTransportState()
+        refocusGameplay()
     }
 
     private func startChartPreviewTimer() {
