@@ -161,6 +161,7 @@ final class PrototypeGameController: ObservableObject {
     private let chartPreviewClock = PreviewPlaybackClock()
     private var lastMetronomeSubdivisionIndex: Int?
     private var lastChartPlaybackTriggeredNoteIDs: Set<UUID> = []
+    private var chartPreviewLastAuditionTime: Double?
     private var chartPreviewTimerCancellable: AnyCancellable?
     private let completionGracePeriod: TimeInterval = 0.5
     private let adminLaneScrubDurationMultiplier: Double = 0.08
@@ -1182,13 +1183,14 @@ final class PrototypeGameController: ObservableObject {
             chartPreviewClock.seek(to: startTime)
             adminScrubPreviewTime = nil
             adminScrubPreviewTargetTime = nil
-            lastChartPlaybackTriggeredNoteIDs = Set(session.chart.notes.filter { $0.time < max(0, startTime - 0.02) }.map(\.id))
+            lastChartPlaybackTriggeredNoteIDs.removeAll()
+            chartPreviewLastAuditionTime = max(0, startTime - 0.02)
             lastMetronomeSubdivisionIndex = nil
             isChartOnlyPlaybackEnabled = true
             chartPreviewClock.play()
             startChartPreviewTimer()
             refreshAdminVisibleNotes(at: startTime)
-            adminStatusText = "Chart-only playback on"
+            adminStatusText = "Chart-only playback on at \(displayPositionText(for: startTime))"
         }
         syncTransportState()
         refocusGameplay()
@@ -1456,6 +1458,7 @@ final class PrototypeGameController: ObservableObject {
                 if time >= customLoopRange.upperBound {
                     chartPreviewClock.seek(to: customLoopRange.lowerBound)
                     lastChartPlaybackTriggeredNoteIDs.removeAll()
+                    chartPreviewLastAuditionTime = max(0, customLoopRange.lowerBound - 0.02)
                 }
                 return
             }
@@ -1465,6 +1468,7 @@ final class PrototypeGameController: ObservableObject {
             if time >= end {
                 chartPreviewClock.seek(to: start)
                 lastChartPlaybackTriggeredNoteIDs.removeAll()
+                chartPreviewLastAuditionTime = max(0, start - 0.02)
             }
             return
         }
@@ -1680,6 +1684,7 @@ final class PrototypeGameController: ObservableObject {
         chartPreviewTimerCancellable?.cancel()
         chartPreviewTimerCancellable = nil
         lastChartPlaybackTriggeredNoteIDs.removeAll()
+        chartPreviewLastAuditionTime = nil
         lastMetronomeSubdivisionIndex = nil
     }
 
@@ -1700,13 +1705,15 @@ final class PrototypeGameController: ObservableObject {
 
     private func handleChartOnlyPlaybackTick(at time: Double) {
         guard isChartOnlyPlaybackEnabled, chartPreviewClock.state == .playing else { return }
+        let previousTime = chartPreviewLastAuditionTime ?? max(0, time - 0.02)
         let dueNotes = session.chart.notes.filter { note in
-            note.time <= time + 0.02 && !lastChartPlaybackTriggeredNoteIDs.contains(note.id)
+            note.time > previousTime && note.time <= time + 0.02
         }
         for note in dueNotes {
             laneSoundPlayer.play(lane: note.lane)
             lastChartPlaybackTriggeredNoteIDs.insert(note.id)
         }
+        chartPreviewLastAuditionTime = time
         if time >= max(session.chart.endTime, 0.01) {
             stopChartOnlyPlaybackIfNeeded(resetTime: false)
             adminStatusText = "Chart-only playback finished"
