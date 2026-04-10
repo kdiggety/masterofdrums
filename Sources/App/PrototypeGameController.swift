@@ -105,6 +105,7 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var isChartOnlyPlaybackEnabled: Bool = false
     @Published private(set) var isAudioMuted: Bool = false
     @Published private(set) var isChartMuted: Bool = false
+    @Published private(set) var isChartAuditionActive: Bool = false
     @Published private(set) var adminTimelineDuration: Double = 1
     @Published var adminSelectedNoteID: UUID? {
         didSet {
@@ -1170,15 +1171,21 @@ final class PrototypeGameController: ObservableObject {
         }
 
         if hasChart && !isChartMuted {
+            isChartAuditionActive = true
             lastChartPlaybackTriggeredNoteIDs.removeAll()
             chartPreviewLastAuditionTime = max(0, startTime - 0.02)
             startChartPreviewTimer()
+        } else {
+            isChartAuditionActive = false
         }
 
         syncTransportState()
         refocusGameplay()
     }
     func pauseTransport() {
+        isChartAuditionActive = false
+        chartPreviewTimerCancellable?.cancel()
+        chartPreviewTimerCancellable = nil
         if isChartOnlyPlaybackEnabled {
             stopChartOnlyPlaybackIfNeeded(resetTime: false)
             adminStatusText = "Chart-only playback off"
@@ -1216,6 +1223,7 @@ final class PrototypeGameController: ObservableObject {
             chartPreviewLastAuditionTime = max(0, startTime - 0.02)
             lastMetronomeSubdivisionIndex = nil
             isChartOnlyPlaybackEnabled = true
+            isChartAuditionActive = !isChartMuted
             chartPreviewClock.play()
             if !isChartMuted {
                 startChartPreviewTimer()
@@ -1237,9 +1245,11 @@ final class PrototypeGameController: ObservableObject {
     func toggleChartMute() {
         isChartMuted.toggle()
         if isChartMuted {
+            isChartAuditionActive = false
             chartPreviewTimerCancellable?.cancel()
             chartPreviewTimerCancellable = nil
         } else if activeTransportState == .playing && !session.chart.notes.isEmpty {
+            isChartAuditionActive = true
             chartPreviewLastAuditionTime = max(0, activeTransportTime - 0.02)
             startChartPreviewTimer()
         }
@@ -1740,6 +1750,7 @@ final class PrototypeGameController: ObservableObject {
         adminScrubPreviewTime = nil
         adminScrubPreviewTargetTime = nil
         isChartOnlyPlaybackEnabled = false
+        isChartAuditionActive = false
         chartPreviewTimerCancellable?.cancel()
         chartPreviewTimerCancellable = nil
         lastChartPlaybackTriggeredNoteIDs.removeAll()
@@ -1763,7 +1774,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func handleChartOnlyPlaybackTick(at time: Double) {
-        guard isChartOnlyPlaybackEnabled, chartPreviewClock.state == .playing else { return }
+        guard isChartAuditionActive else { return }
         let previousTime = chartPreviewLastAuditionTime ?? max(0, time - 0.02)
         let dueNotes = session.chart.notes.filter { note in
             note.time > previousTime && note.time <= time + 0.02
@@ -1776,6 +1787,10 @@ final class PrototypeGameController: ObservableObject {
         if isChartOnlyPlaybackEnabled && time >= max(session.chart.endTime + 0.05, 0.05) {
             stopChartOnlyPlaybackIfNeeded(resetTime: true)
             adminStatusText = "Chart-only playback finished"
+        } else if !isChartOnlyPlaybackEnabled && activeTransportState != .playing {
+            isChartAuditionActive = false
+            chartPreviewTimerCancellable?.cancel()
+            chartPreviewTimerCancellable = nil
         }
     }
 
@@ -1785,7 +1800,7 @@ final class PrototypeGameController: ObservableObject {
             .autoconnect()
             .sink { [weak self] _ in
                 guard let self else { return }
-                let time = self.chartPreviewClock.currentTime
+                let time = self.activeTransportTime
                 self.handleChartOnlyPlaybackTick(at: time)
                 self.syncTransportState()
             }
