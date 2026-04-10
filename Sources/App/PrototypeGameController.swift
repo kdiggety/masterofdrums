@@ -1175,13 +1175,17 @@ final class PrototypeGameController: ObservableObject {
                 refocusGameplay()
                 return
             }
+            let startTime = adminScrubPreviewTime ?? audio.currentTime
             audio.pause()
             chartPreviewClock.stop()
-            chartPreviewClock.seek(to: adminScrubPreviewTime ?? audio.currentTime)
-            lastChartPlaybackTriggeredNoteIDs.removeAll()
+            chartPreviewClock.seek(to: startTime)
+            adminScrubPreviewTime = nil
+            adminScrubPreviewTargetTime = nil
+            lastChartPlaybackTriggeredNoteIDs = Set(session.chart.notes.filter { $0.time < max(0, startTime - 0.02) }.map(\.id))
             lastMetronomeSubdivisionIndex = nil
             isChartOnlyPlaybackEnabled = true
             chartPreviewClock.play()
+            refreshAdminVisibleNotes(at: startTime)
             adminStatusText = "Chart-only playback on"
         }
         syncTransportState()
@@ -1668,6 +1672,8 @@ final class PrototypeGameController: ObservableObject {
         if resetTime {
             chartPreviewClock.stop()
         }
+        adminScrubPreviewTime = nil
+        adminScrubPreviewTargetTime = nil
         isChartOnlyPlaybackEnabled = false
         lastChartPlaybackTriggeredNoteIDs.removeAll()
         lastMetronomeSubdivisionIndex = nil
@@ -1698,8 +1704,7 @@ final class PrototypeGameController: ObservableObject {
             lastChartPlaybackTriggeredNoteIDs.insert(note.id)
         }
         if time >= max(session.chart.endTime, 0.01) {
-            chartPreviewClock.pause()
-            isChartOnlyPlaybackEnabled = false
+            stopChartOnlyPlaybackIfNeeded(resetTime: false)
             adminStatusText = "Chart-only playback finished"
         }
     }
