@@ -314,7 +314,7 @@ struct ChartFileStore {
                     id: noteID ?? UUID(),
                     lane: lane,
                     time: time,
-                    label: ChartDocument.displayLabel(forPipelineLane: rawLane)
+                    label: nil
                 )
             }
         }
