@@ -101,6 +101,8 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var playbackRateText: String = "100%"
     @Published private(set) var playbackDurationText: String = "0.00s"
     @Published private(set) var loopStatusText: String = "Loop Off"
+    @Published var isMetronomeEnabled: Bool = false
+    @Published private(set) var isChartOnlyPlaybackEnabled: Bool = false
     @Published private(set) var adminTimelineDuration: Double = 1
     @Published var adminSelectedNoteID: UUID? {
         didSet {
@@ -155,6 +157,9 @@ final class PrototypeGameController: ObservableObject {
     private let midiLoader = MIDIChartLoader()
     private let chartFileStore = ChartFileStore()
     private let laneSoundPlayer = LaneSoundPlayer()
+    private let chartPreviewClock = PreviewPlaybackClock()
+    private var lastMetronomeSubdivisionIndex: Int?
+    private var lastChartPlaybackTriggeredNoteIDs: Set<UUID> = []
     private let completionGracePeriod: TimeInterval = 0.5
     private let adminLaneScrubDurationMultiplier: Double = 0.08
     private let adminNoteDragDurationMultiplier: Double = 0.03
@@ -857,30 +862,34 @@ final class PrototypeGameController: ObservableObject {
 
     func stepBackward() {
         moveStepCursor(to: max(0, stepCursorTime - stepInterval), seekPlayback: true)
+        auditionNotesNearStepCursor()
         adminStatusText = "Stepped backward to \(stepCursorDisplayText)"
         refocusGameplay()
     }
 
     func stepForward() {
         moveStepCursor(to: stepCursorTime + stepInterval, seekPlayback: true)
+        auditionNotesNearStepCursor()
         adminStatusText = "Stepped forward to \(stepCursorDisplayText)"
         refocusGameplay()
     }
 
     func jumpBackwardBar() {
         moveStepCursor(to: max(0, stepCursorTime - barDuration), seekPlayback: true)
+        auditionNotesNearStepCursor()
         adminStatusText = "Jumped back one bar to \(stepCursorDisplayText)"
         refocusGameplay()
     }
 
     func jumpForwardBar() {
         moveStepCursor(to: stepCursorTime + barDuration, seekPlayback: true)
+        auditionNotesNearStepCursor()
         adminStatusText = "Jumped forward one bar to \(stepCursorDisplayText)"
         refocusGameplay()
     }
 
     func syncStepCursorToPlayback() {
-        moveStepCursor(to: max(0, audio.currentTime), seekPlayback: false)
+        moveStepCursor(to: max(0, activeTransportTime), seekPlayback: false)
         adminStatusText = "Synced step cursor to playback: \(stepCursorDisplayText)"
         refocusGameplay()
     }
@@ -1128,8 +1137,46 @@ final class PrototypeGameController: ObservableObject {
         refocusGameplay()
     }
 
-    func playTransport() { audio.play(); syncTransportState(); refocusGameplay() }
-    func pauseTransport() { audio.pause(); syncTransportState(); refocusGameplay() }
+    func playTransport() {
+        stopChartOnlyPlaybackIfNeeded(resetTime: false)
+        audio.play()
+        syncTransportState()
+        refocusGameplay()
+    }
+    func pauseTransport() {
+        if isChartOnlyPlaybackEnabled {
+            chartPreviewClock.pause()
+        } else {
+            audio.pause()
+        }
+        syncTransportState()
+        refocusGameplay()
+    }
+
+    func toggleMetronome() {
+        isMetronomeEnabled.toggle()
+        lastMetronomeSubdivisionIndex = nil
+        adminStatusText = isMetronomeEnabled ? "Metronome on" : "Metronome off"
+        refocusGameplay()
+    }
+
+    func toggleChartOnlyPlayback() {
+        if isChartOnlyPlaybackEnabled {
+            stopChartOnlyPlaybackIfNeeded(resetTime: false)
+            adminStatusText = "Chart-only playback off"
+        } else {
+            audio.pause()
+            chartPreviewClock.stop()
+            chartPreviewClock.seek(to: adminScrubPreviewTime ?? audio.currentTime)
+            lastChartPlaybackTriggeredNoteIDs.removeAll()
+            lastMetronomeSubdivisionIndex = nil
+            isChartOnlyPlaybackEnabled = true
+            chartPreviewClock.play()
+            adminStatusText = "Chart-only playback on"
+        }
+        syncTransportState()
+        refocusGameplay()
+    }
 
     func playFromStart() {
         customLoopRange = nil
@@ -1142,6 +1189,7 @@ final class PrototypeGameController: ObservableObject {
         moveStepCursor(to: 0, seekPlayback: false)
         audio.seek(to: 0)
         refreshAdminVisibleNotes(at: 0)
+        stopChartOnlyPlaybackIfNeeded(resetTime: true)
         audio.play()
         syncTransportState()
         adminStatusText = "Playing from start"
@@ -1321,6 +1369,8 @@ final class PrototypeGameController: ObservableObject {
 
     private func handleTick(_ time: TimeInterval) {
         playbackTimeText = String(format: "%.2fs", time)
+        handleMetronomeTick(at: time)
+        handleChartOnlyPlaybackTick(at: time)
 
         if isAdminAuthoringActive {
             applyLoopIfNeeded(at: time)
@@ -1365,7 +1415,24 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func applyLoopIfNeeded(at time: TimeInterval) {
-        guard audio.state == .playing else { return }
+        guard activeTransportState == .playing else { return }
+        if isChartOnlyPlaybackEnabled {
+            if let customLoopRange {
+                if time >= customLoopRange.upperBound {
+                    chartPreviewClock.seek(to: customLoopRange.lowerBound)
+                    lastChartPlaybackTriggeredNoteIDs.removeAll()
+                }
+                return
+            }
+            guard loopLength != .off else { return }
+            let start = loopStartTime
+            let end = start + (barDuration * Double(loopLength.barCount))
+            if time >= end {
+                chartPreviewClock.seek(to: start)
+                lastChartPlaybackTriggeredNoteIDs.removeAll()
+            }
+            return
+        }
         if let customLoopRange {
             if time >= customLoopRange.upperBound {
                 audio.seek(to: customLoopRange.lowerBound)
@@ -1400,10 +1467,10 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func syncTransportState() {
-        let currentTime = adminScrubPreviewTime ?? audio.currentTime
-        transportStateText = audio.state.rawValue
+        let currentTime = adminScrubPreviewTime ?? activeTransportTime
+        transportStateText = isChartOnlyPlaybackEnabled ? "Chart Preview" : audio.state.rawValue
         playbackTimeText = String(format: "%.2fs", currentTime)
-        playbackDurationText = String(format: "%.2fs", audio.duration)
+        playbackDurationText = String(format: "%.2fs", playbackDuration)
         let position = MusicalTransport.position(at: currentTime, bpm: bpm, songOffset: songOffset, beatsPerBar: beatsPerBar, subdivisionsPerBeat: max(stepResolution.subdivisionsPerBeat, 1), ticksPerBeat: ticksPerBeat)
         barBeatText = position.barBeatDivisionTickText
         musicalSubdivisionText = String(position.subdivision)
@@ -1444,14 +1511,22 @@ final class PrototypeGameController: ObservableObject {
         updateStepCursorDisplay()
         updateLoopStatusText()
         if seekPlayback {
-            let wasPlaying = audio.state == .playing
-            audio.seek(to: stepCursorTime)
+            let wasPlaying = activeTransportState == .playing
+            if isChartOnlyPlaybackEnabled {
+                chartPreviewClock.seek(to: stepCursorTime)
+            } else {
+                audio.seek(to: stepCursorTime)
+            }
             if isAdminAuthoringActive {
                 if wasPlaying {
                     adminScrubPreviewTime = nil
                     adminScrubPreviewTargetTime = nil
                     refreshAdminVisibleNotes(at: stepCursorTime)
-                    audio.play()
+                    if isChartOnlyPlaybackEnabled {
+                        chartPreviewClock.play()
+                    } else {
+                        audio.play()
+                    }
                 } else {
                     adminScrubPreviewTime = stepCursorTime
                     adminScrubPreviewTargetTime = stepCursorTime
@@ -1484,8 +1559,9 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func currentSceneTime(fallbackAudioTime: Double) -> Double {
+        let baseTime = isChartOnlyPlaybackEnabled ? chartPreviewClock.currentTime : fallbackAudioTime
         guard let targetTime = adminScrubPreviewTargetTime else {
-            return adminScrubPreviewTime ?? fallbackAudioTime
+            return adminScrubPreviewTime ?? baseTime
         }
 
         let currentTime = adminScrubPreviewTime ?? targetTime
@@ -1501,16 +1577,24 @@ final class PrototypeGameController: ObservableObject {
         return nextTime
     }
 
-    var currentPlaybackTime: Double { audio.currentTime }
-    var playbackDuration: Double { audio.duration }
+    var currentPlaybackTime: Double { activeTransportTime }
+    var playbackDuration: Double { max(audio.duration, session.chart.endTime, 0) }
     var playbackProgress: Double {
-        let duration = max(audio.duration, 0)
+        let duration = max(playbackDuration, 0)
         guard duration > 0 else { return 0 }
-        return min(max(audio.currentTime / duration, 0), 1)
+        return min(max(activeTransportTime / duration, 0), 1)
     }
 
     func isPlaybackRateSelected(_ rate: Float) -> Bool {
         abs(audio.playbackRate - rate) < 0.001
+    }
+
+    private var activeTransportTime: Double {
+        isChartOnlyPlaybackEnabled ? chartPreviewClock.currentTime : audio.currentTime
+    }
+
+    private var activeTransportState: TransportState {
+        isChartOnlyPlaybackEnabled ? chartPreviewClock.state : audio.state
     }
 
     private func updateLoopStatusText() {
@@ -1547,6 +1631,56 @@ final class PrototypeGameController: ObservableObject {
 
     func sectionBarBeatText(for time: Double) -> String {
         displayPositionText(for: time)
+    }
+
+    private func stopChartOnlyPlaybackIfNeeded(resetTime: Bool) {
+        guard isChartOnlyPlaybackEnabled else { return }
+        chartPreviewClock.pause()
+        if resetTime {
+            chartPreviewClock.stop()
+        }
+        isChartOnlyPlaybackEnabled = false
+        lastChartPlaybackTriggeredNoteIDs.removeAll()
+        lastMetronomeSubdivisionIndex = nil
+    }
+
+    private func handleMetronomeTick(at time: Double) {
+        guard isMetronomeEnabled, bpm > 0 else { return }
+        let subdivisionDuration = stepInterval
+        guard subdivisionDuration > 0 else { return }
+        let adjusted = max(0, time - songOffset)
+        let subdivisionIndex = Int(floor(adjusted / subdivisionDuration))
+        guard subdivisionIndex != lastMetronomeSubdivisionIndex else { return }
+        lastMetronomeSubdivisionIndex = subdivisionIndex
+        let isBeat = subdivisionIndex % max(stepResolution.subdivisionsPerBeat, 1) == 0
+        guard isBeat else { return }
+        let beatIndex = subdivisionIndex / max(stepResolution.subdivisionsPerBeat, 1)
+        let isDownbeat = beatIndex % max(beatsPerBar, 1) == 0
+        laneSoundPlayer.playMetronome(isDownbeat: isDownbeat)
+    }
+
+    private func handleChartOnlyPlaybackTick(at time: Double) {
+        guard isChartOnlyPlaybackEnabled, chartPreviewClock.state == .playing else { return }
+        let dueNotes = session.chart.notes.filter { note in
+            note.time <= time + 0.02 && !lastChartPlaybackTriggeredNoteIDs.contains(note.id)
+        }
+        for note in dueNotes {
+            laneSoundPlayer.play(lane: note.lane)
+            lastChartPlaybackTriggeredNoteIDs.insert(note.id)
+        }
+        if time >= max(session.chart.endTime, 0.01) {
+            chartPreviewClock.pause()
+            isChartOnlyPlaybackEnabled = false
+            adminStatusText = "Chart-only playback finished"
+        }
+    }
+
+    private func auditionNotesNearStepCursor() {
+        let targetTime = quantizedStepCursorTime()
+        let notes = session.chart.notes.filter { abs($0.time - targetTime) <= max(stepInterval * 0.45, 0.02) }
+        for note in notes {
+            laneSoundPlayer.play(lane: note.lane)
+        }
     }
 
     private func normalizedSectionName(_ proposedName: String?) -> String {

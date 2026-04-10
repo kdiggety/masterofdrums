@@ -72,12 +72,17 @@ struct AdminChartEditorView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack(spacing: 10) {
                         adminButton("Choose Audio") { game.chooseAudioFile() }
-                        if game.transportStateText == "Playing" {
+                        if game.transportStateText == "Playing" || game.transportStateText == "Chart Preview" {
                             adminProminentButton("Stop") { game.pauseTransport() }
                         } else {
                             adminProminentButton("Play") { game.playTransport() }
                         }
                         adminButton("Play from Start") { game.playFromStart() }
+                    }
+
+                    HStack(spacing: 10) {
+                        adminButton(game.isMetronomeEnabled ? "Metronome On" : "Metronome Off") { game.toggleMetronome() }
+                        adminButton(game.isChartOnlyPlaybackEnabled ? "Stop Chart Preview" : "Play Chart Only") { game.toggleChartOnlyPlayback() }
                     }
 
                     HStack(spacing: 10) {
@@ -181,6 +186,9 @@ struct AdminChartEditorView: View {
                         adminButton("Sync") { game.syncStepCursorToPlayback() }
                         adminButton("Next →") { game.stepForward() }
                     }
+                    Text("Step navigation now auditions notes at the current step.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
 
                     HStack(spacing: 8) {
                         adminButton("← Bar") { game.jumpBackwardBar() }

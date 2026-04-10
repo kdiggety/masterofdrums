@@ -51,4 +51,11 @@ final class PreviewPlaybackClock: PlaybackClock {
         anchorDate = nil
         state = .stopped
     }
+
+    func seek(to time: TimeInterval) {
+        accumulatedTime = max(0, time)
+        if state == .playing {
+            anchorDate = Date()
+        }
+    }
 }
