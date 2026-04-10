@@ -195,7 +195,7 @@ struct AdminChartEditorView: View {
                     statusRow("Chart", game.chartName)
                     statusRow("Transport", game.transportStateText)
                     statusRow("Time", game.playbackTimeText)
-                    statusRow("Bar:Beat", game.barBeatText)
+                    statusRow("Position", game.barBeatText)
                     Text(game.chartStatusText)
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -334,8 +334,14 @@ struct AdminChartEditorView: View {
                             HStack {
                                 Text(note.displayLabel)
                                     .frame(width: 80, alignment: .leading)
-                                Text(String(format: "%.2fs", note.time))
-                                    .monospacedDigit()
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(game.displayPositionText(for: note.time))
+                                        .monospacedDigit()
+                                    Text(String(format: "%.2fs", note.time))
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                        .monospacedDigit()
+                                }
                                 Spacer()
                                 Button("Jump") {
                                     game.selectAdminNote(note.id)
@@ -464,7 +470,7 @@ struct AdminChartEditorView: View {
         .onTapGesture(count: 2) {
             beginEditingSection(section)
         }
-        .help("\(section.name)\nStart: \(game.sectionBarBeatText(for: section.startTime)) · \(game.displayTimeText(for: section.startTime))\nEnd: \(game.sectionBarBeatText(for: section.endTime)) · \(game.displayTimeText(for: section.endTime))")
+        .help("\(section.name)\nStart: \(game.displayPositionText(for: section.startTime)) · \(game.displayTimeText(for: section.startTime))\nEnd: \(game.displayPositionText(for: section.endTime)) · \(game.displayTimeText(for: section.endTime))")
         .contextMenu {
             Button("Rename") { beginEditingSection(section) }
             Divider()

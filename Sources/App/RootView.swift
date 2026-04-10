@@ -77,7 +77,7 @@ struct RootView: View {
                         .fixedSize(horizontal: false, vertical: true)
                     infoRow("State", game.transportStateText)
                     infoRow("Time", game.playbackTimeText)
-                    infoRow("Bar:Beat", game.barBeatText)
+                    infoRow("Position", game.barBeatText)
                     infoRow("Sub", game.musicalSubdivisionText)
 
                     HStack(spacing: 8) {

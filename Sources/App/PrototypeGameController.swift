@@ -141,7 +141,7 @@ final class PrototypeGameController: ObservableObject {
     @Published var selectedAdminSectionID: UUID?
     @Published var stepResolution: StepResolution = .sixteenth
     @Published var stepCursorTime: Double = 0
-    @Published private(set) var stepCursorDisplayText: String = "1:1 · 0.00s"
+    @Published private(set) var stepCursorDisplayText: String = "1.1.1.000 · 0.00s"
     @Published var loopLength: LoopLength = .off
     @Published private(set) var loopStartTime: Double = 0
     @Published private(set) var customLoopRange: ClosedRange<Double>?
@@ -1346,7 +1346,7 @@ final class PrototypeGameController: ObservableObject {
             if isAdminRecordMode {
                 let note = NoteEvent(lane: event.lane, time: event.timestamp)
                 appendAdminNote(note)
-                adminStatusText = "Recorded \(event.lane.displayName) at \(String(format: "%.2f", event.timestamp))s"
+                adminStatusText = "Recorded \(event.lane.displayName) at \(displayPositionText(for: event.timestamp))"
                 statusMessage = "Admin Record"
             } else {
                 placeStepNote(event.lane)
@@ -1404,8 +1404,8 @@ final class PrototypeGameController: ObservableObject {
         transportStateText = audio.state.rawValue
         playbackTimeText = String(format: "%.2fs", currentTime)
         playbackDurationText = String(format: "%.2fs", audio.duration)
-        let position = MusicalTransport.position(at: currentTime, bpm: bpm, songOffset: songOffset, beatsPerBar: beatsPerBar)
-        barBeatText = position.barBeatText
+        let position = MusicalTransport.position(at: currentTime, bpm: bpm, songOffset: songOffset, beatsPerBar: beatsPerBar, subdivisionsPerBeat: max(stepResolution.subdivisionsPerBeat, 1), ticksPerBeat: ticksPerBeat)
+        barBeatText = position.barBeatDivisionTickText
         musicalSubdivisionText = String(position.subdivision)
         refreshAdminVisibleNotes(at: currentTime)
     }
@@ -1463,9 +1463,8 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func updateStepCursorDisplay() {
-        let position = MusicalTransport.position(at: stepCursorTime, bpm: bpm, songOffset: songOffset, beatsPerBar: beatsPerBar, subdivisionsPerBeat: max(stepResolution.subdivisionsPerBeat, 1))
-        let subText = stepResolution == .quarter ? "" : ".\(position.subdivision)"
-        stepCursorDisplayText = "\(position.bar):\(position.beat)\(subText) · \(String(format: "%.2f", quantizedStepCursorTime()))s"
+        let position = MusicalTransport.position(at: stepCursorTime, bpm: bpm, songOffset: songOffset, beatsPerBar: beatsPerBar, subdivisionsPerBeat: max(stepResolution.subdivisionsPerBeat, 1), ticksPerBeat: ticksPerBeat)
+        stepCursorDisplayText = "\(position.barBeatDivisionTickText) · \(String(format: "%.2f", quantizedStepCursorTime()))s"
     }
 
     private func updatePlaybackRateText() {
@@ -1535,8 +1534,19 @@ final class PrototypeGameController: ObservableObject {
         String(format: "%.2fs", time)
     }
 
+    func displayPositionText(for time: Double) -> String {
+        MusicalTransport.position(
+            at: time,
+            bpm: bpm,
+            songOffset: songOffset,
+            beatsPerBar: beatsPerBar,
+            subdivisionsPerBeat: max(stepResolution.subdivisionsPerBeat, 1),
+            ticksPerBeat: ticksPerBeat
+        ).barBeatDivisionTickText
+    }
+
     func sectionBarBeatText(for time: Double) -> String {
-        MusicalTransport.position(at: time, bpm: bpm, songOffset: songOffset, beatsPerBar: beatsPerBar).barBeatText
+        displayPositionText(for: time)
     }
 
     private func normalizedSectionName(_ proposedName: String?) -> String {
