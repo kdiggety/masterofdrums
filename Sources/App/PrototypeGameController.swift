@@ -39,14 +39,28 @@ final class PrototypeGameController: ObservableObject {
     enum StepResolution: String, CaseIterable, Identifiable {
         case quarter = "1/4"
         case eighth = "1/8"
+        case eighthTriplet = "1/8T"
         case sixteenth = "1/16"
+        case sixteenthTriplet = "1/16T"
 
         var id: String { rawValue }
         var subdivisionsPerBeat: Int {
             switch self {
             case .quarter: return 1
             case .eighth: return 2
+            case .eighthTriplet: return 3
             case .sixteenth: return 4
+            case .sixteenthTriplet: return 6
+            }
+        }
+
+        var helpText: String {
+            switch self {
+            case .quarter: return "Straight quarter-note grid"
+            case .eighth: return "Straight eighth-note grid"
+            case .eighthTriplet: return "Eighth-note triplet grid"
+            case .sixteenth: return "Straight sixteenth-note grid"
+            case .sixteenthTriplet: return "Sixteenth-note triplet grid"
             }
         }
     }

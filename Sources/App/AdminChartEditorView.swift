@@ -185,7 +185,12 @@ struct AdminChartEditorView: View {
                             Text(resolution.rawValue).tag(resolution)
                         }
                     }
-                    .pickerStyle(.segmented)
+                    .pickerStyle(.menu)
+                    .help(game.stepResolution.helpText)
+
+                    Text("Use triplet modes only when the passage really swings or lands on triplet subdivisions.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
 
                     HStack(spacing: 8) {
                         adminButton("← Back") { game.stepBackward() }
