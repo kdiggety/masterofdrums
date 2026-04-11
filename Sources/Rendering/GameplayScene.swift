@@ -128,6 +128,18 @@ final class GameplayScene: SKScene {
         updateNodePositions(songTime: currentSongTime)
     }
 
+    func debugVisibleNoteCount() -> Int {
+        visibleNotes.count
+    }
+
+    func debugRenderedNoteNodeCount() -> Int {
+        noteNodes.count
+    }
+
+    func debugVisibleLaneCounts() -> [Lane: Int] {
+        Dictionary(grouping: visibleNotes, by: \.lane).mapValues(\.count)
+    }
+
     func flashJudgment(_ judgment: Judgment) {
         judgmentLabel.text = judgment.rawValue
         switch judgment {
