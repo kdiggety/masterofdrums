@@ -1,0 +1,3354 @@
+{
+  "bpm": 94.999992,
+  "metadata": {
+    "format": 1,
+    "sourceMIDI": "kill-bill-sza-with-drum-bass.mid",
+    "unmappedMIDINotes": []
+  },
+  "notes": [
+    {
+      "id": "86618910-f280-4d39-9ffa-27fd7f92d2c0",
+      "label": "Crash",
+      "lane": 1,
+      "time": 9.473685
+    },
+    {
+      "id": "27097341-0dd8-4da0-b03d-0d57949a6256",
+      "label": "Crash",
+      "lane": 1,
+      "time": 9.63158
+    },
+    {
+      "id": "6b2ae897-93a5-42c2-a74a-44324ab6fce1",
+      "label": "Crash",
+      "lane": 1,
+      "time": 9.789475
+    },
+    {
+      "id": "a2256a94-8fa4-473c-aaf9-5e911351c59a",
+      "label": "Crash",
+      "lane": 1,
+      "time": 9.947369
+    },
+    {
+      "id": "b4603ea0-9d6d-42c3-83d5-eae420b108bf",
+      "label": "Crash",
+      "lane": 1,
+      "time": 10.105264
+    },
+    {
+      "id": "6e74bcde-b0a5-4c80-b457-d445bfe97aae",
+      "label": "Kick",
+      "lane": 4,
+      "time": 10.105264
+    },
+    {
+      "id": "0c51b9dc-26e8-481f-8edb-4119be0b458a",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 10.421053
+    },
+    {
+      "id": "196d944a-5df9-4d5e-92c9-a06dd2affb74",
+      "label": "Snare",
+      "lane": 0,
+      "time": 10.736843
+    },
+    {
+      "id": "b9e3c305-c01f-43b0-be67-3803eadcbf2c",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 11.052632
+    },
+    {
+      "id": "7fdc92de-2625-4f47-8cf0-87665d6f3716",
+      "label": "Kick",
+      "lane": 4,
+      "time": 11.210527
+    },
+    {
+      "id": "2abeca33-edae-4d37-9819-086fc11335ac",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 11.684211
+    },
+    {
+      "id": "79a761a2-bd13-4970-9e81-20796e5a8273",
+      "label": "Kick",
+      "lane": 4,
+      "time": 11.684211
+    },
+    {
+      "id": "4e55be6d-403c-4703-ab93-f2951cf93687",
+      "label": "Snare",
+      "lane": 0,
+      "time": 12.000001
+    },
+    {
+      "id": "4357c2d7-154a-410a-9853-0ecd8462d052",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 12.315791
+    },
+    {
+      "id": "eae90c70-59f7-432c-8fc4-5d94b258a968",
+      "label": "Kick",
+      "lane": 4,
+      "time": 12.315791
+    },
+    {
+      "id": "7547dc8c-865d-4e39-b356-0b3ad01ac507",
+      "label": "Snare",
+      "lane": 0,
+      "time": 12.473685
+    },
+    {
+      "id": "2cb3526b-1ea2-46b6-b950-f6313a31a740",
+      "label": "Kick",
+      "lane": 4,
+      "time": 12.63158
+    },
+    {
+      "id": "b4f06f44-4c3b-4a9b-8be6-42e769c22d5d",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 12.94737
+    },
+    {
+      "id": "28eaadeb-f574-4440-99d1-1fc1a034fd45",
+      "label": "Snare",
+      "lane": 0,
+      "time": 13.263159
+    },
+    {
+      "id": "bda344c8-7e47-4e8a-909e-ccdba6220cd5",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 13.578948
+    },
+    {
+      "id": "5373edea-6b44-46f6-9940-a9c3f807b0a7",
+      "label": "Kick",
+      "lane": 4,
+      "time": 13.736843
+    },
+    {
+      "id": "f6c5b79d-5d63-4b20-a23c-6c554e692686",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 14.210527
+    },
+    {
+      "id": "aa7ab984-a942-4bb9-929b-d4ccaa240245",
+      "label": "Kick",
+      "lane": 4,
+      "time": 14.210527
+    },
+    {
+      "id": "c0170a27-51de-4142-a15a-e9e9b0b711bb",
+      "label": "Snare",
+      "lane": 0,
+      "time": 14.526317
+    },
+    {
+      "id": "d207e3b0-fc54-441c-a4bd-3eddd2507b71",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 14.842106
+    },
+    {
+      "id": "26fb83d1-7835-4b8b-a622-71d29f576407",
+      "label": "Kick",
+      "lane": 4,
+      "time": 14.842106
+    },
+    {
+      "id": "42976ad0-af12-459d-bdf6-c1593bb9e028",
+      "label": "Snare",
+      "lane": 0,
+      "time": 15.000001
+    },
+    {
+      "id": "4ffd8c7f-8745-4a64-91f0-9d9fb5225ece",
+      "label": "Kick",
+      "lane": 4,
+      "time": 15.157896
+    },
+    {
+      "id": "3f8c9098-c7ed-4f3a-85cd-c9062b9d98b6",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 15.473686
+    },
+    {
+      "id": "df087dee-5500-4150-921c-9cc28554d6b3",
+      "label": "Snare",
+      "lane": 0,
+      "time": 15.789475
+    },
+    {
+      "id": "425a0418-afbd-4761-868d-82e5a4979fc8",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 16.105265
+    },
+    {
+      "id": "2f6d6f7b-7963-40f4-af9b-b489afa250cf",
+      "label": "Kick",
+      "lane": 4,
+      "time": 16.263159
+    },
+    {
+      "id": "eaf8e11c-3e20-462d-8a13-898a8f5093a1",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 16.736843
+    },
+    {
+      "id": "18921ffb-5895-43bb-aa77-928cef80069e",
+      "label": "Kick",
+      "lane": 4,
+      "time": 16.736843
+    },
+    {
+      "id": "1e11beac-16b5-423a-9e1e-748a0fddca77",
+      "label": "Snare",
+      "lane": 0,
+      "time": 17.052633
+    },
+    {
+      "id": "ef660c49-ab95-4018-a628-8809eddc517b",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 17.368423
+    },
+    {
+      "id": "cafaf3fe-2258-49e2-a748-1e4d61f4cd15",
+      "label": "Kick",
+      "lane": 4,
+      "time": 17.368423
+    },
+    {
+      "id": "1d330725-5db0-4aba-8d71-54a44f7952ac",
+      "label": "Snare",
+      "lane": 0,
+      "time": 17.526317
+    },
+    {
+      "id": "0ba3e420-da98-4f25-ae04-838a6a0f8f31",
+      "label": "Kick",
+      "lane": 4,
+      "time": 17.684212
+    },
+    {
+      "id": "48072b5a-e8d7-4869-aa9d-70c728d37def",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 18.000001
+    },
+    {
+      "id": "9ac38c72-c2ca-4b47-8cb5-da7da2d1c4c3",
+      "label": "Snare",
+      "lane": 0,
+      "time": 18.315791
+    },
+    {
+      "id": "766a24a6-f5fa-495f-99d9-cc1f56c3c7bf",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 18.63158
+    },
+    {
+      "id": "1595e85b-a5f1-4a2d-a93f-5b73f6825366",
+      "label": "Kick",
+      "lane": 4,
+      "time": 18.789475
+    },
+    {
+      "id": "84b774a2-8c46-4572-a14a-5f9a281d200c",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 19.26316
+    },
+    {
+      "id": "d8325f62-cbce-4079-a978-29214d8cd478",
+      "label": "Kick",
+      "lane": 4,
+      "time": 19.26316
+    },
+    {
+      "id": "a2e7e6f6-ce5b-4a79-8d71-b989b0ef480f",
+      "label": "Snare",
+      "lane": 0,
+      "time": 19.578949
+    },
+    {
+      "id": "d09e723f-d318-402e-8d76-976d0b60c914",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 19.894738
+    },
+    {
+      "id": "6b676f9d-de73-40f0-ba2a-e4f14321e346",
+      "label": "Kick",
+      "lane": 4,
+      "time": 19.894738
+    },
+    {
+      "id": "28272aaf-a6be-444a-a026-f43b6fea9c6c",
+      "label": "Snare",
+      "lane": 0,
+      "time": 20.052633
+    },
+    {
+      "id": "80775748-6a82-47b7-a022-3b9f97e5585e",
+      "label": "Kick",
+      "lane": 4,
+      "time": 20.210528
+    },
+    {
+      "id": "5aebb529-1b6a-4431-aa96-a06c05b46f4e",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 20.526318
+    },
+    {
+      "id": "578694a1-1b61-4887-bc91-4a7e5861584b",
+      "label": "Snare",
+      "lane": 0,
+      "time": 20.842107
+    },
+    {
+      "id": "8c893814-ea87-4e98-9ba2-6d919e632e8f",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 21.157896
+    },
+    {
+      "id": "34be889b-9ed3-40ed-b92f-f2793f4c9148",
+      "label": "Kick",
+      "lane": 4,
+      "time": 21.315791
+    },
+    {
+      "id": "d4b85300-74e9-4110-9feb-24c5623c680c",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 21.789476
+    },
+    {
+      "id": "17e32031-0219-4cbd-af64-ec0bf3d66d0c",
+      "label": "Kick",
+      "lane": 4,
+      "time": 21.789476
+    },
+    {
+      "id": "8cdd66f9-57a3-48ce-bb1f-e5a7ac248cd1",
+      "label": "Snare",
+      "lane": 0,
+      "time": 22.105265
+    },
+    {
+      "id": "1658f81a-0202-4321-a54c-f62d677d93c5",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 22.421055
+    },
+    {
+      "id": "c528356d-7f6d-4bd3-bcb9-542c3ef4b592",
+      "label": "Kick",
+      "lane": 4,
+      "time": 22.421055
+    },
+    {
+      "id": "a4c93b75-443c-4adf-a18f-c9dd63d032f8",
+      "label": "Snare",
+      "lane": 0,
+      "time": 22.578949
+    },
+    {
+      "id": "bea977d8-01b0-4226-be95-cca8a0e5a719",
+      "label": "Kick",
+      "lane": 4,
+      "time": 22.736844
+    },
+    {
+      "id": "342468cd-7a13-43c3-9f30-3a69409e0711",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 23.052633
+    },
+    {
+      "id": "201b17ec-3dd6-4f2f-b249-a2299e51618b",
+      "label": "Snare",
+      "lane": 0,
+      "time": 23.368423
+    },
+    {
+      "id": "d63708e0-b55b-49bd-9c78-93f8c36d2b58",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 23.684213
+    },
+    {
+      "id": "ce70069b-51b9-4c31-8800-259ced000d21",
+      "label": "Kick",
+      "lane": 4,
+      "time": 23.842107
+    },
+    {
+      "id": "de74e9eb-6f71-402c-8938-316b75450553",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 24.315791
+    },
+    {
+      "id": "2632b453-7a31-4d51-affb-12d6da8c7c7c",
+      "label": "Kick",
+      "lane": 4,
+      "time": 24.315791
+    },
+    {
+      "id": "4aea8533-05cf-4281-a48b-771392c49b12",
+      "label": "Snare",
+      "lane": 0,
+      "time": 24.631581
+    },
+    {
+      "id": "fece0cc0-1268-4cbc-8d85-17f93a14892d",
+      "label": "Kick",
+      "lane": 4,
+      "time": 24.631581
+    },
+    {
+      "id": "480d3043-9be7-426d-8381-df07258b32a6",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 24.947371
+    },
+    {
+      "id": "9296a977-c202-45b1-aff4-3aa75e23c10b",
+      "label": "Kick",
+      "lane": 4,
+      "time": 24.947371
+    },
+    {
+      "id": "4a0fa340-aabe-4dad-a320-850b1611f357",
+      "label": "Snare",
+      "lane": 0,
+      "time": 25.105265
+    },
+    {
+      "id": "8ddaac89-e806-4d8c-a21f-9933322b46a1",
+      "label": "Kick",
+      "lane": 4,
+      "time": 25.26316
+    },
+    {
+      "id": "11dd6209-fa83-48cc-b39e-86c0b3bdc63c",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 25.57895
+    },
+    {
+      "id": "a7ee54b7-6a8f-45c6-ae77-12722302cc09",
+      "label": "Snare",
+      "lane": 0,
+      "time": 25.894739
+    },
+    {
+      "id": "d8a97e04-2876-406c-9886-1e87e73237a7",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 26.210528
+    },
+    {
+      "id": "187b936e-2941-4e0a-a4ad-597ad24ab3a2",
+      "label": "Kick",
+      "lane": 4,
+      "time": 26.368423
+    },
+    {
+      "id": "f50ddecd-60cf-4de8-bdf6-4dff1b2503b7",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 26.842108
+    },
+    {
+      "id": "2355c8e5-e904-46d6-8c54-407a07dac2d0",
+      "label": "Kick",
+      "lane": 4,
+      "time": 26.842108
+    },
+    {
+      "id": "46305eb3-8605-4148-a063-fe0bbeb2b039",
+      "label": "Snare",
+      "lane": 0,
+      "time": 27.157897
+    },
+    {
+      "id": "29544d3d-3df5-493b-bdb3-3c0c953d1ee6",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 27.473686
+    },
+    {
+      "id": "6b42021a-4297-425f-95b8-59967be2a359",
+      "label": "Kick",
+      "lane": 4,
+      "time": 27.473686
+    },
+    {
+      "id": "cf8c1903-1d7c-406d-ba21-9e0885fcb9df",
+      "label": "Snare",
+      "lane": 0,
+      "time": 27.631581
+    },
+    {
+      "id": "d72e284d-532c-42b0-9a1c-628956b2e205",
+      "label": "Kick",
+      "lane": 4,
+      "time": 27.789476
+    },
+    {
+      "id": "37fcdc7e-2bea-4d0f-a816-9a8f146acb39",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 28.105266
+    },
+    {
+      "id": "9e7d88c0-ed83-4a67-b207-adc576470ed7",
+      "label": "Snare",
+      "lane": 0,
+      "time": 28.421055
+    },
+    {
+      "id": "91c00186-df91-468c-b182-fe968021a793",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 28.736845
+    },
+    {
+      "id": "21aedea5-704e-4660-b3a1-fe9209814308",
+      "label": "Kick",
+      "lane": 4,
+      "time": 28.894739
+    },
+    {
+      "id": "754a72b8-ec87-4402-9ccc-4553bc63ee8d",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 29.368423
+    },
+    {
+      "id": "93b3e449-424b-4605-869e-c65ed61b3665",
+      "label": "Kick",
+      "lane": 4,
+      "time": 29.368423
+    },
+    {
+      "id": "8c6aa2f4-1f73-45eb-b8ad-87219987a729",
+      "label": "Snare",
+      "lane": 0,
+      "time": 29.684213
+    },
+    {
+      "id": "82472b2c-2f5c-4a42-ac57-9f1b58e91de8",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 30.000003
+    },
+    {
+      "id": "1a801b60-1106-4b90-9e40-26297d94a7bf",
+      "label": "Kick",
+      "lane": 4,
+      "time": 30.000003
+    },
+    {
+      "id": "d31748ff-9ef2-4f11-887a-d83f61cf2c3a",
+      "label": "Snare",
+      "lane": 0,
+      "time": 30.157897
+    },
+    {
+      "id": "69fb65b1-8283-44e5-bf86-3f4e8bd81b0e",
+      "label": "Crash",
+      "lane": 1,
+      "time": 30.315792
+    },
+    {
+      "id": "aaa4cc0e-4d86-44d6-93dc-66a11c000568",
+      "label": "Kick",
+      "lane": 4,
+      "time": 30.315792
+    },
+    {
+      "id": "c7543d20-0484-45e1-a549-5122dc93d607",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 30.631581
+    },
+    {
+      "id": "19d84880-901c-4fa2-a135-eadd1cd1870a",
+      "label": "Snare",
+      "lane": 0,
+      "time": 30.947371
+    },
+    {
+      "id": "a1729428-8dc6-42f3-ac3a-8683db8dc707",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 31.263161
+    },
+    {
+      "id": "deb67e4b-9d19-4253-9555-4beaa93d43af",
+      "label": "Kick",
+      "lane": 4,
+      "time": 31.421055
+    },
+    {
+      "id": "67a3fd1c-a57e-4011-8af1-7d41680f0f5c",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 31.89474
+    },
+    {
+      "id": "1556a9b8-8f2b-478b-9dcb-9ea7049d3600",
+      "label": "Kick",
+      "lane": 4,
+      "time": 31.89474
+    },
+    {
+      "id": "77dcfcd5-cd36-451a-95f9-fd1aa33d9102",
+      "label": "Snare",
+      "lane": 0,
+      "time": 32.210529
+    },
+    {
+      "id": "86261bad-c063-477d-b070-e89ba2c9fda4",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 32.526319
+    },
+    {
+      "id": "3139e4bd-92d7-42bd-9e57-b218ffc4b563",
+      "label": "Kick",
+      "lane": 4,
+      "time": 32.526319
+    },
+    {
+      "id": "8736b5b0-3384-4e6a-a84d-37838829f4b3",
+      "label": "Snare",
+      "lane": 0,
+      "time": 32.684213
+    },
+    {
+      "id": "7661547b-4235-4658-b3fe-8461f3b84cae",
+      "label": "Kick",
+      "lane": 4,
+      "time": 32.842108
+    },
+    {
+      "id": "7535556e-5131-4637-bf49-184c9a4a3e85",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 33.157897
+    },
+    {
+      "id": "e90e4a64-8349-4480-ba06-04a394bbe325",
+      "label": "Snare",
+      "lane": 0,
+      "time": 33.473687
+    },
+    {
+      "id": "af66903f-5063-4cf6-8c04-66f3acd10cf0",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 33.789476
+    },
+    {
+      "id": "42fb6ace-a335-49f1-8df2-17d53d31ad5f",
+      "label": "Kick",
+      "lane": 4,
+      "time": 33.947371
+    },
+    {
+      "id": "63e3256d-8d7e-4875-b87b-f219027b1442",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 34.421056
+    },
+    {
+      "id": "e150e7dc-edc8-4f5b-9405-8996d962c142",
+      "label": "Kick",
+      "lane": 4,
+      "time": 34.421056
+    },
+    {
+      "id": "65ed1dcc-e6f9-4934-97df-aab1ad4a0e08",
+      "label": "Snare",
+      "lane": 0,
+      "time": 34.736845
+    },
+    {
+      "id": "d1bf7087-455f-4bb7-a50a-5b403c64fb59",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 35.052635
+    },
+    {
+      "id": "dc4d49c9-9763-49a8-a81d-4028e5d7d934",
+      "label": "Kick",
+      "lane": 4,
+      "time": 35.052635
+    },
+    {
+      "id": "d2c12b73-3a89-48e9-be6f-2b851fffc486",
+      "label": "Snare",
+      "lane": 0,
+      "time": 35.210529
+    },
+    {
+      "id": "ee91654b-bfc5-45cf-a9e4-8f3c6f8ddcf8",
+      "label": "Kick",
+      "lane": 4,
+      "time": 35.368424
+    },
+    {
+      "id": "13b9d0fe-14b3-435e-a76b-51b08fc75111",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 35.684213
+    },
+    {
+      "id": "1eea1538-982d-4816-9d59-7f8b759c8986",
+      "label": "Snare",
+      "lane": 0,
+      "time": 36.000003
+    },
+    {
+      "id": "0018a332-cdb8-4870-99d7-f4e7ab3a0c7f",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 36.315793
+    },
+    {
+      "id": "73f8cb01-1bf9-41ba-9b1b-b0e48ebb0261",
+      "label": "Kick",
+      "lane": 4,
+      "time": 36.473687
+    },
+    {
+      "id": "19597b5d-db15-491a-ab29-5ad137f0a3bf",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 36.947372
+    },
+    {
+      "id": "72c065aa-7e8d-432b-bd29-caf4d417f572",
+      "label": "Kick",
+      "lane": 4,
+      "time": 36.947372
+    },
+    {
+      "id": "80179f8b-3909-4843-9530-ed81580f0a06",
+      "label": "Snare",
+      "lane": 0,
+      "time": 37.263161
+    },
+    {
+      "id": "0c585bf5-5d7c-4b0a-acbc-329a9644ffa1",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 37.57895
+    },
+    {
+      "id": "c71ff8f5-03df-435e-9e4f-05a3409d085f",
+      "label": "Kick",
+      "lane": 4,
+      "time": 37.57895
+    },
+    {
+      "id": "08ce13d8-a9a5-46dd-8f3e-ff5f262852cf",
+      "label": "Snare",
+      "lane": 0,
+      "time": 37.736845
+    },
+    {
+      "id": "6266149e-62c2-4a94-a119-b46f943153f1",
+      "label": "Kick",
+      "lane": 4,
+      "time": 37.89474
+    },
+    {
+      "id": "a70ee2fb-ae3f-4f8c-a797-af9b7f9621d6",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 38.210529
+    },
+    {
+      "id": "a6f5ed4a-5eb1-47d1-8a35-dd9ebed6e558",
+      "label": "Snare",
+      "lane": 0,
+      "time": 38.526319
+    },
+    {
+      "id": "09d27cfb-c9bb-45e3-a904-2fcd521cbb30",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 38.842109
+    },
+    {
+      "id": "3a04e546-061b-4ff0-8139-747470422b52",
+      "label": "Kick",
+      "lane": 4,
+      "time": 39.000003
+    },
+    {
+      "id": "78342d3d-c66f-463b-98d0-97efea109a74",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 39.473687
+    },
+    {
+      "id": "4c4fa8c5-46d9-4070-a0db-8262b073f0cd",
+      "label": "Kick",
+      "lane": 4,
+      "time": 39.473687
+    },
+    {
+      "id": "d785bd65-edf6-4e65-b078-e15fc47ddc80",
+      "label": "Snare",
+      "lane": 0,
+      "time": 39.789477
+    },
+    {
+      "id": "da689ecb-38ef-402b-ab84-4c8dcd12c5ac",
+      "label": "Kick",
+      "lane": 4,
+      "time": 39.789477
+    },
+    {
+      "id": "10db7840-6184-4118-9476-a4596fc619e6",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 40.105266
+    },
+    {
+      "id": "5bfc4ba4-4a5e-4b58-87dd-68fc5c122050",
+      "label": "Kick",
+      "lane": 4,
+      "time": 40.105266
+    },
+    {
+      "id": "42983f86-ae4b-4043-8343-d0c4fb912baf",
+      "label": "Snare",
+      "lane": 0,
+      "time": 40.263161
+    },
+    {
+      "id": "c9f25031-660e-4159-941b-9bc96d3b1af7",
+      "label": "Kick",
+      "lane": 4,
+      "time": 40.421056
+    },
+    {
+      "id": "bf43a26e-27e1-45f2-b466-06739dffab35",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 40.736846
+    },
+    {
+      "id": "f0bd003f-8a59-4f66-9f45-cb7cc1e1c547",
+      "label": "Snare",
+      "lane": 0,
+      "time": 41.052635
+    },
+    {
+      "id": "3e2b6955-4206-4405-be95-621664ab7c1b",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 41.368425
+    },
+    {
+      "id": "1a34824a-8a6a-4987-8c9d-f9eb03ec6c67",
+      "label": "Kick",
+      "lane": 4,
+      "time": 41.526319
+    },
+    {
+      "id": "fd5a08da-5ee5-4eae-ad73-b87582e7b18a",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 42.000003
+    },
+    {
+      "id": "ac467bf1-4228-4721-bcd2-73dc5e3ee5c7",
+      "label": "Kick",
+      "lane": 4,
+      "time": 42.000003
+    },
+    {
+      "id": "4bf6df64-eceb-4397-aadc-5db8bb0db5ed",
+      "label": "Snare",
+      "lane": 0,
+      "time": 42.315793
+    },
+    {
+      "id": "3741d2e0-fdd5-42cd-820f-ba6bdf8a4f68",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 42.631583
+    },
+    {
+      "id": "68197b63-e714-4665-8874-01e5fbff11bd",
+      "label": "Kick",
+      "lane": 4,
+      "time": 42.631583
+    },
+    {
+      "id": "529fd4af-fde6-4f1c-ad58-51702ae6e997",
+      "label": "Snare",
+      "lane": 0,
+      "time": 42.789477
+    },
+    {
+      "id": "0edcf305-7af6-4cc3-a3cd-9070915ebb4e",
+      "label": "Kick",
+      "lane": 4,
+      "time": 42.947372
+    },
+    {
+      "id": "948ae4e0-3d7e-4dab-bc90-e75f90ccdc99",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 43.263162
+    },
+    {
+      "id": "72e96463-4121-4506-8982-76ed6b57d912",
+      "label": "Snare",
+      "lane": 0,
+      "time": 43.578951
+    },
+    {
+      "id": "b6a1c603-87a4-499d-b424-7e476af29cdf",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 43.89474
+    },
+    {
+      "id": "75b7dc12-a0d8-49d0-be4c-fb5965837778",
+      "label": "Kick",
+      "lane": 4,
+      "time": 44.052635
+    },
+    {
+      "id": "b7f17e31-2d09-4bd9-aeb2-e9e17d9d35b8",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 44.526319
+    },
+    {
+      "id": "5eb9c90a-a2b9-402d-8156-bb569d9a6151",
+      "label": "Kick",
+      "lane": 4,
+      "time": 44.526319
+    },
+    {
+      "id": "e4ae3219-a3c3-4e6d-9848-398c27f0bbcd",
+      "label": "Snare",
+      "lane": 0,
+      "time": 44.842109
+    },
+    {
+      "id": "23f30ff3-694f-47b0-a143-40e4a1fbac04",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 45.157899
+    },
+    {
+      "id": "1fea58c4-cfa1-4501-bf07-0290dd5aa5b1",
+      "label": "Kick",
+      "lane": 4,
+      "time": 45.157899
+    },
+    {
+      "id": "914c80b2-013a-44db-9012-d6cf0b297950",
+      "label": "Snare",
+      "lane": 0,
+      "time": 45.315793
+    },
+    {
+      "id": "aedda6eb-45ab-416b-9117-3def327a6eed",
+      "label": "Kick",
+      "lane": 4,
+      "time": 45.473688
+    },
+    {
+      "id": "94b06219-35a5-4f49-b98c-0b5afe044384",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 45.789477
+    },
+    {
+      "id": "3d7922eb-3917-4780-a662-11d47f22b5b1",
+      "label": "Snare",
+      "lane": 0,
+      "time": 46.105267
+    },
+    {
+      "id": "2009b657-53b5-4bc5-976c-ce3355e5ba26",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 46.421056
+    },
+    {
+      "id": "c0fddfce-2552-426e-b7c9-1e4c13ba78c7",
+      "label": "Kick",
+      "lane": 4,
+      "time": 46.578951
+    },
+    {
+      "id": "490c1d1f-0eef-4787-9368-13b6395a6dc1",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 47.052636
+    },
+    {
+      "id": "8862a6e6-5e4f-4201-8c4f-2ba98cb88177",
+      "label": "Kick",
+      "lane": 4,
+      "time": 47.052636
+    },
+    {
+      "id": "d272388d-1961-4eb3-be39-d5776945a8a2",
+      "label": "Snare",
+      "lane": 0,
+      "time": 47.368425
+    },
+    {
+      "id": "b0c3d614-4cda-4fb1-b6ff-dcf831b0602a",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 47.684215
+    },
+    {
+      "id": "f7be5400-024e-4e33-8699-4d5c55d72ff7",
+      "label": "Kick",
+      "lane": 4,
+      "time": 47.684215
+    },
+    {
+      "id": "a861704c-cc57-47d9-94e7-8c7ae6af210f",
+      "label": "Snare",
+      "lane": 0,
+      "time": 47.842109
+    },
+    {
+      "id": "ce50c8b4-89a8-4c5b-9303-74baa16fe69a",
+      "label": "Kick",
+      "lane": 4,
+      "time": 48.000004
+    },
+    {
+      "id": "8fc3c177-8d3a-4e29-8c64-6bbe7833ed7c",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 48.315793
+    },
+    {
+      "id": "c67e3e3c-88b6-4c3f-8fc3-b553349af87f",
+      "label": "Snare",
+      "lane": 0,
+      "time": 48.631583
+    },
+    {
+      "id": "03c935cc-de1f-4568-8456-d2ecd53ad216",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 48.947373
+    },
+    {
+      "id": "e7392162-b75a-4781-b914-568f1b0f5b2d",
+      "label": "Kick",
+      "lane": 4,
+      "time": 49.105267
+    },
+    {
+      "id": "bccf487d-7e42-44de-854c-7e35773a2a4e",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 49.578952
+    },
+    {
+      "id": "b0e65544-61ec-44c8-964a-c615eac048e9",
+      "label": "Kick",
+      "lane": 4,
+      "time": 49.578952
+    },
+    {
+      "id": "9c83c46b-522d-493d-b517-5787360422fb",
+      "label": "Snare",
+      "lane": 0,
+      "time": 49.894741
+    },
+    {
+      "id": "cdb4242b-8090-4952-a2b1-d92d1ae0e568",
+      "label": "Snare",
+      "lane": 0,
+      "time": 50.21053
+    },
+    {
+      "id": "bce38389-8c9f-4b57-b8ae-a34b8c7d91e6",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 50.21053
+    },
+    {
+      "id": "4fa2a1ad-7fb6-420e-bbad-d6ee20377e12",
+      "label": "Kick",
+      "lane": 4,
+      "time": 50.21053
+    },
+    {
+      "id": "5ba34c0b-a0c3-4161-b26c-795902a525e2",
+      "label": "Snare",
+      "lane": 0,
+      "time": 50.368425
+    },
+    {
+      "id": "9d06859f-6c28-48f2-84eb-6d367df83e49",
+      "label": "Crash",
+      "lane": 1,
+      "time": 60.000005
+    },
+    {
+      "id": "bee15e9c-e268-4780-91ef-41f9c3af9667",
+      "label": "Crash",
+      "lane": 1,
+      "time": 60.1579
+    },
+    {
+      "id": "8106e5c5-82ba-43cf-8b11-8683853e6146",
+      "label": "Crash",
+      "lane": 1,
+      "time": 60.315795
+    },
+    {
+      "id": "5b603006-6741-4b68-a5b5-079a10bcf3bc",
+      "label": "Crash",
+      "lane": 1,
+      "time": 60.473689
+    },
+    {
+      "id": "ebbf8e64-a553-4501-b8b4-9dfda914d335",
+      "label": "Crash",
+      "lane": 1,
+      "time": 60.631584
+    },
+    {
+      "id": "d965b524-93d7-414c-aa94-ece155a364b9",
+      "label": "Kick",
+      "lane": 4,
+      "time": 60.631584
+    },
+    {
+      "id": "96ea6bb1-20dc-45fd-a313-3825bdc4d69f",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 60.947373
+    },
+    {
+      "id": "4a52ae9e-f25c-4c28-9966-40632aa69943",
+      "label": "Snare",
+      "lane": 0,
+      "time": 61.263163
+    },
+    {
+      "id": "d58ec7bd-0843-4d9c-8b24-9bd71128a567",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 61.578952
+    },
+    {
+      "id": "efc39b85-8108-43df-b527-f5210bb6f393",
+      "label": "Kick",
+      "lane": 4,
+      "time": 61.736847
+    },
+    {
+      "id": "3f36aecd-ab49-4d13-ac55-bece1add132b",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 62.210532
+    },
+    {
+      "id": "f86dec97-baf9-422c-8065-6fe62caadc16",
+      "label": "Kick",
+      "lane": 4,
+      "time": 62.210532
+    },
+    {
+      "id": "efb2c1f9-6096-46d1-a82b-abb84da59e72",
+      "label": "Snare",
+      "lane": 0,
+      "time": 62.526321
+    },
+    {
+      "id": "b5c8da8d-027b-4d17-8eae-3cd530d294cc",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 62.84211
+    },
+    {
+      "id": "e6c22b18-948a-49ba-9450-5644997adf6e",
+      "label": "Kick",
+      "lane": 4,
+      "time": 62.84211
+    },
+    {
+      "id": "83fbcac6-4e8a-4ca2-a8f8-998f0782c5d0",
+      "label": "Snare",
+      "lane": 0,
+      "time": 63.000005
+    },
+    {
+      "id": "29186382-f8b6-4355-b4ee-1d4e84d0de71",
+      "label": "Kick",
+      "lane": 4,
+      "time": 63.1579
+    },
+    {
+      "id": "03baec55-dfb1-484d-b5bd-eb5562b61775",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 63.473689
+    },
+    {
+      "id": "f781cf84-2a6a-48e5-bb8f-46095c2e7c21",
+      "label": "Snare",
+      "lane": 0,
+      "time": 63.789479
+    },
+    {
+      "id": "e77531b3-10fe-427e-8bce-88793f1f40e5",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 64.105268
+    },
+    {
+      "id": "c5e5f7c4-a822-40d7-991b-67ad879bd14a",
+      "label": "Kick",
+      "lane": 4,
+      "time": 64.263163
+    },
+    {
+      "id": "76d57967-37ef-4692-ac0c-6ccb7a7414c3",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 64.736847
+    },
+    {
+      "id": "e49f7b97-e797-4d66-93ea-790d3215f952",
+      "label": "Kick",
+      "lane": 4,
+      "time": 64.736847
+    },
+    {
+      "id": "b17ef665-1303-4782-847f-4df9b153813b",
+      "label": "Snare",
+      "lane": 0,
+      "time": 65.052637
+    },
+    {
+      "id": "020f7dba-8c5a-48dc-8c7b-19dc6241ba3f",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 65.368426
+    },
+    {
+      "id": "318a6231-f6dc-4f0f-a242-a2814dfc576a",
+      "label": "Kick",
+      "lane": 4,
+      "time": 65.368426
+    },
+    {
+      "id": "925c962b-0e02-4802-a2e0-43aef820a469",
+      "label": "Snare",
+      "lane": 0,
+      "time": 65.526321
+    },
+    {
+      "id": "4b5a8d04-75d5-40c8-850a-7c7cf21b4348",
+      "label": "Kick",
+      "lane": 4,
+      "time": 65.684216
+    },
+    {
+      "id": "59aebf29-17fa-4e4f-8b0e-7246fd875df8",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 66.000006
+    },
+    {
+      "id": "93f58e77-ac64-4f7c-937b-3d540179a0bb",
+      "label": "Snare",
+      "lane": 0,
+      "time": 66.315795
+    },
+    {
+      "id": "4c8e2c59-629e-4c3e-b246-ca76dff9c17c",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 66.631585
+    },
+    {
+      "id": "7e0cfd87-56c2-4d00-91b5-9c9577bc5d65",
+      "label": "Kick",
+      "lane": 4,
+      "time": 66.789479
+    },
+    {
+      "id": "1252192d-f377-41c3-a2ce-af00d4f98aa5",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 67.263164
+    },
+    {
+      "id": "f9658552-33bc-400b-a607-a87af339c222",
+      "label": "Kick",
+      "lane": 4,
+      "time": 67.263164
+    },
+    {
+      "id": "790e0d2a-0875-4f6d-b2ed-e982a493c0d0",
+      "label": "Snare",
+      "lane": 0,
+      "time": 67.578953
+    },
+    {
+      "id": "7bb8f808-93c0-4e79-a507-610e6a1c28bc",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 67.894743
+    },
+    {
+      "id": "3d27e388-2c17-4c5c-bf90-4ce942f00cc2",
+      "label": "Kick",
+      "lane": 4,
+      "time": 67.894743
+    },
+    {
+      "id": "3ce482e6-4088-4757-81fe-654d3e4e1c4d",
+      "label": "Snare",
+      "lane": 0,
+      "time": 68.052637
+    },
+    {
+      "id": "6c15a9fd-3da0-4bf2-9a23-f7eaf7bd8b5d",
+      "label": "Kick",
+      "lane": 4,
+      "time": 68.210532
+    },
+    {
+      "id": "dbb3c2dc-2637-4ed6-80f8-53d278ab53b9",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 68.526321
+    },
+    {
+      "id": "0b8d215e-5556-422e-9aac-8b71a0813902",
+      "label": "Snare",
+      "lane": 0,
+      "time": 68.842111
+    },
+    {
+      "id": "5a6083a8-cb63-4bc0-8129-d1cf272e9188",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 69.1579
+    },
+    {
+      "id": "2132f832-ab33-47c2-a6f9-f7610676eba8",
+      "label": "Kick",
+      "lane": 4,
+      "time": 69.315795
+    },
+    {
+      "id": "44ad8dd5-1ed1-44d8-bbcd-6609039cada6",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 69.789479
+    },
+    {
+      "id": "351158e9-f906-41bf-b53b-d46e00a9dea3",
+      "label": "Kick",
+      "lane": 4,
+      "time": 69.789479
+    },
+    {
+      "id": "16495a6b-2597-4ae8-ac7d-1acb691e2881",
+      "label": "Snare",
+      "lane": 0,
+      "time": 70.105269
+    },
+    {
+      "id": "34d2649b-68d1-4b12-b3d1-08b384d90606",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 70.421059
+    },
+    {
+      "id": "272efad4-1a6a-44bc-978e-1d7a6bbc7ded",
+      "label": "Kick",
+      "lane": 4,
+      "time": 70.421059
+    },
+    {
+      "id": "3fd178c3-2f03-4416-81da-5cc5f368befe",
+      "label": "Snare",
+      "lane": 0,
+      "time": 70.578953
+    },
+    {
+      "id": "3c0deeb2-2b36-40da-960b-efabcd627162",
+      "label": "Kick",
+      "lane": 4,
+      "time": 70.736848
+    },
+    {
+      "id": "5d6a7440-dd3a-4712-a9cc-fc2d74786a70",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 71.052638
+    },
+    {
+      "id": "d845a182-a8c6-43f5-8d46-610fba491046",
+      "label": "Snare",
+      "lane": 0,
+      "time": 71.368427
+    },
+    {
+      "id": "a087bebb-6cd7-424a-bd95-d4e6f9257ebe",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 71.684217
+    },
+    {
+      "id": "ebbe54c0-3559-42a9-87d7-8346d18031f2",
+      "label": "Kick",
+      "lane": 4,
+      "time": 71.842111
+    },
+    {
+      "id": "43abf401-188b-4379-91d3-ce468e334f51",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 72.315796
+    },
+    {
+      "id": "294f7387-2886-4bed-b7cd-13c002602085",
+      "label": "Kick",
+      "lane": 4,
+      "time": 72.315796
+    },
+    {
+      "id": "f2bb8f7d-4b4d-4c17-9f4b-d78ab3a98d81",
+      "label": "Snare",
+      "lane": 0,
+      "time": 72.631585
+    },
+    {
+      "id": "08ff61c9-fdba-428a-ade7-b578b5fbe761",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 72.947374
+    },
+    {
+      "id": "20fb650f-8459-4c24-9e3a-14a7173ce04a",
+      "label": "Kick",
+      "lane": 4,
+      "time": 72.947374
+    },
+    {
+      "id": "7d02ce36-2601-470c-98de-bbd17bb780a6",
+      "label": "Snare",
+      "lane": 0,
+      "time": 73.105269
+    },
+    {
+      "id": "ae314ed3-9acf-467c-958e-b8935ce4af80",
+      "label": "Kick",
+      "lane": 4,
+      "time": 73.263164
+    },
+    {
+      "id": "9a6bc091-245a-40a7-80bd-5d396da77804",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 73.578953
+    },
+    {
+      "id": "ae84e20d-ac95-4bde-b9a8-122776525ac7",
+      "label": "Snare",
+      "lane": 0,
+      "time": 73.894743
+    },
+    {
+      "id": "005817e3-b64f-4dc6-8551-9c436e9794ad",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 74.210532
+    },
+    {
+      "id": "12b05d83-142b-442a-8092-d25e53764f27",
+      "label": "Kick",
+      "lane": 4,
+      "time": 74.368427
+    },
+    {
+      "id": "0d098e82-9a7a-4c48-aa1f-12c1dff91fb8",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 74.842112
+    },
+    {
+      "id": "ff67935a-7751-4c8a-bf3c-43f3c15cb92d",
+      "label": "Kick",
+      "lane": 4,
+      "time": 74.842112
+    },
+    {
+      "id": "cbd64dfd-6f8b-4116-9d38-0e6ff359ef65",
+      "label": "Snare",
+      "lane": 0,
+      "time": 75.157901
+    },
+    {
+      "id": "509af7b4-ac9e-4fe4-b79d-7fc158beb2a0",
+      "label": "Kick",
+      "lane": 4,
+      "time": 75.157901
+    },
+    {
+      "id": "71a156a1-b8b4-41fa-bac0-08271aaaa00e",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 75.473691
+    },
+    {
+      "id": "eac0c55f-0058-41ad-8f92-3f2e51727d7f",
+      "label": "Kick",
+      "lane": 4,
+      "time": 75.473691
+    },
+    {
+      "id": "99080b01-6a39-4f87-a2e5-9666f0fe0185",
+      "label": "Snare",
+      "lane": 0,
+      "time": 75.631585
+    },
+    {
+      "id": "2795b688-dd5a-4feb-8dba-0092bac518bd",
+      "label": "Kick",
+      "lane": 4,
+      "time": 75.78948
+    },
+    {
+      "id": "607f6067-8e10-49b8-b3b8-22b5b4ac79f8",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 76.10527
+    },
+    {
+      "id": "59769cc9-5137-4e9b-b787-5c34c2cec946",
+      "label": "Snare",
+      "lane": 0,
+      "time": 76.421059
+    },
+    {
+      "id": "d249c5c2-14c1-4575-a546-09ac64c75ce3",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 76.736848
+    },
+    {
+      "id": "b9d2090d-683c-424e-b86e-c232d0e70fe4",
+      "label": "Kick",
+      "lane": 4,
+      "time": 76.894743
+    },
+    {
+      "id": "97c783fd-3a4a-4ea6-8a51-8ffae74e3685",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 77.368427
+    },
+    {
+      "id": "fa8856ee-c687-48e3-822f-2977611cda8e",
+      "label": "Kick",
+      "lane": 4,
+      "time": 77.368427
+    },
+    {
+      "id": "5e79e4c8-eb60-480e-a288-3ab43b62b72e",
+      "label": "Snare",
+      "lane": 0,
+      "time": 77.684217
+    },
+    {
+      "id": "a4d878c6-3fb8-488a-b947-69428afde1a1",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 78.000006
+    },
+    {
+      "id": "d84d0ffe-12fe-4aaf-adbf-1e2c5c1c9066",
+      "label": "Kick",
+      "lane": 4,
+      "time": 78.000006
+    },
+    {
+      "id": "ddd9f2b5-4ee6-4058-932b-9f047ffeed82",
+      "label": "Snare",
+      "lane": 0,
+      "time": 78.157901
+    },
+    {
+      "id": "39a1592a-38b5-4d45-896d-69fc54aa8bdc",
+      "label": "Kick",
+      "lane": 4,
+      "time": 78.315796
+    },
+    {
+      "id": "87424c6f-3441-43c3-9322-5ca5a808aed1",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 78.631585
+    },
+    {
+      "id": "9b856e34-7105-4b16-9390-f6bbe103ae1c",
+      "label": "Snare",
+      "lane": 0,
+      "time": 78.947375
+    },
+    {
+      "id": "0bf65157-eca5-477d-b144-f49d428f627a",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 79.263165
+    },
+    {
+      "id": "f9669ccf-4695-44ec-b4aa-7fa351c913c7",
+      "label": "Kick",
+      "lane": 4,
+      "time": 79.421059
+    },
+    {
+      "id": "9e193948-a8fd-4138-b20a-dac1ee76337a",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 79.894744
+    },
+    {
+      "id": "ec340de3-7dbe-46ad-ba85-cad5d861385d",
+      "label": "Kick",
+      "lane": 4,
+      "time": 79.894744
+    },
+    {
+      "id": "d6338649-22aa-46cc-aa84-bbb2e0c5d8a4",
+      "label": "Snare",
+      "lane": 0,
+      "time": 80.210533
+    },
+    {
+      "id": "4a229ee4-3bec-4359-8f3c-baefed6e59f0",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 80.526323
+    },
+    {
+      "id": "28f322cf-0680-4f33-8dff-ec5d2b17a78c",
+      "label": "Kick",
+      "lane": 4,
+      "time": 80.526323
+    },
+    {
+      "id": "8b21497c-93e5-480f-916f-8a39db1d3818",
+      "label": "Snare",
+      "lane": 0,
+      "time": 80.684217
+    },
+    {
+      "id": "25eade75-146a-46b9-8542-d78d63dcc56f",
+      "label": "Crash",
+      "lane": 1,
+      "time": 80.842112
+    },
+    {
+      "id": "7315eb8e-48dd-437a-a9c2-502392bee12a",
+      "label": "Kick",
+      "lane": 4,
+      "time": 80.842112
+    },
+    {
+      "id": "d4a6e5cb-d6f4-49ee-bb43-68df8c46b269",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 81.157901
+    },
+    {
+      "id": "67839be4-94c5-41a6-a307-8e8ef339c002",
+      "label": "Snare",
+      "lane": 0,
+      "time": 81.473691
+    },
+    {
+      "id": "430aead2-775c-4fc6-af59-400908712d8a",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 81.78948
+    },
+    {
+      "id": "9123b7a6-5073-4878-9fdb-8c4a31f4a131",
+      "label": "Kick",
+      "lane": 4,
+      "time": 81.947375
+    },
+    {
+      "id": "bbffa2a4-57f9-44db-bf8f-3d4843639b6d",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 82.421059
+    },
+    {
+      "id": "27d3d186-3675-4aec-abba-0d585969d2aa",
+      "label": "Kick",
+      "lane": 4,
+      "time": 82.421059
+    },
+    {
+      "id": "2c424313-4790-4c2a-9814-3e62d3bd1cd4",
+      "label": "Snare",
+      "lane": 0,
+      "time": 82.736849
+    },
+    {
+      "id": "488f8d93-9b4a-46b7-924e-04074a7b330a",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 83.052639
+    },
+    {
+      "id": "f086de96-3ac2-4d7c-a780-3b8b1be7a67b",
+      "label": "Kick",
+      "lane": 4,
+      "time": 83.052639
+    },
+    {
+      "id": "60cd68e6-6c89-46bf-9245-af0edfa0af3f",
+      "label": "Snare",
+      "lane": 0,
+      "time": 83.210533
+    },
+    {
+      "id": "98fa43cd-9bf7-4426-91aa-8231904e2b86",
+      "label": "Kick",
+      "lane": 4,
+      "time": 83.368428
+    },
+    {
+      "id": "83002312-0682-499e-9a44-76a691219102",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 83.684218
+    },
+    {
+      "id": "9d9e066f-0575-4ef2-aee0-d2f42a7e9fad",
+      "label": "Snare",
+      "lane": 0,
+      "time": 84.000007
+    },
+    {
+      "id": "596dced4-2b4c-4dc5-9dcf-f3c16bf5caf1",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 84.315797
+    },
+    {
+      "id": "f8b4a598-3e70-4e22-ab6b-06184668da49",
+      "label": "Kick",
+      "lane": 4,
+      "time": 84.473691
+    },
+    {
+      "id": "78c56ac4-e9a2-49db-8969-1250a449dc7d",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 84.947376
+    },
+    {
+      "id": "f98fb3d3-e79d-4d50-89e7-dc3820e7bd22",
+      "label": "Kick",
+      "lane": 4,
+      "time": 84.947376
+    },
+    {
+      "id": "9403b61b-67cb-4dde-9b5e-9d95c53e0ab7",
+      "label": "Snare",
+      "lane": 0,
+      "time": 85.263165
+    },
+    {
+      "id": "ddbc6c63-9bfa-4b34-ad46-bb2a6ef430a1",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 85.578954
+    },
+    {
+      "id": "adb6778f-caa0-4489-beaa-b852e14082be",
+      "label": "Kick",
+      "lane": 4,
+      "time": 85.578954
+    },
+    {
+      "id": "0e45d9fd-04db-48ed-b073-c90406278555",
+      "label": "Snare",
+      "lane": 0,
+      "time": 85.736849
+    },
+    {
+      "id": "2c8de240-a079-4a81-b076-a5d2bedad603",
+      "label": "Kick",
+      "lane": 4,
+      "time": 85.894744
+    },
+    {
+      "id": "7ec48cb7-c373-47d0-92f8-9cba6cb7f630",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 86.210533
+    },
+    {
+      "id": "7b383b6c-7ba2-403a-85c8-526bbb87e935",
+      "label": "Snare",
+      "lane": 0,
+      "time": 86.526323
+    },
+    {
+      "id": "183ec9f5-8838-49d7-b6cd-58bbf44b47c5",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 86.842112
+    },
+    {
+      "id": "b00c3ec4-0385-477e-9445-d46986518e35",
+      "label": "Kick",
+      "lane": 4,
+      "time": 87.000007
+    },
+    {
+      "id": "4c1ed756-e3bd-4297-a884-352c225d69d4",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 87.473692
+    },
+    {
+      "id": "e264f8ad-321f-42c4-b257-62403d9cccf3",
+      "label": "Kick",
+      "lane": 4,
+      "time": 87.473692
+    },
+    {
+      "id": "7cd19b59-04b8-450d-a78a-ca8810eb1fb2",
+      "label": "Snare",
+      "lane": 0,
+      "time": 87.789481
+    },
+    {
+      "id": "f135fdbf-ab3d-4a34-9bda-2f65b1f37330",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 88.105271
+    },
+    {
+      "id": "52004cb0-d73a-4ab8-b42a-1c79be3850fb",
+      "label": "Kick",
+      "lane": 4,
+      "time": 88.105271
+    },
+    {
+      "id": "3e5914fe-596f-4c3b-ae9f-cad8d24d3739",
+      "label": "Snare",
+      "lane": 0,
+      "time": 88.263165
+    },
+    {
+      "id": "5029276f-0052-40c7-8253-df2723ab6d27",
+      "label": "Kick",
+      "lane": 4,
+      "time": 88.42106
+    },
+    {
+      "id": "f9688774-4b97-4901-93d0-30e6e05f3f12",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 88.73685
+    },
+    {
+      "id": "43910ff8-5b85-4b5a-8bb6-dbac2ad530d4",
+      "label": "Snare",
+      "lane": 0,
+      "time": 89.052639
+    },
+    {
+      "id": "6ded725e-8753-49bb-8b29-bed87cc26426",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 89.368428
+    },
+    {
+      "id": "681323ed-3813-4213-8f2c-f881885a38d7",
+      "label": "Kick",
+      "lane": 4,
+      "time": 89.526323
+    },
+    {
+      "id": "7ed21602-a682-4c39-b4f5-4110113512a1",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 90.000007
+    },
+    {
+      "id": "64ac35bc-08f3-4a3e-8fbd-d4c8e172cc25",
+      "label": "Kick",
+      "lane": 4,
+      "time": 90.000007
+    },
+    {
+      "id": "73fccdb9-3186-4c49-a12b-29c08b934be4",
+      "label": "Snare",
+      "lane": 0,
+      "time": 90.315797
+    },
+    {
+      "id": "c55ef985-4cfa-4444-ad20-3c6406081d56",
+      "label": "Kick",
+      "lane": 4,
+      "time": 90.315797
+    },
+    {
+      "id": "efc0db91-c37c-4697-8c21-9c3a50f6cb33",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 90.631586
+    },
+    {
+      "id": "713c8bec-a21b-465e-bae4-567ddf489a1a",
+      "label": "Kick",
+      "lane": 4,
+      "time": 90.631586
+    },
+    {
+      "id": "a9882dba-5f37-4fe2-92ec-027d7d88edc1",
+      "label": "Snare",
+      "lane": 0,
+      "time": 90.789481
+    },
+    {
+      "id": "6c353ad2-c1ec-446d-b986-1c2738b30710",
+      "label": "Kick",
+      "lane": 4,
+      "time": 90.947376
+    },
+    {
+      "id": "223e9598-3b60-406c-a9f9-3c43c9bb19f7",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 91.263165
+    },
+    {
+      "id": "a5262de7-1661-4357-ac83-41cca3b7fa91",
+      "label": "Snare",
+      "lane": 0,
+      "time": 91.578955
+    },
+    {
+      "id": "de17c89e-452a-4a89-8a9c-0e5d24ac7624",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 91.894745
+    },
+    {
+      "id": "ade68e45-91cd-4ca8-be47-251de0a77ec0",
+      "label": "Kick",
+      "lane": 4,
+      "time": 92.052639
+    },
+    {
+      "id": "04208cab-b6b7-42c2-966c-b4d8e695ef55",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 92.526324
+    },
+    {
+      "id": "4e0269f5-33f9-4f59-b5bd-27c9492385c4",
+      "label": "Kick",
+      "lane": 4,
+      "time": 92.526324
+    },
+    {
+      "id": "1d8e40be-4b2f-429a-814c-d281827c83be",
+      "label": "Snare",
+      "lane": 0,
+      "time": 92.842113
+    },
+    {
+      "id": "9d3acfd4-f117-47d6-88de-a7a79999b64e",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 93.157903
+    },
+    {
+      "id": "c3561d71-9bbb-422c-ab02-167a601ccd2b",
+      "label": "Kick",
+      "lane": 4,
+      "time": 93.157903
+    },
+    {
+      "id": "1e1ec82f-5823-4563-b0a3-6e46e781068d",
+      "label": "Snare",
+      "lane": 0,
+      "time": 93.315797
+    },
+    {
+      "id": "d777c9e7-5eaa-471b-9f1f-f817af26d3e8",
+      "label": "Kick",
+      "lane": 4,
+      "time": 93.473692
+    },
+    {
+      "id": "1cd8a092-b7e5-464f-b212-0b60150efade",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 93.789481
+    },
+    {
+      "id": "45c2e390-5bf6-4460-bae4-993bce0453e4",
+      "label": "Snare",
+      "lane": 0,
+      "time": 94.105271
+    },
+    {
+      "id": "71b1a284-b3c3-4a3c-8893-a6c320c3074f",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 94.42106
+    },
+    {
+      "id": "0ab7e670-1070-4d3b-aeb5-589964fbbbbc",
+      "label": "Kick",
+      "lane": 4,
+      "time": 94.578955
+    },
+    {
+      "id": "60b8c685-1467-4c23-b628-d709e80d1b79",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 95.052639
+    },
+    {
+      "id": "938bfe4f-9c9c-4b24-803b-ecd108f646b3",
+      "label": "Kick",
+      "lane": 4,
+      "time": 95.052639
+    },
+    {
+      "id": "d206a0f7-15c1-4377-8777-41e51765b52a",
+      "label": "Snare",
+      "lane": 0,
+      "time": 95.368429
+    },
+    {
+      "id": "f5f90fdc-5033-4b61-83a0-34cfb9c740ce",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 95.684219
+    },
+    {
+      "id": "86d66ffc-bd37-478a-ad7c-a96da1c4f9fa",
+      "label": "Kick",
+      "lane": 4,
+      "time": 95.684219
+    },
+    {
+      "id": "9b2fc4a6-3773-4b8b-a056-83c4e935b393",
+      "label": "Snare",
+      "lane": 0,
+      "time": 95.842113
+    },
+    {
+      "id": "f0b8671c-91d8-446c-a672-dc7e356d72c9",
+      "label": "Kick",
+      "lane": 4,
+      "time": 96.000008
+    },
+    {
+      "id": "c903dbe6-f1de-47fe-99b4-33ec15d59b35",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 96.315798
+    },
+    {
+      "id": "bfd7a367-9f28-427e-9039-566a427afb78",
+      "label": "Snare",
+      "lane": 0,
+      "time": 96.631587
+    },
+    {
+      "id": "7b66453b-c71f-484d-81a6-3b40186770a0",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 96.947377
+    },
+    {
+      "id": "75161715-9560-42b8-8df0-e07d0142d2be",
+      "label": "Kick",
+      "lane": 4,
+      "time": 97.105271
+    },
+    {
+      "id": "47decbf9-0c59-4dd2-8076-5d114a5ddf40",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 97.578956
+    },
+    {
+      "id": "ad1d7039-91a3-47df-a396-a1f8a72f1d58",
+      "label": "Kick",
+      "lane": 4,
+      "time": 97.578956
+    },
+    {
+      "id": "da48a09f-f0a5-45f1-87b5-4a04273d13c6",
+      "label": "Snare",
+      "lane": 0,
+      "time": 97.894745
+    },
+    {
+      "id": "aa1df0b7-0a02-4452-bbde-73ff35caf168",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 98.210534
+    },
+    {
+      "id": "731c9a4f-b573-42b8-85a8-9d3eae44c790",
+      "label": "Kick",
+      "lane": 4,
+      "time": 98.210534
+    },
+    {
+      "id": "e3ca0ce4-ed3b-44d5-a7d9-fa7e57e0b1ec",
+      "label": "Snare",
+      "lane": 0,
+      "time": 98.368429
+    },
+    {
+      "id": "dbd66992-6688-4b7d-9602-cdec5dc0505a",
+      "label": "Kick",
+      "lane": 4,
+      "time": 98.526324
+    },
+    {
+      "id": "491b72df-e298-4394-b993-1a00db7cd665",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 98.842113
+    },
+    {
+      "id": "c9ccae87-4452-4b0c-91a6-4391d5333248",
+      "label": "Snare",
+      "lane": 0,
+      "time": 99.157903
+    },
+    {
+      "id": "68558d8a-e399-4bbb-b1e2-a72ee57ac8a2",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 99.473692
+    },
+    {
+      "id": "1554402d-e8c3-4a70-b9dc-0111e6ba7b8b",
+      "label": "Kick",
+      "lane": 4,
+      "time": 99.631587
+    },
+    {
+      "id": "1bc375e3-08c4-42f6-accc-f4321422e328",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 100.105272
+    },
+    {
+      "id": "143e8986-45b6-4e10-9cf8-52e5ee852748",
+      "label": "Kick",
+      "lane": 4,
+      "time": 100.105272
+    },
+    {
+      "id": "15d72db4-96f3-4229-807c-a313717dc36c",
+      "label": "Snare",
+      "lane": 0,
+      "time": 100.421061
+    },
+    {
+      "id": "00bc4a99-da5d-44b9-a2f2-bdd57ffce66f",
+      "label": "Snare",
+      "lane": 0,
+      "time": 100.736851
+    },
+    {
+      "id": "b08beafc-1083-440a-8f7e-18c18dfee012",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 100.736851
+    },
+    {
+      "id": "8cf073e9-4a4a-449f-8a4e-a8a6c5b9c7b8",
+      "label": "Kick",
+      "lane": 4,
+      "time": 100.736851
+    },
+    {
+      "id": "25a68a43-d222-4b25-b59d-03b623e65ce9",
+      "label": "Snare",
+      "lane": 0,
+      "time": 100.894745
+    },
+    {
+      "id": "2aecc8fb-69de-4aa8-8675-15f5fc1c0f04",
+      "label": "Crash",
+      "lane": 1,
+      "time": 110.526325
+    },
+    {
+      "id": "3935ffba-7d5d-4e9d-943f-0c515ad51f2e",
+      "label": "Crash",
+      "lane": 1,
+      "time": 110.68422
+    },
+    {
+      "id": "998885b8-b426-4945-883c-0c990fbe4b67",
+      "label": "Crash",
+      "lane": 1,
+      "time": 110.842114
+    },
+    {
+      "id": "e3bc1bab-aee4-4a6c-9636-ad4b7f1596d4",
+      "label": "Crash",
+      "lane": 1,
+      "time": 111.000009
+    },
+    {
+      "id": "67b6cffb-140b-4d52-9445-f4ee0c819366",
+      "label": "Crash",
+      "lane": 1,
+      "time": 111.157904
+    },
+    {
+      "id": "533166e2-3378-409e-bf70-3491dd45325a",
+      "label": "Kick",
+      "lane": 4,
+      "time": 111.157904
+    },
+    {
+      "id": "aade3e0b-67e4-40c0-a09e-071fe8797337",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 111.473693
+    },
+    {
+      "id": "d45a9acc-b831-49aa-9f10-c3c3a28e34bf",
+      "label": "Snare",
+      "lane": 0,
+      "time": 111.789483
+    },
+    {
+      "id": "5809b468-7974-4398-8dea-a95bcffbd337",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 112.105272
+    },
+    {
+      "id": "2947aaee-2380-4fe3-b4cb-7650dc5753b9",
+      "label": "Kick",
+      "lane": 4,
+      "time": 112.263167
+    },
+    {
+      "id": "ad937e15-efb9-47dc-a171-d6e3b489fc5c",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 112.736852
+    },
+    {
+      "id": "73049e53-bd7d-4716-972f-e975c1a016d7",
+      "label": "Kick",
+      "lane": 4,
+      "time": 112.736852
+    },
+    {
+      "id": "1dc59e7d-bbc2-4cf7-ba8e-c2fcefec4551",
+      "label": "Snare",
+      "lane": 0,
+      "time": 113.052641
+    },
+    {
+      "id": "9714ecd9-503c-4a8a-8fe1-8626351a589b",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 113.368431
+    },
+    {
+      "id": "253cf5ab-3215-4de9-9bcf-c7466b53bfef",
+      "label": "Kick",
+      "lane": 4,
+      "time": 113.368431
+    },
+    {
+      "id": "3ef79a8c-29e2-4b3a-bd12-c7c1fb6597ae",
+      "label": "Snare",
+      "lane": 0,
+      "time": 113.526325
+    },
+    {
+      "id": "2e819ffa-d33c-4bf2-a71d-3e28c3a66af5",
+      "label": "Kick",
+      "lane": 4,
+      "time": 113.68422
+    },
+    {
+      "id": "311caf0f-c415-4dfb-bd51-47730940f123",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 114.00001
+    },
+    {
+      "id": "29901500-447c-4b9e-af22-f7fd10608c88",
+      "label": "Snare",
+      "lane": 0,
+      "time": 114.315799
+    },
+    {
+      "id": "7b71c430-2f94-4b89-b7df-7e316bab4817",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 114.631589
+    },
+    {
+      "id": "b51045ea-86c4-4641-bc7c-ae3ff98375c2",
+      "label": "Kick",
+      "lane": 4,
+      "time": 114.789483
+    },
+    {
+      "id": "7ba543df-2784-4d6b-9aa3-798d3a583842",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 115.263167
+    },
+    {
+      "id": "b3d8a1be-d712-45a7-9e82-bb4cefaf8d7b",
+      "label": "Kick",
+      "lane": 4,
+      "time": 115.263167
+    },
+    {
+      "id": "60f9388c-92ea-47b1-9d53-f755e11a015f",
+      "label": "Snare",
+      "lane": 0,
+      "time": 115.578957
+    },
+    {
+      "id": "b92caa81-a97e-4efd-aad1-9060f43625e0",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 115.894746
+    },
+    {
+      "id": "a958c3df-2a3b-4f56-a7dd-5337b3d3961a",
+      "label": "Kick",
+      "lane": 4,
+      "time": 115.894746
+    },
+    {
+      "id": "3ccf8727-0e44-45e5-a0d4-cd05a3069ae4",
+      "label": "Snare",
+      "lane": 0,
+      "time": 116.052641
+    },
+    {
+      "id": "9412fe52-2a18-495a-9719-a01ad4085cec",
+      "label": "Kick",
+      "lane": 4,
+      "time": 116.210536
+    },
+    {
+      "id": "7e34ce89-73fe-4677-baad-a079778edcdc",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 116.526325
+    },
+    {
+      "id": "cdf82e99-ae1f-426c-95ad-13e7ee0631f1",
+      "label": "Snare",
+      "lane": 0,
+      "time": 116.842115
+    },
+    {
+      "id": "bca88792-42af-4ed9-ae5b-38d4180bb44c",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 117.157905
+    },
+    {
+      "id": "fef50f8a-445f-4120-8c2d-22a9d6d10d8c",
+      "label": "Kick",
+      "lane": 4,
+      "time": 117.315799
+    },
+    {
+      "id": "856c92fc-813a-4cd7-9f94-e6e707f2224b",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 117.789484
+    },
+    {
+      "id": "05bb50a7-451c-4dcd-93f3-9407d05bdf38",
+      "label": "Kick",
+      "lane": 4,
+      "time": 117.789484
+    },
+    {
+      "id": "d0de0af9-008f-42d5-9f20-da9351569b6d",
+      "label": "Snare",
+      "lane": 0,
+      "time": 118.105273
+    },
+    {
+      "id": "79b6ed44-36e8-4262-9d26-b6622b215720",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 118.421063
+    },
+    {
+      "id": "dd64eeb5-4a9b-4804-ac2f-2154734403a7",
+      "label": "Kick",
+      "lane": 4,
+      "time": 118.421063
+    },
+    {
+      "id": "91f5f5df-6592-4bb0-87dd-17bd986d3f6d",
+      "label": "Snare",
+      "lane": 0,
+      "time": 118.578957
+    },
+    {
+      "id": "5c54fdce-ed88-4f57-bc11-7f46e408ce6a",
+      "label": "Kick",
+      "lane": 4,
+      "time": 118.736852
+    },
+    {
+      "id": "0c4cec7b-a6d1-4c8a-9428-3512c31bc50d",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 119.052642
+    },
+    {
+      "id": "25aedcc5-bfdb-4210-930f-c5ef4e7ed880",
+      "label": "Snare",
+      "lane": 0,
+      "time": 119.368431
+    },
+    {
+      "id": "1d58fa80-0e5b-494e-a567-ab9169fa0528",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 119.68422
+    },
+    {
+      "id": "0d47a7ee-d663-4d4b-9f1a-b87c7ea502a7",
+      "label": "Kick",
+      "lane": 4,
+      "time": 119.842115
+    },
+    {
+      "id": "df6a9761-206e-4453-b3fa-10c270ab9a84",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 120.315799
+    },
+    {
+      "id": "114ed9b7-0cd7-46d3-92c0-82b486d0a01d",
+      "label": "Kick",
+      "lane": 4,
+      "time": 120.315799
+    },
+    {
+      "id": "03a5d110-c303-4147-80ae-207bdc25cdb6",
+      "label": "Snare",
+      "lane": 0,
+      "time": 120.631589
+    },
+    {
+      "id": "2feca8f1-eb28-47c4-9261-c10396ea7065",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 120.947378
+    },
+    {
+      "id": "1b54f5de-825b-4916-b632-169fd18d2099",
+      "label": "Kick",
+      "lane": 4,
+      "time": 120.947378
+    },
+    {
+      "id": "c4460fbc-8a2b-4db0-b044-b9b0b8c790f4",
+      "label": "Snare",
+      "lane": 0,
+      "time": 121.105273
+    },
+    {
+      "id": "5ccea6b2-595a-4730-8d7a-0411ddf2e82e",
+      "label": "Kick",
+      "lane": 4,
+      "time": 121.263168
+    },
+    {
+      "id": "dbe62b37-2bf1-46b1-a254-1b1d058f52af",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 121.578958
+    },
+    {
+      "id": "7dcb45ea-e72d-42c1-966a-f3306a046719",
+      "label": "Snare",
+      "lane": 0,
+      "time": 121.894747
+    },
+    {
+      "id": "c95fc0df-1495-4130-a10f-620182264393",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 122.210537
+    },
+    {
+      "id": "1f0efde5-cdf7-4e20-a3cf-f89ce4751430",
+      "label": "Kick",
+      "lane": 4,
+      "time": 122.368431
+    },
+    {
+      "id": "6adb07ca-6ed5-45c3-8e70-bd076695d71e",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 122.842116
+    },
+    {
+      "id": "7fa84767-e1ed-4f94-9ee4-10c1b8d0d7cd",
+      "label": "Kick",
+      "lane": 4,
+      "time": 122.842116
+    },
+    {
+      "id": "0b3f0f09-d213-4b06-af3e-fee3cc84a2ac",
+      "label": "Snare",
+      "lane": 0,
+      "time": 123.157905
+    },
+    {
+      "id": "61453532-9241-499f-8b46-7c8242854ebf",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 123.473694
+    },
+    {
+      "id": "d76625f1-3aa8-49eb-a82d-088fca8e7c04",
+      "label": "Kick",
+      "lane": 4,
+      "time": 123.473694
+    },
+    {
+      "id": "503b0bf8-3467-4d8f-b1e6-0039d51a2c64",
+      "label": "Snare",
+      "lane": 0,
+      "time": 123.631589
+    },
+    {
+      "id": "1c7dfd47-f0a2-48be-afd3-4a6cf3bfb1c0",
+      "label": "Kick",
+      "lane": 4,
+      "time": 123.789484
+    },
+    {
+      "id": "fe0f3903-0b1f-4d3a-9dfc-cbbfae804c88",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 124.105273
+    },
+    {
+      "id": "002ac3df-e897-44d7-8a5a-ec7ae754754c",
+      "label": "Snare",
+      "lane": 0,
+      "time": 124.421063
+    },
+    {
+      "id": "8f24fb96-f873-42e5-b177-f9f6ec6f3a23",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 124.736852
+    },
+    {
+      "id": "ce760862-a985-4dfd-93ad-fd1973545d2c",
+      "label": "Kick",
+      "lane": 4,
+      "time": 124.894747
+    },
+    {
+      "id": "7980f53b-1259-4770-8d38-5de62dbc87f3",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 125.368431
+    },
+    {
+      "id": "0c225240-6e85-4228-9ce0-61f001a2c30f",
+      "label": "Kick",
+      "lane": 4,
+      "time": 125.368431
+    },
+    {
+      "id": "4c48ff36-0568-4f2f-ad7a-cc0be7a0ea6b",
+      "label": "Snare",
+      "lane": 0,
+      "time": 125.684221
+    },
+    {
+      "id": "a7182557-80b9-4b0a-8b82-83fe7b0cb844",
+      "label": "Kick",
+      "lane": 4,
+      "time": 125.684221
+    },
+    {
+      "id": "8504e10b-5805-4ae1-8318-7ad607a58d29",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 126.000011
+    },
+    {
+      "id": "d828826a-5599-46e6-b244-84a999a9a885",
+      "label": "Kick",
+      "lane": 4,
+      "time": 126.000011
+    },
+    {
+      "id": "3f07bf82-afcd-4a33-a077-8de850989fa1",
+      "label": "Snare",
+      "lane": 0,
+      "time": 126.157905
+    },
+    {
+      "id": "1b7741a0-4de9-4d94-a5a6-ff647bfa6e9d",
+      "label": "Kick",
+      "lane": 4,
+      "time": 126.3158
+    },
+    {
+      "id": "87efa052-2e60-49b6-9901-84f80f97bc88",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 126.63159
+    },
+    {
+      "id": "0ae76ed5-cb4a-4398-a682-fb1a68d77812",
+      "label": "Snare",
+      "lane": 0,
+      "time": 126.947379
+    },
+    {
+      "id": "c3156d93-8eba-421c-b7b0-505acb2cf26a",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 127.263169
+    },
+    {
+      "id": "068e4509-2088-45e7-9989-f9ead24aa373",
+      "label": "Kick",
+      "lane": 4,
+      "time": 127.421063
+    },
+    {
+      "id": "81ca04c7-63a6-4167-8cfa-00125d9c4336",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 127.894747
+    },
+    {
+      "id": "81cc9a1c-5f6b-4a7e-a6e0-3d8242a8af58",
+      "label": "Kick",
+      "lane": 4,
+      "time": 127.894747
+    },
+    {
+      "id": "cee5c44e-ecd6-4bc6-8685-c5b941639040",
+      "label": "Snare",
+      "lane": 0,
+      "time": 128.210537
+    },
+    {
+      "id": "6cda9b4d-cc7e-4caf-84c8-42d62833e933",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 128.526327
+    },
+    {
+      "id": "35c73c94-3c9d-4273-bead-787f4c50c59c",
+      "label": "Kick",
+      "lane": 4,
+      "time": 128.526327
+    },
+    {
+      "id": "d73968b9-f4df-4036-b8f7-e1d4d3a85122",
+      "label": "Snare",
+      "lane": 0,
+      "time": 128.684221
+    },
+    {
+      "id": "7ea96697-b3ec-4298-8374-a091d3f816ed",
+      "label": "Kick",
+      "lane": 4,
+      "time": 128.842116
+    },
+    {
+      "id": "e90e419b-7a3d-4d52-b890-3441a0634e5d",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 129.157905
+    },
+    {
+      "id": "9adb6e1c-d404-4fd4-9420-cbabf83e0c1f",
+      "label": "Snare",
+      "lane": 0,
+      "time": 129.473695
+    },
+    {
+      "id": "c16fe2f7-ad90-4d0e-97e4-a2f757f758fb",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 129.789484
+    },
+    {
+      "id": "a3858053-0f25-4f88-b337-b943baf13645",
+      "label": "Kick",
+      "lane": 4,
+      "time": 129.947379
+    },
+    {
+      "id": "e53c382f-a2a5-4dc6-a7b7-b53a35ff0ffa",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 130.421064
+    },
+    {
+      "id": "49244578-cee7-44c5-847e-aaff778b9782",
+      "label": "Kick",
+      "lane": 4,
+      "time": 130.421064
+    },
+    {
+      "id": "be89062b-bab7-45f7-a3c6-6de95adcf95e",
+      "label": "Snare",
+      "lane": 0,
+      "time": 130.736853
+    },
+    {
+      "id": "37b65444-f903-4a68-aa6d-6143d637de59",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 131.052642
+    },
+    {
+      "id": "3ab1cc87-7160-4ce7-ae11-346013458003",
+      "label": "Kick",
+      "lane": 4,
+      "time": 131.052642
+    },
+    {
+      "id": "6f3ca976-0bcd-436f-b649-5c4e6896c094",
+      "label": "Snare",
+      "lane": 0,
+      "time": 131.210537
+    },
+    {
+      "id": "319b7831-b2fd-423f-a229-f75e9d13f946",
+      "label": "Crash",
+      "lane": 1,
+      "time": 131.368432
+    },
+    {
+      "id": "2cf5dabf-abee-465d-83b1-88a667155593",
+      "label": "Kick",
+      "lane": 4,
+      "time": 131.368432
+    },
+    {
+      "id": "9600af1c-0cae-4c5e-833a-93164b633926",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 131.684222
+    },
+    {
+      "id": "678e2a69-96f0-4540-8dc1-ba8b9d3d8f23",
+      "label": "Snare",
+      "lane": 0,
+      "time": 132.000011
+    },
+    {
+      "id": "aef5f225-365e-4117-9bd1-15806ec2bf5d",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 132.3158
+    },
+    {
+      "id": "8e1fd4ed-2ea5-4281-b0e4-a735a03b7c22",
+      "label": "Kick",
+      "lane": 4,
+      "time": 132.473695
+    },
+    {
+      "id": "063f8ce8-e339-4ac8-87ab-56a67bdf7d1a",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 132.94738
+    },
+    {
+      "id": "990bad37-d397-4381-9857-3f94580558f1",
+      "label": "Kick",
+      "lane": 4,
+      "time": 132.94738
+    },
+    {
+      "id": "e39919a1-0271-47d3-af00-1640306f8e67",
+      "label": "Snare",
+      "lane": 0,
+      "time": 133.263169
+    },
+    {
+      "id": "5f0bafb5-926f-4117-bc50-6e704b41df23",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 133.578958
+    },
+    {
+      "id": "572a4437-5197-42c1-8b3b-dc0a53e048c2",
+      "label": "Kick",
+      "lane": 4,
+      "time": 133.578958
+    },
+    {
+      "id": "5e9100a5-73a2-4c19-adda-66e2cdfeb78e",
+      "label": "Snare",
+      "lane": 0,
+      "time": 133.736853
+    },
+    {
+      "id": "64e7ccb2-bcd7-490c-a7d6-34a05a847538",
+      "label": "Kick",
+      "lane": 4,
+      "time": 133.894748
+    },
+    {
+      "id": "37131d1a-eeef-4935-921c-acefd90219ca",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 134.210537
+    },
+    {
+      "id": "5f63f1f1-4585-4f6a-8aae-f49c1f938ac5",
+      "label": "Snare",
+      "lane": 0,
+      "time": 134.526327
+    },
+    {
+      "id": "85125168-84fb-4eed-bb4d-09377e23c0dc",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 134.842117
+    },
+    {
+      "id": "58e405d9-cb85-4e4a-8b0a-2e85a8743afb",
+      "label": "Kick",
+      "lane": 4,
+      "time": 135.000011
+    },
+    {
+      "id": "dcb55e87-d8b1-4ee9-b6ea-409cdfd23441",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 135.473695
+    },
+    {
+      "id": "ba0e9959-03d1-4456-8161-a70c0438e123",
+      "label": "Kick",
+      "lane": 4,
+      "time": 135.473695
+    },
+    {
+      "id": "47934d43-8e79-4781-9ef4-60fa8d0fd759",
+      "label": "Snare",
+      "lane": 0,
+      "time": 135.789485
+    },
+    {
+      "id": "df5840f2-7af7-4331-8ebf-999ad9245cc4",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 136.105275
+    },
+    {
+      "id": "5aba466e-fa32-4b3a-938a-7116f7e5945d",
+      "label": "Kick",
+      "lane": 4,
+      "time": 136.105275
+    },
+    {
+      "id": "e98df06d-8892-430d-8324-216847cc1a87",
+      "label": "Snare",
+      "lane": 0,
+      "time": 136.263169
+    },
+    {
+      "id": "f694967e-1626-4113-8b06-854182884cdc",
+      "label": "Kick",
+      "lane": 4,
+      "time": 136.421064
+    },
+    {
+      "id": "cc63e621-b1c9-4b5b-aa0f-56c60f5f7cd7",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 136.736853
+    },
+    {
+      "id": "e7a03566-ef0d-49a9-b1e0-97bd2f451458",
+      "label": "Snare",
+      "lane": 0,
+      "time": 137.052643
+    },
+    {
+      "id": "798d6487-b18f-4095-91b2-08bc9db1a2e3",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 137.368433
+    },
+    {
+      "id": "fccd6e42-468b-44c7-bcff-b0ba4e246f9e",
+      "label": "Kick",
+      "lane": 4,
+      "time": 137.526327
+    },
+    {
+      "id": "0d59e60d-b5d2-4f12-8331-a8cd66b54b52",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 138.000011
+    },
+    {
+      "id": "58e00a2b-b7aa-413b-926a-bb2ae1fa418f",
+      "label": "Kick",
+      "lane": 4,
+      "time": 138.000011
+    },
+    {
+      "id": "ae702279-0ecf-4144-b89b-871870c6cff2",
+      "label": "Snare",
+      "lane": 0,
+      "time": 138.315801
+    },
+    {
+      "id": "d9d27c74-a04f-404c-8818-c690925154ee",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 138.63159
+    },
+    {
+      "id": "d092fd7b-0a8c-4a05-88df-16735e6a7d47",
+      "label": "Kick",
+      "lane": 4,
+      "time": 138.63159
+    },
+    {
+      "id": "0acdece1-9fb9-4b13-b870-b563308829a7",
+      "label": "Snare",
+      "lane": 0,
+      "time": 138.789485
+    },
+    {
+      "id": "88001418-e5bd-4c58-a330-2d190d2eb8b2",
+      "label": "Kick",
+      "lane": 4,
+      "time": 138.94738
+    },
+    {
+      "id": "2e969924-1198-447e-9414-c90c4ea1b438",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 139.26317
+    },
+    {
+      "id": "55bb191d-21f0-4b9d-a8fb-01023b383753",
+      "label": "Snare",
+      "lane": 0,
+      "time": 139.578959
+    },
+    {
+      "id": "cc9d7be0-edff-41bc-a923-0661e791b053",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 139.894748
+    },
+    {
+      "id": "76fd4bb2-fdff-4379-930c-3dd7cc26ea37",
+      "label": "Kick",
+      "lane": 4,
+      "time": 140.052643
+    },
+    {
+      "id": "c8b5b712-93e8-4e5a-a351-fa486d5be474",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 140.526328
+    },
+    {
+      "id": "3f527f82-6197-48b7-807b-b0ac20326e16",
+      "label": "Kick",
+      "lane": 4,
+      "time": 140.526328
+    },
+    {
+      "id": "6171f925-457f-49c6-b5d2-04fcb2702e67",
+      "label": "Snare",
+      "lane": 0,
+      "time": 140.842117
+    },
+    {
+      "id": "47f73127-fe89-42bd-8642-140af9518e0d",
+      "label": "Kick",
+      "lane": 4,
+      "time": 140.842117
+    },
+    {
+      "id": "253afcba-62c3-4016-9ad9-9da0add39663",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 141.157906
+    },
+    {
+      "id": "bc05bf14-0817-49a2-a0e7-3bded11ff31d",
+      "label": "Kick",
+      "lane": 4,
+      "time": 141.157906
+    },
+    {
+      "id": "756f0645-f86e-474e-948f-e699eeb243a5",
+      "label": "Snare",
+      "lane": 0,
+      "time": 141.315801
+    },
+    {
+      "id": "d7a4067e-b2da-4f7d-85fb-2ad522b1de9f",
+      "label": "Kick",
+      "lane": 4,
+      "time": 141.473696
+    },
+    {
+      "id": "32225fe1-c7c4-4654-a168-67da80e6994a",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 141.789486
+    },
+    {
+      "id": "a8157cf3-00b1-4851-83b6-628c6eeef606",
+      "label": "Snare",
+      "lane": 0,
+      "time": 142.105275
+    },
+    {
+      "id": "7aca9fca-7370-4589-aa9d-59a65be86ac0",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 142.421064
+    },
+    {
+      "id": "1cd73652-fe71-4aa0-b3cc-eaff1a0fc597",
+      "label": "Kick",
+      "lane": 4,
+      "time": 142.578959
+    },
+    {
+      "id": "d9af1217-5f3f-49da-8deb-1c6034573435",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 143.052643
+    },
+    {
+      "id": "89d0fcfb-b664-47e6-976e-bd8586df186f",
+      "label": "Kick",
+      "lane": 4,
+      "time": 143.052643
+    },
+    {
+      "id": "9685dab9-2a6a-4850-9bf8-219e7de84ad3",
+      "label": "Snare",
+      "lane": 0,
+      "time": 143.368433
+    },
+    {
+      "id": "bd72e917-1aa2-404a-9fa6-b0bf8eb9d778",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 143.684223
+    },
+    {
+      "id": "d12212f8-3d57-4416-b1b9-4f06185f3a45",
+      "label": "Kick",
+      "lane": 4,
+      "time": 143.684223
+    },
+    {
+      "id": "aa5bffb3-dfad-45ad-bd18-ee461b3dc62c",
+      "label": "Snare",
+      "lane": 0,
+      "time": 143.842117
+    },
+    {
+      "id": "509a67d1-5ec7-43cb-8665-f486fa587a17",
+      "label": "Kick",
+      "lane": 4,
+      "time": 144.000012
+    },
+    {
+      "id": "ee05c010-4943-4e0a-9fe0-8ba5fd33b06f",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 144.315801
+    },
+    {
+      "id": "9213df5b-3c9a-4f87-b129-91d2713a07fa",
+      "label": "Snare",
+      "lane": 0,
+      "time": 144.631591
+    },
+    {
+      "id": "5b969379-8a40-449c-9693-e6b7f3f62485",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 144.947381
+    },
+    {
+      "id": "f624b145-076c-4c95-b50f-bd0968f89214",
+      "label": "Kick",
+      "lane": 4,
+      "time": 145.105275
+    },
+    {
+      "id": "d77b3495-bd29-45b3-8a9f-3941597bc3f3",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 145.578959
+    },
+    {
+      "id": "98db8708-a566-4236-b471-0bfb98714365",
+      "label": "Kick",
+      "lane": 4,
+      "time": 145.578959
+    },
+    {
+      "id": "d07bbc44-b213-462e-aa4c-a34256aa5d8e",
+      "label": "Snare",
+      "lane": 0,
+      "time": 145.894749
+    },
+    {
+      "id": "fe23ecf5-7068-46ad-a7b8-ff8dc0b733b1",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 146.210539
+    },
+    {
+      "id": "831e82f7-b461-4dd4-9094-774777f024f4",
+      "label": "Kick",
+      "lane": 4,
+      "time": 146.210539
+    },
+    {
+      "id": "f4797031-4320-4a99-a4be-7fd5e77fe159",
+      "label": "Snare",
+      "lane": 0,
+      "time": 146.368433
+    },
+    {
+      "id": "64786faf-7f70-41d0-935f-7861b2fbc9d6",
+      "label": "Kick",
+      "lane": 4,
+      "time": 146.526328
+    },
+    {
+      "id": "ad146c90-221e-48f4-b9ee-50cff63845ee",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 146.842118
+    },
+    {
+      "id": "3cfac462-ddf4-4375-be08-63bc668a06c7",
+      "label": "Snare",
+      "lane": 0,
+      "time": 147.157907
+    },
+    {
+      "id": "c61fb4e6-f448-4f68-8936-8ab147adc798",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 147.473696
+    },
+    {
+      "id": "84db0007-a7fe-48ab-b91f-483d7b603585",
+      "label": "Kick",
+      "lane": 4,
+      "time": 147.631591
+    },
+    {
+      "id": "29e911c2-4f8e-401f-abd3-207c63ceff33",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 148.105276
+    },
+    {
+      "id": "c4a02ac9-6c6d-43d8-8b0d-26d1acc09976",
+      "label": "Kick",
+      "lane": 4,
+      "time": 148.105276
+    },
+    {
+      "id": "974625fd-cc3d-4cd8-82b8-b50320b50a55",
+      "label": "Snare",
+      "lane": 0,
+      "time": 148.421065
+    },
+    {
+      "id": "cd126b7f-abca-4ce8-a8d7-db184d18f4b0",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 148.736854
+    },
+    {
+      "id": "5477defe-9c2e-42e3-a6c8-902a01fdd619",
+      "label": "Kick",
+      "lane": 4,
+      "time": 148.736854
+    },
+    {
+      "id": "297de6ac-7685-42e8-b5f2-9d4a01761599",
+      "label": "Snare",
+      "lane": 0,
+      "time": 148.894749
+    },
+    {
+      "id": "c3ee51c7-5548-46d4-a4e6-bb8bf89abe7e",
+      "label": "Kick",
+      "lane": 4,
+      "time": 149.052644
+    },
+    {
+      "id": "946aaf13-732a-442a-9b61-ea2e57c19d33",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 149.368434
+    },
+    {
+      "id": "14ea6c99-cacc-4359-9c63-2cf53aea4cf0",
+      "label": "Snare",
+      "lane": 0,
+      "time": 149.684223
+    },
+    {
+      "id": "7bbf3131-d6b4-4f96-9d84-0c85f0e4a5b8",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 150.000012
+    },
+    {
+      "id": "bbcddb93-6ddb-4338-828d-683f3f2b4780",
+      "label": "Kick",
+      "lane": 4,
+      "time": 150.157907
+    },
+    {
+      "id": "aae01efa-14ec-4283-a925-d920c840fafe",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 150.631592
+    },
+    {
+      "id": "4146dec9-90a6-41e3-b174-4b98070c9717",
+      "label": "Kick",
+      "lane": 4,
+      "time": 150.631592
+    },
+    {
+      "id": "fb9e97c4-05f2-4115-8f2b-e1edd411bc19",
+      "label": "Snare",
+      "lane": 0,
+      "time": 150.947381
+    },
+    {
+      "id": "961d003e-d5ea-45b8-8205-0f38a9b7752a",
+      "label": "Snare",
+      "lane": 0,
+      "time": 151.263171
+    },
+    {
+      "id": "d4263cf8-8e35-4953-8e5d-ce5fd980ab90",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 151.263171
+    },
+    {
+      "id": "de9f591c-a112-4908-8ecf-dc0c16074626",
+      "label": "Kick",
+      "lane": 4,
+      "time": 151.263171
+    },
+    {
+      "id": "4b80715c-8578-43b7-826a-4d0f47ad9d84",
+      "label": "Snare",
+      "lane": 0,
+      "time": 151.421065
+    }
+  ],
+  "sections": [],
+  "timelineDuration": 153.421065,
+  "timing": {
+    "bpm": 94.999992,
+    "offsetSeconds": 0,
+    "source": "midi_import",
+    "ticksPerBeat": 480,
+    "timeSignature": {
+      "denominator": 4,
+      "numerator": 4
+    }
+  },
+  "timingContractVersion": "0.1.0",
+  "title": "Kill Bill SZA With Drum Bass"
+}
