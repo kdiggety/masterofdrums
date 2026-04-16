@@ -27,22 +27,20 @@ struct AdminChartEditorView: View {
                     leftPanel
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
 
-                    GeometryReader { geometry in
-                        VStack(alignment: .leading, spacing: 12) {
-                            transportSection
+                    VStack(alignment: .leading, spacing: 12) {
+                        transportSection
 
-                            ScrollView(.vertical) {
-                                rightPanel
-                                    .frame(width: 320, alignment: .topLeading)
-                                    .padding(.top, 10)
-                                    .padding(.bottom, 12)
-                            }
-                            .frame(maxHeight: .infinity)
-
-                            Spacer(minLength: 0)
+                        ScrollView(.vertical) {
+                            rightPanel
+                                .frame(width: 320, alignment: .topLeading)
+                                .padding(.top, 10)
+                                .padding(.bottom, 12)
                         }
-                        .frame(height: geometry.size.height, alignment: .topLeading)
+                        .frame(maxHeight: .infinity)
+
+                        Spacer(minLength: 0)
                     }
+                    .frame(maxHeight: .infinity, alignment: .topLeading)
                     .frame(width: 336)
                 }
                 .frame(maxHeight: .infinity)
