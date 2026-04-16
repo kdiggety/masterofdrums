@@ -343,22 +343,22 @@ final class GameplayScene: SKScene {
 
             let laneNode = SKShapeNode(rect: laneFrame, cornerRadius: 4)
             laneNode.strokeColor = .darkGray
-            laneNode.fillColor = color(for: lane.sourceLane).withAlphaComponent(0.17)
+            laneNode.fillColor = color(for: lane.presentationLane).withAlphaComponent(0.17)
             highway.addChild(laneNode)
 
             let highlightNode = SKShapeNode(rect: laneFrame, cornerRadius: 4)
-            highlightNode.strokeColor = color(for: lane.sourceLane).withAlphaComponent(0.8)
+            highlightNode.strokeColor = color(for: lane.presentationLane).withAlphaComponent(0.8)
             highlightNode.lineWidth = 2
-            highlightNode.fillColor = color(for: lane.sourceLane).withAlphaComponent(0.35)
+            highlightNode.fillColor = color(for: lane.presentationLane).withAlphaComponent(0.35)
             highlightNode.alpha = 0.0
             highway.addChild(highlightNode)
             laneHighlights[lane.id] = highlightNode
 
-            if let key = lane.keyLabel {
+            if let key = lane.presentationKeyLabel {
                 let keyLabel = SKLabelNode(fontNamed: "SF Pro Rounded")
                 keyLabel.text = key
                 keyLabel.fontColor = .white.withAlphaComponent(0.92)
-                keyLabel.fontSize = lane.sourceLane == .kick ? 22 : 24
+                keyLabel.fontSize = lane.presentationLane == .kick ? 22 : 24
                 keyLabel.position = CGPoint(x: laneFrame.midX, y: hitLineY - 30)
                 keyLabel.verticalAlignmentMode = .center
                 keyLabel.horizontalAlignmentMode = .center
@@ -430,19 +430,21 @@ final class GameplayScene: SKScene {
     }
 
     private func makeNoteNode(for note: NoteEvent) -> SKShapeNode {
-        let noteSize = CGSize(width: note.lane == .kick ? 60 : 52, height: note.lane == .kick ? 14 : 12)
+        let displayLane = laneOrder.first(where: { $0.id == note.displayLaneID })
+        let presentationLane = displayLane?.presentationLane ?? note.lane
+        let noteSize = CGSize(width: presentationLane == .kick ? 60 : 52, height: presentationLane == .kick ? 14 : 12)
         let noteRect = CGRect(x: -noteSize.width / 2, y: -noteSize.height / 2, width: noteSize.width, height: noteSize.height)
         let node = SKShapeNode(rect: noteRect, cornerRadius: 3)
         node.name = noteNodeNamePrefix + note.id.uuidString
-        node.fillColor = color(for: note.lane)
+        node.fillColor = color(for: presentationLane)
         node.strokeColor = .white.withAlphaComponent(0.9)
         node.lineWidth = 1.5
 
-        if note.label == nil {
+        if let keyLabelText = displayLane?.presentationKeyLabel ?? note.lane.keyLabel {
             let label = SKLabelNode(fontNamed: "SF Pro Rounded")
-            label.text = note.lane.keyLabel
+            label.text = keyLabelText
             label.fontColor = .white
-            label.fontSize = note.lane == .kick ? 12 : 11
+            label.fontSize = presentationLane == .kick ? 12 : 11
             label.verticalAlignmentMode = .center
             label.horizontalAlignmentMode = .center
             label.position = CGPoint(x: 0, y: 0)

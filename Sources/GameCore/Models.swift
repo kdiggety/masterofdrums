@@ -77,6 +77,27 @@ struct ChartLane: Identifiable, Equatable {
     let label: String
     let sourceLane: Lane
     let keyLabel: String?
+
+    var presentationLane: Lane {
+        let normalized = label.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        if sourceLane == .kick || normalized.contains("kick") { return .kick }
+        if normalized.contains("snare") { return .red }
+        if normalized.contains("hihat pedal") || normalized.contains("hi hat pedal") || normalized.contains("pedal hat") || normalized.contains("closed hat") || normalized.contains("closed hihat") || normalized.contains("hihat closed") || normalized.contains("hi hat closed") || normalized == "hihat" || normalized == "hi hat" || normalized.contains("open hat") || normalized.contains("open hihat") || normalized.contains("hihat open") || normalized.contains("hi hat open") {
+            return .yellow
+        }
+        if normalized.contains("crash") || normalized.contains("ride") || normalized.contains("cymbal") || normalized.contains("symbol") {
+            return .green
+        }
+        if normalized.contains("tom high") || normalized.contains("high tom") {
+            return .blue
+        }
+        if normalized.contains("tom mid") || normalized.contains("mid tom") || normalized.contains("tom low") || normalized.contains("low tom") || normalized.contains("floor tom") || normalized == "tom" {
+            return .blue
+        }
+        return sourceLane
+    }
+
+    var presentationKeyLabel: String? { presentationLane.keyLabel }
 }
 
 struct SongSection: Identifiable, Equatable {

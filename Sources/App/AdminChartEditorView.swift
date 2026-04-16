@@ -119,7 +119,7 @@ struct AdminChartEditorView: View {
                                     .frame(width: 10, height: 10)
                                 Text(lane.label)
                                     .frame(minWidth: 90, alignment: .leading)
-                                Text(lane.keyLabel ?? "—")
+                                Text(lane.presentationKeyLabel ?? "—")
                                     .font(.caption.monospaced())
                                     .foregroundStyle(.secondary)
                                     .frame(width: 24, alignment: .center)
@@ -595,7 +595,7 @@ struct AdminChartEditorView: View {
     }
 
     private func laneColor(for lane: ChartLane) -> Color {
-        switch lane.sourceLane {
+        switch lane.presentationLane {
         case .red: return .red
         case .yellow: return .yellow
         case .blue: return .blue
