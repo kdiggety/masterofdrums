@@ -24,7 +24,9 @@ final class GameplayScene: SKScene {
     private let defaultNoteSpeed: CGFloat = 260
     private let adminAuthoringNoteSpeed: CGFloat = 110
     private let hitLineY: CGFloat = 110
-    private var laneOrder: [ChartLane] { chart.displayLanes }
+    private var laneOrder: [ChartLane] = []
+    private var laneIDBySourceLane: [Lane: String] = [:]
+    private var laneIndexByID: [String: Int] = [:]
     private let noteNodeNamePrefix = "note-"
     private let beatGuideNodeNamePrefix = "beat-guide-"
     private let beatGuideLabelNodeNamePrefix = "beat-guide-label-"
@@ -49,6 +51,9 @@ final class GameplayScene: SKScene {
     init(chart: Chart, keyboardInputDevice: KeyboardInputDevice) {
         self.chart = chart
         self.keyboardInputDevice = keyboardInputDevice
+        self.laneOrder = chart.displayLanes
+        self.laneIDBySourceLane = Dictionary(uniqueKeysWithValues: self.laneOrder.map { ($0.sourceLane, $0.id) })
+        self.laneIndexByID = Dictionary(uniqueKeysWithValues: self.laneOrder.enumerated().map { ($0.element.id, $0.offset) })
         super.init(size: CGSize(width: 900, height: 480))
         scaleMode = .resizeFill
         backgroundColor = .black
@@ -89,6 +94,9 @@ final class GameplayScene: SKScene {
 
     func replaceChart(_ chart: Chart) {
         self.chart = chart
+        laneOrder = chart.displayLanes
+        laneIDBySourceLane = Dictionary(uniqueKeysWithValues: laneOrder.map { ($0.sourceLane, $0.id) })
+        laneIndexByID = Dictionary(uniqueKeysWithValues: laneOrder.enumerated().map { ($0.element.id, $0.offset) })
         noteNodes.removeAll()
         visibleNotes = []
         draggedAdminNotePreviewTimeByID.removeAll()
@@ -172,7 +180,7 @@ final class GameplayScene: SKScene {
     }
 
     func flashLane(_ lane: Lane) {
-        guard let highlight = laneHighlights[chart.displayLanes.first(where: { $0.sourceLane == lane })?.id ?? lane.displayName.lowercased()] else { return }
+        guard let highlight = laneHighlights[laneIDBySourceLane[lane] ?? lane.displayName.lowercased()] else { return }
         highlight.removeAllActions()
         highlight.alpha = 0.8
         highlight.run(.sequence([
@@ -384,13 +392,13 @@ final class GameplayScene: SKScene {
         let totalWidth = laneWidth * CGFloat(laneOrder.count)
         let startX = (size.width - totalWidth) / 2
 
-        for note in chart.notes {
+        for note in visibleNotes {
             guard let node = noteNodes[note.id] else { continue }
             let effectiveLane = draggedAdminNotePreviewLaneByID[note.id] ?? note.lane
             let effectiveLaneID = draggedAdminNotePreviewLaneByID[note.id].map { lane in
-                chart.displayLanes.first(where: { $0.sourceLane == lane })?.id ?? lane.displayName.lowercased()
+                laneIDBySourceLane[lane] ?? lane.displayName.lowercased()
             } ?? note.displayLaneID
-            guard let laneIndex = laneOrder.firstIndex(where: { $0.id == effectiveLaneID || ($0.sourceLane == effectiveLane && note.label == nil) }) else { continue }
+            guard let laneIndex = laneIndexByID[effectiveLaneID] ?? (note.label == nil ? laneOrder.firstIndex(where: { $0.sourceLane == effectiveLane }) : nil) else { continue }
             let laneFrame = frameForLane(at: laneIndex, startX: startX)
             let yPosition: CGFloat
             if let previewY = draggedAdminNotePreviewYByID[note.id] {

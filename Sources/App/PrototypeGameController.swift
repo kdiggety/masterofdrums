@@ -1659,10 +1659,13 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func currentSceneNotes(at time: Double) -> [NoteEvent] {
-        if isAdminAuthoringActive {
-            return session.chart.notes
+        let lookBehind: Double = isAdminAuthoringActive ? 2.0 : 0.25
+        let lookAhead: Double = isAdminAuthoringActive ? 8.0 : 3.0
+        let start = max(0, time - lookBehind)
+        let end = time + lookAhead
+        return session.chart.notes.filter { note in
+            note.time >= start && note.time <= end
         }
-        return session.notes(visibleAt: time, leadTime: 3.0)
     }
 
     private func currentSceneTime(fallbackAudioTime: Double) -> Double {
