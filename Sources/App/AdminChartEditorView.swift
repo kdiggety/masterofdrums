@@ -27,15 +27,8 @@ struct AdminChartEditorView: View {
                     leftPanel
                         .frame(maxWidth: .infinity)
 
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 0) {
-                            rightPanel
-                                .frame(width: 320)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .topLeading)
-                    }
-                    .frame(width: 336)
-                    .frame(maxHeight: .infinity, alignment: .top)
+                    rightSidebar
+                        .frame(width: 336, maxHeight: .infinity, alignment: .top)
                 }
                 .frame(maxHeight: .infinity, alignment: .top)
             }
@@ -79,50 +72,64 @@ struct AdminChartEditorView: View {
         }
     }
 
-    private var rightPanel: some View {
+    private var rightSidebar: some View {
         VStack(alignment: .leading, spacing: 12) {
-            GroupBox("Transport") {
-                VStack(alignment: .leading, spacing: 10) {
-                    HStack(spacing: 8) {
-                        if game.transportStateText == "Playing" || game.transportStateText == "Chart Preview" {
-                            adminProminentButton("Stop") { game.pauseTransport() }
-                        } else {
-                            adminProminentButton("Play") { game.playTransport() }
-                        }
-                        adminButton("Restart") { game.playFromStart() }
-                        adminProminentButton(game.isAdminRecordMode ? "Stop Recording" : "Record") { game.toggleAdminRecordMode() }
-                    }
+            transportSection
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    rightPanel
+                }
+                .frame(maxWidth: .infinity, alignment: .topLeading)
+            }
+        }
+    }
 
-                    statusRow("Position", "\(game.playbackTimeText) / \(game.playbackDurationText)")
-                    Slider(
-                        value: Binding(
-                            get: { game.playbackProgress },
-                            set: { game.seekTransport(to: $0 * game.playbackDuration) }
-                        ),
-                        in: 0...1
-                    )
-                    .disabled(game.playbackDuration <= 0)
-
-                    statusRow("Speed", game.playbackRateText)
-                    HStack(spacing: 8) {
-                        playbackRateButton("100%", rate: 1.0)
-                        playbackRateButton("75%", rate: 0.75)
-                        playbackRateButton("50%", rate: 0.5)
+    private var transportSection: some View {
+        GroupBox("Transport") {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 8) {
+                    if game.transportStateText == "Playing" || game.transportStateText == "Chart Preview" {
+                        adminProminentButton("Stop") { game.pauseTransport() }
+                    } else {
+                        adminProminentButton("Play") { game.playTransport() }
                     }
+                    adminButton("Restart") { game.playFromStart() }
+                    adminProminentButton(game.isAdminRecordMode ? "Stop Recording" : "Record") { game.toggleAdminRecordMode() }
+                }
 
-                    statusRow("Loop", game.loopStatusText)
-                    Picker("Loop", selection: $game.loopLength) {
-                        ForEach(PrototypeGameController.LoopLength.allCases) { length in
-                            Text(length.rawValue).tag(length)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    .onChange(of: game.loopLength) { newValue in
-                        game.setLoopLength(newValue)
+                statusRow("Position", "\(game.playbackTimeText) / \(game.playbackDurationText)")
+                Slider(
+                    value: Binding(
+                        get: { game.playbackProgress },
+                        set: { game.seekTransport(to: $0 * game.playbackDuration) }
+                    ),
+                    in: 0...1
+                )
+                .disabled(game.playbackDuration <= 0)
+
+                statusRow("Speed", game.playbackRateText)
+                HStack(spacing: 8) {
+                    playbackRateButton("100%", rate: 1.0)
+                    playbackRateButton("75%", rate: 0.75)
+                    playbackRateButton("50%", rate: 0.5)
+                }
+
+                statusRow("Loop", game.loopStatusText)
+                Picker("Loop", selection: $game.loopLength) {
+                    ForEach(PrototypeGameController.LoopLength.allCases) { length in
+                        Text(length.rawValue).tag(length)
                     }
                 }
+                .pickerStyle(.segmented)
+                .onChange(of: game.loopLength) { newValue in
+                    game.setLoopLength(newValue)
+                }
             }
+        }
+    }
 
+    private var rightPanel: some View {
+        VStack(alignment: .leading, spacing: 12) {
             accordionSection("Session Setup", isExpanded: $isSessionSetupExpanded) {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack(spacing: 8) {

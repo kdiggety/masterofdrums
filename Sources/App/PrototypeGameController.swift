@@ -214,7 +214,15 @@ final class PrototypeGameController: ObservableObject {
         let activeLaneIDs = Set(session.chart.notes.map { note in
             note.displayLaneID.isEmpty ? note.lane.displayName.lowercased() : note.displayLaneID
         })
-        return session.chart.displayLanes.filter { activeLaneIDs.contains($0.id) }
+        var seenPresentationKeys = Set<String>()
+        return session.chart.displayLanes.filter { activeLaneIDs.contains($0.id) }.filter { lane in
+            let presentationKey = "\(lane.presentationLane.rawValue):\(lane.presentationKeyLabel ?? "")"
+            if seenPresentationKeys.contains(presentationKey) {
+                return false
+            }
+            seenPresentationKeys.insert(presentationKey)
+            return true
+        }
     }
 
     init() {
