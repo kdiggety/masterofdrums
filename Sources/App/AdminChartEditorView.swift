@@ -6,6 +6,12 @@ struct AdminChartEditorView: View {
     @State private var editingSectionName: String = ""
     @State private var activeSectionDrag: (id: UUID, edge: SongSectionEdge, anchorTime: Double)?
     @State private var sectionStripTargetTime: Double?
+    @State private var isSessionSetupExpanded = false
+    @State private var isStepNavigationExpanded = false
+    @State private var isTimingSyncExpanded = false
+    @State private var isMonitoringExpanded = true
+    @State private var isStatusExpanded = false
+    @State private var isDangerExpanded = false
     @FocusState private var focusedSectionEditorID: UUID?
 
     var body: some View {
@@ -68,98 +74,18 @@ struct AdminChartEditorView: View {
 
     private var rightPanel: some View {
         VStack(alignment: .leading, spacing: 12) {
-            GroupBox("Authoring Controls") {
+            GroupBox("Transport") {
                 VStack(alignment: .leading, spacing: 10) {
-                    HStack(spacing: 10) {
-                        adminButton("Choose Audio") { game.chooseAudioFile() }
-                        adminButton(game.isAudioMuted ? "Unmute Audio" : "Mute Audio") { game.toggleAudioMute() }
-                        adminButton("Unload Audio") { game.unloadAudio() }
-                    }
-
-                    HStack(spacing: 10) {
-                        adminButton(game.isChartMuted ? "Unmute Chart" : "Mute Chart") { game.toggleChartMute() }
-                        adminButton("Unload Chart") { game.unloadChart() }
-                        adminButton(game.isMetronomeEnabled ? "Metronome On" : "Metronome Off") { game.toggleMetronome() }
-                    }
-
-                    HStack(spacing: 10) {
+                    HStack(spacing: 8) {
                         if game.transportStateText == "Playing" || game.transportStateText == "Chart Preview" {
                             adminProminentButton("Stop") { game.pauseTransport() }
                         } else {
                             adminProminentButton("Play") { game.playTransport() }
                         }
-                        adminButton("Play from Start") { game.playFromStart() }
+                        adminButton("Restart") { game.playFromStart() }
+                        adminProminentButton(game.isAdminRecordMode ? "Stop Recording" : "Record") { game.toggleAdminRecordMode() }
                     }
 
-                    HStack(spacing: 10) {
-                        adminButton("New Empty Chart") { game.startAdminChart() }
-                        adminProminentButton(game.isAdminRecordMode ? "Stop Recording" : "Arm Record") { game.toggleAdminRecordMode() }
-                    }
-
-                    HStack(spacing: 10) {
-                        adminButton("Clear Notes") { game.clearAdminNotes() }
-                        adminButton("Load Chart JSON") { game.loadAdminChartDocument() }
-                        adminButton("Save Chart JSON") { game.saveAdminChartDocument() }
-                    }
-
-                    Divider()
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Text("Lane Audition Filters")
-                                .font(.subheadline.weight(.semibold))
-                            Spacer()
-                            adminButton("Clear") { game.clearAdminLaneFilters() }
-                        }
-
-                        ForEach(game.adminAuditionDisplayLanes) { lane in
-                            HStack(spacing: 8) {
-                                Circle()
-                                    .fill(laneColor(for: lane))
-                                    .frame(width: 10, height: 10)
-                                Text(lane.label)
-                                    .frame(minWidth: 90, alignment: .leading)
-                                Text(lane.presentationKeyLabel ?? "—")
-                                    .font(.caption.monospaced())
-                                    .foregroundStyle(.secondary)
-                                    .frame(width: 24, alignment: .center)
-                                adminButton(game.adminMutedLaneIDs.contains(lane.id) ? "Muted" : "Mute") {
-                                    game.toggleAdminLaneMute(lane)
-                                }
-                                adminProminentButton(game.adminSoloedLaneIDs.contains(lane.id) ? "Soloed" : "Solo") {
-                                    game.toggleAdminLaneSolo(lane)
-                                }
-                            }
-                        }
-
-                        Text("Solo takes priority over mute during chart-only playback and step audition.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-
-                }
-            }
-
-            GroupBox("Playback") {
-                VStack(alignment: .leading, spacing: 10) {
-                    statusRow("BPM", String(format: "%.1f", game.bpm))
-                    statusRow("BPM Source", game.bpmSourceText)
-                    statusRow("Timing", game.timingSourceText)
-                    statusRow("Time Sig", game.timeSignatureText)
-                    statusRow("Ticks/Beat", game.ticksPerBeatText)
-                    Text(game.timingOverrideStatusText)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                    Text(game.midiTempoText)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                    statusRow("Analysis", game.bpmAnalysisStatusText)
-                    Text(game.bpmAnalysisDetailText)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
                     statusRow("Position", "\(game.playbackTimeText) / \(game.playbackDurationText)")
                     Slider(
                         value: Binding(
@@ -177,8 +103,68 @@ struct AdminChartEditorView: View {
                         playbackRateButton("50%", rate: 0.5)
                     }
 
-                    Divider()
+                    statusRow("Loop", game.loopStatusText)
+                    Picker("Loop", selection: $game.loopLength) {
+                        ForEach(PrototypeGameController.LoopLength.allCases) { length in
+                            Text(length.rawValue).tag(length)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .onChange(of: game.loopLength) { newValue in
+                        game.setLoopLength(newValue)
+                    }
+                }
+            }
 
+            accordionSection("Session Setup", isExpanded: $isSessionSetupExpanded) {
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack(spacing: 8) {
+                        adminButton("Choose Audio") { game.chooseAudioFile() }
+                        adminButton("Load Chart") { game.loadAdminChartDocument() }
+                    }
+                    HStack(spacing: 8) {
+                        adminButton("Save Chart") { game.saveAdminChartDocument() }
+                        adminButton("New Empty") { game.startAdminChart() }
+                    }
+                    HStack(spacing: 8) {
+                        adminButton("Unload Audio") { game.unloadAudio() }
+                        adminButton("Unload Chart") { game.unloadChart() }
+                    }
+                }
+            }
+
+            accordionSection("Step Navigation", isExpanded: $isStepNavigationExpanded) {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(game.stepCursorDisplayText)
+                        .font(.headline.monospacedDigit())
+
+                    Picker("Resolution", selection: $game.stepResolution) {
+                        ForEach(PrototypeGameController.StepResolution.allCases) { resolution in
+                            Text(resolution.rawValue).tag(resolution)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .help(game.stepResolution.helpText)
+
+                    HStack(spacing: 8) {
+                        adminButton("← Back") { game.stepBackward() }
+                        adminButton("Sync") { game.syncStepCursorToPlayback() }
+                        adminButton("Next →") { game.stepForward() }
+                    }
+
+                    HStack(spacing: 8) {
+                        adminButton("← Bar") { game.jumpBackwardBar() }
+                        adminButton("Bar →") { game.jumpForwardBar() }
+                    }
+
+                    Text("Step navigation auditions notes at the current step.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            accordionSection("Timing & Sync", isExpanded: $isTimingSyncExpanded) {
+                VStack(alignment: .leading, spacing: 10) {
                     HStack(spacing: 8) {
                         adminButton("BPM −") { game.nudgeBPM(by: -1) }
                         Text(String(format: "%.1f", game.bpm))
@@ -197,53 +183,68 @@ struct AdminChartEditorView: View {
 
                     Toggle("Snap note lane scrub to beat grid", isOn: $game.isNoteLaneSnapEnabled)
 
-                    statusRow("Loop", game.loopStatusText)
-                    Picker("Loop", selection: $game.loopLength) {
-                        ForEach(PrototypeGameController.LoopLength.allCases) { length in
-                            Text(length.rawValue).tag(length)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    .onChange(of: game.loopLength) { newValue in
-                        game.setLoopLength(newValue)
-                    }
+                    statusRow("BPM Source", game.bpmSourceText)
+                    statusRow("Timing", game.timingSourceText)
+                    statusRow("Time Sig", game.timeSignatureText)
+                    statusRow("Ticks/Beat", game.ticksPerBeatText)
+                    statusRow("Analysis", game.bpmAnalysisStatusText)
+                    Text(game.timingOverrideStatusText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(game.midiTempoText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(game.bpmAnalysisDetailText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
 
-            GroupBox("Step Mode") {
+            accordionSection("Audition / Monitoring", isExpanded: $isMonitoringExpanded) {
                 VStack(alignment: .leading, spacing: 10) {
-                    Text(game.stepCursorDisplayText)
-                        .font(.headline.monospacedDigit())
+                    HStack(spacing: 8) {
+                        adminButton(game.isAudioMuted ? "Unmute Audio" : "Mute Audio") { game.toggleAudioMute() }
+                        adminButton(game.isChartMuted ? "Unmute Chart" : "Mute Chart") { game.toggleChartMute() }
+                        adminButton(game.isMetronomeEnabled ? "Metronome On" : "Metronome Off") { game.toggleMetronome() }
+                    }
 
-                    Picker("Resolution", selection: $game.stepResolution) {
-                        ForEach(PrototypeGameController.StepResolution.allCases) { resolution in
-                            Text(resolution.rawValue).tag(resolution)
+                    HStack {
+                        Text("Lane Monitoring")
+                            .font(.subheadline.weight(.semibold))
+                        Spacer()
+                        adminButton("Clear") { game.clearAdminLaneFilters() }
+                    }
+
+                    ForEach(game.adminAuditionDisplayLanes) { lane in
+                        HStack(spacing: 8) {
+                            Circle()
+                                .fill(laneColor(for: lane))
+                                .frame(width: 10, height: 10)
+                            Text(lane.label)
+                                .frame(minWidth: 90, alignment: .leading)
+                            Text(lane.presentationKeyLabel ?? "—")
+                                .font(.caption.monospaced())
+                                .foregroundStyle(.secondary)
+                                .frame(width: 24, alignment: .center)
+                            adminButton(game.adminMutedLaneIDs.contains(lane.id) ? "Muted" : "Mute") {
+                                game.toggleAdminLaneMute(lane)
+                            }
+                            adminProminentButton(game.adminSoloedLaneIDs.contains(lane.id) ? "Soloed" : "Solo") {
+                                game.toggleAdminLaneSolo(lane)
+                            }
                         }
                     }
-                    .pickerStyle(.menu)
-                    .help(game.stepResolution.helpText)
 
-                    Text("Use triplet modes only when the passage really swings or lands on triplet subdivisions.")
+                    Text("Solo takes priority over mute during chart-only playback and step audition.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-
-                    HStack(spacing: 8) {
-                        adminButton("← Back") { game.stepBackward() }
-                        adminButton("Sync") { game.syncStepCursorToPlayback() }
-                        adminButton("Next →") { game.stepForward() }
-                    }
-                    Text("Step navigation now auditions notes at the current step.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-
-                    HStack(spacing: 8) {
-                        adminButton("← Bar") { game.jumpBackwardBar() }
-                        adminButton("Bar →") { game.jumpForwardBar() }
-                    }
                 }
             }
 
-            GroupBox("Session") {
+            accordionSection("Status", isExpanded: $isStatusExpanded) {
                 VStack(alignment: .leading, spacing: 8) {
                     statusRow("Audio", game.trackName)
                     statusRow("Chart", game.chartName)
@@ -251,9 +252,6 @@ struct AdminChartEditorView: View {
                     statusRow("Time", game.playbackTimeText)
                     statusRow("Position", game.barBeatText)
                         .help("Position format: Bar.Beat.Division.Tick")
-                    Text("Format: Bar.Beat.Division.Tick")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
                     Text(game.chartStatusText)
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -269,7 +267,30 @@ struct AdminChartEditorView: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
+
+            accordionSection("Dangerous / Cleanup", isExpanded: $isDangerExpanded) {
+                HStack(spacing: 8) {
+                    adminButton("Clear Notes") { game.clearAdminNotes() }
+                }
+            }
         }
+    }
+
+    private func accordionSection<Content: View>(_ title: String, isExpanded: Binding<Bool>, @ViewBuilder content: () -> Content) -> some View {
+        DisclosureGroup(isExpanded: isExpanded) {
+            VStack(alignment: .leading, spacing: 10) {
+                content()
+            }
+            .padding(.top, 8)
+        } label: {
+            Text(title)
+                .font(.headline)
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(Color(nsColor: .controlBackgroundColor))
+        )
     }
 
     private var songSectionsSection: some View {
