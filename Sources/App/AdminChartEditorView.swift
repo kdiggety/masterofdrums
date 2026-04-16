@@ -28,13 +28,17 @@ struct AdminChartEditorView: View {
                         .frame(maxWidth: .infinity)
 
                     ScrollView {
-                        rightPanel
-                            .frame(width: 320)
+                        VStack(alignment: .leading, spacing: 0) {
+                            rightPanel
+                                .frame(width: 320)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .topLeading)
                     }
-                    .frame(width: 336)
-                    .frame(maxHeight: .infinity, alignment: .top)
+                    .frame(width: 336, maxHeight: .infinity, alignment: .top)
                 }
+                .frame(maxHeight: .infinity, alignment: .top)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(16)
         }
         .background(Color(nsColor: .windowBackgroundColor))
