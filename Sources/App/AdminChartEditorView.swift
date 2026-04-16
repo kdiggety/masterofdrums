@@ -31,7 +31,8 @@ struct AdminChartEditorView: View {
                         rightPanel
                             .frame(width: 320)
                     }
-                    .frame(width: 336, maxHeight: .infinity, alignment: .top)
+                    .frame(width: 336)
+                    .frame(maxHeight: .infinity, alignment: .top)
                 }
             }
             .padding(16)
