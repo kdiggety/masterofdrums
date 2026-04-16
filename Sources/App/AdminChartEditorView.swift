@@ -28,7 +28,8 @@ struct AdminChartEditorView: View {
                         .frame(maxWidth: .infinity)
 
                     rightSidebar
-                        .frame(width: 336, maxHeight: .infinity, alignment: .top)
+                        .frame(width: 336)
+                        .frame(maxHeight: .infinity, alignment: .top)
                 }
                 .frame(maxHeight: .infinity, alignment: .top)
             }
