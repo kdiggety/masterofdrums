@@ -20,20 +20,18 @@ struct AdminChartEditorView: View {
                 .frame(width: 0, height: 0)
                 .opacity(0)
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
-                    header
+            VStack(alignment: .leading, spacing: 12) {
+                header
 
-                    HStack(alignment: .top, spacing: 14) {
-                        leftPanel
-                            .frame(maxWidth: .infinity)
+                HStack(alignment: .top, spacing: 14) {
+                    leftPanel
+                        .frame(maxWidth: .infinity)
 
-                        rightPanel
-                            .frame(width: 320)
-                    }
+                    rightPanel
+                        .frame(width: 320)
                 }
-                .padding(16)
             }
+            .padding(16)
         }
         .background(Color(nsColor: .windowBackgroundColor))
         .onAppear { game.isAdminPageActive = true }

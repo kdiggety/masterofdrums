@@ -210,7 +210,12 @@ final class PrototypeGameController: ObservableObject {
     private var lastVisibleSceneWindow: ClosedRange<Double>?
 
     var isAdminAuthoringActive: Bool { isAdminPageActive }
-    var adminAuditionDisplayLanes: [ChartLane] { session.chart.displayLanes }
+    var adminAuditionDisplayLanes: [ChartLane] {
+        let activeLaneIDs = Set(session.chart.notes.map { note in
+            note.displayLaneID.isEmpty ? note.lane.displayName.lowercased() : note.displayLaneID
+        })
+        return session.chart.displayLanes.filter { activeLaneIDs.contains($0.id) }
+    }
 
     init() {
         let initialChart = Chart(notes: [], title: "Untitled Chart", sections: [])
