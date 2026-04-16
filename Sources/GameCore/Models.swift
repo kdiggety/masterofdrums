@@ -135,19 +135,28 @@ struct Chart {
 
     var displayLanes: [ChartLane] {
         var lanes: [ChartLane] = displayLaneBlueprint ?? []
-        var seen = Set(lanes.map(\.id))
+        var seenByID = Set(lanes.map(\.id))
+        var seenByPresentation = Set<String>()
+
         for note in notes {
             let id = note.displayLaneID.isEmpty ? note.lane.displayName.lowercased() : note.displayLaneID
-            guard !seen.contains(id) else { continue }
-            seen.insert(id)
-            lanes.append(
-                ChartLane(
-                    id: id,
-                    label: note.displayLabel,
-                    sourceLane: note.lane,
-                    keyLabel: note.lane.keyLabel
-                )
+            guard !seenByID.contains(id) else { continue }
+
+            let lane = ChartLane(
+                id: id,
+                label: note.displayLabel,
+                sourceLane: note.lane,
+                keyLabel: note.lane.keyLabel
             )
+
+            // Deduplicate by presentation lane to avoid showing duplicates
+            // when multiple chart lanes map to the same presentation
+            let presentationKey = "\(lane.presentationLane.rawValue):\(lane.presentationKeyLabel ?? "")"
+            guard !seenByPresentation.contains(presentationKey) else { continue }
+
+            seenByID.insert(id)
+            seenByPresentation.insert(presentationKey)
+            lanes.append(lane)
         }
 
         if lanes.isEmpty {

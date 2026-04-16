@@ -211,18 +211,9 @@ final class PrototypeGameController: ObservableObject {
 
     var isAdminAuthoringActive: Bool { isAdminPageActive }
     var adminAuditionDisplayLanes: [ChartLane] {
-        let activeLaneIDs = Set(session.chart.notes.map { note in
-            note.displayLaneID.isEmpty ? note.lane.displayName.lowercased() : note.displayLaneID
-        })
-        var seenPresentationKeys = Set<String>()
-        return session.chart.displayLanes.filter { activeLaneIDs.contains($0.id) }.filter { lane in
-            let presentationKey = "\(lane.presentationLane.rawValue):\(lane.presentationKeyLabel ?? "")"
-            if seenPresentationKeys.contains(presentationKey) {
-                return false
-            }
-            seenPresentationKeys.insert(presentationKey)
-            return true
-        }
+        // Use the unified displayLanes from the chart
+        // This ensures gameplay and monitoring UI use the identical lane display source
+        session.chart.displayLanes
     }
 
     init() {

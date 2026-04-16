@@ -27,16 +27,17 @@ struct AdminChartEditorView: View {
                     leftPanel
                         .frame(maxWidth: .infinity)
 
-                    ScrollView(.vertical) {
-                        VStack(alignment: .leading, spacing: 12) {
-                            transportSection
+                    VStack(alignment: .leading, spacing: 12) {
+                        transportSection
+
+                        ScrollView(.vertical) {
                             rightPanel
+                                .frame(width: 320, alignment: .topLeading)
+                                .padding(.top, 10)
+                                .padding(.bottom, 12)
                         }
-                        .frame(width: 320, alignment: .topLeading)
-                        .padding(.top, 10)
-                        .padding(.bottom, 12)
+                        .frame(width: 336, alignment: .top)
                     }
-                    .frame(width: 336, height: 720, alignment: .top)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
