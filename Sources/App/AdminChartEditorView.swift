@@ -23,22 +23,24 @@ struct AdminChartEditorView: View {
             VStack(alignment: .leading, spacing: 12) {
                 header
 
-                HStack(alignment: .top, spacing: 14) {
+                HStack(spacing: 14) {
                     leftPanel
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
 
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        // Fixed transport section at top - never scrolls
                         transportSection
+                            .padding(.bottom, 12)
 
+                        // Scrollable content area - all other controls and sections
                         ScrollView(.vertical) {
-                            rightPanel
-                                .frame(width: 320, alignment: .topLeading)
-                                .padding(.top, 10)
-                                .padding(.bottom, 12)
+                            VStack(alignment: .leading, spacing: 12) {
+                                rightPanel
+                            }
+                            .frame(width: 320, alignment: .topLeading)
+                            .padding(.top, 10)
+                            .padding(.bottom, 12)
                         }
-                        .frame(maxHeight: .infinity)
-
-                        Spacer(minLength: 0)
                     }
                     .frame(maxHeight: .infinity, alignment: .topLeading)
                     .frame(width: 336)
