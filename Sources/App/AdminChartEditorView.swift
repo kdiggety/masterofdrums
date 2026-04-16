@@ -37,7 +37,9 @@ struct AdminChartEditorView: View {
                                 .padding(.bottom, 12)
                         }
                         .frame(width: 336, alignment: .top)
+                        .frame(maxHeight: .infinity)
                     }
+                    .frame(maxHeight: .infinity)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -227,6 +229,9 @@ struct AdminChartEditorView: View {
                         Spacer()
                         adminButton("Clear") { game.clearAdminLaneFilters() }
                     }
+
+                    Toggle("Show extended lanes (7)", isOn: $game.adminExtendedLanes)
+                        .controlSize(.small)
 
                     ForEach(game.adminAuditionDisplayLanes) { lane in
                         HStack(spacing: 8) {

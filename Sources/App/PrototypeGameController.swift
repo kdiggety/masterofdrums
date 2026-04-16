@@ -130,6 +130,12 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var isChartAuditionActive: Bool = false
     @Published var adminMutedLaneIDs: Set<String> = []
     @Published var adminSoloedLaneIDs: Set<String> = []
+    @Published var adminExtendedLanes: Bool = false {
+        didSet {
+            scene.extendedLanes = adminExtendedLanes
+            scene.replaceChart(session.chart)
+        }
+    }
     @Published private(set) var adminTimelineDuration: Double = 1
     @Published var adminSelectedNoteID: UUID? {
         didSet {
@@ -213,7 +219,7 @@ final class PrototypeGameController: ObservableObject {
     var adminAuditionDisplayLanes: [ChartLane] {
         // Use the unified displayLanes from the chart
         // This ensures gameplay and monitoring UI use the identical lane display source
-        session.chart.displayLanes
+        session.chart.displayLanes(extendedLanes: adminExtendedLanes)
     }
 
     init() {
@@ -1469,7 +1475,7 @@ final class PrototypeGameController: ObservableObject {
             redoHistory.removeAll()
         }
         if let bpmOverride { bpm = bpmOverride }
-        let resolvedLaneBlueprint = chart.displayLaneBlueprint ?? activeDisplayLaneBlueprint ?? chart.displayLanes
+        let resolvedLaneBlueprint = chart.displayLaneBlueprint ?? activeDisplayLaneBlueprint ?? chart.displayLanes()
         let resolvedChart = Chart(notes: chart.notes, title: chart.title, sections: chart.sections, displayLaneBlueprint: resolvedLaneBlueprint)
         activeDisplayLaneBlueprint = resolvedLaneBlueprint
         session.replaceChart(resolvedChart)

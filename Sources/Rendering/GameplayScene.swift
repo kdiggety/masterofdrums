@@ -38,6 +38,7 @@ final class GameplayScene: SKScene {
     private var draggedAdminNotePreviewTargetYByID: [UUID: CGFloat] = [:]
     private var draggedAdminNotePreviewLaneByID: [UUID: Lane] = [:]
     var isAdminAuthoringMode: Bool = false
+    var extendedLanes: Bool = false
     var selectedAdminNoteID: UUID? {
         didSet { updateSelectionAppearance() }
     }
@@ -51,7 +52,7 @@ final class GameplayScene: SKScene {
     init(chart: Chart, keyboardInputDevice: KeyboardInputDevice) {
         self.chart = chart
         self.keyboardInputDevice = keyboardInputDevice
-        self.laneOrder = chart.displayLanes
+        self.laneOrder = chart.displayLanes(extendedLanes: false)
         self.laneIDBySourceLane = Self.buildLaneIDBySourceLane(from: self.laneOrder)
         self.laneIndexByID = Dictionary(uniqueKeysWithValues: self.laneOrder.enumerated().map { ($0.element.id, $0.offset) })
         super.init(size: CGSize(width: 900, height: 480))
@@ -102,7 +103,7 @@ final class GameplayScene: SKScene {
 
     func replaceChart(_ chart: Chart) {
         self.chart = chart
-        laneOrder = chart.displayLanes
+        laneOrder = chart.displayLanes(extendedLanes: extendedLanes)
         laneIDBySourceLane = Self.buildLaneIDBySourceLane(from: laneOrder)
         laneIndexByID = Dictionary(uniqueKeysWithValues: laneOrder.enumerated().map { ($0.element.id, $0.offset) })
         noteNodes.removeAll()

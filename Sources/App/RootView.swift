@@ -162,7 +162,7 @@ struct RootView: View {
                     }
                     .buttonStyle(BorderedProminentButtonStyle())
 
-                    Text("D red · F yellow · J blue · K green · Space kick")
+                    Text(Lane.allCases.map { "\($0.keyLabel) \($0.laneLabel.lowercased())" }.joined(separator: " · "))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
