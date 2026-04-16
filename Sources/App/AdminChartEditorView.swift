@@ -112,14 +112,21 @@ struct AdminChartEditorView: View {
                             adminButton("Clear") { game.clearAdminLaneFilters() }
                         }
 
-                        ForEach(Lane.allCases) { lane in
+                        ForEach(game.adminAuditionDisplayLanes) { lane in
                             HStack(spacing: 8) {
-                                Text(lane.displayName)
-                                    .frame(width: 56, alignment: .leading)
-                                adminButton(game.adminMutedLanes.contains(lane) ? "Muted" : "Mute") {
+                                Circle()
+                                    .fill(laneColor(for: lane))
+                                    .frame(width: 10, height: 10)
+                                Text(lane.label)
+                                    .frame(minWidth: 90, alignment: .leading)
+                                Text(lane.keyLabel ?? "—")
+                                    .font(.caption.monospaced())
+                                    .foregroundStyle(.secondary)
+                                    .frame(width: 24, alignment: .center)
+                                adminButton(game.adminMutedLaneIDs.contains(lane.id) ? "Muted" : "Mute") {
                                     game.toggleAdminLaneMute(lane)
                                 }
-                                adminProminentButton(game.adminSoloedLanes.contains(lane) ? "Soloed" : "Solo") {
+                                adminProminentButton(game.adminSoloedLaneIDs.contains(lane.id) ? "Soloed" : "Solo") {
                                     game.toggleAdminLaneSolo(lane)
                                 }
                             }
@@ -585,6 +592,16 @@ struct AdminChartEditorView: View {
         }
         editingSectionID = nil
         focusedSectionEditorID = nil
+    }
+
+    private func laneColor(for lane: ChartLane) -> Color {
+        switch lane.sourceLane {
+        case .red: return .red
+        case .yellow: return .yellow
+        case .blue: return .blue
+        case .green: return .green
+        case .kick: return .gray
+        }
     }
 
     private func statusRow(_ title: String, _ value: String) -> some View {
