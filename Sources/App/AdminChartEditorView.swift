@@ -27,11 +27,15 @@ struct AdminChartEditorView: View {
                     leftPanel
                         .frame(maxWidth: .infinity)
 
-                    rightSidebar
-                        .frame(width: 336)
-                        .frame(maxHeight: .infinity, alignment: .top)
+                    ScrollView(.vertical) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            transportSection
+                            rightPanel
+                        }
+                        .frame(width: 320, alignment: .topLeading)
+                    }
+                    .frame(width: 336, height: 720, alignment: .top)
                 }
-                .frame(maxHeight: .infinity, alignment: .top)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(16)
@@ -70,18 +74,6 @@ struct AdminChartEditorView: View {
             .frame(height: 440)
 
             recordedNotesSection
-        }
-    }
-
-    private var rightSidebar: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            transportSection
-            ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
-                    rightPanel
-                }
-                .frame(maxWidth: .infinity, alignment: .topLeading)
-            }
         }
     }
 
