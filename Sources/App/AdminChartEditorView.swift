@@ -33,6 +33,8 @@ struct AdminChartEditorView: View {
                             rightPanel
                         }
                         .frame(width: 320, alignment: .topLeading)
+                        .padding(.top, 10)
+                        .padding(.bottom, 12)
                     }
                     .frame(width: 336, height: 720, alignment: .top)
                 }
