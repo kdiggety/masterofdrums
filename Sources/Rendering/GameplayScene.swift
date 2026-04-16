@@ -52,7 +52,7 @@ final class GameplayScene: SKScene {
         self.chart = chart
         self.keyboardInputDevice = keyboardInputDevice
         self.laneOrder = chart.displayLanes
-        self.laneIDBySourceLane = Dictionary(uniqueKeysWithValues: self.laneOrder.map { ($0.sourceLane, $0.id) })
+        self.laneIDBySourceLane = Self.buildLaneIDBySourceLane(from: self.laneOrder)
         self.laneIndexByID = Dictionary(uniqueKeysWithValues: self.laneOrder.enumerated().map { ($0.element.id, $0.offset) })
         super.init(size: CGSize(width: 900, height: 480))
         scaleMode = .resizeFill
@@ -61,6 +61,14 @@ final class GameplayScene: SKScene {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    private static func buildLaneIDBySourceLane(from lanes: [ChartLane]) -> [Lane: String] {
+        var result: [Lane: String] = [:]
+        for lane in lanes where result[lane.sourceLane] == nil {
+            result[lane.sourceLane] = lane.id
+        }
+        return result
     }
 
     override func didMove(to view: SKView) {
@@ -95,7 +103,7 @@ final class GameplayScene: SKScene {
     func replaceChart(_ chart: Chart) {
         self.chart = chart
         laneOrder = chart.displayLanes
-        laneIDBySourceLane = Dictionary(uniqueKeysWithValues: laneOrder.map { ($0.sourceLane, $0.id) })
+        laneIDBySourceLane = Self.buildLaneIDBySourceLane(from: laneOrder)
         laneIndexByID = Dictionary(uniqueKeysWithValues: laneOrder.enumerated().map { ($0.element.id, $0.offset) })
         noteNodes.removeAll()
         visibleNotes = []
