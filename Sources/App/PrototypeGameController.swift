@@ -128,6 +128,8 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var isAudioMuted: Bool = false
     @Published private(set) var isChartMuted: Bool = false
     @Published private(set) var isChartAuditionActive: Bool = false
+    @Published var adminMutedLanes: Set<Lane> = []
+    @Published var adminSoloedLanes: Set<Lane> = []
     @Published private(set) var adminTimelineDuration: Double = 1
     @Published var adminSelectedNoteID: UUID? {
         didSet {
@@ -1243,7 +1245,34 @@ final class PrototypeGameController: ObservableObject {
             chartPreviewLastAuditionTime = max(0, activeTransportTime - 0.02)
             startChartPreviewTimer()
         }
-        adminStatusText = isChartMuted ? "Chart muted" : "Chart unmuted"
+        adminStatusText = isChartMuted ? "Chart muted" : chartLaneFilterStatusText(base: "Chart unmuted")
+        refocusGameplay()
+    }
+
+    func toggleAdminLaneMute(_ lane: Lane) {
+        if adminMutedLanes.contains(lane) {
+            adminMutedLanes.remove(lane)
+        } else {
+            adminMutedLanes.insert(lane)
+        }
+        adminStatusText = chartLaneFilterStatusText(base: "Updated lane mute")
+        refocusGameplay()
+    }
+
+    func toggleAdminLaneSolo(_ lane: Lane) {
+        if adminSoloedLanes.contains(lane) {
+            adminSoloedLanes.remove(lane)
+        } else {
+            adminSoloedLanes.insert(lane)
+        }
+        adminStatusText = chartLaneFilterStatusText(base: "Updated lane solo")
+        refocusGameplay()
+    }
+
+    func clearAdminLaneFilters() {
+        adminMutedLanes.removeAll()
+        adminSoloedLanes.removeAll()
+        adminStatusText = "Cleared lane mute/solo"
         refocusGameplay()
     }
 
@@ -1781,7 +1810,7 @@ final class PrototypeGameController: ObservableObject {
         let dueNotes = session.chart.notes.filter { note in
             note.time >= previousTime && note.time <= time + 0.02
         }
-        for note in dueNotes {
+        for note in dueNotes where isLaneAudibleForAdminChartPlayback(note.lane) {
             laneSoundPlayer.play(lane: note.lane)
             lastChartPlaybackTriggeredNoteIDs.insert(note.id)
         }
@@ -1848,9 +1877,24 @@ final class PrototypeGameController: ObservableObject {
     private func auditionNotesNearStepCursor() {
         let targetTime = quantizedStepCursorTime()
         let notes = session.chart.notes.filter { abs($0.time - targetTime) <= max(stepInterval * 0.45, 0.02) }
-        for note in notes {
+        for note in notes where isLaneAudibleForAdminChartPlayback(note.lane) {
             laneSoundPlayer.play(lane: note.lane)
         }
+    }
+
+    private func isLaneAudibleForAdminChartPlayback(_ lane: Lane) -> Bool {
+        if !adminSoloedLanes.isEmpty {
+            return adminSoloedLanes.contains(lane)
+        }
+        return !adminMutedLanes.contains(lane)
+    }
+
+    private func chartLaneFilterStatusText(base: String) -> String {
+        let soloText = adminSoloedLanes.isEmpty ? nil : "solo: " + adminSoloedLanes.map { $0.displayName }.sorted().joined(separator: ", ")
+        let muteText = adminMutedLanes.isEmpty ? nil : "mute: " + adminMutedLanes.map { $0.displayName }.sorted().joined(separator: ", ")
+        let details = [soloText, muteText].compactMap { $0 }
+        guard !details.isEmpty else { return base }
+        return base + " (" + details.joined(separator: " · ") + ")"
     }
 
     private func normalizedSectionName(_ proposedName: String?) -> String {

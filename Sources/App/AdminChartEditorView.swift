@@ -102,6 +102,34 @@ struct AdminChartEditorView: View {
                         adminButton("Save Chart JSON") { game.saveAdminChartDocument() }
                     }
 
+                    Divider()
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("Lane Audition Filters")
+                                .font(.subheadline.weight(.semibold))
+                            Spacer()
+                            adminButton("Clear") { game.clearAdminLaneFilters() }
+                        }
+
+                        ForEach(Lane.allCases) { lane in
+                            HStack(spacing: 8) {
+                                Text(lane.displayName)
+                                    .frame(width: 56, alignment: .leading)
+                                adminButton(game.adminMutedLanes.contains(lane) ? "Muted" : "Mute") {
+                                    game.toggleAdminLaneMute(lane)
+                                }
+                                adminProminentButton(game.adminSoloedLanes.contains(lane) ? "Soloed" : "Solo") {
+                                    game.toggleAdminLaneSolo(lane)
+                                }
+                            }
+                        }
+
+                        Text("Solo takes priority over mute during chart-only playback and step audition.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+
                 }
             }
 
