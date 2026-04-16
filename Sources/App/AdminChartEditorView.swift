@@ -15,7 +15,7 @@ struct AdminChartEditorView: View {
     @FocusState private var focusedSectionEditorID: UUID?
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .topLeading) {
             keyboardShortcutBindings
                 .frame(width: 0, height: 0)
                 .opacity(0)
