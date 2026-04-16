@@ -119,13 +119,12 @@ struct Chart {
             let id = note.displayLaneID.isEmpty ? note.lane.displayName.lowercased() : note.displayLaneID
             guard !seen.contains(id) else { continue }
             seen.insert(id)
-            let isCanonicalLaneLabel = note.label == nil || note.displayLabel.caseInsensitiveCompare(note.lane.laneLabel) == .orderedSame || note.displayLabel.caseInsensitiveCompare(note.lane.displayName) == .orderedSame
             lanes.append(
                 ChartLane(
                     id: id,
                     label: note.displayLabel,
                     sourceLane: note.lane,
-                    keyLabel: isCanonicalLaneLabel ? note.lane.keyLabel : nil
+                    keyLabel: note.lane.keyLabel  // Always preserve the source lane's key label
                 )
             )
         }
