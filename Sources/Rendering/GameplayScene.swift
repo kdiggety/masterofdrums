@@ -492,9 +492,9 @@ final class GameplayScene: SKScene {
         switch lane {
         case .red: return .systemRed
         case .yellow: return .systemYellow
-        case .blue: return .systemBlue
-        case .green: return .systemGreen
-        case .kick: return .systemGray
+        case .blue: return .systemPurple
+        case .green: return .systemOrange
+        case .kick: return NSColor.systemTeal
         }
     }
 }

@@ -598,9 +598,9 @@ struct AdminChartEditorView: View {
         switch lane.presentationLane {
         case .red: return .red
         case .yellow: return .yellow
-        case .blue: return .blue
-        case .green: return .green
-        case .kick: return .gray
+        case .blue: return .purple
+        case .green: return .orange
+        case .kick: return .teal
         }
     }
 
