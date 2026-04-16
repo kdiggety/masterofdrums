@@ -36,8 +36,8 @@ struct AdminChartEditorView: View {
                                 .padding(.top, 10)
                                 .padding(.bottom, 12)
                         }
-                        .frame(width: 336, alignment: .top)
                         .frame(maxHeight: .infinity)
+                        .frame(width: 336)
                     }
                     .frame(maxHeight: .infinity)
                 }
