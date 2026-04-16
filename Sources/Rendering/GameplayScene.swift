@@ -440,17 +440,16 @@ final class GameplayScene: SKScene {
         node.strokeColor = .white.withAlphaComponent(0.9)
         node.lineWidth = 1.5
 
-        if let keyLabelText = displayLane?.presentationKeyLabel ?? note.lane.keyLabel {
-            let label = SKLabelNode(fontNamed: "SF Pro Rounded")
-            label.text = keyLabelText
-            label.fontColor = .white
-            label.fontSize = presentationLane == .kick ? 12 : 11
-            label.verticalAlignmentMode = .center
-            label.horizontalAlignmentMode = .center
-            label.position = CGPoint(x: 0, y: 0)
-            label.zPosition = 1
-            node.addChild(label)
-        }
+        let keyLabelText = displayLane?.presentationKeyLabel ?? note.lane.keyLabel
+        let label = SKLabelNode(fontNamed: "SF Pro Rounded")
+        label.text = keyLabelText
+        label.fontColor = .white
+        label.fontSize = presentationLane == .kick ? 12 : 11
+        label.verticalAlignmentMode = .center
+        label.horizontalAlignmentMode = .center
+        label.position = CGPoint(x: 0, y: 0)
+        label.zPosition = 1
+        node.addChild(label)
 
         return node
     }
