@@ -276,7 +276,7 @@ struct AdminChartEditorView: View {
         }
     }
 
-    private func accordionSection<Content: View>(_ title: String, isExpanded: Binding<Bool>, @ViewBuilder content: () -> Content) -> some View {
+    private func accordionSection<Content: View>(_ title: String, isExpanded: Binding<Bool>, @ViewBuilder content: @escaping () -> Content) -> some View {
         DisclosureGroup(isExpanded: isExpanded) {
             VStack(alignment: .leading, spacing: 10) {
                 content()
