@@ -207,6 +207,7 @@ final class PrototypeGameController: ObservableObject {
     private var importedChartTiming: ImportedChartTiming?
     private var hasManualTimingOverride = false
     private var activeDisplayLaneBlueprint: [ChartLane]?
+    private var lastVisibleSceneWindow: ClosedRange<Double>?
 
     var isAdminAuthoringActive: Bool { isAdminPageActive }
 
@@ -1511,7 +1512,7 @@ final class PrototypeGameController: ObservableObject {
             scene.flashStatus("Finished")
             audio.pause()
         }
-        syncState()
+        syncGameplayMetrics()
         syncTransportState()
     }
 
@@ -1575,34 +1576,92 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func syncState() {
-        if isAdminAuthoringActive {
-            score = 0; combo = 0; missCount = 0; hitCount = 0; lastJudgmentText = "—"; accuracyText = "—"
-        } else {
-            score = session.state.score
-            combo = session.state.combo
-            missCount = session.state.missCount
-            hitCount = session.state.hitCount
-            lastJudgmentText = session.state.lastJudgment?.rawValue ?? "—"
-            accuracyText = String(format: "%.0f%%", session.state.accuracy * 100)
-        }
-        scene.updateVisibleNotes(currentSceneNotes(at: scene.currentSongTime))
+        syncGameplayMetrics()
+        updateStaticSessionState()
+        refreshVisibleSceneNotesIfNeeded(at: scene.currentSongTime, force: true)
         scene.selectedAdminNoteID = adminSelectedNoteID
-        trackName = audio.loadedTrackName ?? "No audio loaded"
-        chartName = session.chart.title
-        adminNotes = session.chart.notes.sorted { $0.time < $1.time }
-        adminSections = session.chart.sections.sorted { $0.startTime < $1.startTime }
+    }
+
+    private func syncGameplayMetrics() {
+        if isAdminAuthoringActive {
+            if score != 0 { score = 0 }
+            if combo != 0 { combo = 0 }
+            if missCount != 0 { missCount = 0 }
+            if hitCount != 0 { hitCount = 0 }
+            if lastJudgmentText != "—" { lastJudgmentText = "—" }
+            if accuracyText != "—" { accuracyText = "—" }
+            return
+        }
+
+        let state = session.state
+        if score != state.score { score = state.score }
+        if combo != state.combo { combo = state.combo }
+        if missCount != state.missCount { missCount = state.missCount }
+        if hitCount != state.hitCount { hitCount = state.hitCount }
+        let judgmentText = state.lastJudgment?.rawValue ?? "—"
+        if lastJudgmentText != judgmentText { lastJudgmentText = judgmentText }
+        let nextAccuracyText = String(format: "%.0f%%", state.accuracy * 100)
+        if accuracyText != nextAccuracyText { accuracyText = nextAccuracyText }
+    }
+
+    private func updateStaticSessionState() {
+        let nextTrackName = audio.loadedTrackName ?? "No audio loaded"
+        if trackName != nextTrackName { trackName = nextTrackName }
+        if chartName != session.chart.title { chartName = session.chart.title }
+
+        let sortedNotes = session.chart.notes.sorted { $0.time < $1.time }
+        if !sameNotes(adminNotes, sortedNotes) { adminNotes = sortedNotes }
+        let sortedSections = session.chart.sections.sorted { $0.startTime < $1.startTime }
+        if adminSections != sortedSections { adminSections = sortedSections }
     }
 
     private func syncTransportState() {
         let currentTime = adminScrubPreviewTime ?? activeTransportTime
-        transportStateText = isChartOnlyPlaybackEnabled ? "Chart Preview" : audio.state.rawValue
-        playbackTimeText = String(format: "%.2fs", currentTime)
-        playbackDurationText = String(format: "%.2fs", playbackDuration)
+        let nextTransportStateText = isChartOnlyPlaybackEnabled ? "Chart Preview" : audio.state.rawValue
+        if transportStateText != nextTransportStateText { transportStateText = nextTransportStateText }
+        let nextPlaybackTimeText = String(format: "%.2fs", currentTime)
+        if playbackTimeText != nextPlaybackTimeText { playbackTimeText = nextPlaybackTimeText }
+        let nextPlaybackDurationText = String(format: "%.2fs", playbackDuration)
+        if playbackDurationText != nextPlaybackDurationText { playbackDurationText = nextPlaybackDurationText }
         let position = MusicalTransport.position(at: currentTime, bpm: bpm, songOffset: songOffset, beatsPerBar: beatsPerBar, subdivisionsPerBeat: max(stepResolution.subdivisionsPerBeat, 1), ticksPerBeat: ticksPerBeat)
-        barBeatText = position.barBeatDivisionTickText
-        musicalSubdivisionText = String(position.subdivision)
-        currentPlaybackNoteID = playbackNoteID(near: currentTime)
-        refreshAdminVisibleNotes(at: currentTime)
+        let nextBarBeatText = position.barBeatDivisionTickText
+        if barBeatText != nextBarBeatText { barBeatText = nextBarBeatText }
+        let nextSubdivisionText = String(position.subdivision)
+        if musicalSubdivisionText != nextSubdivisionText { musicalSubdivisionText = nextSubdivisionText }
+        let nextPlaybackNoteID = playbackNoteID(near: currentTime)
+        if currentPlaybackNoteID != nextPlaybackNoteID { currentPlaybackNoteID = nextPlaybackNoteID }
+        refreshVisibleSceneNotesIfNeeded(at: currentTime)
+    }
+
+    private func refreshVisibleSceneNotesIfNeeded(at time: Double, force: Bool = false) {
+        let lookBehind: Double = isAdminAuthoringActive ? 2.0 : 0.25
+        let lookAhead: Double = isAdminAuthoringActive ? 8.0 : 3.0
+        let start = max(0, time - lookBehind)
+        let end = time + lookAhead
+        let nextWindow = start...end
+        if !force,
+           let lastWindow = lastVisibleSceneWindow,
+           abs(lastWindow.lowerBound - nextWindow.lowerBound) < 0.05,
+           abs(lastWindow.upperBound - nextWindow.upperBound) < 0.05 {
+            return
+        }
+        lastVisibleSceneWindow = nextWindow
+        scene.updateVisibleNotes(session.chart.notes.filter { note in
+            note.time >= nextWindow.lowerBound && note.time <= nextWindow.upperBound
+        })
+    }
+
+    private func sameNotes(_ lhs: [NoteEvent], _ rhs: [NoteEvent]) -> Bool {
+        guard lhs.count == rhs.count else { return false }
+        for (left, right) in zip(lhs, rhs) {
+            guard left.id == right.id,
+                  left.lane == right.lane,
+                  left.time == right.time,
+                  left.label == right.label else {
+                return false
+            }
+        }
+        return true
     }
 
     private func playbackNoteID(near time: Double) -> UUID? {
