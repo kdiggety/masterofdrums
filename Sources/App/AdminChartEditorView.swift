@@ -27,8 +27,11 @@ struct AdminChartEditorView: View {
                     leftPanel
                         .frame(maxWidth: .infinity)
 
-                    rightPanel
-                        .frame(width: 320)
+                    ScrollView {
+                        rightPanel
+                            .frame(width: 320)
+                    }
+                    .frame(width: 336, maxHeight: .infinity, alignment: .top)
                 }
             }
             .padding(16)
