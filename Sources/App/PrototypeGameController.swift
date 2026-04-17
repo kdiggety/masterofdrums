@@ -988,19 +988,14 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func seekTransport(to time: Double) {
-        print("[seek] seekTransport called: time=\(time), audio.duration=\(audio.duration), isAdminChartActive=\(isAdminChartActive)")
         if audio.duration > 0 {
-            print("[seek] seeking audio to \(time), audio.currentTime before=\(audio.currentTime)")
             audio.seek(to: time)
-            print("[seek] audio.currentTime after=\(audio.currentTime)")
         } else if isAdminChartActive {
-            print("[seek] seeking chartPreviewClock to \(time)")
             chartPreviewClock.seek(to: time)
         }
         finalizeAdminScrub(at: time, announce: false)
         syncTransportState()
         adminStatusText = "Seeked to \(playbackTimeText)"
-        print("[seek] after syncTransportState: activeTransportTime=\(activeTransportTime), playbackTimeText=\(playbackTimeText)")
         refocusGameplay()
     }
 
