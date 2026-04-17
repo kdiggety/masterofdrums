@@ -23,7 +23,7 @@ struct AdminChartEditorView: View {
             VStack(alignment: .leading, spacing: 12) {
                 header
 
-                HStack(spacing: 14) {
+                HStack(alignment: .top, spacing: 14) {
                     leftPanel
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
 
