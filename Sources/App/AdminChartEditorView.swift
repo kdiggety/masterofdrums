@@ -21,8 +21,6 @@ struct AdminChartEditorView: View {
                 .opacity(0)
 
             VStack(alignment: .leading, spacing: 12) {
-                header
-
                 HStack(alignment: .top, spacing: 14) {
                     leftPanel
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
