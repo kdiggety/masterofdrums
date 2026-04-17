@@ -312,7 +312,7 @@ final class GameplayScene: SKScene {
 
             if isMeasureLine {
                 let barNumber = max(1, (beatIndex / max(configuration.beatsPerBar, 1)) + 1)
-                let label = SKLabelNode(fontNamed: "SF Pro Rounded")
+                let label = SKLabelNode(fontNamed: "SF Pro Display")
                 label.name = beatGuideLabelNodeNamePrefix + "\(subdivisionIndex)"
                 label.text = "Bar \(barNumber)"
                 label.fontColor = .white.withAlphaComponent(0.68)
@@ -356,7 +356,7 @@ final class GameplayScene: SKScene {
             laneHighlights[lane.id] = highlightNode
 
             if let key = lane.presentationKeyLabel {
-                let keyLabel = SKLabelNode(fontNamed: "SF Pro Rounded")
+                let keyLabel = SKLabelNode(fontNamed: "SF Pro Display")
                 keyLabel.text = key
                 keyLabel.fontColor = .white.withAlphaComponent(0.92)
                 keyLabel.fontSize = lane.presentationLane == .kick ? 22 : 24
@@ -366,7 +366,7 @@ final class GameplayScene: SKScene {
                 highway.addChild(keyLabel)
             }
 
-            let drumLabel = SKLabelNode(fontNamed: "SF Pro Rounded")
+            let drumLabel = SKLabelNode(fontNamed: "SF Pro Display")
             drumLabel.text = lane.label
             drumLabel.fontColor = .white.withAlphaComponent(0.76)
             drumLabel.fontSize = 12
@@ -447,7 +447,7 @@ final class GameplayScene: SKScene {
         node.physicsBody = body
 
         let keyLabelText = displayLane?.presentationKeyLabel ?? note.lane.keyLabel
-        let label = SKLabelNode(fontNamed: "SF Pro Rounded")
+        let label = SKLabelNode(fontNamed: "SF Pro Display")
         label.text = keyLabelText
         label.fontColor = .white
         label.fontSize = presentationLane == .kick ? 12 : 11
