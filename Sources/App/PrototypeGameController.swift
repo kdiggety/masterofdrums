@@ -989,8 +989,13 @@ final class PrototypeGameController: ObservableObject {
 
     func seekTransport(to time: Double) {
         print("[scrub] seekTransport called with time=\(time), isChartOnlyPlaybackEnabled=\(isChartOnlyPlaybackEnabled), audio.duration=\(audio.duration)")
-        audio.seek(to: time)
-        print("[scrub] after audio.seek: audio.currentTime=\(audio.currentTime), chartPreviewClock.currentTime=\(chartPreviewClock.currentTime)")
+        if audio.duration > 0 {
+            audio.seek(to: time)
+            print("[scrub] after audio.seek: audio.currentTime=\(audio.currentTime)")
+        } else if isAdminChartActive {
+            chartPreviewClock.seek(to: time)
+            print("[scrub] after chartPreviewClock.seek: chartPreviewClock.currentTime=\(chartPreviewClock.currentTime)")
+        }
         finalizeAdminScrub(at: time, announce: false)
         print("[scrub] after finalizeAdminScrub: activeTransportTime=\(activeTransportTime)")
         syncTransportState()

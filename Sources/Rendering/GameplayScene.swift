@@ -17,8 +17,8 @@ final class GameplayScene: SKScene {
     private var chart: Chart
     private let keyboardInputDevice: KeyboardInputDevice
     private let highway = SKNode()
-    private let judgmentLabel = SKLabelNode(fontNamed: "SF Pro Display")
-    private let statusLabel = SKLabelNode(fontNamed: "SF Pro Display")
+    private let judgmentLabel = SKLabelNode()
+    private let statusLabel = SKLabelNode()
     private let laneWidth: CGFloat = 120
     private let laneInset: CGFloat = 2
     private let defaultNoteSpeed: CGFloat = 260
@@ -312,7 +312,7 @@ final class GameplayScene: SKScene {
 
             if isMeasureLine {
                 let barNumber = max(1, (beatIndex / max(configuration.beatsPerBar, 1)) + 1)
-                let label = SKLabelNode(fontNamed: "SF Pro Display")
+                let label = SKLabelNode()
                 label.name = beatGuideLabelNodeNamePrefix + "\(subdivisionIndex)"
                 label.text = "Bar \(barNumber)"
                 label.fontColor = .white.withAlphaComponent(0.68)
@@ -356,7 +356,7 @@ final class GameplayScene: SKScene {
             laneHighlights[lane.id] = highlightNode
 
             if let key = lane.presentationKeyLabel {
-                let keyLabel = SKLabelNode(fontNamed: "SF Pro Display")
+                let keyLabel = SKLabelNode()
                 keyLabel.text = key
                 keyLabel.fontColor = .white.withAlphaComponent(0.92)
                 keyLabel.fontSize = lane.presentationLane == .kick ? 22 : 24
@@ -366,7 +366,7 @@ final class GameplayScene: SKScene {
                 highway.addChild(keyLabel)
             }
 
-            let drumLabel = SKLabelNode(fontNamed: "SF Pro Display")
+            let drumLabel = SKLabelNode()
             drumLabel.text = lane.label
             drumLabel.fontColor = .white.withAlphaComponent(0.76)
             drumLabel.fontSize = 12
@@ -447,7 +447,7 @@ final class GameplayScene: SKScene {
         node.physicsBody = body
 
         let keyLabelText = displayLane?.presentationKeyLabel ?? note.lane.keyLabel
-        let label = SKLabelNode(fontNamed: "SF Pro Display")
+        let label = SKLabelNode()
         label.text = keyLabelText
         label.fontColor = .white
         label.fontSize = presentationLane == .kick ? 12 : 11
