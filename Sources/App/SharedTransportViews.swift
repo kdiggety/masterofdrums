@@ -84,30 +84,26 @@ struct TransportControlsView: View {
 struct PositionSliderView: View {
     let game: PrototypeGameController
     @State private var sliderValue: Double = 0
+    @State private var isDragging = false
 
     var body: some View {
         Slider(
             value: $sliderValue,
             in: 0...1,
             onEditingChanged: { isEditing in
+                isDragging = isEditing
                 if isEditing {
                     sliderValue = game.playbackProgress
                 } else {
                     let targetTime = sliderValue * max(game.playbackDuration, 0.1)
                     game.seekTransport(to: targetTime)
-                    sliderValue = game.playbackProgress
                 }
             }
         )
         .onChange(of: game.playbackProgress) { newValue in
-            if !isSliderBeingDragged() {
+            if !isDragging {
                 sliderValue = newValue
             }
         }
-    }
-
-    private func isSliderBeingDragged() -> Bool {
-        let currentProgress = game.playbackProgress
-        return abs(sliderValue - currentProgress) > 0.001
     }
 }
