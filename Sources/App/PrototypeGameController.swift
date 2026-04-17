@@ -1800,11 +1800,20 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func currentSceneTime(fallbackAudioTime: Double) -> Double {
-        let baseTime = isChartOnlyPlaybackEnabled ? chartPreviewClock.currentTime : fallbackAudioTime
+        let hasAudio = audio.duration > 0
+        let hasChart = !session.chart.notes.isEmpty
+        let baseTime: Double
+        if hasAudio {
+            baseTime = fallbackAudioTime
+        } else if hasChart {
+            baseTime = chartPreviewClock.currentTime
+        } else {
+            baseTime = 0
+        }
         guard let targetTime = adminScrubPreviewTargetTime else {
             let result = adminScrubPreviewTime ?? baseTime
-            if adminScrubPreviewTime == nil && !isChartOnlyPlaybackEnabled {
-                print("[scrub] currentSceneTime: returning baseTime=\(baseTime), isChartOnlyPlaybackEnabled=\(isChartOnlyPlaybackEnabled), fallbackAudioTime=\(fallbackAudioTime)")
+            if adminScrubPreviewTime == nil && hasChart && !hasAudio {
+                print("[scrub] currentSceneTime: returning chartPreviewClock.currentTime=\(baseTime) for chart-only (audio.duration=\(audio.duration))")
             }
             return result
         }
@@ -1893,7 +1902,7 @@ final class PrototypeGameController: ObservableObject {
 
     private func stopChartOnlyPlaybackIfNeeded(resetTime: Bool) {
         guard isChartOnlyPlaybackEnabled else { return }
-        print("[scrub] stopChartOnlyPlaybackIfNeeded called: resetTime=\(resetTime)")
+        print("[scrub] stopChartOnlyPlaybackIfNeeded called: resetTime=\(resetTime), adminScrubPreviewTargetTime=\(String(describing: adminScrubPreviewTargetTime))")
         chartPreviewClock.pause()
         if resetTime {
             chartPreviewClock.stop()
@@ -1901,6 +1910,7 @@ final class PrototypeGameController: ObservableObject {
         adminScrubPreviewTime = nil
         adminScrubPreviewTargetTime = nil
         isChartOnlyPlaybackEnabled = false
+        isChartAuditionActive = false
         print("[scrub] stopChartOnlyPlaybackIfNeeded done: isChartOnlyPlaybackEnabled=\(isChartOnlyPlaybackEnabled)")
         isChartAuditionActive = false
         chartPreviewTimerCancellable?.cancel()
