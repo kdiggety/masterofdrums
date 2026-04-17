@@ -44,23 +44,8 @@ struct TransportControlsView: View {
             }
 
             transportStatusRow("Position", "\(game.playbackTimeText) / \(game.playbackDurationText)")
-            Slider(
-                value: Binding(
-                    get: { game.effectivePlaybackProgress },
-                    set: { newValue in
-                        let targetTime = newValue * max(game.playbackDuration, 0.1)
-                        game.updateAdminScrubPreview(to: targetTime, forceUpdate: true)
-                    }
-                ),
-                in: 0...1,
-                onEditingChanged: { isEditing in
-                    if !isEditing {
-                        let targetTime = game.effectivePlaybackProgress * max(game.playbackDuration, 0.1)
-                        game.seekTransport(to: targetTime)
-                    }
-                }
-            )
-            .disabled(!game.canScrub)
+            PositionSliderView(game: game)
+                .disabled(!game.canScrub)
 
             transportStatusRow("Speed", game.playbackRateText)
             HStack(spacing: 8) {
@@ -93,5 +78,36 @@ struct TransportControlsView: View {
             Button(title) { game.setPlaybackRate(rate) }
                 .buttonStyle(BorderedButtonStyle())
         }
+    }
+}
+
+struct PositionSliderView: View {
+    let game: PrototypeGameController
+    @State private var sliderValue: Double = 0
+
+    var body: some View {
+        Slider(
+            value: $sliderValue,
+            in: 0...1,
+            onEditingChanged: { isEditing in
+                if isEditing {
+                    sliderValue = game.playbackProgress
+                } else {
+                    let targetTime = sliderValue * max(game.playbackDuration, 0.1)
+                    game.seekTransport(to: targetTime)
+                    sliderValue = game.playbackProgress
+                }
+            }
+        )
+        .onChange(of: game.playbackProgress) { newValue in
+            if !isSliderBeingDragged() {
+                sliderValue = newValue
+            }
+        }
+    }
+
+    private func isSliderBeingDragged() -> Bool {
+        let currentProgress = game.playbackProgress
+        return abs(sliderValue - currentProgress) > 0.001
     }
 }
