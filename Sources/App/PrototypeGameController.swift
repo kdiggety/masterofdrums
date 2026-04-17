@@ -1309,10 +1309,7 @@ final class PrototypeGameController: ObservableObject {
 
     func unloadChart() {
         stopChartOnlyPlaybackIfNeeded(resetTime: true)
-        // Only clear chart active flag if audio is also not loaded
-        if audio.duration <= 0 {
-            isAdminChartActive = false
-        }
+        isAdminChartActive = false
         activeAdminChartURL = nil
         importedChartTiming = nil
         hasManualTimingOverride = false
