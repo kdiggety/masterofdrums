@@ -956,8 +956,8 @@ final class PrototypeGameController: ObservableObject {
         totalDuration: Double,
         multiplier: Double = 4.0
     ) -> Double {
-        let height = max(availableHeight, 1)
-        let normalizedDelta = -translationHeight / height
+        guard availableHeight > 0 else { return startTime }
+        let normalizedDelta = -translationHeight / availableHeight
         let scaledDuration = max(totalDuration, 0) * multiplier
         let unclampedTargetTime = startTime + (normalizedDelta * scaledDuration)
         return max(0, min(totalDuration, unclampedTargetTime))
@@ -1811,8 +1811,7 @@ final class PrototypeGameController: ObservableObject {
     var currentPlaybackTime: Double { activeTransportTime }
     var playbackDuration: Double { max(audio.duration, session.chart.endTime, 0) }
     var playbackProgress: Double {
-        let duration = max(playbackDuration, 0)
-        guard duration > 0 else { return 0 }
+        let duration = max(playbackDuration, 0.1)
         return min(max(activeTransportTime / duration, 0), 1)
     }
 

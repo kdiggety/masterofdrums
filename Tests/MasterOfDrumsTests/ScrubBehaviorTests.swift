@@ -1,6 +1,7 @@
 import XCTest
 @testable import MasterOfDrums
 
+@MainActor
 final class ScrubBehaviorTests: XCTestCase {
     let duration = 120.0
     let multiplier = 4.0
@@ -95,7 +96,7 @@ final class ScrubBehaviorTests: XCTestCase {
 
     func testLargerAvailableHeightReducesSensitivity() {
         let startTime = 60.0
-        let translationHeight = -100.0
+        let translationHeight = -10.0
 
         let resultSmallHeight = PrototypeGameController.computeScrubTime(
             from: startTime,
