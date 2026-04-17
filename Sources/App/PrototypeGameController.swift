@@ -1822,7 +1822,13 @@ final class PrototypeGameController: ObservableObject {
     }
 
     var currentPlaybackTime: Double { activeTransportTime }
-    var playbackDuration: Double { max(audio.duration, session.chart.endTime, 0) }
+    var playbackDuration: Double {
+        let duration = max(audio.duration, session.chart.endTime, 0)
+        if audio.duration > 0 && session.chart.endTime > 0 && duration != audio.duration {
+            print("[duration] playbackDuration: audio.duration=\(audio.duration), chart.endTime=\(session.chart.endTime), max=\(duration)")
+        }
+        return duration
+    }
     var playbackProgress: Double {
         let duration = max(playbackDuration, 0.1)
         return min(max(activeTransportTime / duration, 0), 1)
