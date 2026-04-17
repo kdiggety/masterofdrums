@@ -1835,10 +1835,13 @@ final class PrototypeGameController: ObservableObject {
 
     private var activeTransportTime: Double {
         if audio.duration > 0 {
+            print("[scrub] activeTransportTime: audio.duration=\(audio.duration) > 0, returning audio.currentTime=\(audio.currentTime)")
             return audio.currentTime
         } else if isAdminChartActive {
+            print("[scrub] activeTransportTime: audio.duration=\(audio.duration) <= 0, isAdminChartActive=true, returning chartPreviewClock.currentTime=\(chartPreviewClock.currentTime)")
             return chartPreviewClock.currentTime
         } else {
+            print("[scrub] activeTransportTime: audio.duration=\(audio.duration) <= 0, isAdminChartActive=false, returning 0")
             return 0
         }
     }
