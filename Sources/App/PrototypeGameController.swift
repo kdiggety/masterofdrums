@@ -1389,6 +1389,7 @@ final class PrototypeGameController: ObservableObject {
             let isJSONChart = url.pathExtension.lowercased() == "json"
             if isJSONChart {
                 let loaded = try chartFileStore.loadChart(from: url)
+                isAdminChartActive = true
                 activeAdminChartURL = url
                 importedChartTiming = loaded.timing
                 hasManualTimingOverride = false
@@ -1403,6 +1404,7 @@ final class PrototypeGameController: ObservableObject {
                 adminStatusText = "Loaded chart JSON \(url.lastPathComponent) with \(loaded.chart.notes.count) notes"
             } else {
                 let loaded = try midiLoader.loadChartData(from: url)
+                isAdminChartActive = true
                 activeAdminChartURL = nil
                 importedChartTiming = nil
                 hasManualTimingOverride = false
