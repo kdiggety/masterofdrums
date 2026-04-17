@@ -1828,6 +1828,12 @@ final class PrototypeGameController: ObservableObject {
         return min(max(activeTransportTime / duration, 0), 1)
     }
 
+    var effectivePlaybackProgress: Double {
+        let duration = max(playbackDuration, 0.1)
+        let effectiveTime = adminScrubPreviewTime ?? activeTransportTime
+        return min(max(effectiveTime / duration, 0), 1)
+    }
+
     var canScrub: Bool {
         // Enable scrubbing if audio is loaded OR if a chart is active (loaded or created in Admin)
         playbackDuration > 0 || isAdminChartActive

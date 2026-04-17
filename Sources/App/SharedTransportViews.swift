@@ -46,7 +46,7 @@ struct TransportControlsView: View {
             transportStatusRow("Position", "\(game.playbackTimeText) / \(game.playbackDurationText)")
             Slider(
                 value: Binding(
-                    get: { game.playbackProgress },
+                    get: { game.effectivePlaybackProgress },
                     set: { newValue in
                         let targetTime = newValue * max(game.playbackDuration, 0.1)
                         game.updateAdminScrubPreview(to: targetTime)
@@ -55,7 +55,7 @@ struct TransportControlsView: View {
                 in: 0...1,
                 onEditingChanged: { isEditing in
                     if !isEditing {
-                        let targetTime = game.playbackProgress * max(game.playbackDuration, 0.1)
+                        let targetTime = game.effectivePlaybackProgress * max(game.playbackDuration, 0.1)
                         game.seekTransport(to: targetTime)
                     }
                 }
