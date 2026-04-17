@@ -990,6 +990,9 @@ final class PrototypeGameController: ObservableObject {
     func seekTransport(to time: Double) {
         if audio.duration > 0 {
             audio.seek(to: time)
+            if isAdminChartActive {
+                chartPreviewClock.seek(to: time)
+            }
         } else if isAdminChartActive {
             chartPreviewClock.seek(to: time)
         }
