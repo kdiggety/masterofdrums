@@ -426,8 +426,13 @@ final class GameplayScene: SKScene {
     }
 
     private func frameForLane(at index: Int, startX: CGFloat) -> CGRect {
-        let laneX = startX + CGFloat(index) * laneWidth + laneInset
-        return CGRect(x: laneX, y: 0, width: laneWidth - (laneInset * 2), height: size.height)
+        let isFirstLane = index == 0
+        let isLastLane = index == laneOrder.count - 1
+        let leftInset = isFirstLane ? 0 : laneInset
+        let rightInset = isLastLane ? 0 : laneInset
+        let laneX = startX + CGFloat(index) * laneWidth + leftInset
+        let laneWidth = self.laneWidth - leftInset - rightInset
+        return CGRect(x: laneX, y: 0, width: laneWidth, height: size.height)
     }
 
     private func makeNoteNode(for note: NoteEvent) -> SKShapeNode {
