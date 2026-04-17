@@ -30,6 +30,7 @@ struct AdminChartEditorView: View {
                     VStack(alignment: .leading, spacing: 0) {
                         // Fixed transport section at top - never scrolls
                         transportSection
+                            .layoutPriority(1)
                             .padding(.bottom, 12)
 
                         // Scrollable content area - all other controls and sections
