@@ -205,6 +205,7 @@ final class PrototypeGameController: ObservableObject {
     private var adminScrubPreviewTargetTime: Double?
     private var activeSectionDragSnapshot: [SongSection]?
     private var activeAdminChartURL: URL?
+    private var isAdminChartActive = false
     private var cancellables: Set<AnyCancellable> = []
     private var undoHistory: [AdminChartHistoryEntry] = []
     private var redoHistory: [AdminChartHistoryEntry] = []
@@ -443,6 +444,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func startAdminChart() {
+        isAdminChartActive = true
         activeAdminChartURL = nil
         importedChartTiming = nil
         hasManualTimingOverride = false
@@ -1183,6 +1185,7 @@ final class PrototypeGameController: ObservableObject {
         guard let url = chartFileStore.chooseChartFileForOpen() else { refocusGameplay(); return }
         do {
             let loaded = try chartFileStore.loadChart(from: url)
+            isAdminChartActive = true
             activeAdminChartURL = url
             importedChartTiming = loaded.timing
             hasManualTimingOverride = false
@@ -1306,6 +1309,7 @@ final class PrototypeGameController: ObservableObject {
 
     func unloadChart() {
         stopChartOnlyPlaybackIfNeeded(resetTime: true)
+        isAdminChartActive = false
         activeAdminChartURL = nil
         importedChartTiming = nil
         hasManualTimingOverride = false
@@ -1811,8 +1815,8 @@ final class PrototypeGameController: ObservableObject {
     }
 
     var canScrub: Bool {
-        // Enable scrubbing if audio is loaded, OR if chart has content, OR if chart has been loaded/created
-        playbackDuration > 0 || !session.chart.notes.isEmpty || !session.chart.sections.isEmpty || activeAdminChartURL != nil
+        // Enable scrubbing if audio is loaded OR if a chart is active (loaded or created in Admin)
+        playbackDuration > 0 || isAdminChartActive
     }
 
     func isPlaybackRateSelected(_ rate: Float) -> Bool {

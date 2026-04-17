@@ -46,19 +46,12 @@ struct TransportControlsView: View {
             transportStatusRow("Position", "\(game.playbackTimeText) / \(game.playbackDurationText)")
             Slider(
                 value: Binding(
-                    get: {
-                        let duration = showsRecord ? max(game.playbackDuration, 60) : game.playbackDuration
-                        guard duration > 0 else { return 0 }
-                        return min(max(game.currentPlaybackTime / duration, 0), 1)
-                    },
-                    set: {
-                        let duration = showsRecord ? max(game.playbackDuration, 60) : game.playbackDuration
-                        game.seekTransport(to: $0 * duration)
-                    }
+                    get: { game.playbackProgress },
+                    set: { game.seekTransport(to: $0 * max(game.playbackDuration, 0.1)) }
                 ),
                 in: 0...1
             )
-            .disabled(!game.canScrub && !showsRecord)
+            .disabled(!game.canScrub)
 
             transportStatusRow("Speed", game.playbackRateText)
             HStack(spacing: 8) {
