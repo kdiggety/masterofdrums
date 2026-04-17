@@ -988,8 +988,11 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func seekTransport(to time: Double) {
+        print("[scrub] seekTransport called with time=\(time), isChartOnlyPlaybackEnabled=\(isChartOnlyPlaybackEnabled), audio.duration=\(audio.duration)")
         audio.seek(to: time)
+        print("[scrub] after audio.seek: audio.currentTime=\(audio.currentTime), chartPreviewClock.currentTime=\(chartPreviewClock.currentTime)")
         finalizeAdminScrub(at: time, announce: false)
+        print("[scrub] after finalizeAdminScrub: activeTransportTime=\(activeTransportTime)")
         syncTransportState()
         adminStatusText = "Seeked to \(playbackTimeText)"
         refocusGameplay()
@@ -1735,6 +1738,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func moveStepCursor(to time: Double, seekPlayback: Bool) {
+        print("[scrub] moveStepCursor: time=\(time), seekPlayback=\(seekPlayback), isChartOnlyPlaybackEnabled=\(isChartOnlyPlaybackEnabled)")
         stepCursorTime = max(0, time)
         updateStepCursorDisplay()
         updateLoopStatusText()

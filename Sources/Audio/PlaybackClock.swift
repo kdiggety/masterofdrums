@@ -53,9 +53,11 @@ final class PreviewPlaybackClock: PlaybackClock {
     }
 
     func seek(to time: TimeInterval) {
+        print("[scrub] PreviewPlaybackClock.seek called: time=\(time), state=\(state), accumulatedTime before=\(accumulatedTime)")
         accumulatedTime = max(0, time)
         if state == .playing {
             anchorDate = Date()
         }
+        print("[scrub] PreviewPlaybackClock.seek done: accumulatedTime after=\(accumulatedTime), currentTime=\(currentTime)")
     }
 }
