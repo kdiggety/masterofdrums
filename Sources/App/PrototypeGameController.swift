@@ -1007,6 +1007,12 @@ final class PrototypeGameController: ObservableObject {
         adminScrubPreviewTargetTime = clampedTime
     }
 
+    func setAdminScrubPreview(to time: Double) {
+        let clampedTime = max(0, min(playbackDuration, time))
+        adminScrubPreviewTime = clampedTime
+        adminScrubPreviewTargetTime = clampedTime
+    }
+
     func resolvedAdminScrubTime(for previewTime: Double) -> Double {
         guard isNoteLaneSnapEnabled else {
             adminSelectedNoteID = nil
