@@ -441,6 +441,11 @@ final class GameplayScene: SKScene {
         node.strokeColor = .white.withAlphaComponent(0.9)
         node.lineWidth = 1.5
 
+        let body = SKPhysicsBody(rectangleOf: noteSize)
+        body.isDynamic = false
+        body.affectedByGravity = false
+        node.physicsBody = body
+
         let keyLabelText = displayLane?.presentationKeyLabel ?? note.lane.keyLabel
         let label = SKLabelNode(fontNamed: "SF Pro Rounded")
         label.text = keyLabelText

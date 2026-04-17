@@ -114,7 +114,7 @@ struct AdminChartEditorView: View {
             accordionSection("Session Setup", isExpanded: $isSessionSetupExpanded) {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack(spacing: 8) {
-                        adminButton("Choose Audio") { game.chooseAudioFile() }
+                        adminButton("Load Audio") { game.chooseAudioFile() }
                         adminButton("Load Chart") { game.loadAdminChartDocument() }
                     }
                     HStack(spacing: 8) {
