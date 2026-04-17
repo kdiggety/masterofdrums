@@ -105,45 +105,7 @@ struct AdminChartEditorView: View {
 
     private var transportSection: some View {
         GroupBox("Transport") {
-            VStack(alignment: .leading, spacing: 10) {
-                HStack(spacing: 8) {
-                    if game.transportStateText == "Playing" || game.transportStateText == "Chart Preview" {
-                        adminProminentButton("Stop") { game.pauseTransport() }
-                    } else {
-                        adminProminentButton("Play") { game.playTransport() }
-                    }
-                    adminButton("Restart") { game.playFromStart() }
-                    adminProminentButton(game.isAdminRecordMode ? "Stop Recording" : "Record") { game.toggleAdminRecordMode() }
-                }
-
-                statusRow("Position", "\(game.playbackTimeText) / \(game.playbackDurationText)")
-                Slider(
-                    value: Binding(
-                        get: { game.playbackProgress },
-                        set: { game.seekTransport(to: $0 * game.playbackDuration) }
-                    ),
-                    in: 0...1
-                )
-                .disabled(game.playbackDuration <= 0)
-
-                statusRow("Speed", game.playbackRateText)
-                HStack(spacing: 8) {
-                    playbackRateButton("100%", rate: 1.0)
-                    playbackRateButton("75%", rate: 0.75)
-                    playbackRateButton("50%", rate: 0.5)
-                }
-
-                statusRow("Loop", game.loopStatusText)
-                Picker("Loop", selection: $game.loopLength) {
-                    ForEach(PrototypeGameController.LoopLength.allCases) { length in
-                        Text(length.rawValue).tag(length)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .onChange(of: game.loopLength) { newValue in
-                    game.setLoopLength(newValue)
-                }
-            }
+            TransportControlsView(showsRecord: true, showsLoop: true)
         }
     }
 
@@ -216,11 +178,11 @@ struct AdminChartEditorView: View {
 
                     Toggle("Snap note lane scrub to beat grid", isOn: $game.isNoteLaneSnapEnabled)
 
-                    statusRow("BPM Source", game.bpmSourceText)
-                    statusRow("Timing", game.timingSourceText)
-                    statusRow("Time Sig", game.timeSignatureText)
-                    statusRow("Ticks/Beat", game.ticksPerBeatText)
-                    statusRow("Analysis", game.bpmAnalysisStatusText)
+                    transportStatusRow("BPM Source", game.bpmSourceText)
+                    transportStatusRow("Timing", game.timingSourceText)
+                    transportStatusRow("Time Sig", game.timeSignatureText)
+                    transportStatusRow("Ticks/Beat", game.ticksPerBeatText)
+                    transportStatusRow("Analysis", game.bpmAnalysisStatusText)
                     Text(game.timingOverrideStatusText)
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -282,11 +244,11 @@ struct AdminChartEditorView: View {
 
             accordionSection("Status", isExpanded: $isStatusExpanded) {
                 VStack(alignment: .leading, spacing: 8) {
-                    statusRow("Audio", game.trackName)
-                    statusRow("Chart", game.chartName)
-                    statusRow("Transport", game.transportStateText)
-                    statusRow("Time", game.playbackTimeText)
-                    statusRow("Position", game.barBeatText)
+                    transportStatusRow("Audio", game.trackName)
+                    transportStatusRow("Chart", game.chartName)
+                    transportStatusRow("Transport", game.transportStateText)
+                    transportStatusRow("Time", game.playbackTimeText)
+                    transportStatusRow("Position", game.barBeatText)
                         .help("Position format: Bar.Beat.Division.Tick")
                     Text(game.chartStatusText)
                         .font(.caption)
@@ -661,18 +623,6 @@ struct AdminChartEditorView: View {
         }
     }
 
-    private func statusRow(_ title: String, _ value: String) -> some View {
-        HStack {
-            Text(title)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            Spacer()
-            Text(value)
-                .font(.subheadline.monospacedDigit())
-                .lineLimit(1)
-        }
-    }
-
     private func adminButton(_ title: String, action: @escaping () -> Void) -> some View {
         Button(title, action: action)
             .buttonStyle(BorderedButtonStyle())
@@ -683,18 +633,5 @@ struct AdminChartEditorView: View {
         Button(title, action: action)
             .buttonStyle(BorderedProminentButtonStyle())
             .focusable(false)
-    }
-
-    @ViewBuilder
-    private func playbackRateButton(_ title: String, rate: Float) -> some View {
-        if game.isPlaybackRateSelected(rate) {
-            Button(title) { game.setPlaybackRate(rate) }
-                .buttonStyle(BorderedProminentButtonStyle())
-                .focusable(false)
-        } else {
-            Button(title) { game.setPlaybackRate(rate) }
-                .buttonStyle(BorderedButtonStyle())
-                .focusable(false)
-        }
     }
 }

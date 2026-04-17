@@ -947,12 +947,28 @@ final class PrototypeGameController: ObservableObject {
         refocusGameplay()
     }
 
-    func scrubTargetTime(from startTime: Double, translationHeight: Double, availableHeight: Double) -> Double {
+    static func computeScrubTime(
+        from startTime: Double,
+        translationHeight: Double,
+        availableHeight: Double,
+        totalDuration: Double,
+        multiplier: Double = 4.0
+    ) -> Double {
         let height = max(availableHeight, 1)
         let normalizedDelta = -translationHeight / height
-        let scaledDuration = max(playbackDuration, 0) * adminLaneScrubDurationMultiplier
+        let scaledDuration = max(totalDuration, 0) * multiplier
         let unclampedTargetTime = startTime + (normalizedDelta * scaledDuration)
-        return max(0, min(playbackDuration, unclampedTargetTime))
+        return max(0, min(totalDuration, unclampedTargetTime))
+    }
+
+    func scrubTargetTime(from startTime: Double, translationHeight: Double, availableHeight: Double) -> Double {
+        Self.computeScrubTime(
+            from: startTime,
+            translationHeight: translationHeight,
+            availableHeight: availableHeight,
+            totalDuration: playbackDuration,
+            multiplier: adminLaneScrubDurationMultiplier
+        )
     }
 
     func adminDraggedNoteTime(from startTime: Double, translationHeight: Double, availableHeight: Double) -> Double {
@@ -1792,6 +1808,11 @@ final class PrototypeGameController: ObservableObject {
         let duration = max(playbackDuration, 0)
         guard duration > 0 else { return 0 }
         return min(max(activeTransportTime / duration, 0), 1)
+    }
+
+    var canScrub: Bool {
+        // Enable scrubbing if audio is loaded, OR if chart has content, OR if chart has been loaded/created
+        playbackDuration > 0 || !session.chart.notes.isEmpty || !session.chart.sections.isEmpty || activeAdminChartURL != nil
     }
 
     func isPlaybackRateSelected(_ rate: Float) -> Bool {

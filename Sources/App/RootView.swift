@@ -70,19 +70,19 @@ struct RootView: View {
                     Label(game.trackName, systemImage: "waveform")
                         .font(.subheadline.weight(.medium))
                         .lineLimit(2)
-                    infoRow("Chart", game.chartName)
+                    transportStatusRow("Chart", game.chartName)
                     Text(game.chartStatusText)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
-                    infoRow("State", game.transportStateText)
-                    infoRow("Time", game.playbackTimeText)
-                    infoRow("Position", game.barBeatText)
+                    transportStatusRow("State", game.transportStateText)
+                    transportStatusRow("Time", game.playbackTimeText)
+                    transportStatusRow("Position", game.barBeatText)
                         .help("Position format: Bar.Beat.Division.Tick")
                     Text("Format: Bar.Beat.Division.Tick")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
-                    infoRow("Sub", game.musicalSubdivisionText)
+                    transportStatusRow("Sub", game.musicalSubdivisionText)
 
                     HStack(spacing: 8) {
                         Button("Choose Audio") {
@@ -123,10 +123,10 @@ struct RootView: View {
 
             GroupBox("Tempo") {
                 VStack(alignment: .leading, spacing: 10) {
-                    infoRow("BPM Source", game.bpmSourceText)
-                    infoRow("Timing", game.timingSourceText)
-                    infoRow("Time Sig", game.timeSignatureText)
-                    infoRow("Ticks/Beat", game.ticksPerBeatText)
+                    transportStatusRow("BPM Source", game.bpmSourceText)
+                    transportStatusRow("Timing", game.timingSourceText)
+                    transportStatusRow("Time Sig", game.timeSignatureText)
+                    transportStatusRow("Ticks/Beat", game.ticksPerBeatText)
                     Text(game.timingOverrideStatusText)
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -135,7 +135,7 @@ struct RootView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
-                    infoRow("Analysis", game.bpmAnalysisStatusText)
+                    transportStatusRow("Analysis", game.bpmAnalysisStatusText)
                     Text(game.bpmAnalysisDetailText)
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -214,16 +214,6 @@ struct RootView: View {
         }
     }
 
-    private func infoRow(_ title: String, _ value: String) -> some View {
-        HStack {
-            Text(title)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            Spacer()
-            Text(value)
-                .font(.subheadline.monospacedDigit())
-        }
-    }
 
     private func stepperChip(title: String, value: String, decrement: @escaping () -> Void, increment: @escaping () -> Void) -> some View {
         HStack(spacing: 8) {

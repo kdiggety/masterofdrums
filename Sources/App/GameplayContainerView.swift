@@ -7,6 +7,10 @@ final class GameplaySKView: SKView {
     var onAdminLeftMouseDragged: ((CGPoint, CGSize) -> Void)?
     var onAdminLeftMouseUp: ((CGPoint, CGSize) -> Void)?
     var onAdminRightMouseDown: ((CGPoint) -> Void)?
+    var onAdminScenePointRightMouseDown: ((CGPoint) -> Void)?
+    var onAdminScenePointDown: ((CGPoint, CGSize, Int) -> Void)?
+    var onAdminScenePointDragged: ((CGPoint, CGSize) -> Void)?
+    var onAdminScenePointUp: ((CGPoint, CGSize) -> Void)?
     var isAdminInteractive = false
 
     override var acceptsFirstResponder: Bool { true }
@@ -18,7 +22,7 @@ final class GameplaySKView: SKView {
 
     override func mouseDown(with event: NSEvent) {
         window?.makeFirstResponder(self)
-        guard isAdminInteractive else {
+        guard isAdminInteractive, let scene else {
             super.mouseDown(with: event)
             return
         }
@@ -28,38 +32,42 @@ final class GameplaySKView: SKView {
             onAdminRightMouseDown?(point)
             return
         }
-        onAdminLeftMouseDown?(point, bounds.size, event.clickCount)
+        let scenePoint = convert(point, to: scene)
+        onAdminScenePointDown?(scenePoint, bounds.size, event.clickCount)
     }
 
     override func mouseDragged(with event: NSEvent) {
-        guard isAdminInteractive else {
+        guard isAdminInteractive, let scene else {
             super.mouseDragged(with: event)
             return
         }
 
         let point = convert(event.locationInWindow, from: nil)
-        onAdminLeftMouseDragged?(point, bounds.size)
+        let scenePoint = convert(point, to: scene)
+        onAdminScenePointDragged?(scenePoint, bounds.size)
     }
 
     override func mouseUp(with event: NSEvent) {
-        guard isAdminInteractive else {
+        guard isAdminInteractive, let scene else {
             super.mouseUp(with: event)
             return
         }
 
         let point = convert(event.locationInWindow, from: nil)
-        onAdminLeftMouseUp?(point, bounds.size)
+        let scenePoint = convert(point, to: scene)
+        onAdminScenePointUp?(scenePoint, bounds.size)
     }
 
     override func rightMouseDown(with event: NSEvent) {
-        guard isAdminInteractive else {
+        guard isAdminInteractive, let scene else {
             super.rightMouseDown(with: event)
             return
         }
 
         window?.makeFirstResponder(self)
         let point = convert(event.locationInWindow, from: nil)
-        onAdminRightMouseDown?(point)
+        let scenePoint = convert(point, to: scene)
+        onAdminScenePointRightMouseDown?(scenePoint)
     }
 
     override func keyDown(with event: NSEvent) {
@@ -116,17 +124,17 @@ struct GameplayContainerView: NSViewRepresentable {
         coordinator.isAdminInteractive = isAdminInteractive
         view.isAdminInteractive = isAdminInteractive
 
-        view.onAdminLeftMouseDown = { point, size, clickCount in
-            coordinator.handleLeftMouseDown(at: point, in: size, clickCount: clickCount)
+        view.onAdminScenePointDown = { scenePoint, size, clickCount in
+            coordinator.handleLeftMouseDown(at: scenePoint, in: size, clickCount: clickCount)
         }
-        view.onAdminLeftMouseDragged = { point, size in
-            coordinator.handleLeftMouseDragged(at: point, in: size)
+        view.onAdminScenePointDragged = { scenePoint, size in
+            coordinator.handleLeftMouseDragged(at: scenePoint, in: size)
         }
-        view.onAdminLeftMouseUp = { point, size in
-            coordinator.handleLeftMouseUp(at: point, in: size)
+        view.onAdminScenePointUp = { scenePoint, size in
+            coordinator.handleLeftMouseUp(at: scenePoint, in: size)
         }
-        view.onAdminRightMouseDown = { point in
-            coordinator.handleRightMouseDown(at: point)
+        view.onAdminScenePointRightMouseDown = { scenePoint in
+            coordinator.handleRightMouseDown(at: scenePoint)
         }
     }
 
@@ -150,12 +158,11 @@ struct GameplayContainerView: NSViewRepresentable {
             self.scene = scene
         }
 
-        func handleLeftMouseDown(at viewPoint: CGPoint, in size: CGSize, clickCount: Int) {
+        func handleLeftMouseDown(at scenePoint: CGPoint, in size: CGSize, clickCount: Int) {
             guard isAdminInteractive, let game else { return }
-            initialPoint = viewPoint
+            initialPoint = scenePoint
             dragBegan = false
 
-            let scenePoint = scene.convertPoint(fromView: viewPoint)
             if let noteID = scene.adminNoteID(at: scenePoint) {
                 game.adminSelectedNoteID = noteID
                 let startTime = game.adminNotes.first(where: { $0.id == noteID })?.time ?? game.currentPlaybackTime
@@ -170,9 +177,9 @@ struct GameplayContainerView: NSViewRepresentable {
             _ = size
         }
 
-        func handleLeftMouseDragged(at viewPoint: CGPoint, in size: CGSize) {
+        func handleLeftMouseDragged(at scenePoint: CGPoint, in size: CGSize) {
             guard isAdminInteractive, let game, let interaction else { return }
-            let translation = CGPoint(x: viewPoint.x - initialPoint.x, y: viewPoint.y - initialPoint.y)
+            let translation = CGPoint(x: scenePoint.x - initialPoint.x, y: scenePoint.y - initialPoint.y)
             if !dragBegan,
                max(abs(translation.x), abs(translation.y)) >= dragThreshold {
                 dragBegan = true
@@ -187,7 +194,6 @@ struct GameplayContainerView: NSViewRepresentable {
                 )
                 game.updateAdminScrubPreview(to: previewTime)
             case .draggingNote(let id, let startTime):
-                let scenePoint = scene.convertPoint(fromView: viewPoint)
                 let movedTime = game.adminDraggedNoteTime(
                     from: startTime,
                     translationHeight: translation.y,
@@ -199,9 +205,9 @@ struct GameplayContainerView: NSViewRepresentable {
             }
         }
 
-        func handleLeftMouseUp(at viewPoint: CGPoint, in size: CGSize) {
+        func handleLeftMouseUp(at scenePoint: CGPoint, in size: CGSize) {
             guard isAdminInteractive, let game, let interaction else { return }
-            let translation = CGPoint(x: viewPoint.x - initialPoint.x, y: viewPoint.y - initialPoint.y)
+            let translation = CGPoint(x: scenePoint.x - initialPoint.x, y: scenePoint.y - initialPoint.y)
 
             switch interaction {
             case .scrubbing(let startTime):
@@ -217,7 +223,6 @@ struct GameplayContainerView: NSViewRepresentable {
             case .draggingNote(let id, let startTime):
                 game.clearAdminNoteMovePreview(id)
                 if dragBegan {
-                    let scenePoint = scene.convertPoint(fromView: viewPoint)
                     let movedTime = game.adminDraggedNoteTime(
                         from: startTime,
                         translationHeight: translation.y,
@@ -234,9 +239,8 @@ struct GameplayContainerView: NSViewRepresentable {
             self.dragBegan = false
         }
 
-        func handleRightMouseDown(at viewPoint: CGPoint) {
+        func handleRightMouseDown(at scenePoint: CGPoint) {
             guard isAdminInteractive, let game else { return }
-            let scenePoint = scene.convertPoint(fromView: viewPoint)
             guard let noteID = scene.adminNoteID(at: scenePoint) else { return }
             game.adminSelectedNoteID = noteID
             game.deleteAdminNote(noteID)
