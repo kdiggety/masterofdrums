@@ -35,21 +35,27 @@ final class PreviewPlaybackClock: PlaybackClock {
 
     func play() {
         guard state != .playing else { return }
+        print("[scrub] PreviewPlaybackClock.play called: accumulatedTime=\(accumulatedTime), state before=\(state)")
         anchorDate = Date()
         state = .playing
+        print("[scrub] PreviewPlaybackClock.play done: state after=\(state)")
     }
 
     func pause() {
         guard state == .playing else { return }
+        print("[scrub] PreviewPlaybackClock.pause called: accumulatedTime before=\(accumulatedTime), state before=\(state)")
         accumulatedTime = currentTime
         anchorDate = nil
         state = .paused
+        print("[scrub] PreviewPlaybackClock.pause done: accumulatedTime after=\(accumulatedTime), state after=\(state)")
     }
 
     func stop() {
+        print("[scrub] PreviewPlaybackClock.stop called: accumulatedTime before=\(accumulatedTime), state before=\(state)")
         accumulatedTime = 0
         anchorDate = nil
         state = .stopped
+        print("[scrub] PreviewPlaybackClock.stop done: accumulatedTime after=\(accumulatedTime), state after=\(state)")
     }
 
     func seek(to time: TimeInterval) {

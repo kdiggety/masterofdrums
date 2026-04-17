@@ -1214,6 +1214,7 @@ final class PrototypeGameController: ObservableObject {
         startTransport(at: adminScrubPreviewTime ?? activeTransportTime)
     }
     func pauseTransport() {
+        print("[scrub] pauseTransport called: isChartOnlyPlaybackEnabled=\(isChartOnlyPlaybackEnabled)")
         isChartAuditionActive = false
         chartPreviewTimerCancellable?.cancel()
         chartPreviewTimerCancellable = nil
@@ -1801,7 +1802,11 @@ final class PrototypeGameController: ObservableObject {
     private func currentSceneTime(fallbackAudioTime: Double) -> Double {
         let baseTime = isChartOnlyPlaybackEnabled ? chartPreviewClock.currentTime : fallbackAudioTime
         guard let targetTime = adminScrubPreviewTargetTime else {
-            return adminScrubPreviewTime ?? baseTime
+            let result = adminScrubPreviewTime ?? baseTime
+            if adminScrubPreviewTime == nil && !isChartOnlyPlaybackEnabled {
+                print("[scrub] currentSceneTime: returning baseTime=\(baseTime), isChartOnlyPlaybackEnabled=\(isChartOnlyPlaybackEnabled), fallbackAudioTime=\(fallbackAudioTime)")
+            }
+            return result
         }
 
         let currentTime = adminScrubPreviewTime ?? targetTime
@@ -1888,6 +1893,7 @@ final class PrototypeGameController: ObservableObject {
 
     private func stopChartOnlyPlaybackIfNeeded(resetTime: Bool) {
         guard isChartOnlyPlaybackEnabled else { return }
+        print("[scrub] stopChartOnlyPlaybackIfNeeded called: resetTime=\(resetTime)")
         chartPreviewClock.pause()
         if resetTime {
             chartPreviewClock.stop()
@@ -1895,6 +1901,7 @@ final class PrototypeGameController: ObservableObject {
         adminScrubPreviewTime = nil
         adminScrubPreviewTargetTime = nil
         isChartOnlyPlaybackEnabled = false
+        print("[scrub] stopChartOnlyPlaybackIfNeeded done: isChartOnlyPlaybackEnabled=\(isChartOnlyPlaybackEnabled)")
         isChartAuditionActive = false
         chartPreviewTimerCancellable?.cancel()
         chartPreviewTimerCancellable = nil
