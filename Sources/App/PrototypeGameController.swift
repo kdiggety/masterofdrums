@@ -1834,7 +1834,13 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private var activeTransportTime: Double {
-        isChartOnlyPlaybackEnabled ? chartPreviewClock.currentTime : audio.currentTime
+        if audio.duration > 0 {
+            return audio.currentTime
+        } else if isAdminChartActive {
+            return chartPreviewClock.currentTime
+        } else {
+            return 0
+        }
     }
 
     private var activeTransportState: TransportState {
