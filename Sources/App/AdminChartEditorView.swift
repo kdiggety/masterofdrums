@@ -70,9 +70,17 @@ struct AdminChartEditorView: View {
     }
 
     private var leftPanel: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            songSectionsSection
+        VStack(alignment: .leading, spacing: 0) {
+            // Scrollable sections above gameplay
+            ScrollView(.vertical) {
+                VStack(alignment: .leading, spacing: 12) {
+                    songSectionsSection
+                }
+                .padding(.bottom, 12)
+            }
+            .layoutPriority(0)
 
+            // Fixed gameplay area - never scrolls
             GameplayContainerView(
                 scene: game.scene,
                 focusVersion: game.gameplayFocusVersion,
@@ -84,8 +92,17 @@ struct AdminChartEditorView: View {
             .contentShape(Rectangle())
             .frame(maxWidth: .infinity)
             .frame(height: 440)
+            .layoutPriority(1)
+            .padding(.vertical, 12)
 
-            recordedNotesSection
+            // Scrollable sections below gameplay
+            ScrollView(.vertical) {
+                VStack(alignment: .leading, spacing: 12) {
+                    recordedNotesSection
+                }
+                .padding(.top, 12)
+            }
+            .layoutPriority(0)
         }
     }
 
