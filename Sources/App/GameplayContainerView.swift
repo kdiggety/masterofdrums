@@ -211,18 +211,14 @@ struct GameplayContainerView: NSViewRepresentable {
 
             switch interaction {
             case .scrubbing(let startTime):
-                print("[scrub] handleLeftMouseUp scrubbing: dragBegan=\(dragBegan), startTime=\(startTime), translation.y=\(translation.y), size.height=\(size.height)")
                 if dragBegan {
                     let previewTime = game.scrubTargetTime(
                         from: startTime,
                         translationHeight: translation.y,
                         availableHeight: size.height
                     )
-                    print("[scrub] previewTime=\(previewTime)")
                     let targetTime = game.resolvedAdminScrubTime(for: previewTime)
-                    print("[scrub] targetTime=\(targetTime), calling seekTransport")
                     game.seekTransport(to: targetTime)
-                    print("[scrub] after seekTransport: game.currentPlaybackTime=\(game.currentPlaybackTime)")
                 }
             case .draggingNote(let id, let startTime):
                 game.clearAdminNoteMovePreview(id)

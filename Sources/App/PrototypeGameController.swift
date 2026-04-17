@@ -988,16 +988,12 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func seekTransport(to time: Double) {
-        print("[scrub] seekTransport called with time=\(time), isChartOnlyPlaybackEnabled=\(isChartOnlyPlaybackEnabled), audio.duration=\(audio.duration)")
         if audio.duration > 0 {
             audio.seek(to: time)
-            print("[scrub] after audio.seek: audio.currentTime=\(audio.currentTime)")
         } else if isAdminChartActive {
             chartPreviewClock.seek(to: time)
-            print("[scrub] after chartPreviewClock.seek: chartPreviewClock.currentTime=\(chartPreviewClock.currentTime)")
         }
         finalizeAdminScrub(at: time, announce: false)
-        print("[scrub] after finalizeAdminScrub: activeTransportTime=\(activeTransportTime)")
         syncTransportState()
         adminStatusText = "Seeked to \(playbackTimeText)"
         refocusGameplay()
@@ -1214,7 +1210,6 @@ final class PrototypeGameController: ObservableObject {
         startTransport(at: adminScrubPreviewTime ?? activeTransportTime)
     }
     func pauseTransport() {
-        print("[scrub] pauseTransport called: isChartOnlyPlaybackEnabled=\(isChartOnlyPlaybackEnabled)")
         isChartAuditionActive = false
         chartPreviewTimerCancellable?.cancel()
         chartPreviewTimerCancellable = nil
@@ -1744,7 +1739,6 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func moveStepCursor(to time: Double, seekPlayback: Bool) {
-        print("[scrub] moveStepCursor: time=\(time), seekPlayback=\(seekPlayback), isChartOnlyPlaybackEnabled=\(isChartOnlyPlaybackEnabled)")
         stepCursorTime = max(0, time)
         updateStepCursorDisplay()
         updateLoopStatusText()
@@ -1811,11 +1805,7 @@ final class PrototypeGameController: ObservableObject {
             baseTime = 0
         }
         guard let targetTime = adminScrubPreviewTargetTime else {
-            let result = adminScrubPreviewTime ?? baseTime
-            if adminScrubPreviewTime == nil && hasChart && !hasAudio {
-                print("[scrub] currentSceneTime: returning chartPreviewClock.currentTime=\(baseTime) for chart-only (audio.duration=\(audio.duration))")
-            }
-            return result
+            return adminScrubPreviewTime ?? baseTime
         }
 
         let currentTime = adminScrubPreviewTime ?? targetTime
@@ -1849,13 +1839,10 @@ final class PrototypeGameController: ObservableObject {
 
     private var activeTransportTime: Double {
         if audio.duration > 0 {
-            print("[scrub] activeTransportTime: audio.duration=\(audio.duration) > 0, returning audio.currentTime=\(audio.currentTime)")
             return audio.currentTime
         } else if isAdminChartActive {
-            print("[scrub] activeTransportTime: audio.duration=\(audio.duration) <= 0, isAdminChartActive=true, returning chartPreviewClock.currentTime=\(chartPreviewClock.currentTime)")
             return chartPreviewClock.currentTime
         } else {
-            print("[scrub] activeTransportTime: audio.duration=\(audio.duration) <= 0, isAdminChartActive=false, returning 0")
             return 0
         }
     }
@@ -1902,7 +1889,6 @@ final class PrototypeGameController: ObservableObject {
 
     private func stopChartOnlyPlaybackIfNeeded(resetTime: Bool) {
         guard isChartOnlyPlaybackEnabled else { return }
-        print("[scrub] stopChartOnlyPlaybackIfNeeded called: resetTime=\(resetTime), adminScrubPreviewTargetTime=\(String(describing: adminScrubPreviewTargetTime))")
         chartPreviewClock.pause()
         if resetTime {
             chartPreviewClock.stop()
@@ -1911,7 +1897,6 @@ final class PrototypeGameController: ObservableObject {
         adminScrubPreviewTargetTime = nil
         isChartOnlyPlaybackEnabled = false
         isChartAuditionActive = false
-        print("[scrub] stopChartOnlyPlaybackIfNeeded done: isChartOnlyPlaybackEnabled=\(isChartOnlyPlaybackEnabled)")
         isChartAuditionActive = false
         chartPreviewTimerCancellable?.cancel()
         chartPreviewTimerCancellable = nil
