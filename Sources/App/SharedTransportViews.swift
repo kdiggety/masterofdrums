@@ -47,9 +47,18 @@ struct TransportControlsView: View {
             Slider(
                 value: Binding(
                     get: { game.playbackProgress },
-                    set: { game.seekTransport(to: $0 * max(game.playbackDuration, 0.1)) }
+                    set: { newValue in
+                        let targetTime = newValue * max(game.playbackDuration, 0.1)
+                        game.updateAdminScrubPreview(to: targetTime)
+                    }
                 ),
-                in: 0...1
+                in: 0...1,
+                onEditingChanged: { isEditing in
+                    if !isEditing {
+                        let targetTime = game.playbackProgress * max(game.playbackDuration, 0.1)
+                        game.seekTransport(to: targetTime)
+                    }
+                }
             )
             .disabled(!game.canScrub)
 
