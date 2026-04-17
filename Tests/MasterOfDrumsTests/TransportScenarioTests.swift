@@ -196,7 +196,12 @@ class MockGameController {
     }
 
     var currentPlaybackTime: Double {
-        if mockAudioDuration > 0 {
+        // Match the real activeTransportTime logic:
+        // When both audio and chart are present, use chart time if it's ahead (seeked past audio),
+        // otherwise use audio time (audio is primary when synchronized)
+        if mockAudioDuration > 0 && mockAdminChartActive {
+            return mockCurrentChartTime > mockCurrentAudioTime ? mockCurrentChartTime : mockCurrentAudioTime
+        } else if mockAudioDuration > 0 {
             return mockCurrentAudioTime
         } else if mockAdminChartActive {
             return mockCurrentChartTime
