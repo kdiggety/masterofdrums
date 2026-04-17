@@ -999,17 +999,11 @@ final class PrototypeGameController: ObservableObject {
         refocusGameplay()
     }
 
-    func updateAdminScrubPreview(to time: Double) {
+    func updateAdminScrubPreview(to time: Double, forceUpdate: Bool = false) {
         let clampedTime = max(0, min(playbackDuration, time))
-        if adminScrubPreviewTime == nil {
+        if adminScrubPreviewTime == nil || forceUpdate {
             adminScrubPreviewTime = clampedTime
         }
-        adminScrubPreviewTargetTime = clampedTime
-    }
-
-    func setAdminScrubPreview(to time: Double) {
-        let clampedTime = max(0, min(playbackDuration, time))
-        adminScrubPreviewTime = clampedTime
         adminScrubPreviewTargetTime = clampedTime
     }
 

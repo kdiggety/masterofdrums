@@ -49,7 +49,7 @@ struct TransportControlsView: View {
                     get: { game.effectivePlaybackProgress },
                     set: { newValue in
                         let targetTime = newValue * max(game.playbackDuration, 0.1)
-                        game.setAdminScrubPreview(to: targetTime)
+                        game.updateAdminScrubPreview(to: targetTime, forceUpdate: true)
                     }
                 ),
                 in: 0...1,
