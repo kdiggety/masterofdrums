@@ -988,17 +988,22 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func seekTransport(to time: Double) {
+        print("[seek] seekTransport(to: \(String(format: "%.2f", time))) audio.duration=\(String(format: "%.2f", audio.duration)) isAdminChartActive=\(isAdminChartActive)")
         if audio.duration > 0 {
             audio.seek(to: time)
+            print("[seek]   audio.seek done, audio.currentTime=\(String(format: "%.2f", audio.currentTime))")
             if isAdminChartActive {
                 chartPreviewClock.seek(to: time)
+                print("[seek]   chartPreviewClock.seek done, chartPreviewClock.currentTime=\(String(format: "%.2f", chartPreviewClock.currentTime))")
             }
         } else if isAdminChartActive {
             chartPreviewClock.seek(to: time)
+            print("[seek]   chartPreviewClock.seek done, chartPreviewClock.currentTime=\(String(format: "%.2f", chartPreviewClock.currentTime))")
         }
         finalizeAdminScrub(at: time, announce: false)
         syncTransportState()
         adminStatusText = "Seeked to \(playbackTimeText)"
+        print("[seek] after sync: activeTransportTime=\(String(format: "%.2f", activeTransportTime))")
         refocusGameplay()
     }
 
@@ -1827,9 +1832,7 @@ final class PrototypeGameController: ObservableObject {
     var currentPlaybackTime: Double { activeTransportTime }
     var playbackDuration: Double {
         let duration = max(audio.duration, session.chart.endTime, 0)
-        if audio.duration > 0 && session.chart.endTime > 0 && duration != audio.duration {
-            print("[duration] playbackDuration: audio.duration=\(audio.duration), chart.endTime=\(session.chart.endTime), max=\(duration)")
-        }
+        print("[duration] audio.duration=\(String(format: "%.2f", audio.duration)), chart.endTime=\(String(format: "%.2f", session.chart.endTime)), playbackDuration=\(String(format: "%.2f", duration)), laneCount=\(session.chart.notes.count)")
         return duration
     }
     var playbackProgress: Double {
