@@ -20,7 +20,7 @@ final class GameplayScene: SKScene {
     private let judgmentLabel = SKLabelNode()
     private let statusLabel = SKLabelNode()
     private let laneWidth: CGFloat = 120
-    private let laneInset: CGFloat = 2
+    private let laneInset: CGFloat = 0
     private let defaultNoteSpeed: CGFloat = 260
     private let adminAuthoringNoteSpeed: CGFloat = 110
     private let hitLineY: CGFloat = 110
@@ -426,12 +426,7 @@ final class GameplayScene: SKScene {
     }
 
     private func frameForLane(at index: Int, startX: CGFloat) -> CGRect {
-        let isFirstLane = index == 0
-        let isLastLane = index == laneOrder.count - 1
-        let leftInset = isFirstLane ? 0 : laneInset
-        let rightInset = isLastLane ? 0 : laneInset
-        let laneX = startX + CGFloat(index) * laneWidth + leftInset
-        let laneWidth = self.laneWidth - leftInset - rightInset
+        let laneX = startX + CGFloat(index) * laneWidth
         return CGRect(x: laneX, y: 0, width: laneWidth, height: size.height)
     }
 
