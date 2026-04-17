@@ -32,7 +32,7 @@ struct AdminChartEditorView: View {
                         transportSection
                             .layoutPriority(1)
                             .frame(height: 380)
-                            .padding(.bottom, 12)
+                            .padding(.vertical, 12)
 
                         // Scrollable content area - all other controls and sections
                         ScrollView(.vertical) {
