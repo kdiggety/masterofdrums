@@ -1,2799 +1,3365 @@
 {
-  "bpm": 94.999992,
-  "chart": {
-    "notes": [
-      {
-        "lane": "crash",
-        "noteID": "bb6faced-4215-45aa-878b-854ba28993d2",
-        "startSeconds": 9.473685
-      },
-      {
-        "lane": "crash",
-        "noteID": "34c556c1-2320-4f23-a8af-a5079723fcd2",
-        "startSeconds": 9.63158
-      },
-      {
-        "lane": "crash",
-        "noteID": "e65323f4-e4c5-4dad-9388-e4dd79cb6f7e",
-        "startSeconds": 9.789475
-      },
-      {
-        "lane": "crash",
-        "noteID": "ea06053b-74f4-4e15-84a0-a2b1ab6a47d1",
-        "startSeconds": 9.947369
-      },
-      {
-        "lane": "crash",
-        "noteID": "b1a0913b-e262-48ee-b16e-72428e49ae0b",
-        "startSeconds": 10.105264
-      },
-      {
-        "lane": "kick",
-        "noteID": "87c81c30-be69-4d56-99a5-242af92492a9",
-        "startSeconds": 10.105264
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "0109fa00-b8ef-4dea-9755-03e67bb73d65",
-        "startSeconds": 10.421053
-      },
-      {
-        "lane": "snare",
-        "noteID": "ac053430-8506-442a-a69d-f9d04704ce23",
-        "startSeconds": 10.736843
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "62714087-08ee-422d-a0fa-105c51dfb959",
-        "startSeconds": 11.052632
-      },
-      {
-        "lane": "kick",
-        "noteID": "13809546-434a-4e23-b876-ac42881ac5ae",
-        "startSeconds": 11.210527
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "0504cecb-2b71-4ef5-a464-ea985e630611",
-        "startSeconds": 11.684211
-      },
-      {
-        "lane": "kick",
-        "noteID": "185c35c0-83cd-426b-aad3-ba8c6aea2615",
-        "startSeconds": 11.684211
-      },
-      {
-        "lane": "snare",
-        "noteID": "589f851e-0c66-4bd8-82f7-cdc79872ac3f",
-        "startSeconds": 12.000001
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "57e5fb54-ce43-4d32-9f46-3f2b80260200",
-        "startSeconds": 12.315791
-      },
-      {
-        "lane": "kick",
-        "noteID": "d4d3d6dc-720a-4cf8-a9ce-65d47f807b33",
-        "startSeconds": 12.315791
-      },
-      {
-        "lane": "snare",
-        "noteID": "44bc9db0-8860-4696-8769-a8e3db7bdd87",
-        "startSeconds": 12.473685
-      },
-      {
-        "lane": "kick",
-        "noteID": "8d0fd867-4ff8-4309-8a8e-b658e3a3b212",
-        "startSeconds": 12.63158
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "42224f16-f5bf-4562-a2ba-ac4b4f1e0df4",
-        "startSeconds": 12.94737
-      },
-      {
-        "lane": "snare",
-        "noteID": "219bc95f-4f9a-4bbf-a216-b9ef5e74ce59",
-        "startSeconds": 13.263159
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "8c227d57-e951-4331-9317-a357b258817c",
-        "startSeconds": 13.578948
-      },
-      {
-        "lane": "kick",
-        "noteID": "67ab058b-ad02-4c2c-a524-44d032b71d43",
-        "startSeconds": 13.736843
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "a17fe9b9-db2f-45cb-b1a1-31e2c09bad07",
-        "startSeconds": 14.210527
-      },
-      {
-        "lane": "kick",
-        "noteID": "78f78fb0-f633-48c6-a5c2-4c4620a9f65b",
-        "startSeconds": 14.210527
-      },
-      {
-        "lane": "snare",
-        "noteID": "8074fd97-49c9-4189-9e03-a625404a2a6d",
-        "startSeconds": 14.526317
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "ffe81d0b-3b76-42ab-ac9f-5eae11add5a5",
-        "startSeconds": 14.842106
-      },
-      {
-        "lane": "kick",
-        "noteID": "0c5e3c20-86c5-4c87-b04c-a8f2a093062d",
-        "startSeconds": 14.842106
-      },
-      {
-        "lane": "snare",
-        "noteID": "39daa772-97e6-44eb-b4f7-51cb09b1cc94",
-        "startSeconds": 15.000001
-      },
-      {
-        "lane": "kick",
-        "noteID": "c615a545-d82a-4dcd-b880-5ab9d71053f3",
-        "startSeconds": 15.157896
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "d14021fb-1056-4d79-bf75-eb7e3f9b879c",
-        "startSeconds": 15.473686
-      },
-      {
-        "lane": "snare",
-        "noteID": "f7198198-0f82-4036-9f00-148ba465d19b",
-        "startSeconds": 15.789475
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "88a710f4-3527-4b27-ab00-8e947c9eaf63",
-        "startSeconds": 16.105265
-      },
-      {
-        "lane": "kick",
-        "noteID": "ea8a8a47-64d6-4754-a036-79f2060352a3",
-        "startSeconds": 16.263159
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "d1f3b9c1-4eb4-4ca9-9ec5-594bd97f31d4",
-        "startSeconds": 16.736843
-      },
-      {
-        "lane": "kick",
-        "noteID": "481d4f67-0783-4d9a-8869-fb9eff3f27d2",
-        "startSeconds": 16.736843
-      },
-      {
-        "lane": "snare",
-        "noteID": "9ed07247-6e6b-4047-acf9-aabb32f06d39",
-        "startSeconds": 17.052633
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "ed25251d-a808-4b1c-978b-0205418ac464",
-        "startSeconds": 17.368423
-      },
-      {
-        "lane": "kick",
-        "noteID": "ef3f7313-1116-4b3f-b6b2-91224172ea70",
-        "startSeconds": 17.368423
-      },
-      {
-        "lane": "snare",
-        "noteID": "612cd6ff-071e-4da6-adb3-fc6697dfe4ea",
-        "startSeconds": 17.526317
-      },
-      {
-        "lane": "kick",
-        "noteID": "660ddde5-247a-4b1d-a11f-34618a1bbc4f",
-        "startSeconds": 17.684212
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "b78fa62d-3bcb-457e-a1bf-8cbfcc18072a",
-        "startSeconds": 18.000001
-      },
-      {
-        "lane": "snare",
-        "noteID": "61097b4a-2ee5-42a1-b4b8-73494c4dfd24",
-        "startSeconds": 18.315791
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "4b4e5989-bb22-47c8-958c-46e47f92b2c6",
-        "startSeconds": 18.63158
-      },
-      {
-        "lane": "kick",
-        "noteID": "900fb015-a21c-443d-af64-29f72c442703",
-        "startSeconds": 18.789475
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "459a8c88-ada4-4cae-a152-868d9b177608",
-        "startSeconds": 19.26316
-      },
-      {
-        "lane": "kick",
-        "noteID": "25af8567-39d1-4b48-aed5-303cbffec08a",
-        "startSeconds": 19.26316
-      },
-      {
-        "lane": "snare",
-        "noteID": "a9f67666-8f3d-4ae1-9752-10bcbad1c7e0",
-        "startSeconds": 19.578949
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "3510bd9c-cc0f-4bad-8c1a-534ddf3f78d9",
-        "startSeconds": 19.894738
-      },
-      {
-        "lane": "kick",
-        "noteID": "94799013-e7bc-4a1a-a8ff-f1bf0862d26c",
-        "startSeconds": 19.894738
-      },
-      {
-        "lane": "snare",
-        "noteID": "84e5c6f4-98ee-49cd-8cb0-3ec46f6b7bac",
-        "startSeconds": 20.052633
-      },
-      {
-        "lane": "kick",
-        "noteID": "f823b80c-a824-4b87-aed0-e7b86f359408",
-        "startSeconds": 20.210528
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "47ade38c-28e8-4b4d-961b-1e7993f82b1b",
-        "startSeconds": 20.526318
-      },
-      {
-        "lane": "snare",
-        "noteID": "bdcaf9ae-4e55-4ce0-bd48-d936826b384b",
-        "startSeconds": 20.842107
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "c431b7da-d28a-44bd-b2a1-d38eef93357a",
-        "startSeconds": 21.157896
-      },
-      {
-        "lane": "kick",
-        "noteID": "769e80c6-46b0-498b-93ee-f9b871b3a37b",
-        "startSeconds": 21.315791
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "0a88a7cd-73ed-4f46-aa59-c63399d0e900",
-        "startSeconds": 21.789476
-      },
-      {
-        "lane": "kick",
-        "noteID": "7605a666-099d-46fc-a58a-e4dbf109ad1d",
-        "startSeconds": 21.789476
-      },
-      {
-        "lane": "snare",
-        "noteID": "5b5a261c-2f63-4ae3-83ff-87ad3e0a2c7e",
-        "startSeconds": 22.105265
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "3a336ec9-b8d4-415c-8a33-d63405aea400",
-        "startSeconds": 22.421055
-      },
-      {
-        "lane": "kick",
-        "noteID": "a9511f21-d4a4-49fa-b825-fe7fc4c7365a",
-        "startSeconds": 22.421055
-      },
-      {
-        "lane": "snare",
-        "noteID": "0d68de1c-8a8c-42c8-9f93-e8cc16a2498c",
-        "startSeconds": 22.578949
-      },
-      {
-        "lane": "kick",
-        "noteID": "a81c2334-7966-4fa0-9da5-23c90eb8a6af",
-        "startSeconds": 22.736844
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "44543d5b-02b4-4ae8-8e81-d59f66ad2c44",
-        "startSeconds": 23.052633
-      },
-      {
-        "lane": "snare",
-        "noteID": "ef471759-23d2-4337-868e-c966cd5ab0a6",
-        "startSeconds": 23.368423
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "cb17c243-3763-47cc-8533-4c8b69c262a5",
-        "startSeconds": 23.684213
-      },
-      {
-        "lane": "kick",
-        "noteID": "1ed5215c-8048-4a6a-a355-42cd935f68a7",
-        "startSeconds": 23.842107
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "9303eb43-13f7-4e93-8979-d75dce919241",
-        "startSeconds": 24.315791
-      },
-      {
-        "lane": "kick",
-        "noteID": "f3b6a2a3-71c4-41e3-95b8-af3ab98ff685",
-        "startSeconds": 24.315791
-      },
-      {
-        "lane": "snare",
-        "noteID": "8fba4f96-06e6-4f5f-816a-2a34ee6b0629",
-        "startSeconds": 24.631581
-      },
-      {
-        "lane": "kick",
-        "noteID": "efc65c82-b9ca-40ff-8179-8b4083860d4f",
-        "startSeconds": 24.631581
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "41f9209b-da4b-480d-aeb5-68f8cd2ac82b",
-        "startSeconds": 24.947371
-      },
-      {
-        "lane": "kick",
-        "noteID": "cccad258-3b9d-4b61-9959-a7df4a83a19c",
-        "startSeconds": 24.947371
-      },
-      {
-        "lane": "snare",
-        "noteID": "08ee91b5-0802-475b-a883-2535c8507d7e",
-        "startSeconds": 25.105265
-      },
-      {
-        "lane": "kick",
-        "noteID": "6bbd63f5-aebc-413b-a3d5-b4d8d7a45ac4",
-        "startSeconds": 25.26316
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "1ccc6ed4-8237-42f7-9d76-a9b9a48750e1",
-        "startSeconds": 25.57895
-      },
-      {
-        "lane": "snare",
-        "noteID": "061a1aa8-260a-4ef9-be14-92059b2b6c21",
-        "startSeconds": 25.894739
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "8ad37a5d-cca2-48d6-a573-3fc53606afe6",
-        "startSeconds": 26.210528
-      },
-      {
-        "lane": "kick",
-        "noteID": "5a35d3a4-2392-4358-a532-782ef237546e",
-        "startSeconds": 26.368423
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "b52010e7-70ad-4d9f-962b-06969e2ceddb",
-        "startSeconds": 26.842108
-      },
-      {
-        "lane": "kick",
-        "noteID": "f8826442-2b7b-4adb-ac2d-1c45b57b382e",
-        "startSeconds": 26.842108
-      },
-      {
-        "lane": "snare",
-        "noteID": "d6528432-8125-4e0a-8b88-382bfd71e6c3",
-        "startSeconds": 27.157897
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "165a2903-38ea-48cf-a2ed-1ac7bec93f96",
-        "startSeconds": 27.473686
-      },
-      {
-        "lane": "kick",
-        "noteID": "6a366e67-0508-4913-99c8-5c98837bd5e2",
-        "startSeconds": 27.473686
-      },
-      {
-        "lane": "snare",
-        "noteID": "a38ccafa-d72b-4c93-99fd-65633d40ef47",
-        "startSeconds": 27.631581
-      },
-      {
-        "lane": "kick",
-        "noteID": "3b74d79c-f8bf-4620-b40d-d98e4747215f",
-        "startSeconds": 27.789476
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "4caf1a3a-4230-4e1b-b0ab-ccbf27d43198",
-        "startSeconds": 28.105266
-      },
-      {
-        "lane": "snare",
-        "noteID": "6a676e7a-0ca7-46f2-a7c0-5126bf30a03d",
-        "startSeconds": 28.421055
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "153e0d4d-d0c4-470f-8a36-0c944cfe2ed0",
-        "startSeconds": 28.736845
-      },
-      {
-        "lane": "kick",
-        "noteID": "7fcab725-d6fe-47f7-b220-8d99c7679ffd",
-        "startSeconds": 28.894739
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "ce779a5c-2e82-44b2-86c7-e372415c6854",
-        "startSeconds": 29.368423
-      },
-      {
-        "lane": "kick",
-        "noteID": "37f6b5ed-75bd-42ab-9692-88e3423574cc",
-        "startSeconds": 29.368423
-      },
-      {
-        "lane": "snare",
-        "noteID": "7bf659d9-fad3-4930-a437-fbe1cfedcea3",
-        "startSeconds": 29.684213
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "4dad2ff2-68bb-4761-9c9c-32d8a931588c",
-        "startSeconds": 30.000003
-      },
-      {
-        "lane": "kick",
-        "noteID": "dffc001c-7b13-498c-9e73-a9ea4b2a3059",
-        "startSeconds": 30.000003
-      },
-      {
-        "lane": "snare",
-        "noteID": "b4bfb0d0-76b5-477d-8d70-d62944bca94c",
-        "startSeconds": 30.157897
-      },
-      {
-        "lane": "crash",
-        "noteID": "0eaf973a-6a46-4c0b-8cce-28f9c2ebd193",
-        "startSeconds": 30.315792
-      },
-      {
-        "lane": "kick",
-        "noteID": "30448cea-eb72-4892-87a4-652f37148e04",
-        "startSeconds": 30.315792
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "604bae8c-9e0b-4c6d-bb7f-e7b656fc900e",
-        "startSeconds": 30.631581
-      },
-      {
-        "lane": "snare",
-        "noteID": "1f658fc5-da3b-48bf-b7d4-0595201eec5a",
-        "startSeconds": 30.947371
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "5d64043d-acd3-43f1-9a98-07fe29af59e1",
-        "startSeconds": 31.263161
-      },
-      {
-        "lane": "kick",
-        "noteID": "713d106c-75ec-4637-9e1d-21f641cf263f",
-        "startSeconds": 31.421055
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "47a842dc-ebcb-455c-a1c5-079cf68d005b",
-        "startSeconds": 31.89474
-      },
-      {
-        "lane": "kick",
-        "noteID": "19711c66-2754-4105-8e29-19cf0afb77e2",
-        "startSeconds": 31.89474
-      },
-      {
-        "lane": "snare",
-        "noteID": "64a6da04-d403-4c59-ad35-a1b5f3b923c6",
-        "startSeconds": 32.210529
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "5874f1a0-00ba-474a-93c3-236da61996f4",
-        "startSeconds": 32.526319
-      },
-      {
-        "lane": "kick",
-        "noteID": "0019785d-aa51-49dc-86d0-22fe36f136af",
-        "startSeconds": 32.526319
-      },
-      {
-        "lane": "snare",
-        "noteID": "f5600c1c-8e39-4b3c-9f0e-99bbb58d687d",
-        "startSeconds": 32.684213
-      },
-      {
-        "lane": "kick",
-        "noteID": "8ff87e4f-2584-4e6d-829b-08c08d8aaeec",
-        "startSeconds": 32.842108
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "a95a919a-be24-4693-91f7-7d2a364e6273",
-        "startSeconds": 33.157897
-      },
-      {
-        "lane": "snare",
-        "noteID": "9e7eea4b-787e-48f7-8d24-24a94523ac00",
-        "startSeconds": 33.473687
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "17487137-f2a0-442f-94d5-9774db057a65",
-        "startSeconds": 33.789476
-      },
-      {
-        "lane": "kick",
-        "noteID": "fa72961d-be33-47d8-99c2-f23aa6a600a9",
-        "startSeconds": 33.947371
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "13611f0d-d9ad-4c43-9a73-af5e84f64f56",
-        "startSeconds": 34.421056
-      },
-      {
-        "lane": "kick",
-        "noteID": "10857e9a-a873-449f-ab57-89552a113817",
-        "startSeconds": 34.421056
-      },
-      {
-        "lane": "snare",
-        "noteID": "d0059f12-7e62-414c-a519-a9db82ce1935",
-        "startSeconds": 34.736845
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "d2690de6-7cc8-4087-82dc-6a13dbf5c648",
-        "startSeconds": 35.052635
-      },
-      {
-        "lane": "kick",
-        "noteID": "287259e0-cecb-43b2-8b6d-7aa6287a6eae",
-        "startSeconds": 35.052635
-      },
-      {
-        "lane": "snare",
-        "noteID": "db3c82b8-9856-4e45-8621-633629756f01",
-        "startSeconds": 35.210529
-      },
-      {
-        "lane": "kick",
-        "noteID": "cae183b5-84ce-498d-9656-245a9c320604",
-        "startSeconds": 35.368424
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "98378df0-1525-4add-9666-8dceaa5f1485",
-        "startSeconds": 35.684213
-      },
-      {
-        "lane": "snare",
-        "noteID": "9cb3d9b5-891c-49bf-8723-44fead4907dc",
-        "startSeconds": 36.000003
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "aa4917e3-4201-4304-bf16-337d3bfb5fe8",
-        "startSeconds": 36.315793
-      },
-      {
-        "lane": "kick",
-        "noteID": "5a9f8a75-8d3e-4350-950d-2fedb98ac400",
-        "startSeconds": 36.473687
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "9592d166-37ba-4768-bbf0-1d2bb4ff4307",
-        "startSeconds": 36.947372
-      },
-      {
-        "lane": "kick",
-        "noteID": "2f198bb7-2490-4491-ab3e-6c94f18cd4ee",
-        "startSeconds": 36.947372
-      },
-      {
-        "lane": "snare",
-        "noteID": "c3bedc76-9007-4938-ab2b-f4e11cb3a377",
-        "startSeconds": 37.263161
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "2020a6c9-7710-416a-8065-637eb0a0f5ba",
-        "startSeconds": 37.57895
-      },
-      {
-        "lane": "kick",
-        "noteID": "d4132ba4-db7f-4f15-b443-fd92136811d7",
-        "startSeconds": 37.57895
-      },
-      {
-        "lane": "snare",
-        "noteID": "5a025f9a-8e6e-48f2-8a8d-bca6b9d05505",
-        "startSeconds": 37.736845
-      },
-      {
-        "lane": "kick",
-        "noteID": "3bfd214a-3b90-4f53-9e96-2c5013236178",
-        "startSeconds": 37.89474
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "c72e2162-a464-44e3-8433-b5f0be8fe2ac",
-        "startSeconds": 38.210529
-      },
-      {
-        "lane": "snare",
-        "noteID": "8319e4d1-2877-46e3-8722-ad0dd1f489b4",
-        "startSeconds": 38.526319
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "4b9a0791-1b99-4ee0-9c1f-3e1171c1c886",
-        "startSeconds": 38.842109
-      },
-      {
-        "lane": "kick",
-        "noteID": "e713829c-7f6f-40a5-98c5-3e9bbb92163b",
-        "startSeconds": 39.000003
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "8cce09b5-b5ef-4328-a8d2-9d966b430dc9",
-        "startSeconds": 39.473687
-      },
-      {
-        "lane": "kick",
-        "noteID": "e8344aca-22a1-4bf3-9196-e24474c4d273",
-        "startSeconds": 39.473687
-      },
-      {
-        "lane": "snare",
-        "noteID": "e9c674c5-d80b-4705-b3d8-40c5d7716a5e",
-        "startSeconds": 39.789477
-      },
-      {
-        "lane": "kick",
-        "noteID": "49928fe0-7ea5-4e2b-a82d-96c137c140f6",
-        "startSeconds": 39.789477
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "5e853407-e52d-4afd-8db9-e85c628b776a",
-        "startSeconds": 40.105266
-      },
-      {
-        "lane": "kick",
-        "noteID": "c8556fd0-cd46-4547-8276-7fa789640ce7",
-        "startSeconds": 40.105266
-      },
-      {
-        "lane": "snare",
-        "noteID": "f3384f91-1d24-441d-86ea-14932a2cc451",
-        "startSeconds": 40.263161
-      },
-      {
-        "lane": "kick",
-        "noteID": "8a105331-e65c-4ce4-b5c6-b36b6e7f92b8",
-        "startSeconds": 40.421056
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "8b028295-ad14-40f6-a184-b8572fb33a95",
-        "startSeconds": 40.736846
-      },
-      {
-        "lane": "snare",
-        "noteID": "ad1e733e-f46b-4d7f-a02d-78f6181e2da3",
-        "startSeconds": 41.052635
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "ff80f17a-2194-43c3-93b3-cf7e5d168de0",
-        "startSeconds": 41.368425
-      },
-      {
-        "lane": "kick",
-        "noteID": "f89e2f13-2c14-4bec-8f1e-8370bc40410f",
-        "startSeconds": 41.526319
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "77650445-ad1c-4256-b73c-cf7ccca1d371",
-        "startSeconds": 42.000003
-      },
-      {
-        "lane": "kick",
-        "noteID": "1999bffb-1da0-4076-a21b-b60904a35ba5",
-        "startSeconds": 42.000003
-      },
-      {
-        "lane": "snare",
-        "noteID": "60c96674-af01-41f1-a0b4-6566db301ef8",
-        "startSeconds": 42.315793
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "291e79e8-50dd-4b91-96aa-fa89d07bea3b",
-        "startSeconds": 42.631583
-      },
-      {
-        "lane": "kick",
-        "noteID": "3592f02b-7583-44d6-8f5b-b4441832f3e8",
-        "startSeconds": 42.631583
-      },
-      {
-        "lane": "snare",
-        "noteID": "dc892100-37eb-4fea-a31c-ca474a1bb406",
-        "startSeconds": 42.789477
-      },
-      {
-        "lane": "kick",
-        "noteID": "c4b3b3b8-ef8f-4561-8b24-0b4aa66f93e7",
-        "startSeconds": 42.947372
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "9da4c157-b96f-48ce-9636-f3246cc4dbef",
-        "startSeconds": 43.263162
-      },
-      {
-        "lane": "snare",
-        "noteID": "2a2f90da-a3f3-4582-b89b-f1abb7ff3343",
-        "startSeconds": 43.578951
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "a3b1d5f0-70d7-4547-bc6e-f8a707f9ec5b",
-        "startSeconds": 43.89474
-      },
-      {
-        "lane": "kick",
-        "noteID": "a412c813-c78c-4dda-bbb2-f63d5e4c1f1a",
-        "startSeconds": 44.052635
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "fa487735-eec7-4c69-8a63-70883b93b196",
-        "startSeconds": 44.526319
-      },
-      {
-        "lane": "kick",
-        "noteID": "6b7d6b3f-c450-4b4f-91ee-dc34344ed46d",
-        "startSeconds": 44.526319
-      },
-      {
-        "lane": "snare",
-        "noteID": "c0d9a2dd-7682-4b03-bc3b-b1c515b96dd2",
-        "startSeconds": 44.842109
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "82328819-7373-45af-8e65-da91fc02c081",
-        "startSeconds": 45.157899
-      },
-      {
-        "lane": "kick",
-        "noteID": "fbff0af5-a48e-439d-9b6f-a2e8eb3d1e33",
-        "startSeconds": 45.157899
-      },
-      {
-        "lane": "snare",
-        "noteID": "0110ca86-5eac-469d-94f2-f1ec0af83209",
-        "startSeconds": 45.315793
-      },
-      {
-        "lane": "kick",
-        "noteID": "733ed64f-b2b9-4238-bfeb-e19d9038bcca",
-        "startSeconds": 45.473688
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "9c165541-e8a5-47ac-b8f3-111e6afdd5b1",
-        "startSeconds": 45.789477
-      },
-      {
-        "lane": "snare",
-        "noteID": "0e296143-783a-48aa-b09c-df4b5bff2300",
-        "startSeconds": 46.105267
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "75e43c55-35d5-4ce8-b6b6-f06e46abfffe",
-        "startSeconds": 46.421056
-      },
-      {
-        "lane": "kick",
-        "noteID": "a835b0b1-4afa-4c47-9797-3b40b9b3e145",
-        "startSeconds": 46.578951
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "6457e413-2cdf-47c0-9c61-1ffd979b8c73",
-        "startSeconds": 47.052636
-      },
-      {
-        "lane": "kick",
-        "noteID": "580dbebb-e878-47d7-956e-b69532855ab3",
-        "startSeconds": 47.052636
-      },
-      {
-        "lane": "snare",
-        "noteID": "f80ef6c7-2e49-468b-82c0-ad63c83dd85d",
-        "startSeconds": 47.368425
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "870a1d58-ee01-4953-8869-1af35b1bfad3",
-        "startSeconds": 47.684215
-      },
-      {
-        "lane": "kick",
-        "noteID": "f5523e60-308a-40d5-8617-b78c4cdac680",
-        "startSeconds": 47.684215
-      },
-      {
-        "lane": "snare",
-        "noteID": "b23225b4-4188-48d2-ae00-a30d89b25275",
-        "startSeconds": 47.842109
-      },
-      {
-        "lane": "kick",
-        "noteID": "7bfb3d53-0a28-4936-8332-4725dabd6dec",
-        "startSeconds": 48.000004
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "e197b329-bb9b-4122-b2f3-06ab9eaf219b",
-        "startSeconds": 48.315793
-      },
-      {
-        "lane": "snare",
-        "noteID": "e8736203-8947-442c-9ea5-c1d169b1221d",
-        "startSeconds": 48.631583
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "938a9da6-9e9a-458d-bb3d-cc05bf68c007",
-        "startSeconds": 48.947373
-      },
-      {
-        "lane": "kick",
-        "noteID": "1aab9e37-33a9-4faf-a01c-eb06bdca5b76",
-        "startSeconds": 49.105267
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "c94b6fba-0958-4f72-b14d-5833201e98e9",
-        "startSeconds": 49.578952
-      },
-      {
-        "lane": "kick",
-        "noteID": "821bbd87-69ec-4017-8a4f-59e922762d08",
-        "startSeconds": 49.578952
-      },
-      {
-        "lane": "snare",
-        "noteID": "bf222a43-a76d-4e4b-a3b6-b2dc1e64ac33",
-        "startSeconds": 49.894741
-      },
-      {
-        "lane": "snare",
-        "noteID": "373eadb3-e8e2-4c20-ba03-874f63720a1f",
-        "startSeconds": 50.21053
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "1df366ca-538f-40fa-8289-5a918b6c3b93",
-        "startSeconds": 50.21053
-      },
-      {
-        "lane": "kick",
-        "noteID": "8e6f22eb-f7c2-4103-b17f-f72ac5803868",
-        "startSeconds": 50.21053
-      },
-      {
-        "lane": "snare",
-        "noteID": "dea5aa62-28bf-4ad8-b4ac-9d781eecdf2c",
-        "startSeconds": 50.368425
-      },
-      {
-        "lane": "crash",
-        "noteID": "41dacb31-93af-4ec7-aaed-d26dcba0bf88",
-        "startSeconds": 60.000005
-      },
-      {
-        "lane": "crash",
-        "noteID": "c515c384-d264-4d81-97f8-264ee24f239b",
-        "startSeconds": 60.1579
-      },
-      {
-        "lane": "crash",
-        "noteID": "5fa5ea8c-fddd-4148-8592-36a21e3d2501",
-        "startSeconds": 60.315795
-      },
-      {
-        "lane": "crash",
-        "noteID": "411913aa-9230-439c-a5ca-b5fa22c66c53",
-        "startSeconds": 60.473689
-      },
-      {
-        "lane": "crash",
-        "noteID": "41d6366e-f128-475a-bc50-ff1321ed873e",
-        "startSeconds": 60.631584
-      },
-      {
-        "lane": "kick",
-        "noteID": "28b81f67-965b-4f30-b83d-c74d81176293",
-        "startSeconds": 60.631584
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "bc1a29d4-7398-4a72-84fa-f6d669e18635",
-        "startSeconds": 60.947373
-      },
-      {
-        "lane": "snare",
-        "noteID": "8d227266-d7df-464d-9893-5529fd8f058a",
-        "startSeconds": 61.263163
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "58b0aa37-f448-4c8d-8552-d41734cba052",
-        "startSeconds": 61.578952
-      },
-      {
-        "lane": "kick",
-        "noteID": "743ccd26-3d29-4329-abcf-f0116075d0f2",
-        "startSeconds": 61.736847
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "0196f252-75fc-4089-b33a-70bc338aeb2d",
-        "startSeconds": 62.210532
-      },
-      {
-        "lane": "kick",
-        "noteID": "8eacf337-af2d-4120-b321-d3105dbd6f8d",
-        "startSeconds": 62.210532
-      },
-      {
-        "lane": "snare",
-        "noteID": "9331a268-481d-42f5-9d46-8753f9063753",
-        "startSeconds": 62.526321
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "9b872550-e437-4805-b6bb-18692ed8e18c",
-        "startSeconds": 62.84211
-      },
-      {
-        "lane": "kick",
-        "noteID": "380533cf-dc14-4b4a-ba2a-e360355b0fde",
-        "startSeconds": 62.84211
-      },
-      {
-        "lane": "snare",
-        "noteID": "76a5279a-fd99-45eb-9904-c0388854a6ae",
-        "startSeconds": 63.000005
-      },
-      {
-        "lane": "kick",
-        "noteID": "22e4549b-7703-460f-8944-00283138cce5",
-        "startSeconds": 63.1579
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "a446876d-be3a-4a9b-ab44-83d30849ecb3",
-        "startSeconds": 63.473689
-      },
-      {
-        "lane": "snare",
-        "noteID": "5fe6de45-2296-404a-9ed8-049246ff734b",
-        "startSeconds": 63.789479
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "c292ff89-b144-4c5e-a337-51d1eca077f2",
-        "startSeconds": 64.105268
-      },
-      {
-        "lane": "kick",
-        "noteID": "9e246e20-3984-4067-9877-4ecce6249a7d",
-        "startSeconds": 64.263163
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "04aae915-68d5-4b5d-948f-31f934802334",
-        "startSeconds": 64.736847
-      },
-      {
-        "lane": "kick",
-        "noteID": "23356d71-864d-427a-ab80-686db1a78523",
-        "startSeconds": 64.736847
-      },
-      {
-        "lane": "snare",
-        "noteID": "55d6b06d-35a9-4ad4-a38c-c0fa1ec84b5a",
-        "startSeconds": 65.052637
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "4762859a-e0aa-4bf2-852e-da1bbf9d7f1a",
-        "startSeconds": 65.368426
-      },
-      {
-        "lane": "kick",
-        "noteID": "1b2424ba-222f-4776-be63-21e991921f9b",
-        "startSeconds": 65.368426
-      },
-      {
-        "lane": "snare",
-        "noteID": "1572fd7d-09f8-4884-a1f7-9b0a869a70c4",
-        "startSeconds": 65.526321
-      },
-      {
-        "lane": "kick",
-        "noteID": "bdb20cd4-c051-4a75-a5b3-721f9784f0b6",
-        "startSeconds": 65.684216
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "250f01ec-f5c4-4ac5-8b50-b696a648bf85",
-        "startSeconds": 66.000006
-      },
-      {
-        "lane": "snare",
-        "noteID": "ecf29b3d-85ff-4a4c-bccc-256b9057ad36",
-        "startSeconds": 66.315795
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "42f9ce01-c977-41d0-9c85-646df78175cf",
-        "startSeconds": 66.631585
-      },
-      {
-        "lane": "kick",
-        "noteID": "17c7be85-d4d3-476c-83d1-8709ecb75c06",
-        "startSeconds": 66.789479
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "db832d75-9d97-4f48-aba0-b5eb1c6db6bf",
-        "startSeconds": 67.263164
-      },
-      {
-        "lane": "kick",
-        "noteID": "25a9d589-a3f6-451c-8b84-190232758b2f",
-        "startSeconds": 67.263164
-      },
-      {
-        "lane": "snare",
-        "noteID": "95b83d48-9e7c-407f-8dcc-412f09e4c83b",
-        "startSeconds": 67.578953
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "ba96e107-934f-4b00-b20a-8a4e8e88033e",
-        "startSeconds": 67.894743
-      },
-      {
-        "lane": "kick",
-        "noteID": "88cd3675-1226-47a5-92bc-7025e14d74c0",
-        "startSeconds": 67.894743
-      },
-      {
-        "lane": "snare",
-        "noteID": "e4d99e1e-c8b8-4a6c-8ea5-33168f5b02f7",
-        "startSeconds": 68.052637
-      },
-      {
-        "lane": "kick",
-        "noteID": "c3184eae-c4e6-4a58-be53-64434b3c69fc",
-        "startSeconds": 68.210532
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "d3559aba-2537-427e-bcef-279caab2a5ec",
-        "startSeconds": 68.526321
-      },
-      {
-        "lane": "snare",
-        "noteID": "ba6e5c56-d5dc-4ab0-9f61-ebc29f864ebf",
-        "startSeconds": 68.842111
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "6532c988-01de-4f3c-9b71-cbd5b382b3f9",
-        "startSeconds": 69.1579
-      },
-      {
-        "lane": "kick",
-        "noteID": "fef0f32d-48a3-4be9-a629-811123907758",
-        "startSeconds": 69.315795
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "604952f6-76e7-4e3c-b738-9c19fcb6c6fd",
-        "startSeconds": 69.789479
-      },
-      {
-        "lane": "kick",
-        "noteID": "9047458e-b7a4-454d-b6c7-810a1acf7f16",
-        "startSeconds": 69.789479
-      },
-      {
-        "lane": "snare",
-        "noteID": "ce3efbcc-a63d-4220-a4c4-897af5a447d5",
-        "startSeconds": 70.105269
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "7a64b6e1-d3ab-4a2f-8582-632333e4cb23",
-        "startSeconds": 70.421059
-      },
-      {
-        "lane": "kick",
-        "noteID": "57c30f72-d3ec-41d5-ad91-3607971c6ea9",
-        "startSeconds": 70.421059
-      },
-      {
-        "lane": "snare",
-        "noteID": "bbc8c60d-fb28-4c8a-9c1e-1d41397c815e",
-        "startSeconds": 70.578953
-      },
-      {
-        "lane": "kick",
-        "noteID": "2bffadb8-8044-4c08-bb40-43089bf5d9a0",
-        "startSeconds": 70.736848
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "237bf99d-eb72-43b2-9b70-01ea6943ea33",
-        "startSeconds": 71.052638
-      },
-      {
-        "lane": "snare",
-        "noteID": "eae01e2a-d524-4787-b999-82f38feff3c2",
-        "startSeconds": 71.368427
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "43063c58-c086-44ce-9e7c-105a7c3158ef",
-        "startSeconds": 71.684217
-      },
-      {
-        "lane": "kick",
-        "noteID": "d373c0dc-439d-4659-8354-99331670d247",
-        "startSeconds": 71.842111
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "43334437-44f1-4485-be51-76695af00e80",
-        "startSeconds": 72.315796
-      },
-      {
-        "lane": "kick",
-        "noteID": "9f2707d3-a6ad-47ac-9801-ffcd25e56810",
-        "startSeconds": 72.315796
-      },
-      {
-        "lane": "snare",
-        "noteID": "8ae50885-80bd-436a-b5bb-7438e71350cc",
-        "startSeconds": 72.631585
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "62f3a593-6ef1-454b-962b-ecf914b61895",
-        "startSeconds": 72.947374
-      },
-      {
-        "lane": "kick",
-        "noteID": "71c5a12d-a00c-4f83-a2fd-f19ff383ed66",
-        "startSeconds": 72.947374
-      },
-      {
-        "lane": "snare",
-        "noteID": "f6607ff2-8b0a-4ba9-a064-14268b685ff6",
-        "startSeconds": 73.105269
-      },
-      {
-        "lane": "kick",
-        "noteID": "842c0bdf-70c3-4760-aedb-75ed8e00692a",
-        "startSeconds": 73.263164
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "f367c42e-486a-4d0c-a325-3f91bfe5c902",
-        "startSeconds": 73.578953
-      },
-      {
-        "lane": "snare",
-        "noteID": "0379282d-8bf2-4906-918a-01d90cd5526d",
-        "startSeconds": 73.894743
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "9e0d1112-f12c-4991-99c9-cb107d6498d4",
-        "startSeconds": 74.210532
-      },
-      {
-        "lane": "kick",
-        "noteID": "3f8524c6-5c58-4ade-a853-c808cf2131a7",
-        "startSeconds": 74.368427
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "8993737c-0efe-429e-a2b4-6576a64e0245",
-        "startSeconds": 74.842112
-      },
-      {
-        "lane": "kick",
-        "noteID": "4f5f84e9-3e01-42cc-a4ab-1263d4cbbd0e",
-        "startSeconds": 74.842112
-      },
-      {
-        "lane": "snare",
-        "noteID": "412a9e05-aabf-4e4d-9795-71bd6f71c2a8",
-        "startSeconds": 75.157901
-      },
-      {
-        "lane": "kick",
-        "noteID": "633f1c3f-e32e-4c5b-9be0-893bf391209f",
-        "startSeconds": 75.157901
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "626c37b0-4db9-484f-bc09-dfc46cd91dd3",
-        "startSeconds": 75.473691
-      },
-      {
-        "lane": "kick",
-        "noteID": "0585007a-7221-4370-a6bf-a6cad72815f6",
-        "startSeconds": 75.473691
-      },
-      {
-        "lane": "snare",
-        "noteID": "724029cd-5932-435e-bd6b-d678a0e3187a",
-        "startSeconds": 75.631585
-      },
-      {
-        "lane": "kick",
-        "noteID": "3ee4c4ea-9e09-4b14-a47c-b9d11ea35df2",
-        "startSeconds": 75.78948
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "f494ef6e-c1da-4ada-b65f-0c77f43fedaa",
-        "startSeconds": 76.10527
-      },
-      {
-        "lane": "snare",
-        "noteID": "8b5e4416-c6b4-46a7-ac52-4aa98af62883",
-        "startSeconds": 76.421059
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "0e5619d4-6852-4613-b046-ab9b9926d56b",
-        "startSeconds": 76.736848
-      },
-      {
-        "lane": "kick",
-        "noteID": "e47339a8-22e4-4713-b096-6a15645a3cfd",
-        "startSeconds": 76.894743
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "2262ac71-e0ed-4f4b-ab04-c126f430290f",
-        "startSeconds": 77.368427
-      },
-      {
-        "lane": "kick",
-        "noteID": "d2580e47-01a8-4964-9f09-0c864ee3c91b",
-        "startSeconds": 77.368427
-      },
-      {
-        "lane": "snare",
-        "noteID": "9dd9c577-3e07-4418-a4a6-3bd20e5afa59",
-        "startSeconds": 77.684217
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "cbd01cff-b1c6-42c7-9e26-fd02bbf9973f",
-        "startSeconds": 78.000006
-      },
-      {
-        "lane": "kick",
-        "noteID": "d49df65f-a320-4c43-bac0-ea724195d20c",
-        "startSeconds": 78.000006
-      },
-      {
-        "lane": "snare",
-        "noteID": "af41396a-7da6-45d7-b04b-2176726d42b7",
-        "startSeconds": 78.157901
-      },
-      {
-        "lane": "kick",
-        "noteID": "bb817075-d49b-4e08-98b5-98355f533f9f",
-        "startSeconds": 78.315796
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "7ff067ed-e032-477a-9950-2fd00c71c046",
-        "startSeconds": 78.631585
-      },
-      {
-        "lane": "snare",
-        "noteID": "17ba7e3a-c4ae-4f64-a60b-ec19429f9282",
-        "startSeconds": 78.947375
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "fffd4346-c61a-4305-8081-cb45c470d82e",
-        "startSeconds": 79.263165
-      },
-      {
-        "lane": "kick",
-        "noteID": "b3f08d54-d56c-46a2-9b44-4ef483256484",
-        "startSeconds": 79.421059
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "390a99b8-709c-4050-8aaf-275115ef7b30",
-        "startSeconds": 79.894744
-      },
-      {
-        "lane": "kick",
-        "noteID": "a76069bb-286e-4a33-8bf4-eba9673765ba",
-        "startSeconds": 79.894744
-      },
-      {
-        "lane": "snare",
-        "noteID": "144537b4-2fd8-4480-93d0-36fa9feb2211",
-        "startSeconds": 80.210533
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "f57268be-7169-496c-91fe-5927b71c6caf",
-        "startSeconds": 80.526323
-      },
-      {
-        "lane": "kick",
-        "noteID": "ac0f0688-f271-4548-bdbb-06b7eb79f4e2",
-        "startSeconds": 80.526323
-      },
-      {
-        "lane": "snare",
-        "noteID": "2718bbd6-2382-4909-8975-90d6cea5d45c",
-        "startSeconds": 80.684217
-      },
-      {
-        "lane": "crash",
-        "noteID": "811d907f-144d-4e4e-8a26-957ea226a01b",
-        "startSeconds": 80.842112
-      },
-      {
-        "lane": "kick",
-        "noteID": "c53b77d7-e881-4938-8dbf-321f1fb57f43",
-        "startSeconds": 80.842112
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "c99590c5-078f-40b2-a43b-3c52373611dc",
-        "startSeconds": 81.157901
-      },
-      {
-        "lane": "snare",
-        "noteID": "d2102f52-9686-454e-9f95-994ab328204b",
-        "startSeconds": 81.473691
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "2c537b60-3f09-4edb-b145-30a927e6bc8a",
-        "startSeconds": 81.78948
-      },
-      {
-        "lane": "kick",
-        "noteID": "a5c6526a-b92d-4bdf-81b5-6dad91ac701b",
-        "startSeconds": 81.947375
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "1d912bfe-12c2-488e-b9b3-3f8bcb7af01a",
-        "startSeconds": 82.421059
-      },
-      {
-        "lane": "kick",
-        "noteID": "e4e13da6-1fef-4911-b8c5-f1e5978b63fd",
-        "startSeconds": 82.421059
-      },
-      {
-        "lane": "snare",
-        "noteID": "c2cdf67f-0827-47c6-b3f1-913c379c4549",
-        "startSeconds": 82.736849
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "02fd8cd1-02cc-463c-81a0-a539a557c03f",
-        "startSeconds": 83.052639
-      },
-      {
-        "lane": "kick",
-        "noteID": "d7c9e0a6-fd94-4d30-822d-45366a002f7a",
-        "startSeconds": 83.052639
-      },
-      {
-        "lane": "snare",
-        "noteID": "83563565-38ad-4e32-8569-85c7f58574d3",
-        "startSeconds": 83.210533
-      },
-      {
-        "lane": "kick",
-        "noteID": "a4754f08-5b46-412f-abf3-2614dc2faa5d",
-        "startSeconds": 83.368428
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "52ebfd3d-e193-4a64-8de9-a71c683d39c8",
-        "startSeconds": 83.684218
-      },
-      {
-        "lane": "snare",
-        "noteID": "1588fd5b-6232-4831-8a75-d93c1c461e5d",
-        "startSeconds": 84.000007
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "d6ab0d4a-944f-4095-87e8-a94bb9dc086c",
-        "startSeconds": 84.315797
-      },
-      {
-        "lane": "kick",
-        "noteID": "ada6d140-1b03-47f0-9530-72d9e0e04417",
-        "startSeconds": 84.473691
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "9ce8a4bf-e3cb-4c3c-91ac-66083bd82a10",
-        "startSeconds": 84.947376
-      },
-      {
-        "lane": "kick",
-        "noteID": "963a5831-8008-469a-b625-875f743b1228",
-        "startSeconds": 84.947376
-      },
-      {
-        "lane": "snare",
-        "noteID": "f6e4099e-77fe-4648-8f79-473bf9c45cb8",
-        "startSeconds": 85.263165
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "85aac3d8-ba18-4c18-8b73-8042cef9a34a",
-        "startSeconds": 85.578954
-      },
-      {
-        "lane": "kick",
-        "noteID": "7645727b-c480-4ecb-981b-1017254c6d7c",
-        "startSeconds": 85.578954
-      },
-      {
-        "lane": "snare",
-        "noteID": "cfc1d685-72a4-442f-89e0-a593402679d4",
-        "startSeconds": 85.736849
-      },
-      {
-        "lane": "kick",
-        "noteID": "bdb1dd01-cf29-4e6f-8d23-846640f7271f",
-        "startSeconds": 85.894744
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "26e68df8-e8d9-4ff8-93a4-338f4b7c664c",
-        "startSeconds": 86.210533
-      },
-      {
-        "lane": "snare",
-        "noteID": "b6be24ae-efeb-4f03-8c4d-28224b1bf1cd",
-        "startSeconds": 86.526323
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "54c90b33-8ed3-46f6-afe0-3212d32f6904",
-        "startSeconds": 86.842112
-      },
-      {
-        "lane": "kick",
-        "noteID": "b004125a-49fd-48d4-b97a-7bd378667781",
-        "startSeconds": 87.000007
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "84eb52db-a730-4ce5-a48e-687e6d70e350",
-        "startSeconds": 87.473692
-      },
-      {
-        "lane": "kick",
-        "noteID": "f03ca521-783e-4592-80b0-e9bdb3a2d47c",
-        "startSeconds": 87.473692
-      },
-      {
-        "lane": "snare",
-        "noteID": "6bd151dd-6410-48fd-9266-9f0070fc84af",
-        "startSeconds": 87.789481
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "c61de767-00b6-45f5-89c7-1f01858464b1",
-        "startSeconds": 88.105271
-      },
-      {
-        "lane": "kick",
-        "noteID": "e866b0ef-e7b6-431e-8d3c-5b7d340f2989",
-        "startSeconds": 88.105271
-      },
-      {
-        "lane": "snare",
-        "noteID": "564ff7f2-4a09-4e09-bf0e-d58235423537",
-        "startSeconds": 88.263165
-      },
-      {
-        "lane": "kick",
-        "noteID": "aa7359a8-59c9-4f71-a681-265ef268eb27",
-        "startSeconds": 88.42106
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "7f2d079b-f321-4581-a108-b865f4a2fd4d",
-        "startSeconds": 88.73685
-      },
-      {
-        "lane": "snare",
-        "noteID": "6a0432ec-38e4-4bc8-a59b-97c55c65cd66",
-        "startSeconds": 89.052639
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "b96a4c14-c9f5-4267-9d9c-8b7415da0878",
-        "startSeconds": 89.368428
-      },
-      {
-        "lane": "kick",
-        "noteID": "136ab1c3-2e1f-4783-925b-3aa806a9301b",
-        "startSeconds": 89.526323
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "09b07314-9cb3-497f-9fa2-109da41e637a",
-        "startSeconds": 90.000007
-      },
-      {
-        "lane": "kick",
-        "noteID": "fe5333d8-11e0-48fe-97b7-65c0c1537511",
-        "startSeconds": 90.000007
-      },
-      {
-        "lane": "snare",
-        "noteID": "2ceac086-a690-4d93-ac67-923560fd4844",
-        "startSeconds": 90.315797
-      },
-      {
-        "lane": "kick",
-        "noteID": "cb33da36-3e69-4dcf-8a50-67c14fffb2cd",
-        "startSeconds": 90.315797
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "573d88e6-c866-41b8-88cb-5e55db966dcd",
-        "startSeconds": 90.631586
-      },
-      {
-        "lane": "kick",
-        "noteID": "6c780355-723d-4ee8-a735-65e0f7367938",
-        "startSeconds": 90.631586
-      },
-      {
-        "lane": "snare",
-        "noteID": "7e39fb02-c756-46e7-b681-d7bd262df071",
-        "startSeconds": 90.789481
-      },
-      {
-        "lane": "kick",
-        "noteID": "8018388e-cd36-4444-8dd1-52a80651f7ec",
-        "startSeconds": 90.947376
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "73288404-7f5f-46f9-beed-af17d60d4399",
-        "startSeconds": 91.263165
-      },
-      {
-        "lane": "snare",
-        "noteID": "decfe216-4450-4688-ad79-1368ac05aa83",
-        "startSeconds": 91.578955
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "2e2f3520-0802-4fd0-a5f1-d81c5daa70d3",
-        "startSeconds": 91.894745
-      },
-      {
-        "lane": "kick",
-        "noteID": "c3dd3b98-6667-4a54-93b7-faf47e497eeb",
-        "startSeconds": 92.052639
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "b3d81a4c-ec5e-4f62-8e19-d5c3218e1ea1",
-        "startSeconds": 92.526324
-      },
-      {
-        "lane": "kick",
-        "noteID": "9f91bde9-3776-481f-8f87-574ba78a208d",
-        "startSeconds": 92.526324
-      },
-      {
-        "lane": "snare",
-        "noteID": "85f3e0c7-2436-499d-a853-b6dd8a16f41f",
-        "startSeconds": 92.842113
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "191aa707-65f0-4c49-b23f-090ad4e99d95",
-        "startSeconds": 93.157903
-      },
-      {
-        "lane": "kick",
-        "noteID": "6503aae4-a946-4254-a8ad-437312f53003",
-        "startSeconds": 93.157903
-      },
-      {
-        "lane": "snare",
-        "noteID": "4d6a1e69-0609-43c8-bc62-eadcc5110c79",
-        "startSeconds": 93.315797
-      },
-      {
-        "lane": "kick",
-        "noteID": "732edea4-a047-409b-a4cc-a5fd4651a2c7",
-        "startSeconds": 93.473692
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "99408b49-de0f-4ab3-a219-48173a99d050",
-        "startSeconds": 93.789481
-      },
-      {
-        "lane": "snare",
-        "noteID": "a6f0b70b-5d0d-43fb-859e-2b8a6a8142fa",
-        "startSeconds": 94.105271
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "f7a8425b-476f-479b-a6df-8f3273b21ea9",
-        "startSeconds": 94.42106
-      },
-      {
-        "lane": "kick",
-        "noteID": "b9949803-e998-466f-9b11-ee248c739e77",
-        "startSeconds": 94.578955
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "0a38ca38-d5bd-4278-9f00-62e18057b390",
-        "startSeconds": 95.052639
-      },
-      {
-        "lane": "kick",
-        "noteID": "ee60e92c-7f3c-4c42-bdea-84e544d2bba5",
-        "startSeconds": 95.052639
-      },
-      {
-        "lane": "snare",
-        "noteID": "85e2a3e7-b9be-495c-bb29-e7f86ece1127",
-        "startSeconds": 95.368429
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "3b2a67b5-bca8-4021-a223-d64da8e86082",
-        "startSeconds": 95.684219
-      },
-      {
-        "lane": "kick",
-        "noteID": "02a43579-3712-4eec-ba7a-50e06da9d088",
-        "startSeconds": 95.684219
-      },
-      {
-        "lane": "snare",
-        "noteID": "eda86f90-fe03-4a56-8841-7f6931c7ce7a",
-        "startSeconds": 95.842113
-      },
-      {
-        "lane": "kick",
-        "noteID": "1fb33fb0-19f6-4d65-85fd-2a72905ede84",
-        "startSeconds": 96.000008
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "12829fd9-4acf-4ff2-a617-794e85e31a97",
-        "startSeconds": 96.315798
-      },
-      {
-        "lane": "snare",
-        "noteID": "56f8b302-3c06-4999-b511-38a809ea9bd6",
-        "startSeconds": 96.631587
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "02d470d8-f621-4c31-922a-928126386d23",
-        "startSeconds": 96.947377
-      },
-      {
-        "lane": "kick",
-        "noteID": "ad1604e0-97ea-45ae-9265-7c23695f5f73",
-        "startSeconds": 97.105271
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "a62c57df-ca63-4ac3-bead-462b78e79059",
-        "startSeconds": 97.578956
-      },
-      {
-        "lane": "kick",
-        "noteID": "289f0f62-993d-43ed-9e54-a32e54353eb3",
-        "startSeconds": 97.578956
-      },
-      {
-        "lane": "snare",
-        "noteID": "ed862dae-ee96-4080-868a-a73e1f73c3c5",
-        "startSeconds": 97.894745
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "71c35a3c-aa65-4792-8449-b4f3cfb3fb09",
-        "startSeconds": 98.210534
-      },
-      {
-        "lane": "kick",
-        "noteID": "1af9e4ab-d52a-407c-a3f1-b0e8d88fdd73",
-        "startSeconds": 98.210534
-      },
-      {
-        "lane": "snare",
-        "noteID": "fae7237c-f1c3-4216-bd51-a728e2e9f607",
-        "startSeconds": 98.368429
-      },
-      {
-        "lane": "kick",
-        "noteID": "ad6d26f3-45dd-44b9-b524-0c6d132506ef",
-        "startSeconds": 98.526324
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "1b97c254-0415-4d2f-9cd1-de73f5270505",
-        "startSeconds": 98.842113
-      },
-      {
-        "lane": "snare",
-        "noteID": "68054b74-1801-4a29-81c5-cc4d9fcd5227",
-        "startSeconds": 99.157903
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "bd3b44f0-2867-4fb4-8231-9eada15384dd",
-        "startSeconds": 99.473692
-      },
-      {
-        "lane": "kick",
-        "noteID": "e3037a56-b150-4973-b4da-47a132562173",
-        "startSeconds": 99.631587
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "5972112c-444c-4e2d-88d9-b6e341d0c3b3",
-        "startSeconds": 100.105272
-      },
-      {
-        "lane": "kick",
-        "noteID": "a1b01d76-4974-42a1-bf20-fa3d6bd9a188",
-        "startSeconds": 100.105272
-      },
-      {
-        "lane": "snare",
-        "noteID": "a6062e45-a9c1-4d65-91ef-cb8f980ada3c",
-        "startSeconds": 100.421061
-      },
-      {
-        "lane": "snare",
-        "noteID": "4989fd14-3257-4204-b192-407b68585979",
-        "startSeconds": 100.736851
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "8ab1e957-600e-418b-bf4a-9fabb48141e2",
-        "startSeconds": 100.736851
-      },
-      {
-        "lane": "kick",
-        "noteID": "04fff0dd-6dcf-421b-b6f2-be9cc7555894",
-        "startSeconds": 100.736851
-      },
-      {
-        "lane": "snare",
-        "noteID": "1c28beb2-ae0f-4ad0-8802-58154ed184fa",
-        "startSeconds": 100.894745
-      },
-      {
-        "lane": "crash",
-        "noteID": "54154878-93d1-42cc-a895-c19b9fd9fce0",
-        "startSeconds": 110.526325
-      },
-      {
-        "lane": "crash",
-        "noteID": "60f630e1-a6d5-49f8-8ece-cee89f031ca2",
-        "startSeconds": 110.68422
-      },
-      {
-        "lane": "crash",
-        "noteID": "74883535-9922-44af-ad69-42fe105a9b34",
-        "startSeconds": 110.842114
-      },
-      {
-        "lane": "crash",
-        "noteID": "ab1b6ab1-a057-4a01-93f0-b021ac287ff3",
-        "startSeconds": 111.000009
-      },
-      {
-        "lane": "crash",
-        "noteID": "2d1c09a1-34d9-492f-a0f8-2111e46504ee",
-        "startSeconds": 111.157904
-      },
-      {
-        "lane": "kick",
-        "noteID": "731f7eb1-8aff-4fbe-9e7d-b789885756ef",
-        "startSeconds": 111.157904
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "de73b30e-34da-442d-a0b4-979a368aa42f",
-        "startSeconds": 111.473693
-      },
-      {
-        "lane": "snare",
-        "noteID": "21d390ca-ed9d-40ce-8ab0-614aa2968d32",
-        "startSeconds": 111.789483
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "a2fdfc62-9900-4ddb-9e1d-c84970c01dbc",
-        "startSeconds": 112.105272
-      },
-      {
-        "lane": "kick",
-        "noteID": "b4dee395-cafe-48c1-acd1-44d35e092cca",
-        "startSeconds": 112.263167
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "97326d32-0468-44b1-9926-65a6063606b0",
-        "startSeconds": 112.736852
-      },
-      {
-        "lane": "kick",
-        "noteID": "f7765639-b4bc-4455-9be4-8454d36e60bc",
-        "startSeconds": 112.736852
-      },
-      {
-        "lane": "snare",
-        "noteID": "32748898-0ae1-4256-9ad0-01fb4ae6d8a8",
-        "startSeconds": 113.052641
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "344b706b-e700-4024-8f26-ea6bc089d9c9",
-        "startSeconds": 113.368431
-      },
-      {
-        "lane": "kick",
-        "noteID": "0353ca67-d6f5-4357-834a-61c77bbf0044",
-        "startSeconds": 113.368431
-      },
-      {
-        "lane": "snare",
-        "noteID": "557de84e-c884-49a0-90b7-fabb4a67de6d",
-        "startSeconds": 113.526325
-      },
-      {
-        "lane": "kick",
-        "noteID": "4f2c4f1a-67e0-4f19-8e2f-900e1ef13777",
-        "startSeconds": 113.68422
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "1cb79bb4-bfd9-41be-aab2-31973397962d",
-        "startSeconds": 114.00001
-      },
-      {
-        "lane": "snare",
-        "noteID": "a508fd22-dbdc-4a47-b7ff-7512fa4bfb3e",
-        "startSeconds": 114.315799
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "8fca28e2-9eb7-4fd7-acf4-41e1cad1cbc0",
-        "startSeconds": 114.631589
-      },
-      {
-        "lane": "kick",
-        "noteID": "44c72d4c-a6e8-4ef8-938e-5569f95d6a04",
-        "startSeconds": 114.789483
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "cf8ad271-1915-4209-9fae-834362014c70",
-        "startSeconds": 115.263167
-      },
-      {
-        "lane": "kick",
-        "noteID": "1bfe45b6-b8cb-406f-b3df-f817304b5f44",
-        "startSeconds": 115.263167
-      },
-      {
-        "lane": "snare",
-        "noteID": "646127f4-10d9-466e-be23-cafd86cf4692",
-        "startSeconds": 115.578957
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "d25227d7-6dda-4381-9d80-3e018a9d45ba",
-        "startSeconds": 115.894746
-      },
-      {
-        "lane": "kick",
-        "noteID": "c47b8249-400f-4fd3-8775-335bfb4b4928",
-        "startSeconds": 115.894746
-      },
-      {
-        "lane": "snare",
-        "noteID": "d8c4ef3a-1a63-4ba2-b64b-815b55069a6b",
-        "startSeconds": 116.052641
-      },
-      {
-        "lane": "kick",
-        "noteID": "807096b2-76a7-453c-ae07-6a663d210cf3",
-        "startSeconds": 116.210536
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "df82b008-ceef-4307-b732-6a34b39a87f9",
-        "startSeconds": 116.526325
-      },
-      {
-        "lane": "snare",
-        "noteID": "6871ae14-f8ff-4a90-b4cc-067e9835f114",
-        "startSeconds": 116.842115
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "df141a5c-b4fe-451b-9c8d-7d1e7f3239ea",
-        "startSeconds": 117.157905
-      },
-      {
-        "lane": "kick",
-        "noteID": "6815b773-5a2a-4c55-b03c-bb57304adb05",
-        "startSeconds": 117.315799
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "da5c67b3-21bb-4c5a-8596-ea8240e5537c",
-        "startSeconds": 117.789484
-      },
-      {
-        "lane": "kick",
-        "noteID": "a6cb3056-37cc-49f6-b73f-9c5cbd48c30e",
-        "startSeconds": 117.789484
-      },
-      {
-        "lane": "snare",
-        "noteID": "4d8a6354-3692-45cb-a897-f9876920c573",
-        "startSeconds": 118.105273
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "37c94006-db02-44d7-8415-05805f01f683",
-        "startSeconds": 118.421063
-      },
-      {
-        "lane": "kick",
-        "noteID": "24bf0c2b-4c1f-4f94-95d4-fc6767b6f8c7",
-        "startSeconds": 118.421063
-      },
-      {
-        "lane": "snare",
-        "noteID": "4c319e60-7261-47b7-9504-f1abb9293168",
-        "startSeconds": 118.578957
-      },
-      {
-        "lane": "kick",
-        "noteID": "ad757f10-fd86-4112-bbc6-7410523156e8",
-        "startSeconds": 118.736852
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "834d0f2b-8c2e-4b38-8246-5f1f3a101965",
-        "startSeconds": 119.052642
-      },
-      {
-        "lane": "snare",
-        "noteID": "fe641e6e-cb68-466d-9c53-eab5faf4601d",
-        "startSeconds": 119.368431
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "e4035f7b-e58c-4d94-b5a7-61bb5f9e60a5",
-        "startSeconds": 119.68422
-      },
-      {
-        "lane": "kick",
-        "noteID": "8c23a83c-14a8-4802-ae42-93ca643ab999",
-        "startSeconds": 119.842115
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "2f05a142-e24c-4439-99d0-89e3507f95e3",
-        "startSeconds": 120.315799
-      },
-      {
-        "lane": "kick",
-        "noteID": "35b53a31-e321-413e-8588-8a1950ab3ae8",
-        "startSeconds": 120.315799
-      },
-      {
-        "lane": "snare",
-        "noteID": "c6313ae3-9f15-4d82-9a2d-c9a0ac423d03",
-        "startSeconds": 120.631589
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "8d30153a-8f13-4c93-b5ce-d5e7e6acc30b",
-        "startSeconds": 120.947378
-      },
-      {
-        "lane": "kick",
-        "noteID": "04b80ecb-6eea-4181-bc30-d0df35872cfa",
-        "startSeconds": 120.947378
-      },
-      {
-        "lane": "snare",
-        "noteID": "23b60e03-412d-4f99-9126-759dddfd265d",
-        "startSeconds": 121.105273
-      },
-      {
-        "lane": "kick",
-        "noteID": "454fde04-0a60-4c52-b747-2270806667c5",
-        "startSeconds": 121.263168
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "d37248e6-dcfc-4cd9-94b6-6be4cfff03a2",
-        "startSeconds": 121.578958
-      },
-      {
-        "lane": "snare",
-        "noteID": "284345a4-b799-48b4-9536-1614739717b1",
-        "startSeconds": 121.894747
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "8053b113-1aea-433a-bb83-e789a44c8dc5",
-        "startSeconds": 122.210537
-      },
-      {
-        "lane": "kick",
-        "noteID": "4e56ae9e-3dde-4e47-ae94-bf99c419de87",
-        "startSeconds": 122.368431
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "492f438c-40fb-4869-83ef-8939847c23e8",
-        "startSeconds": 122.842116
-      },
-      {
-        "lane": "kick",
-        "noteID": "93355b00-24a0-4a17-b411-0063708e164a",
-        "startSeconds": 122.842116
-      },
-      {
-        "lane": "snare",
-        "noteID": "e3c335d2-6038-4820-92fe-b6206b3f771d",
-        "startSeconds": 123.157905
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "41500247-1c7c-487e-a061-edd46d77adaa",
-        "startSeconds": 123.473694
-      },
-      {
-        "lane": "kick",
-        "noteID": "23f4aec6-9a2e-41fc-932a-77379edf1b94",
-        "startSeconds": 123.473694
-      },
-      {
-        "lane": "snare",
-        "noteID": "6e96b83e-88a7-430c-8c40-638bef5f698b",
-        "startSeconds": 123.631589
-      },
-      {
-        "lane": "kick",
-        "noteID": "3acf7ecd-c9f5-499b-9aed-ea9bd97511ae",
-        "startSeconds": 123.789484
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "64a156ff-0caf-4e77-b7fb-f2729e28c9b6",
-        "startSeconds": 124.105273
-      },
-      {
-        "lane": "snare",
-        "noteID": "cad1421e-a486-4ff6-bb1b-ed71ac518add",
-        "startSeconds": 124.421063
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "b495ee3d-d337-4269-b9d6-d34d4f90bf50",
-        "startSeconds": 124.736852
-      },
-      {
-        "lane": "kick",
-        "noteID": "ca7fe39b-dcdc-46cc-a5e5-e3e71b382bcb",
-        "startSeconds": 124.894747
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "d09e219b-73fc-4cc9-a5fe-8b261567d27d",
-        "startSeconds": 125.368431
-      },
-      {
-        "lane": "kick",
-        "noteID": "de6f65ea-8716-4629-a131-258157b6bc5c",
-        "startSeconds": 125.368431
-      },
-      {
-        "lane": "snare",
-        "noteID": "d9d38d99-6676-47f5-b785-e187305d59b6",
-        "startSeconds": 125.684221
-      },
-      {
-        "lane": "kick",
-        "noteID": "18309a0a-4c97-436f-8d66-121c8d8865db",
-        "startSeconds": 125.684221
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "380d72ef-512b-4c30-81cd-b597e2816227",
-        "startSeconds": 126.000011
-      },
-      {
-        "lane": "kick",
-        "noteID": "3f56382b-0b13-4276-ba3f-56c959b8fbbc",
-        "startSeconds": 126.000011
-      },
-      {
-        "lane": "snare",
-        "noteID": "5fa5ad92-7f77-4d98-992c-efb0ca19b47a",
-        "startSeconds": 126.157905
-      },
-      {
-        "lane": "kick",
-        "noteID": "65160522-52dc-4c7e-a5f1-2c1c2f581a43",
-        "startSeconds": 126.3158
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "193bb16a-7900-435e-9945-d6472439d3ab",
-        "startSeconds": 126.63159
-      },
-      {
-        "lane": "snare",
-        "noteID": "7a32ffeb-b923-4650-b2c6-bf520daebe08",
-        "startSeconds": 126.947379
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "f567ae7b-0dfc-46a1-8c71-05342151ecf3",
-        "startSeconds": 127.263169
-      },
-      {
-        "lane": "kick",
-        "noteID": "71c12dd9-ec14-4fca-b6a1-f3249df0d32f",
-        "startSeconds": 127.421063
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "1c5bee9e-96cb-4522-85e0-92a3dbd96fa4",
-        "startSeconds": 127.894747
-      },
-      {
-        "lane": "kick",
-        "noteID": "323d28ab-bdcd-4037-9576-c33f9d3bdf1c",
-        "startSeconds": 127.894747
-      },
-      {
-        "lane": "snare",
-        "noteID": "c2b00ce5-9aef-411a-9667-2f75814d3a36",
-        "startSeconds": 128.210537
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "a16207fd-b823-4b62-8241-293876ba198b",
-        "startSeconds": 128.526327
-      },
-      {
-        "lane": "kick",
-        "noteID": "91880f15-b76b-4ded-a96f-672d739f2971",
-        "startSeconds": 128.526327
-      },
-      {
-        "lane": "snare",
-        "noteID": "45b6167b-f168-4180-8f5d-3360ad0c1018",
-        "startSeconds": 128.684221
-      },
-      {
-        "lane": "kick",
-        "noteID": "05f0946d-c46c-4af7-8f05-838b67960d69",
-        "startSeconds": 128.842116
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "44690d5f-62de-4009-ad51-d590c038e25b",
-        "startSeconds": 129.157905
-      },
-      {
-        "lane": "snare",
-        "noteID": "95fd5a10-1336-4528-b500-4770713ef926",
-        "startSeconds": 129.473695
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "36e1c733-1705-4f9e-bbf4-827a2d632713",
-        "startSeconds": 129.789484
-      },
-      {
-        "lane": "kick",
-        "noteID": "cea3f46e-1bac-483a-a802-fc356b28fdef",
-        "startSeconds": 129.947379
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "fca1a91f-f052-477a-8d94-4457c1367c57",
-        "startSeconds": 130.421064
-      },
-      {
-        "lane": "kick",
-        "noteID": "c4f843f6-0ccc-4a52-b8af-2fb400fedee9",
-        "startSeconds": 130.421064
-      },
-      {
-        "lane": "snare",
-        "noteID": "e649525e-babd-428f-bf8f-123e1d7f51df",
-        "startSeconds": 130.736853
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "e99fffe6-c0b2-4bed-a8c7-11adebba3098",
-        "startSeconds": 131.052642
-      },
-      {
-        "lane": "kick",
-        "noteID": "9e574cd7-a531-4b22-90f6-de0e71086328",
-        "startSeconds": 131.052642
-      },
-      {
-        "lane": "snare",
-        "noteID": "7e242e5c-0d00-4ce6-b5a4-de18010f43b4",
-        "startSeconds": 131.210537
-      },
-      {
-        "lane": "crash",
-        "noteID": "70f7ad9a-dae1-4c8a-aaba-ef3d2f580098",
-        "startSeconds": 131.368432
-      },
-      {
-        "lane": "kick",
-        "noteID": "3493539b-b409-4aad-85a1-9770bc68d906",
-        "startSeconds": 131.368432
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "9527da41-b6fa-41d1-a9e4-758b3b8fab7e",
-        "startSeconds": 131.684222
-      },
-      {
-        "lane": "snare",
-        "noteID": "e4d3ee3b-a486-4d8d-a081-6159c9eba89f",
-        "startSeconds": 132.000011
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "d62022db-dabb-4b38-8d7f-f220b5a1b4ef",
-        "startSeconds": 132.3158
-      },
-      {
-        "lane": "kick",
-        "noteID": "0312cc3f-2dfd-4592-a5de-f8c76f1d9c65",
-        "startSeconds": 132.473695
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "15dceeea-d8c1-42a9-b48e-b1794b03b7a1",
-        "startSeconds": 132.94738
-      },
-      {
-        "lane": "kick",
-        "noteID": "a5837631-7ce9-4ddf-842a-ce985bf782e9",
-        "startSeconds": 132.94738
-      },
-      {
-        "lane": "snare",
-        "noteID": "1a75f247-f1e0-48c3-aa24-e2f839e7f2ab",
-        "startSeconds": 133.263169
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "21a12d5b-8b7d-4a7c-a2de-8cebc8744b64",
-        "startSeconds": 133.578958
-      },
-      {
-        "lane": "kick",
-        "noteID": "8a8c5cde-f37d-4624-84a9-5ae2f145b5bd",
-        "startSeconds": 133.578958
-      },
-      {
-        "lane": "snare",
-        "noteID": "3001d8cb-9d57-47bb-bd60-b779ce98adc0",
-        "startSeconds": 133.736853
-      },
-      {
-        "lane": "kick",
-        "noteID": "1aed39ac-1aa1-43d1-afb6-2cafc81a6c9b",
-        "startSeconds": 133.894748
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "09207adb-96b8-4fdb-a360-4627b0799979",
-        "startSeconds": 134.210537
-      },
-      {
-        "lane": "snare",
-        "noteID": "028e76da-8e79-4243-a701-656683eed12f",
-        "startSeconds": 134.526327
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "6bb3246f-4ed4-415d-8d85-3c0849971a80",
-        "startSeconds": 134.842117
-      },
-      {
-        "lane": "kick",
-        "noteID": "227260e2-f8ae-4862-9ad0-b31f6d43cfeb",
-        "startSeconds": 135.000011
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "f581f67a-3a6c-4a3a-a7be-29c226b677b4",
-        "startSeconds": 135.473695
-      },
-      {
-        "lane": "kick",
-        "noteID": "41386fbd-e83a-4678-ac91-0cebbedab518",
-        "startSeconds": 135.473695
-      },
-      {
-        "lane": "snare",
-        "noteID": "4f392e8b-c04f-4d7c-89c4-5414e86387a7",
-        "startSeconds": 135.789485
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "b0e6af29-879a-49d2-8d4b-561d4dc19782",
-        "startSeconds": 136.105275
-      },
-      {
-        "lane": "kick",
-        "noteID": "99367457-a482-458c-8c4a-2874c6128d01",
-        "startSeconds": 136.105275
-      },
-      {
-        "lane": "snare",
-        "noteID": "4b7fc278-116d-43cd-b972-1a057ccf4a42",
-        "startSeconds": 136.263169
-      },
-      {
-        "lane": "kick",
-        "noteID": "86da04f4-01c5-4317-80bb-a2cfbece3a29",
-        "startSeconds": 136.421064
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "e4b537d6-079d-4de6-aaec-e3f4ce9be90c",
-        "startSeconds": 136.736853
-      },
-      {
-        "lane": "snare",
-        "noteID": "5a5cc4bb-4202-4152-9dfb-f6bf7feead6e",
-        "startSeconds": 137.052643
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "c2691c83-8fd1-42a8-9658-d0e7bf18e3aa",
-        "startSeconds": 137.368433
-      },
-      {
-        "lane": "kick",
-        "noteID": "b8bd950b-3bf9-4085-ad80-8466778de4ff",
-        "startSeconds": 137.526327
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "b8ec7d39-8198-4fc6-8da2-62a4b79232a4",
-        "startSeconds": 138.000011
-      },
-      {
-        "lane": "kick",
-        "noteID": "7205fcb3-2267-4158-afd5-b578ebf20cfb",
-        "startSeconds": 138.000011
-      },
-      {
-        "lane": "snare",
-        "noteID": "41d485dc-d570-40fc-825e-50a453695052",
-        "startSeconds": 138.315801
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "5175145e-25c2-4743-a00d-1aad4d2464d2",
-        "startSeconds": 138.63159
-      },
-      {
-        "lane": "kick",
-        "noteID": "26e41553-6b12-4bca-bad5-6255741a1a18",
-        "startSeconds": 138.63159
-      },
-      {
-        "lane": "snare",
-        "noteID": "b4bf10e4-0782-4d8d-8058-ac180b06734d",
-        "startSeconds": 138.789485
-      },
-      {
-        "lane": "kick",
-        "noteID": "765bc132-a65d-46a6-b8c5-f96b2d8b5b2c",
-        "startSeconds": 138.94738
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "26cca9f0-69f7-41a9-b189-31dfb34a4b9d",
-        "startSeconds": 139.26317
-      },
-      {
-        "lane": "snare",
-        "noteID": "95f78fba-f764-4263-892e-a7899fa4cf05",
-        "startSeconds": 139.578959
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "c736ac88-968a-49bc-b219-f51349e264d5",
-        "startSeconds": 139.894748
-      },
-      {
-        "lane": "kick",
-        "noteID": "97b2c56e-3f0f-445c-8512-3d7c08fbaa20",
-        "startSeconds": 140.052643
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "cf2e28a5-fb46-4045-8dae-f3db2eedeb95",
-        "startSeconds": 140.526328
-      },
-      {
-        "lane": "kick",
-        "noteID": "85607587-4104-47a1-8e74-e81ec35a89b9",
-        "startSeconds": 140.526328
-      },
-      {
-        "lane": "snare",
-        "noteID": "becc41e3-db5b-4866-8e00-1b4c75f47457",
-        "startSeconds": 140.842117
-      },
-      {
-        "lane": "kick",
-        "noteID": "b0d704c3-d007-4c22-b13e-3e59bcece135",
-        "startSeconds": 140.842117
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "41eea3ba-77dc-4b1a-9c43-5e380fa58fe9",
-        "startSeconds": 141.157906
-      },
-      {
-        "lane": "kick",
-        "noteID": "5140efce-cdaf-4396-ad89-2db14d46e4ac",
-        "startSeconds": 141.157906
-      },
-      {
-        "lane": "snare",
-        "noteID": "73a57125-6fb4-4468-947a-ae92b5215a82",
-        "startSeconds": 141.315801
-      },
-      {
-        "lane": "kick",
-        "noteID": "f1fe7767-03cf-4765-846b-53e4def0da67",
-        "startSeconds": 141.473696
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "dab7590a-6549-43fa-aa5c-addf0a48c5b1",
-        "startSeconds": 141.789486
-      },
-      {
-        "lane": "snare",
-        "noteID": "8beccbdd-389e-4aae-92ff-880dfb65664c",
-        "startSeconds": 142.105275
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "52ffcf6d-46c1-4b12-98bd-0636ac90c43f",
-        "startSeconds": 142.421064
-      },
-      {
-        "lane": "kick",
-        "noteID": "a56e8586-cf2e-48f3-b228-148ec97a7cfc",
-        "startSeconds": 142.578959
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "69ec58cb-b0c3-434a-988b-ec7c3f84ac79",
-        "startSeconds": 143.052643
-      },
-      {
-        "lane": "kick",
-        "noteID": "5c9fc979-40a4-4694-b591-e967e4ed2e33",
-        "startSeconds": 143.052643
-      },
-      {
-        "lane": "snare",
-        "noteID": "06ce5997-099f-4631-8b8f-3cb3a28fcd7b",
-        "startSeconds": 143.368433
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "c0bab2a5-76a6-40f3-9e32-c95b59ca0fe0",
-        "startSeconds": 143.684223
-      },
-      {
-        "lane": "kick",
-        "noteID": "f827f5da-233e-42fe-872c-4d9f49a40bce",
-        "startSeconds": 143.684223
-      },
-      {
-        "lane": "snare",
-        "noteID": "0c75cd62-41ad-4b92-9a99-7010b7961915",
-        "startSeconds": 143.842117
-      },
-      {
-        "lane": "kick",
-        "noteID": "a27baf2e-0f3d-44a5-8f05-0ee23ace14ff",
-        "startSeconds": 144.000012
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "14750eb9-8868-421e-9972-5654bfba2f2b",
-        "startSeconds": 144.315801
-      },
-      {
-        "lane": "snare",
-        "noteID": "7a191ab4-c660-444b-94a3-11d03a19895a",
-        "startSeconds": 144.631591
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "361830b6-9ac5-49aa-89f0-fea6ab429646",
-        "startSeconds": 144.947381
-      },
-      {
-        "lane": "kick",
-        "noteID": "c8c4ed8c-9bfa-46b0-a1a5-ac67f91903d3",
-        "startSeconds": 145.105275
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "55053eba-2ce0-461c-82ed-02dc26c1e156",
-        "startSeconds": 145.578959
-      },
-      {
-        "lane": "kick",
-        "noteID": "6715e93c-3575-4538-8887-6d7ea381f67e",
-        "startSeconds": 145.578959
-      },
-      {
-        "lane": "snare",
-        "noteID": "98b68418-0b65-4c17-ad8a-9deb1086d733",
-        "startSeconds": 145.894749
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "f5d2bfec-0b6b-466f-adac-97621c022b84",
-        "startSeconds": 146.210539
-      },
-      {
-        "lane": "kick",
-        "noteID": "4b0bdec8-4d41-454a-a1f5-b5ec0ff551a2",
-        "startSeconds": 146.210539
-      },
-      {
-        "lane": "snare",
-        "noteID": "79b8b6a6-9d42-4a9c-bda1-903d70904253",
-        "startSeconds": 146.368433
-      },
-      {
-        "lane": "kick",
-        "noteID": "afbc03b0-c4f9-438e-a8b2-689590ec5c7f",
-        "startSeconds": 146.526328
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "0f1c322e-f7d2-4d80-9724-65669ca3e5f4",
-        "startSeconds": 146.842118
-      },
-      {
-        "lane": "snare",
-        "noteID": "17848ac9-f3cd-4122-ab7a-e00053f4e105",
-        "startSeconds": 147.157907
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "6b0c5458-7673-4995-b883-6bd35e3dfa72",
-        "startSeconds": 147.473696
-      },
-      {
-        "lane": "kick",
-        "noteID": "283f0ee1-b1b4-4cf0-be91-593be07f7dd6",
-        "startSeconds": 147.631591
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "23d41d39-687c-44d3-9ad4-d5d084f82836",
-        "startSeconds": 148.105276
-      },
-      {
-        "lane": "kick",
-        "noteID": "3d6951d8-46c6-4f37-bb57-95667e197a14",
-        "startSeconds": 148.105276
-      },
-      {
-        "lane": "snare",
-        "noteID": "82523615-c994-4606-93e2-201ebe9c682e",
-        "startSeconds": 148.421065
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "f7569577-4f7b-401f-a528-7e5f2ccad5ba",
-        "startSeconds": 148.736854
-      },
-      {
-        "lane": "kick",
-        "noteID": "f454ea21-2fe2-493d-ba02-e47d35768bda",
-        "startSeconds": 148.736854
-      },
-      {
-        "lane": "snare",
-        "noteID": "9a564cad-71e0-4e67-98d6-c3c074bf4aa4",
-        "startSeconds": 148.894749
-      },
-      {
-        "lane": "kick",
-        "noteID": "bb198ad4-6495-48d8-830b-28e95da0a44d",
-        "startSeconds": 149.052644
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "80b22225-b5fc-4b2e-84e8-f6b6fba810ac",
-        "startSeconds": 149.368434
-      },
-      {
-        "lane": "snare",
-        "noteID": "6962d346-8b7b-40ff-9b8b-85d23591f4cb",
-        "startSeconds": 149.684223
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "94fb69c6-4a76-4b62-9a73-12eb10b15fb1",
-        "startSeconds": 150.000012
-      },
-      {
-        "lane": "kick",
-        "noteID": "b8e1f1f1-8911-46f4-820b-ab79e1469209",
-        "startSeconds": 150.157907
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "1e9cfb12-6cb0-4a05-b6d7-2c911324dc31",
-        "startSeconds": 150.631592
-      },
-      {
-        "lane": "kick",
-        "noteID": "90cb3b98-7891-44c4-bcfb-c3ee818bdb1a",
-        "startSeconds": 150.631592
-      },
-      {
-        "lane": "snare",
-        "noteID": "0026544d-a799-476b-9f32-8bb762414b2d",
-        "startSeconds": 150.947381
-      },
-      {
-        "lane": "snare",
-        "noteID": "9fd66d75-2561-494a-9d70-db66bb5f1495",
-        "startSeconds": 151.263171
-      },
-      {
-        "lane": "hihatClosed",
-        "noteID": "5e3b1b20-1b5f-4808-837c-98305895b58b",
-        "startSeconds": 151.263171
-      },
-      {
-        "lane": "kick",
-        "noteID": "6eac463f-a5fa-42f1-8c31-88af96d05cf3",
-        "startSeconds": 151.263171
-      },
-      {
-        "lane": "snare",
-        "noteID": "c5bde4c7-33e8-4a95-b354-35089783149d",
-        "startSeconds": 151.421065
-      }
-    ]
-  },
-  "source": {
-    "sourceMIDI": "kill-bill-sza-with-drum-bass.mid",
-    "title": "Electric Guitar"
-  },
-  "timelineDuration": 153.421065,
-  "timing": {
-    "bpm": 94.999992,
-    "offsetSeconds": 0,
-    "source": "midi_import",
-    "ticksPerBeat": 480,
-    "timeSignature": {
-      "denominator": 4,
-      "numerator": 4
+  "bpm" : 94.999992,
+  "notes" : [
+    {
+      "id" : "CB70CAF9-D3EF-4A96-AE1E-000668058819",
+      "lane" : 0,
+      "time" : 0
+    },
+    {
+      "id" : "1F6B0491-59F4-4333-A651-A2202C274244",
+      "lane" : 1,
+      "time" : 0
+    },
+    {
+      "id" : "9453EEA4-550C-44C4-831B-3216EB3D1AFC",
+      "lane" : 4,
+      "time" : 0
+    },
+    {
+      "id" : "27097341-0DD8-4DA0-B03D-0D57949A6256",
+      "lane" : 1,
+      "time" : 7.2631585063712425
+    },
+    {
+      "id" : "86618910-F280-4D39-9FFA-27FD7F92D2C0",
+      "label" : "Crash",
+      "lane" : 1,
+      "time" : 9.473685
+    },
+    {
+      "id" : "6B2AE897-93A5-42C2-A74A-44324AB6FCE1",
+      "label" : "Crash",
+      "lane" : 1,
+      "time" : 9.789475
+    },
+    {
+      "id" : "A2256A94-8FA4-473C-AAF9-5E911351C59A",
+      "label" : "Crash",
+      "lane" : 1,
+      "time" : 9.947369
+    },
+    {
+      "id" : "B4603EA0-9D6D-42C3-83D5-EAE420B108BF",
+      "label" : "Crash",
+      "lane" : 1,
+      "time" : 10.105264
+    },
+    {
+      "id" : "6E74BCDE-B0A5-4C80-B457-D445BFE97AAE",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 10.105264
+    },
+    {
+      "id" : "0C51B9DC-26E8-481F-8EDB-4119BE0B458A",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 10.421053
+    },
+    {
+      "id" : "196D944A-5DF9-4D5E-92C9-A06DD2AFFB74",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 10.736843
+    },
+    {
+      "id" : "B9E3C305-C01F-43B0-BE67-3803EADCBF2C",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 11.052632
+    },
+    {
+      "id" : "7FDC92DE-2625-4F47-8CF0-87665D6F3716",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 11.210527
+    },
+    {
+      "id" : "2ABECA33-EDAE-4D37-9819-086FC11335AC",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 11.684211
+    },
+    {
+      "id" : "79A761A2-BD13-4970-9E81-20796E5A8273",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 11.684211
+    },
+    {
+      "id" : "4E55BE6D-403C-4703-AB93-F2951CF93687",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 12.000001
+    },
+    {
+      "id" : "4357C2D7-154A-410A-9853-0ECD8462D052",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 12.315791
+    },
+    {
+      "id" : "EAE90C70-59F7-432C-8FC4-5D94B258A968",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 12.315791
+    },
+    {
+      "id" : "7547DC8C-865D-4E39-B356-0B3AD01AC507",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 12.473685
+    },
+    {
+      "id" : "2CB3526B-1EA2-46B6-B950-F6313A31A740",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 12.63158
+    },
+    {
+      "id" : "B4F06F44-4C3B-4A9B-8BE6-42E769C22D5D",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 12.94737
+    },
+    {
+      "id" : "28EAADEB-F574-4440-99D1-1FC1A034FD45",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 13.263159
+    },
+    {
+      "id" : "BDA344C8-7E47-4E8A-909E-CCDBA6220CD5",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 13.578948
+    },
+    {
+      "id" : "5373EDEA-6B44-46F6-9940-A9C3F807B0A7",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 13.736843
+    },
+    {
+      "id" : "F6C5B79D-5D63-4B20-A23C-6C554E692686",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 14.210527
+    },
+    {
+      "id" : "AA7AB984-A942-4BB9-929B-D4CCAA240245",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 14.210527
+    },
+    {
+      "id" : "C0170A27-51DE-4142-A15A-E9E9B0B711BB",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 14.526317
+    },
+    {
+      "id" : "D207E3B0-FC54-441C-A4BD-3EDDD2507B71",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 14.842106
+    },
+    {
+      "id" : "26FB83D1-7835-4B8B-A622-71D29F576407",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 14.842106
+    },
+    {
+      "id" : "42976AD0-AF12-459D-BDF6-C1593BB9E028",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 15.000001
+    },
+    {
+      "id" : "4FFD8C7F-8745-4A64-91F0-9D9FB5225ECE",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 15.157896
+    },
+    {
+      "id" : "3F8C9098-C7ED-4F3A-85CD-C9062B9D98B6",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 15.473686
+    },
+    {
+      "id" : "DF087DEE-5500-4150-921C-9CC28554D6B3",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 15.789475
+    },
+    {
+      "id" : "425A0418-AFBD-4761-868D-82E5A4979FC8",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 16.105265
+    },
+    {
+      "id" : "2F6D6F7B-7963-40F4-AF9B-B489AFA250CF",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 16.263159
+    },
+    {
+      "id" : "EAF8E11C-3E20-462D-8A13-898A8F5093A1",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 16.736843
+    },
+    {
+      "id" : "18921FFB-5895-43BB-AA77-928CEF80069E",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 16.736843
+    },
+    {
+      "id" : "1E11BEAC-16B5-423A-9E1E-748A0FDDCA77",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 17.052633
+    },
+    {
+      "id" : "EF660C49-AB95-4018-A628-8809EDDC517B",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 17.368423
+    },
+    {
+      "id" : "CAFAF3FE-2258-49E2-A748-1E4D61F4CD15",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 17.368423
+    },
+    {
+      "id" : "1D330725-5DB0-4ABA-8D71-54A44F7952AC",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 17.526317
+    },
+    {
+      "id" : "0BA3E420-DA98-4F25-AE04-838A6A0F8F31",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 17.684212
+    },
+    {
+      "id" : "48072B5A-E8D7-4869-AA9D-70C728D37DEF",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 18.000001
+    },
+    {
+      "id" : "9AC38C72-C2CA-4B47-8CB5-DA7DA2D1C4C3",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 18.315791
+    },
+    {
+      "id" : "766A24A6-F5FA-495F-99D9-CC1F56C3C7BF",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 18.63158
+    },
+    {
+      "id" : "1595E85B-A5F1-4A2D-A93F-5B73F6825366",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 18.789475
+    },
+    {
+      "id" : "84B774A2-8C46-4572-A14A-5F9A281D200C",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 19.26316
+    },
+    {
+      "id" : "D8325F62-CBCE-4079-A978-29214D8CD478",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 19.26316
+    },
+    {
+      "id" : "A2E7E6F6-CE5B-4A79-8D71-B989B0EF480F",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 19.578949
+    },
+    {
+      "id" : "D09E723F-D318-402E-8D76-976D0B60C914",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 19.894738
+    },
+    {
+      "id" : "6B676F9D-DE73-40F0-BA2A-E4F14321E346",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 19.894738
+    },
+    {
+      "id" : "28272AAF-A6BE-444A-A026-F43B6FEA9C6C",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 20.052633
+    },
+    {
+      "id" : "80775748-6A82-47B7-A022-3B9F97E5585E",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 20.210528
+    },
+    {
+      "id" : "5AEBB529-1B6A-4431-AA96-A06C05B46F4E",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 20.526318
+    },
+    {
+      "id" : "578694A1-1B61-4887-BC91-4A7E5861584B",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 20.842107
+    },
+    {
+      "id" : "8C893814-EA87-4E98-9BA2-6D919E632E8F",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 21.157896
+    },
+    {
+      "id" : "34BE889B-9ED3-40ED-B92F-F2793F4C9148",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 21.315791
+    },
+    {
+      "id" : "D4B85300-74E9-4110-9FEB-24C5623C680C",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 21.789476
+    },
+    {
+      "id" : "17E32031-0219-4CBD-AF64-EC0BF3D66D0C",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 21.789476
+    },
+    {
+      "id" : "8CDD66F9-57A3-48CE-BB1F-E5A7AC248CD1",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 22.105265
+    },
+    {
+      "id" : "1658F81A-0202-4321-A54C-F62D677D93C5",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 22.421055
+    },
+    {
+      "id" : "C528356D-7F6D-4BD3-BCB9-542C3EF4B592",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 22.421055
+    },
+    {
+      "id" : "A4C93B75-443C-4ADF-A18F-C9DD63D032F8",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 22.578949
+    },
+    {
+      "id" : "BEA977D8-01B0-4226-BE95-CCA8A0E5A719",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 22.736844
+    },
+    {
+      "id" : "342468CD-7A13-43C3-9F30-3A69409E0711",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 23.052633
+    },
+    {
+      "id" : "201B17EC-3DD6-4F2F-B249-A2299E51618B",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 23.368423
+    },
+    {
+      "id" : "D63708E0-B55B-49BD-9C78-93F8C36D2B58",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 23.684213
+    },
+    {
+      "id" : "CE70069B-51B9-4C31-8800-259CED000D21",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 23.842107
+    },
+    {
+      "id" : "DE74E9EB-6F71-402C-8938-316B75450553",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 24.315791
+    },
+    {
+      "id" : "2632B453-7A31-4D51-AFFB-12D6DA8C7C7C",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 24.315791
+    },
+    {
+      "id" : "4AEA8533-05CF-4281-A48B-771392C49B12",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 24.631581
+    },
+    {
+      "id" : "FECE0CC0-1268-4CBC-8D85-17F93A14892D",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 24.631581
+    },
+    {
+      "id" : "480D3043-9BE7-426D-8381-DF07258B32A6",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 24.947371
+    },
+    {
+      "id" : "9296A977-C202-45B1-AFF4-3AA75E23C10B",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 24.947371
+    },
+    {
+      "id" : "4A0FA340-AABE-4DAD-A320-850B1611F357",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 25.105265
+    },
+    {
+      "id" : "8DDAAC89-E806-4D8C-A21F-9933322B46A1",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 25.26316
+    },
+    {
+      "id" : "11DD6209-FA83-48CC-B39E-86C0B3BDC63C",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 25.57895
+    },
+    {
+      "id" : "A7EE54B7-6A8F-45C6-AE77-12722302CC09",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 25.894739
+    },
+    {
+      "id" : "D8A97E04-2876-406C-9886-1E87E73237A7",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 26.210528
+    },
+    {
+      "id" : "187B936E-2941-4E0A-A4AD-597AD24AB3A2",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 26.368423
+    },
+    {
+      "id" : "F50DDECD-60CF-4DE8-BDF6-4DFF1B2503B7",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 26.842108
+    },
+    {
+      "id" : "2355C8E5-E904-46D6-8C54-407A07DAC2D0",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 26.842108
+    },
+    {
+      "id" : "46305EB3-8605-4148-A063-FE0BBEB2B039",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 27.157897
+    },
+    {
+      "id" : "29544D3D-3DF5-493B-BDB3-3C0C953D1EE6",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 27.473686
+    },
+    {
+      "id" : "6B42021A-4297-425F-95B8-59967BE2A359",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 27.473686
+    },
+    {
+      "id" : "CF8C1903-1D7C-406D-BA21-9E0885FCB9DF",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 27.631581
+    },
+    {
+      "id" : "D72E284D-532C-42B0-9A1C-628956B2E205",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 27.789476
+    },
+    {
+      "id" : "37FCDC7E-2BEA-4D0F-A816-9A8F146ACB39",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 28.105266
+    },
+    {
+      "id" : "9E7D88C0-ED83-4A67-B207-ADC576470ED7",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 28.421055
+    },
+    {
+      "id" : "91C00186-DF91-468C-B182-FE968021A793",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 28.736845
+    },
+    {
+      "id" : "21AEDEA5-704E-4660-B3A1-FE9209814308",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 28.894739
+    },
+    {
+      "id" : "754A72B8-EC87-4402-9CCC-4553BC63EE8D",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 29.368423
+    },
+    {
+      "id" : "93B3E449-424B-4605-869E-C65ED61B3665",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 29.368423
+    },
+    {
+      "id" : "8C6AA2F4-1F73-45EB-B8AD-87219987A729",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 29.684213
+    },
+    {
+      "id" : "82472B2C-2F5C-4A42-AC57-9F1B58E91DE8",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 30.000003
+    },
+    {
+      "id" : "1A801B60-1106-4B90-9E40-26297D94A7BF",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 30.000003
+    },
+    {
+      "id" : "D31748FF-9EF2-4F11-887A-D83F61CF2C3A",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 30.157897
+    },
+    {
+      "id" : "69FB65B1-8283-44E5-BF86-3F4E8BD81B0E",
+      "label" : "Crash",
+      "lane" : 1,
+      "time" : 30.315792
+    },
+    {
+      "id" : "AAA4CC0E-4D86-44D6-93DC-66A11C000568",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 30.315792
+    },
+    {
+      "id" : "C7543D20-0484-45E1-A549-5122DC93D607",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 30.631581
+    },
+    {
+      "id" : "19D84880-901C-4FA2-A135-EADD1CD1870A",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 30.947371
+    },
+    {
+      "id" : "A1729428-8DC6-42F3-AC3A-8683DB8DC707",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 31.263161
+    },
+    {
+      "id" : "DEB67E4B-9D19-4253-9555-4BEAA93D43AF",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 31.421055
+    },
+    {
+      "id" : "67A3FD1C-A57E-4011-8AF1-7D41680F0F5C",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 31.89474
+    },
+    {
+      "id" : "1556A9B8-8F2B-478B-9DCB-9EA7049D3600",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 31.89474
+    },
+    {
+      "id" : "77DCFCD5-CD36-451A-95F9-FD1AA33D9102",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 32.210529
+    },
+    {
+      "id" : "86261BAD-C063-477D-B070-E89BA2C9FDA4",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 32.526319
+    },
+    {
+      "id" : "3139E4BD-92D7-42BD-9E57-B218FFC4B563",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 32.526319
+    },
+    {
+      "id" : "8736B5B0-3384-4E6A-A84D-37838829F4B3",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 32.684213
+    },
+    {
+      "id" : "7661547B-4235-4658-B3FE-8461F3B84CAE",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 32.842108
+    },
+    {
+      "id" : "7535556E-5131-4637-BF49-184C9A4A3E85",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 33.157897
+    },
+    {
+      "id" : "E90E4A64-8349-4480-BA06-04A394BBE325",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 33.473687
+    },
+    {
+      "id" : "AF66903F-5063-4CF6-8C04-66F3ACD10CF0",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 33.789476
+    },
+    {
+      "id" : "42FB6ACE-A335-49F1-8DF2-17D53D31AD5F",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 33.947371
+    },
+    {
+      "id" : "63E3256D-8D7E-4875-B87B-F219027B1442",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 34.421056
+    },
+    {
+      "id" : "E150E7DC-EDC8-4F5B-9405-8996D962C142",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 34.421056
+    },
+    {
+      "id" : "65ED1DCC-E6F9-4934-97DF-AAB1AD4A0E08",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 34.736845
+    },
+    {
+      "id" : "D1BF7087-455F-4BB7-A50A-5B403C64FB59",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 35.052635
+    },
+    {
+      "id" : "DC4D49C9-9763-49A8-A81D-4028E5D7D934",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 35.052635
+    },
+    {
+      "id" : "D2C12B73-3A89-48E9-BE6F-2B851FFFC486",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 35.210529
+    },
+    {
+      "id" : "EE91654B-BFC5-45CF-A9E4-8F3C6F8DDCF8",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 35.368424
+    },
+    {
+      "id" : "13B9D0FE-14B3-435E-A76B-51B08FC75111",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 35.684213
+    },
+    {
+      "id" : "1EEA1538-982D-4816-9D59-7F8B759C8986",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 36.000003
+    },
+    {
+      "id" : "0018A332-CDB8-4870-99D7-F4E7AB3A0C7F",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 36.315793
+    },
+    {
+      "id" : "73F8CB01-1BF9-41BA-9B1B-B0E48EBB0261",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 36.473687
+    },
+    {
+      "id" : "19597B5D-DB15-491A-AB29-5AD137F0A3BF",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 36.947372
+    },
+    {
+      "id" : "72C065AA-7E8D-432B-BD29-CAF4D417F572",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 36.947372
+    },
+    {
+      "id" : "80179F8B-3909-4843-9530-ED81580F0A06",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 37.263161
+    },
+    {
+      "id" : "0C585BF5-5D7C-4B0A-ACBC-329A9644FFA1",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 37.57895
+    },
+    {
+      "id" : "C71FF8F5-03DF-435E-9E4F-05A3409D085F",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 37.57895
+    },
+    {
+      "id" : "08CE13D8-A9A5-46DD-8F3E-FF5F262852CF",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 37.736845
+    },
+    {
+      "id" : "6266149E-62C2-4A94-A119-B46F943153F1",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 37.89474
+    },
+    {
+      "id" : "A70EE2FB-AE3F-4F8C-A797-AF9B7F9621D6",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 38.210529
+    },
+    {
+      "id" : "A6F5ED4A-5EB1-47D1-8A35-DD9EBED6E558",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 38.526319
+    },
+    {
+      "id" : "09D27CFB-C9BB-45E3-A904-2FCD521CBB30",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 38.842109
+    },
+    {
+      "id" : "3A04E546-061B-4FF0-8139-747470422B52",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 39.000003
+    },
+    {
+      "id" : "78342D3D-C66F-463B-98D0-97EFEA109A74",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 39.473687
+    },
+    {
+      "id" : "4C4FA8C5-46D9-4070-A0DB-8262B073F0CD",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 39.473687
+    },
+    {
+      "id" : "D785BD65-EDF6-4E65-B078-E15FC47DDC80",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 39.789477
+    },
+    {
+      "id" : "DA689ECB-38EF-402B-AB84-4C8DCD12C5AC",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 39.789477
+    },
+    {
+      "id" : "10DB7840-6184-4118-9476-A4596FC619E6",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 40.105266
+    },
+    {
+      "id" : "5BFC4BA4-4A5E-4B58-87DD-68FC5C122050",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 40.105266
+    },
+    {
+      "id" : "42983F86-AE4B-4043-8343-D0C4FB912BAF",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 40.263161
+    },
+    {
+      "id" : "C9F25031-660E-4159-941B-9BC96D3B1AF7",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 40.421056
+    },
+    {
+      "id" : "BF43A26E-27E1-45F2-B466-06739DFFAB35",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 40.736846
+    },
+    {
+      "id" : "F0BD003F-8A59-4F66-9F45-CB7CC1E1C547",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 41.052635
+    },
+    {
+      "id" : "3E2B6955-4206-4405-BE95-621664AB7C1B",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 41.368425
+    },
+    {
+      "id" : "1A34824A-8A6A-4987-8C9D-F9EB03EC6C67",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 41.526319
+    },
+    {
+      "id" : "FD5A08DA-5EE5-4EAE-AD73-B87582E7B18A",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 42.000003
+    },
+    {
+      "id" : "AC467BF1-4228-4721-BCD2-73DC5E3EE5C7",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 42.000003
+    },
+    {
+      "id" : "4BF6DF64-ECEB-4397-AADC-5DB8BB0DB5ED",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 42.315793
+    },
+    {
+      "id" : "3741D2E0-FDD5-42CD-820F-BA6BDF8A4F68",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 42.631583
+    },
+    {
+      "id" : "68197B63-E714-4665-8874-01E5FBFF11BD",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 42.631583
+    },
+    {
+      "id" : "529FD4AF-FDE6-4F1C-AD58-51702AE6E997",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 42.789477
+    },
+    {
+      "id" : "0EDCF305-7AF6-4CC3-A3CD-9070915EBB4E",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 42.947372
+    },
+    {
+      "id" : "948AE4E0-3D7E-4DAB-BC90-E75F90CCDC99",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 43.263162
+    },
+    {
+      "id" : "72E96463-4121-4506-8982-76ED6B57D912",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 43.578951
+    },
+    {
+      "id" : "B6A1C603-87A4-499D-B424-7E476AF29CDF",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 43.89474
+    },
+    {
+      "id" : "75B7DC12-A0D8-49D0-BE4C-FB5965837778",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 44.052635
+    },
+    {
+      "id" : "B7F17E31-2D09-4BD9-AEB2-E9E17D9D35B8",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 44.526319
+    },
+    {
+      "id" : "5EB9C90A-A2B9-402D-8156-BB569D9A6151",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 44.526319
+    },
+    {
+      "id" : "E4AE3219-A3C3-4E6D-9848-398C27F0BBCD",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 44.842109
+    },
+    {
+      "id" : "23F30FF3-694F-47B0-A143-40E4A1FBAC04",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 45.157899
+    },
+    {
+      "id" : "1FEA58C4-CFA1-4501-BF07-0290DD5AA5B1",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 45.157899
+    },
+    {
+      "id" : "914C80B2-013A-44DB-9012-D6CF0B297950",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 45.315793
+    },
+    {
+      "id" : "AEDDA6EB-45AB-416B-9117-3DEF327A6EED",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 45.473688
+    },
+    {
+      "id" : "94B06219-35A5-4F49-B98C-0B5AFE044384",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 45.789477
+    },
+    {
+      "id" : "3D7922EB-3917-4780-A662-11D47F22B5B1",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 46.105267
+    },
+    {
+      "id" : "2009B657-53B5-4BC5-976C-CE3355E5BA26",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 46.421056
+    },
+    {
+      "id" : "C0FDDFCE-2552-426E-B7C9-1E4C13BA78C7",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 46.578951
+    },
+    {
+      "id" : "490C1D1F-0EEF-4787-9368-13B6395A6DC1",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 47.052636
+    },
+    {
+      "id" : "8862A6E6-5E4F-4201-8C4F-2BA98CB88177",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 47.052636
+    },
+    {
+      "id" : "D272388D-1961-4EB3-BE39-D5776945A8A2",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 47.368425
+    },
+    {
+      "id" : "B0C3D614-4CDA-4FB1-B6FF-DCF831B0602A",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 47.684215
+    },
+    {
+      "id" : "F7BE5400-024E-4E33-8699-4D5C55D72FF7",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 47.684215
+    },
+    {
+      "id" : "A861704C-CC57-47D9-94E7-8C7AE6AF210F",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 47.842109
+    },
+    {
+      "id" : "CE50C8B4-89A8-4C5B-9303-74BAA16FE69A",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 48.000004
+    },
+    {
+      "id" : "8FC3C177-8D3A-4E29-8C64-6BBE7833ED7C",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 48.315793
+    },
+    {
+      "id" : "C67E3E3C-88B6-4C3F-8FC3-B553349AF87F",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 48.631583
+    },
+    {
+      "id" : "03C935CC-DE1F-4568-8456-D2ECD53AD216",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 48.947373
+    },
+    {
+      "id" : "E7392162-B75A-4781-B914-568F1B0F5B2D",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 49.105267
+    },
+    {
+      "id" : "BCCF487D-7E42-44DE-854C-7E35773A2A4E",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 49.578952
+    },
+    {
+      "id" : "B0E65544-61EC-44C8-964A-C615EAC048E9",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 49.578952
+    },
+    {
+      "id" : "9C83C46B-522D-493D-B517-5787360422FB",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 49.894741
+    },
+    {
+      "id" : "CDB4242B-8090-4952-A2B1-D92D1AE0E568",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 50.21053
+    },
+    {
+      "id" : "BCE38389-8C9F-4B57-B8AE-A34B8C7D91E6",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 50.21053
+    },
+    {
+      "id" : "4FA2A1AD-7FB6-420E-BBAD-D6EE20377E12",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 50.21053
+    },
+    {
+      "id" : "5BA34C0B-A0C3-4161-B26C-795902A525E2",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 50.368425
+    },
+    {
+      "id" : "9D06859F-6C28-48F2-84EB-6D367DF83E49",
+      "label" : "Crash",
+      "lane" : 1,
+      "time" : 60.000005
+    },
+    {
+      "id" : "BEE15E9C-E268-4780-91EF-41F9C3AF9667",
+      "label" : "Crash",
+      "lane" : 1,
+      "time" : 60.1579
+    },
+    {
+      "id" : "8106E5C5-82BA-43CF-8B11-8683853E6146",
+      "label" : "Crash",
+      "lane" : 1,
+      "time" : 60.315795
+    },
+    {
+      "id" : "5B603006-6741-4B68-A5B5-079A10BCF3BC",
+      "label" : "Crash",
+      "lane" : 1,
+      "time" : 60.473689
+    },
+    {
+      "id" : "EBBF8E64-A553-4501-B8B4-9DFDA914D335",
+      "label" : "Crash",
+      "lane" : 1,
+      "time" : 60.631584
+    },
+    {
+      "id" : "D965B524-93D7-414C-AA94-ECE155A364B9",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 60.631584
+    },
+    {
+      "id" : "96EA6BB1-20DC-45FD-A313-3825BDC4D69F",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 60.947373
+    },
+    {
+      "id" : "4A52AE9E-F25C-4C28-9966-40632AA69943",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 61.263163
+    },
+    {
+      "id" : "D58EC7BD-0843-4D9C-8B24-9BD71128A567",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 61.578952
+    },
+    {
+      "id" : "EFC39B85-8108-43DF-B527-F5210BB6F393",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 61.736847
+    },
+    {
+      "id" : "3F36AECD-AB49-4D13-AC55-BECE1ADD132B",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 62.210532
+    },
+    {
+      "id" : "F86DEC97-BAF9-422C-8065-6FE62CAADC16",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 62.210532
+    },
+    {
+      "id" : "EFB2C1F9-6096-46D1-A82B-ABB84DA59E72",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 62.526321
+    },
+    {
+      "id" : "B5C8DA8D-027B-4D17-8EAE-3CD530D294CC",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 62.84211
+    },
+    {
+      "id" : "E6C22B18-948A-49BA-9450-5644997ADF6E",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 62.84211
+    },
+    {
+      "id" : "83FBCAC6-4E8A-4CA2-A8F8-998F0782C5D0",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 63.000005
+    },
+    {
+      "id" : "29186382-F8B6-4355-B4EE-1D4E84D0DE71",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 63.1579
+    },
+    {
+      "id" : "03BAEC55-DFB1-484D-B5BD-EB5562B61775",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 63.473689
+    },
+    {
+      "id" : "F781CF84-2A6A-48E5-BB8F-46095C2E7C21",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 63.789479
+    },
+    {
+      "id" : "E77531B3-10FE-427E-8BCE-88793F1F40E5",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 64.105268
+    },
+    {
+      "id" : "C5E5F7C4-A822-40D7-991B-67AD879BD14A",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 64.263163
+    },
+    {
+      "id" : "76D57967-37EF-4692-AC0C-6CCB7A7414C3",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 64.736847
+    },
+    {
+      "id" : "E49F7B97-E797-4D66-93EA-790D3215F952",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 64.736847
+    },
+    {
+      "id" : "B17EF665-1303-4782-847F-4DF9B153813B",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 65.052637
+    },
+    {
+      "id" : "020F7DBA-8C5A-48DC-8C7B-19DC6241BA3F",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 65.368426
+    },
+    {
+      "id" : "318A6231-F6DC-4F0F-A242-A2814DFC576A",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 65.368426
+    },
+    {
+      "id" : "925C962B-0E02-4802-A2E0-43AEF820A469",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 65.526321
+    },
+    {
+      "id" : "4B5A8D04-75D5-40C8-850A-7C7CF21B4348",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 65.684216
+    },
+    {
+      "id" : "59AEBF29-17FA-4E4F-8B0E-7246FD875DF8",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 66.000006
+    },
+    {
+      "id" : "93F58E77-AC64-4F7C-937B-3D540179A0BB",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 66.315795
+    },
+    {
+      "id" : "4C8E2C59-629E-4C3E-B246-CA76DFF9C17C",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 66.631585
+    },
+    {
+      "id" : "7E0CFD87-56C2-4D00-91B5-9C9577BC5D65",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 66.789479
+    },
+    {
+      "id" : "1252192D-F377-41C3-A2CE-AF00D4F98AA5",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 67.263164
+    },
+    {
+      "id" : "F9658552-33BC-400B-A607-A87AF339C222",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 67.263164
+    },
+    {
+      "id" : "790E0D2A-0875-4F6D-B2ED-E982A493C0D0",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 67.578953
+    },
+    {
+      "id" : "7BB8F808-93C0-4E79-A507-610E6A1C28BC",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 67.894743
+    },
+    {
+      "id" : "3D27E388-2C17-4C5C-BF90-4CE942F00CC2",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 67.894743
+    },
+    {
+      "id" : "3CE482E6-4088-4757-81FE-654D3E4E1C4D",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 68.052637
+    },
+    {
+      "id" : "6C15A9FD-3DA0-4BF2-9A23-F7EAF7BD8B5D",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 68.210532
+    },
+    {
+      "id" : "DBB3C2DC-2637-4ED6-80F8-53D278AB53B9",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 68.526321
+    },
+    {
+      "id" : "0B8D215E-5556-422E-9AAC-8B71A0813902",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 68.842111
+    },
+    {
+      "id" : "5A6083A8-CB63-4BC0-8129-D1CF272E9188",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 69.1579
+    },
+    {
+      "id" : "2132F832-AB33-47C2-A6F9-F7610676EBA8",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 69.315795
+    },
+    {
+      "id" : "44AD8DD5-1ED1-44D8-BBCD-6609039CADA6",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 69.789479
+    },
+    {
+      "id" : "351158E9-F906-41BF-B53B-D46E00A9DEA3",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 69.789479
+    },
+    {
+      "id" : "16495A6B-2597-4AE8-AC7D-1ACB691E2881",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 70.105269
+    },
+    {
+      "id" : "34D2649B-68D1-4B12-B3D1-08B384D90606",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 70.421059
+    },
+    {
+      "id" : "272EFAD4-1A6A-44BC-978E-1D7A6BBC7DED",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 70.421059
+    },
+    {
+      "id" : "3FD178C3-2F03-4416-81DA-5CC5F368BEFE",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 70.578953
+    },
+    {
+      "id" : "3C0DEEB2-2B36-40DA-960B-EFABCD627162",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 70.736848
+    },
+    {
+      "id" : "5D6A7440-DD3A-4712-A9CC-FC2D74786A70",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 71.052638
+    },
+    {
+      "id" : "D845A182-A8C6-43F5-8D46-610FBA491046",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 71.368427
+    },
+    {
+      "id" : "A087BEBB-6CD7-424A-BD95-D4E6F9257EBE",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 71.684217
+    },
+    {
+      "id" : "EBBE54C0-3559-42A9-87D7-8346D18031F2",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 71.842111
+    },
+    {
+      "id" : "43ABF401-188B-4379-91D3-CE468E334F51",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 72.315796
+    },
+    {
+      "id" : "294F7387-2886-4BED-B7CD-13C002602085",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 72.315796
+    },
+    {
+      "id" : "F2BB8F7D-4B4D-4C17-9F4B-D78AB3A98D81",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 72.631585
+    },
+    {
+      "id" : "08FF61C9-FDBA-428A-ADE7-B578B5FBE761",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 72.947374
+    },
+    {
+      "id" : "20FB650F-8459-4C24-9E3A-14A7173CE04A",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 72.947374
+    },
+    {
+      "id" : "7D02CE36-2601-470C-98DE-BBD17BB780A6",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 73.105269
+    },
+    {
+      "id" : "AE314ED3-9ACF-467C-958E-B8935CE4AF80",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 73.263164
+    },
+    {
+      "id" : "9A6BC091-245A-40A7-80BD-5D396DA77804",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 73.578953
+    },
+    {
+      "id" : "AE84E20D-AC95-4BDE-B9A8-122776525AC7",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 73.894743
+    },
+    {
+      "id" : "005817E3-B64F-4DC6-8551-9C436E9794AD",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 74.210532
+    },
+    {
+      "id" : "12B05D83-142B-442A-8092-D25E53764F27",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 74.368427
+    },
+    {
+      "id" : "0D098E82-9A7A-4C48-AA1F-12C1DFF91FB8",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 74.842112
+    },
+    {
+      "id" : "FF67935A-7751-4C8A-BF3C-43F3C15CB92D",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 74.842112
+    },
+    {
+      "id" : "CBD64DFD-6F8B-4116-9D38-0E6FF359EF65",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 75.157901
+    },
+    {
+      "id" : "509AF7B4-AC9E-4FE4-B79D-7FC158BEB2A0",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 75.157901
+    },
+    {
+      "id" : "71A156A1-B8B4-41FA-BAC0-08271AAAA00E",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 75.473691
+    },
+    {
+      "id" : "EAC0C55F-0058-41AD-8F92-3F2E51727D7F",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 75.473691
+    },
+    {
+      "id" : "99080B01-6A39-4F87-A2E5-9666F0FE0185",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 75.631585
+    },
+    {
+      "id" : "2795B688-DD5A-4FEB-8DBA-0092BAC518BD",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 75.78948
+    },
+    {
+      "id" : "607F6067-8E10-49B8-B3B8-22B5B4AC79F8",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 76.10527
+    },
+    {
+      "id" : "59769CC9-5137-4E9B-B787-5C34C2CEC946",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 76.421059
+    },
+    {
+      "id" : "D249C5C2-14C1-4575-A546-09AC64C75CE3",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 76.736848
+    },
+    {
+      "id" : "B9D2090D-683C-424E-B86E-C232D0E70FE4",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 76.894743
+    },
+    {
+      "id" : "97C783FD-3A4A-4EA6-8A51-8FFAE74E3685",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 77.368427
+    },
+    {
+      "id" : "FA8856EE-C687-48E3-822F-2977611CDA8E",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 77.368427
+    },
+    {
+      "id" : "5E79E4C8-EB60-480E-A288-3AB43B62B72E",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 77.684217
+    },
+    {
+      "id" : "A4D878C6-3FB8-488A-B947-69428AFDE1A1",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 78.000006
+    },
+    {
+      "id" : "D84D0FFE-12FE-4AAF-ADBF-1E2C5C1C9066",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 78.000006
+    },
+    {
+      "id" : "DDD9F2B5-4EE6-4058-932B-9F047FFEED82",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 78.157901
+    },
+    {
+      "id" : "39A1592A-38B5-4D45-896D-69FC54AA8BDC",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 78.315796
+    },
+    {
+      "id" : "87424C6F-3441-43C3-9322-5CA5A808AED1",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 78.631585
+    },
+    {
+      "id" : "9B856E34-7105-4B16-9390-F6BBE103AE1C",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 78.947375
+    },
+    {
+      "id" : "0BF65157-ECA5-477D-B144-F49D428F627A",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 79.263165
+    },
+    {
+      "id" : "F9669CCF-4695-44EC-B4AA-7FA351C913C7",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 79.421059
+    },
+    {
+      "id" : "9E193948-A8FD-4138-B20A-DAC1EE76337A",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 79.894744
+    },
+    {
+      "id" : "EC340DE3-7DBE-46AD-BA85-CAD5D861385D",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 79.894744
+    },
+    {
+      "id" : "D6338649-22AA-46CC-AA84-BBB2E0C5D8A4",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 80.210533
+    },
+    {
+      "id" : "4A229EE4-3BEC-4359-8F3C-BAEFED6E59F0",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 80.526323
+    },
+    {
+      "id" : "28F322CF-0680-4F33-8DFF-EC5D2B17A78C",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 80.526323
+    },
+    {
+      "id" : "8B21497C-93E5-480F-916F-8A39DB1D3818",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 80.684217
+    },
+    {
+      "id" : "25EADE75-146A-46B9-8542-D78D63DCC56F",
+      "label" : "Crash",
+      "lane" : 1,
+      "time" : 80.842112
+    },
+    {
+      "id" : "7315EB8E-48DD-437A-A9C2-502392BEE12A",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 80.842112
+    },
+    {
+      "id" : "D4A6E5CB-D6F4-49EE-BB43-68DF8C46B269",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 81.157901
+    },
+    {
+      "id" : "67839BE4-94C5-41A6-A307-8E8EF339C002",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 81.473691
+    },
+    {
+      "id" : "430AEAD2-775C-4FC6-AF59-400908712D8A",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 81.78948
+    },
+    {
+      "id" : "9123B7A6-5073-4878-9FDB-8C4A31F4A131",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 81.947375
+    },
+    {
+      "id" : "BBFFA2A4-57F9-44DB-BF8F-3D4843639B6D",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 82.421059
+    },
+    {
+      "id" : "27D3D186-3675-4AEC-ABBA-0D585969D2AA",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 82.421059
+    },
+    {
+      "id" : "2C424313-4790-4C2A-9814-3E62D3BD1CD4",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 82.736849
+    },
+    {
+      "id" : "488F8D93-9B4A-46B7-924E-04074A7B330A",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 83.052639
+    },
+    {
+      "id" : "F086DE96-3AC2-4D7C-A780-3B8B1BE7A67B",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 83.052639
+    },
+    {
+      "id" : "60CD68E6-6C89-46BF-9245-AF0EDFA0AF3F",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 83.210533
+    },
+    {
+      "id" : "98FA43CD-9BF7-4426-91AA-8231904E2B86",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 83.368428
+    },
+    {
+      "id" : "83002312-0682-499E-9A44-76A691219102",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 83.684218
+    },
+    {
+      "id" : "9D9E066F-0575-4EF2-AEE0-D2F42A7E9FAD",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 84.000007
+    },
+    {
+      "id" : "596DCED4-2B4C-4DC5-9DCF-F3C16BF5CAF1",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 84.315797
+    },
+    {
+      "id" : "F8B4A598-3E70-4E22-AB6B-06184668DA49",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 84.473691
+    },
+    {
+      "id" : "78C56AC4-E9A2-49DB-8969-1250A449DC7D",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 84.947376
+    },
+    {
+      "id" : "F98FB3D3-E79D-4D50-89E7-DC3820E7BD22",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 84.947376
+    },
+    {
+      "id" : "9403B61B-67CB-4DDE-9B5E-9D95C53E0AB7",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 85.263165
+    },
+    {
+      "id" : "DDBC6C63-9BFA-4B34-AD46-BB2A6EF430A1",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 85.578954
+    },
+    {
+      "id" : "ADB6778F-CAA0-4489-BEAA-B852E14082BE",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 85.578954
+    },
+    {
+      "id" : "0E45D9FD-04DB-48ED-B073-C90406278555",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 85.736849
+    },
+    {
+      "id" : "2C8DE240-A079-4A81-B076-A5D2BEDAD603",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 85.894744
+    },
+    {
+      "id" : "7EC48CB7-C373-47D0-92F8-9CBA6CB7F630",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 86.210533
+    },
+    {
+      "id" : "7B383B6C-7BA2-403A-85C8-526BBB87E935",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 86.526323
+    },
+    {
+      "id" : "183EC9F5-8838-49D7-B6CD-58BBF44B47C5",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 86.842112
+    },
+    {
+      "id" : "B00C3EC4-0385-477E-9445-D46986518E35",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 87.000007
+    },
+    {
+      "id" : "4C1ED756-E3BD-4297-A884-352C225D69D4",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 87.473692
+    },
+    {
+      "id" : "E264F8AD-321F-42C4-B257-62403D9CCCF3",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 87.473692
+    },
+    {
+      "id" : "7CD19B59-04B8-450D-A78A-CA8810EB1FB2",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 87.789481
+    },
+    {
+      "id" : "F135FDBF-AB3D-4A34-9BDA-2F65B1F37330",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 88.105271
+    },
+    {
+      "id" : "52004CB0-D73A-4AB8-B42A-1C79BE3850FB",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 88.105271
+    },
+    {
+      "id" : "3E5914FE-596F-4C3B-AE9F-CAD8D24D3739",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 88.263165
+    },
+    {
+      "id" : "5029276F-0052-40C7-8253-DF2723AB6D27",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 88.42106
+    },
+    {
+      "id" : "F9688774-4B97-4901-93D0-30E6E05F3F12",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 88.73685
+    },
+    {
+      "id" : "43910FF8-5B85-4B5A-8BB6-DBAC2AD530D4",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 89.052639
+    },
+    {
+      "id" : "6DED725E-8753-49BB-8B29-BED87CC26426",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 89.368428
+    },
+    {
+      "id" : "681323ED-3813-4213-8F2C-F881885A38D7",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 89.526323
+    },
+    {
+      "id" : "7ED21602-A682-4C39-B4F5-4110113512A1",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 90.000007
+    },
+    {
+      "id" : "64AC35BC-08F3-4A3E-8FBD-D4C8E172CC25",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 90.000007
+    },
+    {
+      "id" : "73FCCDB9-3186-4C49-A12B-29C08B934BE4",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 90.315797
+    },
+    {
+      "id" : "C55EF985-4CFA-4444-AD20-3C6406081D56",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 90.315797
+    },
+    {
+      "id" : "EFC0DB91-C37C-4697-8C21-9C3A50F6CB33",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 90.631586
+    },
+    {
+      "id" : "713C8BEC-A21B-465E-BAE4-567DDF489A1A",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 90.631586
+    },
+    {
+      "id" : "A9882DBA-5F37-4FE2-92EC-027D7D88EDC1",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 90.789481
+    },
+    {
+      "id" : "6C353AD2-C1EC-446D-B986-1C2738B30710",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 90.947376
+    },
+    {
+      "id" : "223E9598-3B60-406C-A9F9-3C43C9BB19F7",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 91.263165
+    },
+    {
+      "id" : "A5262DE7-1661-4357-AC83-41CCA3B7FA91",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 91.578955
+    },
+    {
+      "id" : "DE17C89E-452A-4A89-8A9C-0E5D24AC7624",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 91.894745
+    },
+    {
+      "id" : "ADE68E45-91CD-4CA8-BE47-251DE0A77EC0",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 92.052639
+    },
+    {
+      "id" : "04208CAB-B6B7-42C2-966C-B4D8E695EF55",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 92.526324
+    },
+    {
+      "id" : "4E0269F5-33F9-4F59-B5BD-27C9492385C4",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 92.526324
+    },
+    {
+      "id" : "1D8E40BE-4B2F-429A-814C-D281827C83BE",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 92.842113
+    },
+    {
+      "id" : "9D3ACFD4-F117-47D6-88DE-A7A79999B64E",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 93.157903
+    },
+    {
+      "id" : "C3561D71-9BBB-422C-AB02-167A601CCD2B",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 93.157903
+    },
+    {
+      "id" : "1E1EC82F-5823-4563-B0A3-6E46E781068D",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 93.315797
+    },
+    {
+      "id" : "D777C9E7-5EAA-471B-9F1F-F817AF26D3E8",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 93.473692
+    },
+    {
+      "id" : "1CD8A092-B7E5-464F-B212-0B60150EFADE",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 93.789481
+    },
+    {
+      "id" : "45C2E390-5BF6-4460-BAE4-993BCE0453E4",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 94.105271
+    },
+    {
+      "id" : "71B1A284-B3C3-4A3C-8893-A6C320C3074F",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 94.42106
+    },
+    {
+      "id" : "0AB7E670-1070-4D3B-AEB5-589964FBBBBC",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 94.578955
+    },
+    {
+      "id" : "60B8C685-1467-4C23-B628-D709E80D1B79",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 95.052639
+    },
+    {
+      "id" : "938BFE4F-9C9C-4B24-803B-ECD108F646B3",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 95.052639
+    },
+    {
+      "id" : "D206A0F7-15C1-4377-8777-41E51765B52A",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 95.368429
+    },
+    {
+      "id" : "F5F90FDC-5033-4B61-83A0-34CFB9C740CE",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 95.684219
+    },
+    {
+      "id" : "86D66FFC-BD37-478A-AD7C-A96DA1C4F9FA",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 95.684219
+    },
+    {
+      "id" : "9B2FC4A6-3773-4B8B-A056-83C4E935B393",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 95.842113
+    },
+    {
+      "id" : "F0B8671C-91D8-446C-A672-DC7E356D72C9",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 96.000008
+    },
+    {
+      "id" : "C903DBE6-F1DE-47FE-99B4-33EC15D59B35",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 96.315798
+    },
+    {
+      "id" : "BFD7A367-9F28-427E-9039-566A427AFB78",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 96.631587
+    },
+    {
+      "id" : "7B66453B-C71F-484D-81A6-3B40186770A0",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 96.947377
+    },
+    {
+      "id" : "75161715-9560-42B8-8DF0-E07D0142D2BE",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 97.105271
+    },
+    {
+      "id" : "47DECBF9-0C59-4DD2-8076-5D114A5DDF40",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 97.578956
+    },
+    {
+      "id" : "AD1D7039-91A3-47DF-A396-A1F8A72F1D58",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 97.578956
+    },
+    {
+      "id" : "DA48A09F-F0A5-45F1-87B5-4A04273D13C6",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 97.894745
+    },
+    {
+      "id" : "AA1DF0B7-0A02-4452-BBDE-73FF35CAF168",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 98.210534
+    },
+    {
+      "id" : "731C9A4F-B573-42B8-85A8-9D3EAE44C790",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 98.210534
+    },
+    {
+      "id" : "E3CA0CE4-ED3B-44D5-A7D9-FA7E57E0B1EC",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 98.368429
+    },
+    {
+      "id" : "DBD66992-6688-4B7D-9602-CDEC5DC0505A",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 98.526324
+    },
+    {
+      "id" : "491B72DF-E298-4394-B993-1A00DB7CD665",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 98.842113
+    },
+    {
+      "id" : "C9CCAE87-4452-4B0C-91A6-4391D5333248",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 99.157903
+    },
+    {
+      "id" : "68558D8A-E399-4BBB-B1E2-A72EE57AC8A2",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 99.473692
+    },
+    {
+      "id" : "1554402D-E8C3-4A70-B9DC-0111E6BA7B8B",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 99.631587
+    },
+    {
+      "id" : "1BC375E3-08C4-42F6-ACCC-F4321422E328",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 100.105272
+    },
+    {
+      "id" : "143E8986-45B6-4E10-9CF8-52E5EE852748",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 100.105272
+    },
+    {
+      "id" : "15D72DB4-96F3-4229-807C-A313717DC36C",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 100.421061
+    },
+    {
+      "id" : "00BC4A99-DA5D-44B9-A2F2-BDD57FFCE66F",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 100.736851
+    },
+    {
+      "id" : "B08BEAFC-1083-440A-8F7E-18C18DFEE012",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 100.736851
+    },
+    {
+      "id" : "8CF073E9-4A4A-449F-8A4E-A8A6C5B9C7B8",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 100.736851
+    },
+    {
+      "id" : "25A68A43-D222-4B25-B59D-03B623E65CE9",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 100.894745
+    },
+    {
+      "id" : "2AECC8FB-69DE-4AA8-8675-15F5FC1C0F04",
+      "label" : "Crash",
+      "lane" : 1,
+      "time" : 110.526325
+    },
+    {
+      "id" : "3935FFBA-7D5D-4E9D-943F-0C515AD51F2E",
+      "label" : "Crash",
+      "lane" : 1,
+      "time" : 110.68422
+    },
+    {
+      "id" : "998885B8-B426-4945-883C-0C990FBE4B67",
+      "label" : "Crash",
+      "lane" : 1,
+      "time" : 110.842114
+    },
+    {
+      "id" : "E3BC1BAB-AEE4-4A6C-9636-AD4B7F1596D4",
+      "label" : "Crash",
+      "lane" : 1,
+      "time" : 111.000009
+    },
+    {
+      "id" : "67B6CFFB-140B-4D52-9445-F4EE0C819366",
+      "label" : "Crash",
+      "lane" : 1,
+      "time" : 111.157904
+    },
+    {
+      "id" : "533166E2-3378-409E-BF70-3491DD45325A",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 111.157904
+    },
+    {
+      "id" : "AADE3E0B-67E4-40C0-A09E-071FE8797337",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 111.473693
+    },
+    {
+      "id" : "D45A9ACC-B831-49AA-9F10-C3C3A28E34BF",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 111.789483
+    },
+    {
+      "id" : "5809B468-7974-4398-8DEA-A95BCFFBD337",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 112.105272
+    },
+    {
+      "id" : "2947AAEE-2380-4FE3-B4CB-7650DC5753B9",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 112.263167
+    },
+    {
+      "id" : "AD937E15-EFB9-47DC-A171-D6E3B489FC5C",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 112.736852
+    },
+    {
+      "id" : "73049E53-BD7D-4716-972F-E975C1A016D7",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 112.736852
+    },
+    {
+      "id" : "1DC59E7D-BBC2-4CF7-BA8E-C2FCEFEC4551",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 113.052641
+    },
+    {
+      "id" : "9714ECD9-503C-4A8A-8FE1-8626351A589B",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 113.368431
+    },
+    {
+      "id" : "253CF5AB-3215-4DE9-9BCF-C7466B53BFEF",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 113.368431
+    },
+    {
+      "id" : "3EF79A8C-29E2-4B3A-BD12-C7C1FB6597AE",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 113.526325
+    },
+    {
+      "id" : "2E819FFA-D33C-4BF2-A71D-3E28C3A66AF5",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 113.68422
+    },
+    {
+      "id" : "311CAF0F-C415-4DFB-BD51-47730940F123",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 114.00001
+    },
+    {
+      "id" : "29901500-447C-4B9E-AF22-F7FD10608C88",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 114.315799
+    },
+    {
+      "id" : "7B71C430-2F94-4B89-B7DF-7E316BAB4817",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 114.631589
+    },
+    {
+      "id" : "B51045EA-86C4-4641-BC7C-AE3FF98375C2",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 114.789483
+    },
+    {
+      "id" : "7BA543DF-2784-4D6B-9AA3-798D3A583842",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 115.263167
+    },
+    {
+      "id" : "B3D8A1BE-D712-45A7-9E82-BB4CEFAF8D7B",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 115.263167
+    },
+    {
+      "id" : "60F9388C-92EA-47B1-9D53-F755E11A015F",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 115.578957
+    },
+    {
+      "id" : "B92CAA81-A97E-4EFD-AAD1-9060F43625E0",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 115.894746
+    },
+    {
+      "id" : "A958C3DF-2A3B-4F56-A7DD-5337B3D3961A",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 115.894746
+    },
+    {
+      "id" : "3CCF8727-0E44-45E5-A0D4-CD05A3069AE4",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 116.052641
+    },
+    {
+      "id" : "9412FE52-2A18-495A-9719-A01AD4085CEC",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 116.210536
+    },
+    {
+      "id" : "7E34CE89-73FE-4677-BAAD-A079778EDCDC",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 116.526325
+    },
+    {
+      "id" : "CDF82E99-AE1F-426C-95AD-13E7EE0631F1",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 116.842115
+    },
+    {
+      "id" : "BCA88792-42AF-4ED9-AE5B-38D4180BB44C",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 117.157905
+    },
+    {
+      "id" : "FEF50F8A-445F-4120-8C2D-22A9D6D10D8C",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 117.315799
+    },
+    {
+      "id" : "856C92FC-813A-4CD7-9F94-E6E707F2224B",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 117.789484
+    },
+    {
+      "id" : "05BB50A7-451C-4DCD-93F3-9407D05BDF38",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 117.789484
+    },
+    {
+      "id" : "D0DE0AF9-008F-42D5-9F20-DA9351569B6D",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 118.105273
+    },
+    {
+      "id" : "79B6ED44-36E8-4262-9D26-B6622B215720",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 118.421063
+    },
+    {
+      "id" : "DD64EEB5-4A9B-4804-AC2F-2154734403A7",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 118.421063
+    },
+    {
+      "id" : "91F5F5DF-6592-4BB0-87DD-17BD986D3F6D",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 118.578957
+    },
+    {
+      "id" : "5C54FDCE-ED88-4F57-BC11-7F46E408CE6A",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 118.736852
+    },
+    {
+      "id" : "0C4CEC7B-A6D1-4C8A-9428-3512C31BC50D",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 119.052642
+    },
+    {
+      "id" : "25AEDCC5-BFDB-4210-930F-C5EF4E7ED880",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 119.368431
+    },
+    {
+      "id" : "1D58FA80-0E5B-494E-A567-AB9169FA0528",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 119.68422
+    },
+    {
+      "id" : "0D47A7EE-D663-4D4B-9F1A-B87C7EA502A7",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 119.842115
+    },
+    {
+      "id" : "DF6A9761-206E-4453-B3FA-10C270AB9A84",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 120.315799
+    },
+    {
+      "id" : "114ED9B7-0CD7-46D3-92C0-82B486D0A01D",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 120.315799
+    },
+    {
+      "id" : "03A5D110-C303-4147-80AE-207BDC25CDB6",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 120.631589
+    },
+    {
+      "id" : "2FECA8F1-EB28-47C4-9261-C10396EA7065",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 120.947378
+    },
+    {
+      "id" : "1B54F5DE-825B-4916-B632-169FD18D2099",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 120.947378
+    },
+    {
+      "id" : "C4460FBC-8A2B-4DB0-B044-B9B0B8C790F4",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 121.105273
+    },
+    {
+      "id" : "5CCEA6B2-595A-4730-8D7A-0411DDF2E82E",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 121.263168
+    },
+    {
+      "id" : "DBE62B37-2BF1-46B1-A254-1B1D058F52AF",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 121.578958
+    },
+    {
+      "id" : "7DCB45EA-E72D-42C1-966A-F3306A046719",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 121.894747
+    },
+    {
+      "id" : "C95FC0DF-1495-4130-A10F-620182264393",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 122.210537
+    },
+    {
+      "id" : "1F0EFDE5-CDF7-4E20-A3CF-F89CE4751430",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 122.368431
+    },
+    {
+      "id" : "6ADB07CA-6ED5-45C3-8E70-BD076695D71E",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 122.842116
+    },
+    {
+      "id" : "7FA84767-E1ED-4F94-9EE4-10C1B8D0D7CD",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 122.842116
+    },
+    {
+      "id" : "0B3F0F09-D213-4B06-AF3E-FEE3CC84A2AC",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 123.157905
+    },
+    {
+      "id" : "61453532-9241-499F-8B46-7C8242854EBF",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 123.473694
+    },
+    {
+      "id" : "D76625F1-3AA8-49EB-A82D-088FCA8E7C04",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 123.473694
+    },
+    {
+      "id" : "503B0BF8-3467-4D8F-B1E6-0039D51A2C64",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 123.631589
+    },
+    {
+      "id" : "1C7DFD47-F0A2-48BE-AFD3-4A6CF3BFB1C0",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 123.789484
+    },
+    {
+      "id" : "FE0F3903-0B1F-4D3A-9DFC-CBBFAE804C88",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 124.105273
+    },
+    {
+      "id" : "002AC3DF-E897-44D7-8A5A-EC7AE754754C",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 124.421063
+    },
+    {
+      "id" : "8F24FB96-F873-42E5-B177-F9F6EC6F3A23",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 124.736852
+    },
+    {
+      "id" : "CE760862-A985-4DFD-93AD-FD1973545D2C",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 124.894747
+    },
+    {
+      "id" : "7980F53B-1259-4770-8D38-5DE62DBC87F3",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 125.368431
+    },
+    {
+      "id" : "0C225240-6E85-4228-9CE0-61F001A2C30F",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 125.368431
+    },
+    {
+      "id" : "4C48FF36-0568-4F2F-AD7A-CC0BE7A0EA6B",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 125.684221
+    },
+    {
+      "id" : "A7182557-80B9-4B0A-8B82-83FE7B0CB844",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 125.684221
+    },
+    {
+      "id" : "8504E10B-5805-4AE1-8318-7AD607A58D29",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 126.000011
+    },
+    {
+      "id" : "D828826A-5599-46E6-B244-84A999A9A885",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 126.000011
+    },
+    {
+      "id" : "3F07BF82-AFCD-4A33-A077-8DE850989FA1",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 126.157905
+    },
+    {
+      "id" : "1B7741A0-4DE9-4D94-A5A6-FF647BFA6E9D",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 126.3158
+    },
+    {
+      "id" : "87EFA052-2E60-49B6-9901-84F80F97BC88",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 126.63159
+    },
+    {
+      "id" : "0AE76ED5-CB4A-4398-A682-FB1A68D77812",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 126.947379
+    },
+    {
+      "id" : "C3156D93-8EBA-421C-B7B0-505ACB2CF26A",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 127.263169
+    },
+    {
+      "id" : "068E4509-2088-45E7-9989-F9EAD24AA373",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 127.421063
+    },
+    {
+      "id" : "81CA04C7-63A6-4167-8CFA-00125D9C4336",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 127.894747
+    },
+    {
+      "id" : "81CC9A1C-5F6B-4A7E-A6E0-3D8242A8AF58",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 127.894747
+    },
+    {
+      "id" : "CEE5C44E-ECD6-4BC6-8685-C5B941639040",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 128.210537
+    },
+    {
+      "id" : "6CDA9B4D-CC7E-4CAF-84C8-42D62833E933",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 128.526327
+    },
+    {
+      "id" : "35C73C94-3C9D-4273-BEAD-787F4C50C59C",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 128.526327
+    },
+    {
+      "id" : "D73968B9-F4DF-4036-B8F7-E1D4D3A85122",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 128.684221
+    },
+    {
+      "id" : "7EA96697-B3EC-4298-8374-A091D3F816ED",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 128.842116
+    },
+    {
+      "id" : "E90E419B-7A3D-4D52-B890-3441A0634E5D",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 129.157905
+    },
+    {
+      "id" : "9ADB6E1C-D404-4FD4-9420-CBABF83E0C1F",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 129.473695
+    },
+    {
+      "id" : "C16FE2F7-AD90-4D0E-97E4-A2F757F758FB",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 129.789484
+    },
+    {
+      "id" : "A3858053-0F25-4F88-B337-B943BAF13645",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 129.947379
+    },
+    {
+      "id" : "E53C382F-A2A5-4DC6-A7B7-B53A35FF0FFA",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 130.421064
+    },
+    {
+      "id" : "49244578-CEE7-44C5-847E-AAFF778B9782",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 130.421064
+    },
+    {
+      "id" : "BE89062B-BAB7-45F7-A3C6-6DE95ADCF95E",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 130.736853
+    },
+    {
+      "id" : "37B65444-F903-4A68-AA6D-6143D637DE59",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 131.052642
+    },
+    {
+      "id" : "3AB1CC87-7160-4CE7-AE11-346013458003",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 131.052642
+    },
+    {
+      "id" : "6F3CA976-0BCD-436F-B649-5C4E6896C094",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 131.210537
+    },
+    {
+      "id" : "319B7831-B2FD-423F-A229-F75E9D13F946",
+      "label" : "Crash",
+      "lane" : 1,
+      "time" : 131.368432
+    },
+    {
+      "id" : "2CF5DABF-ABEE-465D-83B1-88A667155593",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 131.368432
+    },
+    {
+      "id" : "9600AF1C-0CAE-4C5E-833A-93164B633926",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 131.684222
+    },
+    {
+      "id" : "678E2A69-96F0-4540-8DC1-BA8B9D3D8F23",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 132.000011
+    },
+    {
+      "id" : "AEF5F225-365E-4117-9BD1-15806EC2BF5D",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 132.3158
+    },
+    {
+      "id" : "8E1FD4ED-2EA5-4281-B0E4-A735A03B7C22",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 132.473695
+    },
+    {
+      "id" : "063F8CE8-E339-4AC8-87AB-56A67BDF7D1A",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 132.94738
+    },
+    {
+      "id" : "990BAD37-D397-4381-9857-3F94580558F1",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 132.94738
+    },
+    {
+      "id" : "E39919A1-0271-47D3-AF00-1640306F8E67",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 133.263169
+    },
+    {
+      "id" : "5F0BAFB5-926F-4117-BC50-6E704B41DF23",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 133.578958
+    },
+    {
+      "id" : "572A4437-5197-42C1-8B3B-DC0A53E048C2",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 133.578958
+    },
+    {
+      "id" : "5E9100A5-73A2-4C19-ADDA-66E2CDFEB78E",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 133.736853
+    },
+    {
+      "id" : "64E7CCB2-BCD7-490C-A7D6-34A05A847538",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 133.894748
+    },
+    {
+      "id" : "37131D1A-EEEF-4935-921C-ACEFD90219CA",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 134.210537
+    },
+    {
+      "id" : "5F63F1F1-4585-4F6A-8AAE-F49C1F938AC5",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 134.526327
+    },
+    {
+      "id" : "85125168-84FB-4EED-BB4D-09377E23C0DC",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 134.842117
+    },
+    {
+      "id" : "58E405D9-CB85-4E4A-8B0A-2E85A8743AFB",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 135.000011
+    },
+    {
+      "id" : "DCB55E87-D8B1-4EE9-B6EA-409CDFD23441",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 135.473695
+    },
+    {
+      "id" : "BA0E9959-03D1-4456-8161-A70C0438E123",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 135.473695
+    },
+    {
+      "id" : "47934D43-8E79-4781-9EF4-60FA8D0FD759",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 135.789485
+    },
+    {
+      "id" : "DF5840F2-7AF7-4331-8EBF-999AD9245CC4",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 136.105275
+    },
+    {
+      "id" : "5ABA466E-FA32-4B3A-938A-7116F7E5945D",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 136.105275
+    },
+    {
+      "id" : "E98DF06D-8892-430D-8324-216847CC1A87",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 136.263169
+    },
+    {
+      "id" : "F694967E-1626-4113-8B06-854182884CDC",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 136.421064
+    },
+    {
+      "id" : "CC63E621-B1C9-4B5B-AA0F-56C60F5F7CD7",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 136.736853
+    },
+    {
+      "id" : "E7A03566-EF0D-49A9-B1E0-97BD2F451458",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 137.052643
+    },
+    {
+      "id" : "798D6487-B18F-4095-91B2-08BC9DB1A2E3",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 137.368433
+    },
+    {
+      "id" : "FCCD6E42-468B-44C7-BCFF-B0BA4E246F9E",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 137.526327
+    },
+    {
+      "id" : "0D59E60D-B5D2-4F12-8331-A8CD66B54B52",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 138.000011
+    },
+    {
+      "id" : "58E00A2B-B7AA-413B-926A-BB2AE1FA418F",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 138.000011
+    },
+    {
+      "id" : "AE702279-0ECF-4144-B89B-871870C6CFF2",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 138.315801
+    },
+    {
+      "id" : "D9D27C74-A04F-404C-8818-C690925154EE",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 138.63159
+    },
+    {
+      "id" : "D092FD7B-0A8C-4A05-88DF-16735E6A7D47",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 138.63159
+    },
+    {
+      "id" : "0ACDECE1-9FB9-4B13-B870-B563308829A7",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 138.789485
+    },
+    {
+      "id" : "88001418-E5BD-4C58-A330-2D190D2EB8B2",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 138.94738
+    },
+    {
+      "id" : "2E969924-1198-447E-9414-C90C4EA1B438",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 139.26317
+    },
+    {
+      "id" : "55BB191D-21F0-4B9D-A8FB-01023B383753",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 139.578959
+    },
+    {
+      "id" : "CC9D7BE0-EDFF-41BC-A923-0661E791B053",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 139.894748
+    },
+    {
+      "id" : "76FD4BB2-FDFF-4379-930C-3DD7CC26EA37",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 140.052643
+    },
+    {
+      "id" : "C8B5B712-93E8-4E5A-A351-FA486D5BE474",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 140.526328
+    },
+    {
+      "id" : "3F527F82-6197-48B7-807B-B0AC20326E16",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 140.526328
+    },
+    {
+      "id" : "6171F925-457F-49C6-B5D2-04FCB2702E67",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 140.842117
+    },
+    {
+      "id" : "47F73127-FE89-42BD-8642-140AF9518E0D",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 140.842117
+    },
+    {
+      "id" : "253AFCBA-62C3-4016-9AD9-9DA0ADD39663",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 141.157906
+    },
+    {
+      "id" : "BC05BF14-0817-49A2-A0E7-3BDED11FF31D",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 141.157906
+    },
+    {
+      "id" : "756F0645-F86E-474E-948F-E699EEB243A5",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 141.315801
+    },
+    {
+      "id" : "D7A4067E-B2DA-4F7D-85FB-2AD522B1DE9F",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 141.473696
+    },
+    {
+      "id" : "32225FE1-C7C4-4654-A168-67DA80E6994A",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 141.789486
+    },
+    {
+      "id" : "A8157CF3-00B1-4851-83B6-628C6EEEF606",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 142.105275
+    },
+    {
+      "id" : "7ACA9FCA-7370-4589-AA9D-59A65BE86AC0",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 142.421064
+    },
+    {
+      "id" : "1CD73652-FE71-4AA0-B3CC-EAFF1A0FC597",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 142.578959
+    },
+    {
+      "id" : "D9AF1217-5F3F-49DA-8DEB-1C6034573435",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 143.052643
+    },
+    {
+      "id" : "89D0FCFB-B664-47E6-976E-BD8586DF186F",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 143.052643
+    },
+    {
+      "id" : "9685DAB9-2A6A-4850-9BF8-219E7DE84AD3",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 143.368433
+    },
+    {
+      "id" : "BD72E917-1AA2-404A-9FA6-B0BF8EB9D778",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 143.684223
+    },
+    {
+      "id" : "D12212F8-3D57-4416-B1B9-4F06185F3A45",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 143.684223
+    },
+    {
+      "id" : "AA5BFFB3-DFAD-45AD-BD18-EE461B3DC62C",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 143.842117
+    },
+    {
+      "id" : "509A67D1-5EC7-43CB-8665-F486FA587A17",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 144.000012
+    },
+    {
+      "id" : "EE05C010-4943-4E0A-9FE0-8BA5FD33B06F",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 144.315801
+    },
+    {
+      "id" : "9213DF5B-3C9A-4F87-B129-91D2713A07FA",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 144.631591
+    },
+    {
+      "id" : "5B969379-8A40-449C-9693-E6B7F3F62485",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 144.947381
+    },
+    {
+      "id" : "F624B145-076C-4C95-B50F-BD0968F89214",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 145.105275
+    },
+    {
+      "id" : "D77B3495-BD29-45B3-8A9F-3941597BC3F3",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 145.578959
+    },
+    {
+      "id" : "98DB8708-A566-4236-B471-0BFB98714365",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 145.578959
+    },
+    {
+      "id" : "D07BBC44-B213-462E-AA4C-A34256AA5D8E",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 145.894749
+    },
+    {
+      "id" : "FE23ECF5-7068-46AD-A7B8-FF8DC0B733B1",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 146.210539
+    },
+    {
+      "id" : "831E82F7-B461-4DD4-9094-774777F024F4",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 146.210539
+    },
+    {
+      "id" : "F4797031-4320-4A99-A4BE-7FD5E77FE159",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 146.368433
+    },
+    {
+      "id" : "64786FAF-7F70-41D0-935F-7861B2FBC9D6",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 146.526328
+    },
+    {
+      "id" : "AD146C90-221E-48F4-B9EE-50CFF63845EE",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 146.842118
+    },
+    {
+      "id" : "3CFAC462-DDF4-4375-BE08-63BC668A06C7",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 147.157907
+    },
+    {
+      "id" : "C61FB4E6-F448-4F68-8936-8AB147ADC798",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 147.473696
+    },
+    {
+      "id" : "84DB0007-A7FE-48AB-B91F-483D7B603585",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 147.631591
+    },
+    {
+      "id" : "29E911C2-4F8E-401F-ABD3-207C63CEFF33",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 148.105276
+    },
+    {
+      "id" : "C4A02AC9-6C6D-43D8-8B0D-26D1ACC09976",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 148.105276
+    },
+    {
+      "id" : "974625FD-CC3D-4CD8-82B8-B50320B50A55",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 148.421065
+    },
+    {
+      "id" : "CD126B7F-ABCA-4CE8-A8D7-DB184D18F4B0",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 148.736854
+    },
+    {
+      "id" : "5477DEFE-9C2E-42E3-A6C8-902A01FDD619",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 148.736854
+    },
+    {
+      "id" : "297DE6AC-7685-42E8-B5F2-9D4A01761599",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 148.894749
+    },
+    {
+      "id" : "C3EE51C7-5548-46D4-A4E6-BB8BF89ABE7E",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 149.052644
+    },
+    {
+      "id" : "946AAF13-732A-442A-9B61-EA2E57C19D33",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 149.368434
+    },
+    {
+      "id" : "14EA6C99-CACC-4359-9C63-2CF53AEA4CF0",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 149.684223
+    },
+    {
+      "id" : "7BBF3131-D6B4-4F96-9D84-0C85F0E4A5B8",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 150.000012
+    },
+    {
+      "id" : "BBCDDB93-6DDB-4338-828D-683F3F2B4780",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 150.157907
+    },
+    {
+      "id" : "AAE01EFA-14EC-4283-A925-D920C840FAFE",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 150.631592
+    },
+    {
+      "id" : "4146DEC9-90A6-41E3-B174-4B98070C9717",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 150.631592
+    },
+    {
+      "id" : "FB9E97C4-05F2-4115-8F2B-E1EDD411BC19",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 150.947381
+    },
+    {
+      "id" : "961D003E-D5EA-45B8-8205-0F38A9B7752A",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 151.263171
+    },
+    {
+      "id" : "D4263CF8-8E35-4953-8E5D-CE5FD980AB90",
+      "label" : "HiHat Pedal",
+      "lane" : 1,
+      "time" : 151.263171
+    },
+    {
+      "id" : "DE9F591C-A112-4908-8ECF-DC0C16074626",
+      "label" : "Kick",
+      "lane" : 4,
+      "time" : 151.263171
+    },
+    {
+      "id" : "4B80715C-8578-43B7-826A-4D0F47AD9D84",
+      "label" : "Snare",
+      "lane" : 0,
+      "time" : 151.421065
+    }
+  ],
+  "sections" : [
+
+  ],
+  "timelineDuration" : 153.421065,
+  "timing" : {
+    "bpm" : 94.999992,
+    "offsetSeconds" : 0,
+    "source" : "midi_import",
+    "ticksPerBeat" : 480,
+    "timeSignature" : {
+      "denominator" : 4,
+      "numerator" : 4
     }
   },
-  "timingContractVersion": "0.1.0",
-  "title": "Electric Guitar"
+  "timingContractVersion" : "0.1.0",
+  "title" : "Kill Bill SZA With Drum Bass"
 }
