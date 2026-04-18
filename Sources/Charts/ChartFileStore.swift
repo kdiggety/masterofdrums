@@ -129,13 +129,15 @@ struct ChartDocument: Codable {
         let normalized = rawLane.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
 
         // Explicit kick mappings
-        if normalized == "kick" || normalized.contains("bass drum") {
+        if normalized == "kick" || normalized.contains("bass drum") ||
+           normalized.contains("808") || normalized.contains("kick drum") {
             return Lane.kick.rawValue
         }
 
         // Snare/clap family
         if normalized == "snare" || normalized == "red" || normalized.contains("snare") ||
-           normalized.contains("clap") || normalized.contains("hand drum") {
+           normalized.contains("clap") || normalized.contains("hand drum") ||
+           normalized.contains("909") {
             return Lane.red.rawValue
         }
 
