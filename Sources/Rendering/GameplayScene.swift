@@ -106,6 +106,16 @@ final class GameplayScene: SKScene {
         laneOrder = chart.displayLanes(extendedLanes: extendedLanes)
         laneIDBySourceLane = Self.buildLaneIDBySourceLane(from: laneOrder)
         laneIndexByID = Dictionary(uniqueKeysWithValues: laneOrder.enumerated().map { ($0.element.id, $0.offset) })
+
+        print("[DEBUG] Lane order:")
+        for (index, lane) in laneOrder.enumerated() {
+            print("  [\(index)] id=\(lane.id) label=\(lane.label) sourceLane=\(lane.sourceLane)")
+        }
+        print("[DEBUG] laneIDBySourceLane: \(laneIDBySourceLane)")
+        print("[DEBUG] First 5 notes and their displayLaneID:")
+        for note in chart.notes.prefix(5) {
+            print("  lane=\(note.lane) displayLaneID=\(note.displayLaneID) displayLabel=\(note.displayLabel)")
+        }
         noteNodes.removeAll()
         visibleNotes = []
         draggedAdminNotePreviewTimeByID.removeAll()
