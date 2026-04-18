@@ -126,22 +126,44 @@ struct ChartDocument: Codable {
     }
 
     fileprivate static func laneIndex(forPipelineLane rawLane: String) -> Int? {
-        switch rawLane.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
-        case "kick":
+        let normalized = rawLane.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+
+        // Explicit kick mappings
+        if normalized == "kick" || normalized.contains("bass drum") {
             return Lane.kick.rawValue
-        case "snare", "red":
-            return Lane.red.rawValue
-        case "hihat_closed", "hi_hat_closed", "hihatclosed",
-             "hihat_open", "hi_hat_open", "hihatopen",
-             "yellow", "crash", "ride", "clap":
-            return Lane.yellow.rawValue
-        case "tom_high", "tomhigh", "blue":
-            return Lane.blue.rawValue
-        case "tom_mid", "tommid", "tom_low", "tomlow", "green", "percussion":
-            return Lane.green.rawValue
-        default:
-            return nil
         }
+
+        // Snare/clap family
+        if normalized == "snare" || normalized == "red" || normalized.contains("snare") ||
+           normalized.contains("clap") || normalized.contains("hand drum") {
+            return Lane.red.rawValue
+        }
+
+        // Hi-hat and cymbal family
+        if normalized.contains("hihat") || normalized.contains("hi hat") || normalized.contains("hi-hat") ||
+           normalized.contains("cymbal") || normalized.contains("crash") || normalized.contains("ride") ||
+           normalized.contains("gong") || normalized.contains("bell") || normalized == "yellow" {
+            return Lane.yellow.rawValue
+        }
+
+        // Tom family (high toms)
+        if normalized.contains("tom high") || normalized.contains("high tom") || normalized.contains("tom1") ||
+           normalized == "tomhigh" || normalized == "tom_high" {
+            return Lane.blue.rawValue
+        }
+
+        // Mid/low toms and general percussion
+        if normalized.contains("tom mid") || normalized.contains("mid tom") ||
+           normalized.contains("tom low") || normalized.contains("low tom") || normalized.contains("floor tom") ||
+           normalized.contains("tom2") || normalized.contains("tom3") ||
+           normalized == "tommid" || normalized == "tom_mid" || normalized == "tomlow" || normalized == "tom_low" ||
+           normalized == "green" || normalized == "percussion" ||
+           normalized.contains("timpani") || normalized.contains("bongo") || normalized.contains("conga") ||
+           normalized.contains("woodblock") || normalized.contains("cowbell") {
+            return Lane.green.rawValue
+        }
+
+        return nil
     }
 
     fileprivate static func displayLabel(forPipelineLane rawLane: String) -> String {
