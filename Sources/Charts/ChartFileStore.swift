@@ -131,11 +131,13 @@ struct ChartDocument: Codable {
             return Lane.kick.rawValue
         case "snare", "red":
             return Lane.red.rawValue
-        case "hihat_closed", "hi_hat_closed", "hihat_open", "hi_hat_open", "yellow", "crash", "ride":
+        case "hihat_closed", "hi_hat_closed", "hihatclosed",
+             "hihat_open", "hi_hat_open", "hihatopen",
+             "yellow", "crash", "ride", "clap":
             return Lane.yellow.rawValue
-        case "tom_high", "blue":
+        case "tom_high", "tomhigh", "blue":
             return Lane.blue.rawValue
-        case "tom_mid", "tom_low", "green":
+        case "tom_mid", "tommid", "tom_low", "tomlow", "green", "percussion":
             return Lane.green.rawValue
         default:
             return nil
