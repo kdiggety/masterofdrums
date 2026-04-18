@@ -125,7 +125,7 @@ struct ChartDocument: Codable {
         try container.encodeIfPresent(sections, forKey: .sections)
     }
 
-    fileprivate static func laneIndex(forPipelineLane rawLane: String) -> Int? {
+    static func laneIndex(forPipelineLane rawLane: String) -> Int? {
         let normalized = rawLane.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
 
         // Explicit kick mappings
@@ -141,15 +141,19 @@ struct ChartDocument: Codable {
         }
 
         // Hi-hat and cymbal family
-        if normalized.contains("hihat") || normalized.contains("hi hat") || normalized.contains("hi-hat") ||
+        if normalized == "hihatclosed" || normalized == "hihatopen" ||
+           normalized.contains("hihat") || normalized.contains("hi hat") || normalized.contains("hi-hat") ||
+           normalized.contains("closed hat") || normalized.contains("closed hihat") ||
+           normalized.contains("open hat") || normalized.contains("open hihat") ||
+           normalized.contains("hihat open") || normalized.contains("hi hat open") ||
            normalized.contains("cymbal") || normalized.contains("crash") || normalized.contains("ride") ||
-           normalized.contains("gong") || normalized.contains("bell") || normalized == "yellow" {
+           normalized.contains("gong") || (normalized.contains("bell") && !normalized.contains("cowbell")) || normalized == "yellow" {
             return Lane.yellow.rawValue
         }
 
         // Tom family (high toms)
         if normalized.contains("tom high") || normalized.contains("high tom") || normalized.contains("tom1") ||
-           normalized == "tomhigh" || normalized == "tom_high" {
+           normalized == "tomhigh" || normalized == "tom_high" || normalized == "blue" {
             return Lane.blue.rawValue
         }
 
