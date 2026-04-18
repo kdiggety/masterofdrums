@@ -42,7 +42,7 @@ struct RootView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 14))
 
                 sideControlPanel
-                    .frame(width: 300)
+                    .frame(width: 220)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
