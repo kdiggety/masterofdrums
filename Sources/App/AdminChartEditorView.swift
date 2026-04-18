@@ -36,13 +36,13 @@ struct AdminChartEditorView: View {
                             VStack(alignment: .leading, spacing: 12) {
                                 rightPanel
                             }
-                            .frame(width: 320, alignment: .topLeading)
+                            .frame(width: 244, alignment: .topLeading)
                             .padding(.top, 10)
                             .padding(.bottom, 12)
                         }
                     }
                     .frame(maxHeight: .infinity, alignment: .topLeading)
-                    .frame(width: 336)
+                    .frame(width: 260)
                 }
                 .frame(maxHeight: .infinity)
             }
