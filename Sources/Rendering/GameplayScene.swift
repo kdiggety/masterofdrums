@@ -419,7 +419,7 @@ final class GameplayScene: SKScene {
             let effectiveLaneID = draggedAdminNotePreviewLaneByID[note.id].map { lane in
                 laneIDBySourceLane[lane] ?? lane.displayName.lowercased()
             } ?? note.displayLaneID
-            guard let laneIndex = laneIndexByID[effectiveLaneID] ?? (note.label == nil ? laneOrder.firstIndex(where: { $0.sourceLane == effectiveLane }) : nil) else { continue }
+            guard let laneIndex = laneIndexByID[effectiveLaneID] ?? laneOrder.firstIndex(where: { $0.sourceLane == effectiveLane }) else { continue }
             let laneFrame = frameForLane(at: laneIndex, startX: startX)
             let yPosition: CGFloat
             if let previewY = draggedAdminNotePreviewYByID[note.id] {
