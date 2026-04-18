@@ -130,14 +130,13 @@ struct ChartDocument: Codable {
 
         // Explicit kick mappings
         if normalized == "kick" || normalized.contains("bass drum") ||
-           normalized.contains("808") || normalized.contains("kick drum") {
+           normalized.contains("808") || normalized.contains("909") || normalized.contains("kick drum") {
             return Lane.kick.rawValue
         }
 
         // Snare/clap family
         if normalized == "snare" || normalized == "red" || normalized.contains("snare") ||
-           normalized.contains("clap") || normalized.contains("hand drum") ||
-           normalized.contains("909") {
+           normalized.contains("clap") || normalized.contains("hand drum") {
             return Lane.red.rawValue
         }
 
