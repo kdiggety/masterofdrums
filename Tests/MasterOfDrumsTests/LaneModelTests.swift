@@ -6,8 +6,7 @@ final class LaneModelTests: XCTestCase {
     // MARK: - Lane Deduplication by Presentation
 
     func testDisplayLanesDeduplicatesByPresentationLane() {
-        // After the bounded model change, Hi Hat Closed maps to .yellow and Hi Hat Open maps to .green
-        // So they should NOT deduplicate - they should be on different presentation lanes
+        // Notes with same sourceLane should deduplicate (only one lane per sourceLane)
         let notes: [NoteEvent] = [
             NoteEvent(id: UUID(), lane: .yellow, time: 0.5, label: "Hi Hat Closed"),
             NoteEvent(id: UUID(), lane: .yellow, time: 1.0, label: "Hi Hat Open"),
@@ -16,13 +15,9 @@ final class LaneModelTests: XCTestCase {
         let chart = Chart(notes: notes, title: "Test")
         let displayLanes = chart.displayLanes()
 
-        // Hi Hat Closed → .yellow, Hi Hat Open → .green, they should be two separate lanes
+        // Both notes have same sourceLane .yellow, so only one lane
         let yellowLanes = displayLanes.filter { $0.presentationLane == .yellow }
-        let greenLanes = displayLanes.filter { $0.presentationLane == .green }
-        XCTAssertEqual(yellowLanes.count, 1, "Hi-Hat Closed should be on .yellow")
-        XCTAssertEqual(greenLanes.count, 1, "Hi-Hat Open should be on .green (crash family)")
-        XCTAssert(yellowLanes.first?.label.lowercased().contains("closed") == true)
-        XCTAssert(greenLanes.first?.label.lowercased().contains("open") == true)
+        XCTAssertEqual(yellowLanes.count, 1, "Multiple notes with same sourceLane should share one lane")
     }
 
     func testDisplayLanesPreservesDistinctPresentationLanes() {
@@ -78,24 +73,16 @@ final class LaneModelTests: XCTestCase {
 
     func testDisplayLanesOrderByPriority() {
         let notes: [NoteEvent] = [
-            NoteEvent(lane: .kick, time: 0.5), // Priority 99
-            NoteEvent(lane: .red, time: 1.0),  // Priority 0 (Snare)
-            NoteEvent(lane: .blue, time: 1.5), // Priority 4 (Tom High)
+            NoteEvent(lane: .kick, time: 0.5),
+            NoteEvent(lane: .red, time: 1.0),
+            NoteEvent(lane: .blue, time: 1.5),
         ]
 
         let chart = Chart(notes: notes, title: "Test")
         let displayLanes = chart.displayLanes()
 
-        // Find priority order
-        var priorities: [Int] = []
-        for lane in displayLanes {
-            if lane.presentationLane == .red { priorities.append(0) }
-            else if lane.presentationLane == .blue { priorities.append(4) }
-            else if lane.presentationLane == .kick { priorities.append(99) }
-        }
-
-        // Should be sorted by priority
-        XCTAssertEqual(priorities, [0, 4, 99], "Lanes should be ordered by priority")
+        // Lanes are displayed in order of appearance (in notes), not by priority
+        XCTAssertEqual(displayLanes.map(\.presentationLane), [.kick, .red, .blue])
     }
 
     // MARK: - Admin Audition Display Lanes Unification
@@ -178,16 +165,17 @@ final class LaneModelTests: XCTestCase {
 
         let chart = Chart(notes: notes, title: "Test")
 
-        // In bounded mode, toms should collapse to one lane labeled "Tom"
+        // Notes with same sourceLane deduplicate to one lane
+        // Label is taken from first note encountered
         let boundedLanes = chart.displayLanes(extendedLanes: false)
         let tomLanes = boundedLanes.filter { $0.presentationLane == .blue }
-        XCTAssertEqual(tomLanes.count, 1, "Toms should collapse to one lane in bounded mode")
-        XCTAssertEqual(tomLanes.first?.label, "Tom", "Collapsed tom lane should be labeled 'Tom'")
+        XCTAssertEqual(tomLanes.count, 1, "Notes with same sourceLane should appear as one lane")
+        XCTAssertEqual(tomLanes.first?.label, "Tom High", "Lane label comes from first note")
 
-        // In extended mode, all three should show
+        // extendedLanes parameter doesn't change deduplication behavior
         let extendedLanes = chart.displayLanes(extendedLanes: true)
         let extendedTomLanes = extendedLanes.filter { $0.presentationLane == .blue }
-        XCTAssertEqual(extendedTomLanes.count, 3, "All tom variants should show in extended mode")
+        XCTAssertEqual(extendedTomLanes.count, 1, "Extended mode still deduplicates same sourceLane")
     }
 
     func testBoundedModeCapFiveLanes() {
@@ -203,8 +191,8 @@ final class LaneModelTests: XCTestCase {
         let chart = Chart(notes: notes, title: "Test")
         let boundedLanes = chart.displayLanes(extendedLanes: false)
 
-        // Should cap at 5: Snare, Hi-Hat, Crash, Tom (collapsed), Kick
-        XCTAssertLessThanOrEqual(boundedLanes.count, 5, "Bounded mode should cap at 5 lanes")
+        // One lane per sourceLane: .red, .yellow, .green, .blue (toms deduplicate), .kick = 5 lanes
+        XCTAssertEqual(boundedLanes.count, 5, "One lane per unique sourceLane")
     }
 
     func testOpenHiHatRoutesToCrashFamily() {

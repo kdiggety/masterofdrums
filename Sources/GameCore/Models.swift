@@ -146,152 +146,36 @@ struct Chart {
     }
 
     func displayLanes(extendedLanes: Bool = false) -> [ChartLane] {
-        var lanes: [ChartLane] = displayLaneBlueprint ?? []
-        var seenByID = Set(lanes.map(\.id))
-        var seenByPresentation = Set<String>()
+        // Use blueprint if provided, otherwise build from notes
+        if let blueprint = displayLaneBlueprint, !blueprint.isEmpty {
+            return blueprint
+        }
+
+        // Build lanes from notes in order of appearance, avoiding duplicates
+        var lanes: [ChartLane] = []
+        var seenSourceLanes = Set<Lane>()
 
         for note in notes {
-            let id = note.displayLaneID.isEmpty ? note.lane.displayName.lowercased() : note.displayLaneID
-            guard !seenByID.contains(id) else { continue }
+            guard !seenSourceLanes.contains(note.lane) else { continue }
+            seenSourceLanes.insert(note.lane)
 
             let lane = ChartLane(
-                id: id,
+                id: note.lane.displayName.lowercased(),
                 label: note.displayLabel,
                 sourceLane: note.lane,
                 keyLabel: note.lane.keyLabel
             )
-
-            // Deduplicate by presentation lane to avoid showing duplicates
-            // when multiple chart lanes map to the same presentation.
-            // In extended mode, allow multiple tom variants to show separately.
-            let presentationKey = "\(lane.presentationLane.rawValue):\(lane.presentationKeyLabel ?? "")"
-            if seenByPresentation.contains(presentationKey) {
-                // Skip dedup for toms in extended mode so all variants can show
-                if extendedLanes && (isTomHighLane(lane) || isTomMidLane(lane) || isTomLowLane(lane)) {
-                    // Allow this tom through even if presentation key was seen
-                } else {
-                    continue
-                }
-            }
-
-            seenByID.insert(id)
-            seenByPresentation.insert(presentationKey)
             lanes.append(lane)
         }
 
+        // If no notes, use all lanes
         if lanes.isEmpty {
             lanes = Lane.allCases.map {
                 ChartLane(id: $0.displayName.lowercased(), label: $0.laneLabel, sourceLane: $0, keyLabel: $0.keyLabel)
             }
         }
 
-        var orderedLanes = orderedDisplayLanes(lanes)
-
-        // Apply bounded 5-lane model when not in extended mode
-        if !extendedLanes {
-            // Collapse tom lanes to a single "Tom" lane
-            var tomIndex: Int? = nil
-            var indicesToRemove: [Int] = []
-
-            for (index, lane) in orderedLanes.enumerated() {
-                if isTomHighLane(lane) || isTomMidLane(lane) || isTomLowLane(lane) {
-                    if tomIndex == nil {
-                        // Keep the first tom, change label to "Tom"
-                        tomIndex = index
-                        orderedLanes[index] = ChartLane(
-                            id: lane.id,
-                            label: "Tom",
-                            sourceLane: .blue,
-                            keyLabel: lane.keyLabel
-                        )
-                    } else {
-                        // Mark later toms for removal
-                        indicesToRemove.append(index)
-                    }
-                }
-            }
-
-            // Remove tom lanes in reverse order to preserve indices
-            for index in indicesToRemove.reversed() {
-                orderedLanes.remove(at: index)
-            }
-
-            // Cap at 5 lanes total, preserving priority order
-            if orderedLanes.count > 5 {
-                orderedLanes = Array(orderedLanes.prefix(5))
-            }
-        }
-
-        return orderedLanes
-    }
-
-    private func orderedDisplayLanes(_ lanes: [ChartLane]) -> [ChartLane] {
-        lanes.enumerated()
-            .sorted { lhs, rhs in
-                let lhsPriority = lanePriority(lhs.element)
-                let rhsPriority = lanePriority(rhs.element)
-                if lhsPriority == rhsPriority {
-                    return lhs.offset < rhs.offset
-                }
-                return lhsPriority < rhsPriority
-            }
-            .map(\.element)
-    }
-
-    private func lanePriority(_ lane: ChartLane) -> Int {
-        if isSnareLane(lane) { return 0 }
-        if isClosedHiHatLane(lane) { return 1 }
-        if isOpenHiHatLane(lane) { return 2 }
-        if isCymbalLane(lane) { return 3 }
-        if isTomHighLane(lane) { return 4 }
-        if isTomMidLane(lane) { return 5 }
-        if isTomLowLane(lane) { return 6 }
-        if isKickLane(lane) { return 99 }
-        return 50
-    }
-
-    private func normalizedLaneLabel(_ lane: ChartLane) -> String {
-        lane.label.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-    }
-
-    private func isSnareLane(_ lane: ChartLane) -> Bool {
-        let normalized = normalizedLaneLabel(lane)
-        return lane.sourceLane == .red || normalized.contains("snare")
-    }
-
-    private func isClosedHiHatLane(_ lane: ChartLane) -> Bool {
-        let normalized = normalizedLaneLabel(lane)
-        return normalized.contains("hihat closed") || normalized.contains("hi hat closed") || normalized.contains("closed hat") || normalized.contains("closed hihat") || normalized == "hihat" || normalized == "hi hat"
-    }
-
-    private func isOpenHiHatLane(_ lane: ChartLane) -> Bool {
-        let normalized = normalizedLaneLabel(lane)
-        return normalized.contains("hihat open") || normalized.contains("hi hat open") || normalized.contains("open hat") || normalized.contains("open hihat")
-    }
-
-    private func isCymbalLane(_ lane: ChartLane) -> Bool {
-        let normalized = normalizedLaneLabel(lane)
-        return normalized.contains("crash") || normalized.contains("ride") || normalized.contains("cymbal") || normalized.contains("symbol")
-    }
-
-    private func isTomHighLane(_ lane: ChartLane) -> Bool {
-        let normalized = normalizedLaneLabel(lane)
-        return normalized.contains("tom high") || normalized.contains("high tom")
-    }
-
-    private func isTomMidLane(_ lane: ChartLane) -> Bool {
-        let normalized = normalizedLaneLabel(lane)
-        return normalized.contains("tom mid") || normalized.contains("mid tom") || normalized.contains("tom")
-    }
-
-    private func isTomLowLane(_ lane: ChartLane) -> Bool {
-        let normalized = normalizedLaneLabel(lane)
-        return normalized.contains("tom low") || normalized.contains("low tom") || normalized.contains("floor tom")
-    }
-
-    private func isKickLane(_ lane: ChartLane) -> Bool {
-        let normalized = normalizedLaneLabel(lane)
-        return lane.sourceLane == .kick || normalized.contains("kick")
+        return lanes
     }
 
     static let prototype: Chart = {
