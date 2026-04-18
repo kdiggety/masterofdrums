@@ -1,0 +1,528 @@
+{
+  "bpm": 104.999921,
+  "metadata": {
+    "format": 1,
+    "sourceMIDI": "the-real-slim-shady-eminem.mid",
+    "unmappedMIDINotes": []
+  },
+  "notes": [
+    {
+      "id": "204d1340-b9d2-4bf6-8d6c-24ac252f72fa",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 17.428584
+    },
+    {
+      "id": "7fc16449-d801-49ad-b9c5-6ee206d40762",
+      "label": "Side Stick",
+      "lane": 0,
+      "time": 17.714299
+    },
+    {
+      "id": "fbdab03e-6e65-4339-babf-2ef092f1e632",
+      "label": "Snare",
+      "lane": 0,
+      "time": 17.714299
+    },
+    {
+      "id": "ad3bc679-eca9-4185-9ef7-7762d98d9f14",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 18.000013
+    },
+    {
+      "id": "63fc6309-2143-43c5-9a77-e6f683cd80d9",
+      "label": "Kick",
+      "lane": 4,
+      "time": 18.285728
+    },
+    {
+      "id": "1166e500-46ce-406c-a88b-7308494d00f3",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 18.571442
+    },
+    {
+      "id": "f7f910dc-41c0-444a-882b-383a7b9649c3",
+      "label": "Side Stick",
+      "lane": 0,
+      "time": 18.857157
+    },
+    {
+      "id": "d414dd7f-3575-43dd-8321-dc12664c9631",
+      "label": "Snare",
+      "lane": 0,
+      "time": 18.857157
+    },
+    {
+      "id": "a2fb4c62-e6f8-4e7f-93a0-c2426dd0d941",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 19.142871
+    },
+    {
+      "id": "989122bd-c50c-40cd-aee8-110fced38eed",
+      "label": "Kick",
+      "lane": 4,
+      "time": 19.428586
+    },
+    {
+      "id": "e1b9f6d9-7045-4167-ae06-77b7adecd8c1",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 19.714301
+    },
+    {
+      "id": "6593a580-7a68-4057-83a1-6bb92ce95a6e",
+      "label": "Side Stick",
+      "lane": 0,
+      "time": 20.000015
+    },
+    {
+      "id": "d6edd4ce-01ca-4088-8218-2095455ec6ac",
+      "label": "Snare",
+      "lane": 0,
+      "time": 20.000015
+    },
+    {
+      "id": "aedd00c1-b64c-41e9-b8bf-1060879a9354",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 20.285729
+    },
+    {
+      "id": "3aaf5083-27b4-445b-be0b-e692048a26c4",
+      "label": "Kick",
+      "lane": 4,
+      "time": 20.571444
+    },
+    {
+      "id": "a1cce1b7-c79e-4d2d-9ac7-4322f62ba120",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 20.857158
+    },
+    {
+      "id": "4ff02318-0df9-4481-a31a-1563037de456",
+      "label": "Side Stick",
+      "lane": 0,
+      "time": 21.142873
+    },
+    {
+      "id": "b7bc7232-13d0-40ff-a24c-1b73f18694f1",
+      "label": "Snare",
+      "lane": 0,
+      "time": 21.142873
+    },
+    {
+      "id": "be78666d-f84f-495c-b352-3ef64797b5c0",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 21.428587
+    },
+    {
+      "id": "af528b8c-ffa6-4508-b5a5-37e546ef671e",
+      "label": "Kick",
+      "lane": 4,
+      "time": 21.714302
+    },
+    {
+      "id": "21d0a55d-a599-48ef-9bb3-b3448f3a5590",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 22.000016
+    },
+    {
+      "id": "784e7edc-37ef-44de-a33c-51d23352b862",
+      "label": "Side Stick",
+      "lane": 0,
+      "time": 22.285731
+    },
+    {
+      "id": "5bb07762-75af-419d-b26c-c1b31759586f",
+      "label": "Snare",
+      "lane": 0,
+      "time": 22.285731
+    },
+    {
+      "id": "703d087a-00de-4663-90f2-0a241351139b",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 22.571445
+    },
+    {
+      "id": "357fc8e0-a2e1-42cc-98d5-0074c17bf42b",
+      "label": "Kick",
+      "lane": 4,
+      "time": 22.85716
+    },
+    {
+      "id": "6beb1228-8acd-4d4f-8b6c-1f9c00e976b4",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 23.142874
+    },
+    {
+      "id": "b692b287-2625-474e-b5a2-b63c3a183b89",
+      "label": "Side Stick",
+      "lane": 0,
+      "time": 23.428589
+    },
+    {
+      "id": "8dc376dd-9330-4220-88b3-2750dbad1db6",
+      "label": "Snare",
+      "lane": 0,
+      "time": 23.428589
+    },
+    {
+      "id": "042c7fe3-38b4-425f-ba33-1404c89e8cbd",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 23.714303
+    },
+    {
+      "id": "970ef785-ece9-4d5c-aa85-43432ae3aaa0",
+      "label": "Kick",
+      "lane": 4,
+      "time": 24.000018
+    },
+    {
+      "id": "307a0d42-cd88-42e2-a180-509ea13f5e86",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 24.285732
+    },
+    {
+      "id": "f9330689-967d-4d60-93df-a1d9d886aae1",
+      "label": "Side Stick",
+      "lane": 0,
+      "time": 24.571447
+    },
+    {
+      "id": "ab7ac48d-2cdb-4c80-9002-58ca8aadc1da",
+      "label": "Snare",
+      "lane": 0,
+      "time": 24.571447
+    },
+    {
+      "id": "b9bd2b6d-2e23-49ea-bec7-20c21654e2fd",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 24.857162
+    },
+    {
+      "id": "eb24b805-138e-4014-9448-9ce8fb723d08",
+      "label": "Kick",
+      "lane": 4,
+      "time": 25.142876
+    },
+    {
+      "id": "2e707023-72a6-4434-8aeb-55bd9bfbcb74",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 25.42859
+    },
+    {
+      "id": "c8b45e54-09eb-4b2c-a5af-79b3e487fd12",
+      "label": "Side Stick",
+      "lane": 0,
+      "time": 25.714305
+    },
+    {
+      "id": "d4348f07-f498-47a7-aa0c-81a8d6aa2668",
+      "label": "Snare",
+      "lane": 0,
+      "time": 25.714305
+    },
+    {
+      "id": "35e2b2a3-f484-4266-9d3f-a32b3bccc532",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 26.000019
+    },
+    {
+      "id": "80397a17-b7e9-4418-b4d8-8e24f4f1f151",
+      "label": "Kick",
+      "lane": 4,
+      "time": 26.285734
+    },
+    {
+      "id": "c2af5187-d47d-4f83-afe5-e9c242183803",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 26.571448
+    },
+    {
+      "id": "01f90ab5-0bd7-4ba9-97d8-ea3b4a6c2c35",
+      "label": "Side Stick",
+      "lane": 0,
+      "time": 26.857163
+    },
+    {
+      "id": "904a94ba-c16f-4956-9a1b-754f814806d8",
+      "label": "Snare",
+      "lane": 0,
+      "time": 26.857163
+    },
+    {
+      "id": "620577a3-97ea-4548-865b-1c77c35314aa",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 27.142877
+    },
+    {
+      "id": "03721d8d-c88a-4f76-8b6a-5af2f888ea9e",
+      "label": "Kick",
+      "lane": 4,
+      "time": 27.428592
+    },
+    {
+      "id": "ab2299b8-c20f-4724-a59a-bfed3b19c894",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 27.714306
+    },
+    {
+      "id": "5902f843-6048-4aaa-9705-9e5b30cb9f63",
+      "label": "Side Stick",
+      "lane": 0,
+      "time": 28.000021
+    },
+    {
+      "id": "b5265cea-51a7-4e7d-8d80-77e4efb692f4",
+      "label": "Snare",
+      "lane": 0,
+      "time": 28.000021
+    },
+    {
+      "id": "7352bea4-eae0-4482-9e10-76635df8bc06",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 28.285735
+    },
+    {
+      "id": "86351f8c-cc45-461f-9b8e-1b4a7d5c9750",
+      "label": "Kick",
+      "lane": 4,
+      "time": 28.57145
+    },
+    {
+      "id": "00338fea-d9f8-42d4-b38b-4f9ddabc1afd",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 28.857164
+    },
+    {
+      "id": "e0bea94e-2bc7-435e-9e65-b63f47cb24a8",
+      "label": "Side Stick",
+      "lane": 0,
+      "time": 29.142879
+    },
+    {
+      "id": "17074f72-db19-47a5-84b9-029b1a15ac3f",
+      "label": "Snare",
+      "lane": 0,
+      "time": 29.142879
+    },
+    {
+      "id": "96a34ce7-16d2-4c51-902f-b5c20a086a39",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 29.428593
+    },
+    {
+      "id": "80dcab53-8d76-4d55-967e-f8c611de8e37",
+      "label": "Kick",
+      "lane": 4,
+      "time": 29.714308
+    },
+    {
+      "id": "683c54f1-1106-48f4-bfdc-a642e707b98a",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 30.000022
+    },
+    {
+      "id": "0aea2871-9124-476d-bfa5-eef08a1dfe53",
+      "label": "Side Stick",
+      "lane": 0,
+      "time": 30.285737
+    },
+    {
+      "id": "c1d0d486-51d5-4864-9b91-19e4061ecc55",
+      "label": "Snare",
+      "lane": 0,
+      "time": 30.285737
+    },
+    {
+      "id": "44857063-b1bd-4976-96e2-6a842cd0c8ca",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 30.571451
+    },
+    {
+      "id": "378482ac-d48f-4c42-8ac2-1a993e525400",
+      "label": "Kick",
+      "lane": 4,
+      "time": 30.857166
+    },
+    {
+      "id": "8530e37c-042a-430c-98ca-ce7af1c8f9a6",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 31.14288
+    },
+    {
+      "id": "41b94342-019c-4a83-ac02-5d9f55f85082",
+      "label": "Side Stick",
+      "lane": 0,
+      "time": 31.428595
+    },
+    {
+      "id": "9bb8e4e3-5280-4983-96f0-ed63d7bc67be",
+      "label": "Snare",
+      "lane": 0,
+      "time": 31.428595
+    },
+    {
+      "id": "6eaf1830-3b8b-4d90-8a58-67b6ce6a2076",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 31.714309
+    },
+    {
+      "id": "ca46e1c2-e85c-448c-bde9-a09bfe10c1df",
+      "label": "Kick",
+      "lane": 4,
+      "time": 32.000024
+    },
+    {
+      "id": "3fc71249-32c4-49c0-99b2-6fd22d39b837",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 32.285739
+    },
+    {
+      "id": "d4dd5b7f-a41e-423f-953a-f57d37c297ca",
+      "label": "Side Stick",
+      "lane": 0,
+      "time": 32.571453
+    },
+    {
+      "id": "ee7e4b2e-667b-4a07-bc77-edd1a71f075e",
+      "label": "Snare",
+      "lane": 0,
+      "time": 32.571453
+    },
+    {
+      "id": "229d9d99-5fae-4f10-b113-ab6405ba1235",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 32.857167
+    },
+    {
+      "id": "0fcb0104-fc33-403e-be38-277e1c8ac415",
+      "label": "Kick",
+      "lane": 4,
+      "time": 33.142882
+    },
+    {
+      "id": "8f783849-5f83-4800-a490-690d781da0bd",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 33.428596
+    },
+    {
+      "id": "d93fb4dc-bd92-4172-9638-460c7346a54e",
+      "label": "Side Stick",
+      "lane": 0,
+      "time": 33.714311
+    },
+    {
+      "id": "5abafeb8-72e3-45d0-a305-a4c3ea9b79b8",
+      "label": "Snare",
+      "lane": 0,
+      "time": 33.714311
+    },
+    {
+      "id": "444c4e9f-0444-4bb4-992e-8166833d5428",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 34.000025
+    },
+    {
+      "id": "20fb1abc-14c6-4090-9a52-971d2dbb5fd3",
+      "label": "Kick",
+      "lane": 4,
+      "time": 34.28574
+    },
+    {
+      "id": "42b65961-ecf6-4865-8955-dc167e20940e",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 34.571454
+    },
+    {
+      "id": "fb10bc61-82f0-4c1a-ba1c-601aa3a8f3e6",
+      "label": "Side Stick",
+      "lane": 0,
+      "time": 34.857169
+    },
+    {
+      "id": "7bf7e1c0-7937-4f54-bda4-2e455aa552eb",
+      "label": "Snare",
+      "lane": 0,
+      "time": 34.857169
+    },
+    {
+      "id": "edd584bc-3fd2-4104-9e60-c3bf1f7c4438",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 35.142883
+    },
+    {
+      "id": "0e5d48fd-34dd-4aea-b5fe-712e2de0f50b",
+      "label": "Kick",
+      "lane": 4,
+      "time": 35.428598
+    },
+    {
+      "id": "9dcdb5af-dc60-480b-bd5a-2dcec22a08b5",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 35.714312
+    },
+    {
+      "id": "714c8987-6b0d-4338-9f84-b08b036ccbac",
+      "label": "Side Stick",
+      "lane": 0,
+      "time": 36.000027
+    },
+    {
+      "id": "4d29c19d-c937-4885-b5e5-e7951967e82e",
+      "label": "Snare",
+      "lane": 0,
+      "time": 36.000027
+    },
+    {
+      "id": "360106f8-ba0f-4af6-8a66-bc90277b7736",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 36.285742
+    }
+  ],
+  "sections": [],
+  "timelineDuration": 38.285742,
+  "timing": {
+    "bpm": 104.999921,
+    "offsetSeconds": 0,
+    "source": "midi_import",
+    "ticksPerBeat": 480,
+    "timeSignature": {
+      "denominator": 4,
+      "numerator": 4
+    }
+  },
+  "timingContractVersion": "0.1.0",
+  "title": "Drumset\u0000"
+}
