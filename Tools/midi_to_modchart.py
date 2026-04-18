@@ -35,12 +35,14 @@ NOTE_LABELS = {
     59: "Ride",
 }
 
+# Map MIDI note numbers to pipeline DrumLane enum values (camelCase)
 LANE_MAP = {
-    35: 4, 36: 4,
-    37: 0, 38: 0, 40: 0,
-    41: 3, 43: 3, 45: 3, 47: 3,
-    42: 1, 44: 1, 46: 1, 49: 1, 51: 1, 52: 1, 55: 1, 57: 1, 59: 1,
-    48: 2, 50: 2,
+    35: "kick", 36: "kick",
+    37: "snare", 38: "snare", 40: "snare",
+    41: "tomLow", 43: "tomLow", 45: "tomMid", 47: "tomMid",
+    42: "hihatClosed", 44: "hihatClosed", 46: "hihatOpen",
+    49: "crash", 51: "ride", 52: "crash", 55: "crash", 57: "crash", 59: "ride",
+    48: "tomHigh", 50: "tomHigh",
 }
 
 
@@ -151,11 +153,12 @@ def main() -> int:
             unmapped.append(ev.note)
             continue
         notes.append({
-            "id": str(uuid.uuid4()),
             "lane": lane,
-            "time": round(tick_to_seconds(ev.tick, ticks_per_beat, tempo), 6),
-            "label": NOTE_LABELS.get(ev.note),
+            "startSeconds": round(tick_to_seconds(ev.tick, ticks_per_beat, tempo), 6),
+            "noteID": str(uuid.uuid4()),
         })
+
+    # Pipeline base-chart format
     document = {
         "title": title,
         "bpm": round(bpm, 6),
@@ -167,13 +170,13 @@ def main() -> int:
             "timeSignature": {"numerator": time_sig[0], "denominator": time_sig[1]},
             "source": "midi_import",
         },
-        "timelineDuration": round(max((n["time"] for n in notes), default=0) + 2.0, 6),
-        "notes": notes,
-        "sections": [],
-        "metadata": {
+        "timelineDuration": round(max((n["startSeconds"] for n in notes), default=0) + 2.0, 6),
+        "chart": {
+            "notes": notes,
+        },
+        "source": {
             "sourceMIDI": src.name,
-            "format": fmt,
-            "unmappedMIDINotes": sorted(set(unmapped)),
+            "title": title,
         },
     }
     dst.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8")
