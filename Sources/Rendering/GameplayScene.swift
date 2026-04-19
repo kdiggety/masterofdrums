@@ -120,6 +120,7 @@ final class GameplayScene: SKScene {
         draggedAdminNotePreviewYByID.removeAll()
         draggedAdminNotePreviewTargetYByID.removeAll()
         draggedAdminNotePreviewLaneByID.removeAll()
+        setupScene()
         restartSong()
         updateVisibleNotes([])
     }
