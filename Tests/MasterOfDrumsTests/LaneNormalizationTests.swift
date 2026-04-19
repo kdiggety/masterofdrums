@@ -53,22 +53,22 @@ final class LaneNormalizationTests: XCTestCase {
 
     func testHiHatOpenMappings() {
         // camelCase variants from pipeline
-        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "hihatOpen"), Lane.yellow.rawValue)
-        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "hihatopen"), Lane.yellow.rawValue)
+        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "hihatOpen"), Lane.green.rawValue)
+        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "hihatopen"), Lane.green.rawValue)
 
         // Various text forms
-        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "open hat"), Lane.yellow.rawValue)
-        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "open hihat"), Lane.yellow.rawValue)
-        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "hihat open"), Lane.yellow.rawValue)
-        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "hi hat open"), Lane.yellow.rawValue)
+        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "open hat"), Lane.green.rawValue)
+        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "open hihat"), Lane.green.rawValue)
+        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "hihat open"), Lane.green.rawValue)
+        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "hi hat open"), Lane.green.rawValue)
     }
 
     func testCymbalMappings() {
-        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "crash"), Lane.yellow.rawValue)
-        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "ride"), Lane.yellow.rawValue)
-        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "cymbal"), Lane.yellow.rawValue)
-        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "gong"), Lane.yellow.rawValue)
-        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "bell"), Lane.yellow.rawValue)
+        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "crash"), Lane.green.rawValue)
+        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "ride"), Lane.green.rawValue)
+        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "cymbal"), Lane.green.rawValue)
+        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "gong"), Lane.green.rawValue)
+        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "bell"), Lane.green.rawValue)
     }
 
     // MARK: - Tom High Mappings (Blue)
@@ -132,7 +132,7 @@ final class LaneNormalizationTests: XCTestCase {
     func testWhitespaceHandling() {
         XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "  kick  "), Lane.kick.rawValue)
         XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: "\tsnare\n"), Lane.red.rawValue)
-        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: " crash "), Lane.yellow.rawValue)
+        XCTAssertEqual(ChartDocument.laneIndex(forPipelineLane: " crash "), Lane.green.rawValue)
     }
 
     func testMixedCaseHandling() {

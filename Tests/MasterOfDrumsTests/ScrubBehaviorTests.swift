@@ -10,22 +10,6 @@ final class ScrubBehaviorTests: XCTestCase {
 
     func testDragDownScrubbsForward() {
         let startTime = 30.0
-        let translationHeight = -100.0
-        let availableHeight = 500.0
-
-        let result = PrototypeGameController.computeScrubTime(
-            from: startTime,
-            translationHeight: translationHeight,
-            availableHeight: availableHeight,
-            totalDuration: duration,
-            multiplier: multiplier
-        )
-
-        XCTAssertGreaterThan(result, startTime, "Dragging down (negative translation) should move forward in time")
-    }
-
-    func testDragUpScrubbsBackward() {
-        let startTime = 30.0
         let translationHeight = 100.0
         let availableHeight = 500.0
 
@@ -37,7 +21,23 @@ final class ScrubBehaviorTests: XCTestCase {
             multiplier: multiplier
         )
 
-        XCTAssertLessThan(result, startTime, "Dragging up (positive translation) should move backward in time")
+        XCTAssertGreaterThan(result, startTime, "Dragging down (positive translation) should move forward in time")
+    }
+
+    func testDragUpScrubbsBackward() {
+        let startTime = 30.0
+        let translationHeight = -100.0
+        let availableHeight = 500.0
+
+        let result = PrototypeGameController.computeScrubTime(
+            from: startTime,
+            translationHeight: translationHeight,
+            availableHeight: availableHeight,
+            totalDuration: duration,
+            multiplier: multiplier
+        )
+
+        XCTAssertLessThan(result, startTime, "Dragging up (negative translation) should move backward in time")
     }
 
     func testNoDragNoChange() {
@@ -60,7 +60,7 @@ final class ScrubBehaviorTests: XCTestCase {
 
     func testScrubClampedAtZero() {
         let startTime = 5.0
-        let translationHeight = 100.0
+        let translationHeight = -100.0
         let availableHeight = 100.0
 
         let result = PrototypeGameController.computeScrubTime(
@@ -77,7 +77,7 @@ final class ScrubBehaviorTests: XCTestCase {
 
     func testScrubClampedAtDuration() {
         let startTime = 115.0
-        let translationHeight = -100.0
+        let translationHeight = 100.0
         let availableHeight = 100.0
 
         let result = PrototypeGameController.computeScrubTime(
@@ -96,7 +96,7 @@ final class ScrubBehaviorTests: XCTestCase {
 
     func testLargerAvailableHeightReducesSensitivity() {
         let startTime = 60.0
-        let translationHeight = -10.0
+        let translationHeight = 10.0
 
         let resultSmallHeight = PrototypeGameController.computeScrubTime(
             from: startTime,
@@ -123,7 +123,7 @@ final class ScrubBehaviorTests: XCTestCase {
 
     func testMultiplierScalesDelta() {
         let startTime = 60.0
-        let translationHeight = -100.0
+        let translationHeight = 100.0
         let availableHeight = 500.0
 
         let resultLowMultiplier = PrototypeGameController.computeScrubTime(
@@ -153,7 +153,7 @@ final class ScrubBehaviorTests: XCTestCase {
 
     func testZeroHeightDoesNotCrash() {
         let startTime = 30.0
-        let translationHeight = -100.0
+        let translationHeight = 100.0
         let availableHeight = 0.0
 
         let result = PrototypeGameController.computeScrubTime(
@@ -169,7 +169,7 @@ final class ScrubBehaviorTests: XCTestCase {
 
     func testZeroDurationNeverCrashes() {
         let startTime = 0.0
-        let translationHeight = -100.0
+        let translationHeight = 100.0
         let availableHeight = 500.0
 
         let result = PrototypeGameController.computeScrubTime(
@@ -187,7 +187,7 @@ final class ScrubBehaviorTests: XCTestCase {
 
     func testDefaultMultiplierUsed() {
         let startTime = 60.0
-        let translationHeight = -100.0
+        let translationHeight = 100.0
         let availableHeight = 500.0
 
         let resultDefault = PrototypeGameController.computeScrubTime(

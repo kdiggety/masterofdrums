@@ -957,7 +957,7 @@ final class PrototypeGameController: ObservableObject {
         multiplier: Double = 4.0
     ) -> Double {
         guard availableHeight > 0 else { return startTime }
-        let normalizedDelta = -translationHeight / availableHeight
+        let normalizedDelta = translationHeight / availableHeight
         let scaledDuration = max(totalDuration, 0) * multiplier
         let unclampedTargetTime = startTime + (normalizedDelta * scaledDuration)
         return max(0, min(totalDuration, unclampedTargetTime))

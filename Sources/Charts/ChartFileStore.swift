@@ -140,15 +140,24 @@ struct ChartDocument: Codable {
             return Lane.red.rawValue
         }
 
-        // Hi-hat and cymbal family
-        if normalized == "hihatclosed" || normalized == "hihatopen" ||
-           normalized.contains("hihat") || normalized.contains("hi hat") || normalized.contains("hi-hat") ||
+        // Closed hi-hat (bright/tight rhythmic sound)
+        if normalized == "hihatclosed" ||
            normalized.contains("closed hat") || normalized.contains("closed hihat") ||
+           normalized.contains("hi hat closed") || normalized.contains("hihat closed") ||
+           (normalized.contains("hihat") && !normalized.contains("open")) ||
+           (normalized.contains("hi hat") && !normalized.contains("open")) ||
+           normalized.contains("hihat pedal") || normalized.contains("hi hat pedal") ||
+           normalized == "yellow" {
+            return Lane.yellow.rawValue
+        }
+
+        // Open hi-hats, cymbals, and crash/ride family (resonant/open sounds)
+        if normalized == "hihatopen" ||
            normalized.contains("open hat") || normalized.contains("open hihat") ||
            normalized.contains("hihat open") || normalized.contains("hi hat open") ||
            normalized.contains("cymbal") || normalized.contains("crash") || normalized.contains("ride") ||
-           normalized.contains("gong") || (normalized.contains("bell") && !normalized.contains("cowbell")) || normalized == "yellow" {
-            return Lane.yellow.rawValue
+           normalized.contains("gong") || (normalized.contains("bell") && !normalized.contains("cowbell")) {
+            return Lane.green.rawValue
         }
 
         // Tom family (high toms)
