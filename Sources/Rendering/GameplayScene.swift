@@ -49,6 +49,11 @@ final class GameplayScene: SKScene {
 
     var hitLineYPosition: CGFloat { hitLineY }
 
+    #if DEBUG
+    var _testLaneOrder: [ChartLane] { laneOrder }
+    var _testLaneIndexByID: [String: Int] { laneIndexByID }
+    #endif
+
     init(chart: Chart, keyboardInputDevice: KeyboardInputDevice) {
         self.chart = chart
         self.keyboardInputDevice = keyboardInputDevice
