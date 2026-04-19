@@ -151,7 +151,7 @@ struct Chart {
             return blueprint
         }
 
-        // Build lanes from notes in order of appearance, avoiding duplicates
+        // Build lanes from notes, avoiding duplicates, then sort by lane order
         var lanes: [ChartLane] = []
         var seenSourceLanes = Set<Lane>()
 
@@ -175,7 +175,7 @@ struct Chart {
             }
         }
 
-        return lanes
+        return lanes.sorted { $0.sourceLane.rawValue < $1.sourceLane.rawValue }
     }
 
     static let prototype: Chart = {

@@ -81,8 +81,8 @@ final class LaneModelTests: XCTestCase {
         let chart = Chart(notes: notes, title: "Test")
         let displayLanes = chart.displayLanes()
 
-        // Lanes are displayed in order of appearance (in notes), not by priority
-        XCTAssertEqual(displayLanes.map(\.presentationLane), [.purple, .red, .blue])
+        // Lanes are displayed in canonical order (by lane number), not by appearance
+        XCTAssertEqual(displayLanes.map(\.presentationLane), [.red, .blue, .purple])
     }
 
     // MARK: - Admin Audition Display Lanes Unification

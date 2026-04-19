@@ -171,9 +171,9 @@ final class LaneNormalizationTests: XCTestCase {
         let chart = Chart(notes: notes, title: "Test")
         let displayLanes = chart.displayLanes()
 
-        // Verify correct lanes in order of appearance
+        // Verify correct lanes in canonical order (0=red, 1=yellow, 2=blue, 3=green, 4=purple)
         XCTAssertEqual(displayLanes.count, 5)
-        XCTAssertEqual(displayLanes.map { $0.sourceLane }, [.purple, .red, .yellow, .blue, .green])
+        XCTAssertEqual(displayLanes.map { $0.sourceLane }, [.red, .yellow, .blue, .green, .purple])
     }
 
     func testMixedLaneNamesInChart() {
