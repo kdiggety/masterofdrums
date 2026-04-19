@@ -34,8 +34,8 @@ final class GameplaySceneNotePositioningTests: XCTestCase {
         let startX = (scene.size.width - totalWidth) / 2
 
         // Verify each note is centered in its lane
-        for (laneIndex, lane) in laneOrder.enumerated() {
-            let laneX = startX + CGFloat(laneIndex) * scene._testLaneWidth
+        for lane in laneOrder {
+            let laneX = startX + CGFloat(lane.sourceLane.rawValue) * scene._testLaneWidth
             let laneMidX = laneX + scene._testLaneWidth / 2
             let laneMinX = laneX
             let laneMaxX = laneX + scene._testLaneWidth
@@ -79,8 +79,8 @@ final class GameplaySceneNotePositioningTests: XCTestCase {
         let totalWidth = scene._testLaneWidth * CGFloat(laneOrder.count)
         let startX = (scene.size.width - totalWidth) / 2
 
-        let laneBoundaries = laneOrder.enumerated().map { (index, lane) -> (lane: Lane, minX: CGFloat, maxX: CGFloat) in
-            let laneX = startX + CGFloat(index) * scene._testLaneWidth
+        let laneBoundaries = laneOrder.map { lane -> (lane: Lane, minX: CGFloat, maxX: CGFloat) in
+            let laneX = startX + CGFloat(lane.sourceLane.rawValue) * scene._testLaneWidth
             return (lane.sourceLane, laneX, laneX + scene._testLaneWidth)
         }
 

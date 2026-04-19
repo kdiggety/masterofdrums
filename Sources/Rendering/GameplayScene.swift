@@ -434,7 +434,8 @@ final class GameplayScene: SKScene {
     }
 
     private func frameForLane(at index: Int, startX: CGFloat) -> CGRect {
-        let laneX = startX + CGFloat(index) * laneWidth
+        let lane = laneOrder[index]
+        let laneX = startX + CGFloat(lane.sourceLane.rawValue) * laneWidth
         return CGRect(x: laneX, y: 0, width: laneWidth, height: size.height)
     }
 
