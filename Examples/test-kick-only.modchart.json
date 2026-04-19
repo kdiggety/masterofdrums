@@ -1,0 +1,42 @@
+{
+  "bpm": 120.0,
+  "metadata": {
+    "format": 0,
+    "sourceMIDI": "test-kick-only.mid",
+    "unmappedMIDINotes": []
+  },
+  "notes": [
+    {
+      "id": "f9abe9ff-086f-4e01-bba2-314c1c220797",
+      "label": "Kick",
+      "lane": 4,
+      "time": 0.0
+    },
+    {
+      "id": "3a111b54-9870-4388-abc9-1900e39c2d57",
+      "label": "Kick",
+      "lane": 4,
+      "time": 0.5
+    },
+    {
+      "id": "cea36d28-bfd7-4932-88c6-f2487144de2f",
+      "label": "Kick",
+      "lane": 4,
+      "time": 1.0
+    }
+  ],
+  "sections": [],
+  "timelineDuration": 3.0,
+  "timing": {
+    "bpm": 120.0,
+    "offsetSeconds": 0,
+    "source": "midi_import",
+    "ticksPerBeat": 480,
+    "timeSignature": {
+      "denominator": 4,
+      "numerator": 4
+    }
+  },
+  "timingContractVersion": "0.1.0",
+  "title": "Kick Only"
+}

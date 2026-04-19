@@ -1,0 +1,48 @@
+{
+  "bpm": 120.0,
+  "metadata": {
+    "format": 0,
+    "sourceMIDI": "test-hihats.mid",
+    "unmappedMIDINotes": []
+  },
+  "notes": [
+    {
+      "id": "801db983-629d-4ab4-9470-b5d72107446f",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 0.0
+    },
+    {
+      "id": "5e5ef436-d313-4cc8-8f88-16359f16a4a5",
+      "label": "HiHat Pedal",
+      "lane": 1,
+      "time": 0.25
+    },
+    {
+      "id": "8f4648bc-7fcb-4ea5-ad60-201da72d2efb",
+      "label": "HiHat Open",
+      "lane": 1,
+      "time": 0.5
+    },
+    {
+      "id": "570208a6-2294-4bcb-ad38-f364987f1646",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 0.75
+    }
+  ],
+  "sections": [],
+  "timelineDuration": 2.75,
+  "timing": {
+    "bpm": 120.0,
+    "offsetSeconds": 0,
+    "source": "midi_import",
+    "ticksPerBeat": 480,
+    "timeSignature": {
+      "denominator": 4,
+      "numerator": 4
+    }
+  },
+  "timingContractVersion": "0.1.0",
+  "title": "Hi-hats"
+}

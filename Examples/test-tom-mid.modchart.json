@@ -1,0 +1,54 @@
+{
+  "bpm": 120.0,
+  "metadata": {
+    "format": 0,
+    "sourceMIDI": "test-tom-mid.mid",
+    "unmappedMIDINotes": []
+  },
+  "notes": [
+    {
+      "id": "5809c005-ba9e-409b-9461-a7d801581045",
+      "label": "Tom Mid",
+      "lane": 3,
+      "time": 0.0
+    },
+    {
+      "id": "69382dbc-bace-4f61-ac63-3ccc5738a876",
+      "label": "Tom Mid",
+      "lane": 3,
+      "time": 0.5
+    },
+    {
+      "id": "22df09e6-cf2e-4435-b7a4-b4bebe43ce86",
+      "label": "Tom Mid",
+      "lane": 3,
+      "time": 1.0
+    },
+    {
+      "id": "03ee0d5b-c04f-4075-98f5-3d9f366898a8",
+      "label": "Tom Mid",
+      "lane": 3,
+      "time": 1.5
+    },
+    {
+      "id": "f628a02c-353a-4b9f-aed2-5aac45730612",
+      "label": "Tom Mid",
+      "lane": 3,
+      "time": 2.0
+    }
+  ],
+  "sections": [],
+  "timelineDuration": 4.0,
+  "timing": {
+    "bpm": 120.0,
+    "offsetSeconds": 0,
+    "source": "midi_import",
+    "ticksPerBeat": 480,
+    "timeSignature": {
+      "denominator": 4,
+      "numerator": 4
+    }
+  },
+  "timingContractVersion": "0.1.0",
+  "title": "Tom Mid"
+}

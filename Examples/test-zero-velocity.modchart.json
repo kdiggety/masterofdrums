@@ -1,0 +1,30 @@
+{
+  "bpm": 120.0,
+  "metadata": {
+    "format": 0,
+    "sourceMIDI": "test-zero-velocity.mid",
+    "unmappedMIDINotes": []
+  },
+  "notes": [
+    {
+      "id": "ec3151a3-ce36-4985-a893-be429a8e25c1",
+      "label": "Snare",
+      "lane": 0,
+      "time": 0.25
+    }
+  ],
+  "sections": [],
+  "timelineDuration": 2.25,
+  "timing": {
+    "bpm": 120.0,
+    "offsetSeconds": 0,
+    "source": "midi_import",
+    "ticksPerBeat": 480,
+    "timeSignature": {
+      "denominator": 4,
+      "numerator": 4
+    }
+  },
+  "timingContractVersion": "0.1.0",
+  "title": "Zero Velocity"
+}

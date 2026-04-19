@@ -1,0 +1,54 @@
+{
+  "bpm": 120.0,
+  "metadata": {
+    "format": 0,
+    "sourceMIDI": "test-tom-low.mid",
+    "unmappedMIDINotes": []
+  },
+  "notes": [
+    {
+      "id": "07387ee6-936b-4a8e-bfd0-552d67faefcc",
+      "label": "Tom Low",
+      "lane": 3,
+      "time": 0.0
+    },
+    {
+      "id": "618b4a27-0fe2-4814-8c74-b82f965f0ecf",
+      "label": "Tom Low",
+      "lane": 3,
+      "time": 0.5
+    },
+    {
+      "id": "ea336daa-6b98-4360-9e4d-361e0b66d0f9",
+      "label": "Tom Low",
+      "lane": 3,
+      "time": 1.0
+    },
+    {
+      "id": "b12e33f9-d7fe-4e43-b339-d696dcd37094",
+      "label": "Tom Low",
+      "lane": 3,
+      "time": 1.5
+    },
+    {
+      "id": "783f0b71-354c-4b24-9b8c-23698049e730",
+      "label": "Tom Low",
+      "lane": 3,
+      "time": 2.0
+    }
+  ],
+  "sections": [],
+  "timelineDuration": 4.0,
+  "timing": {
+    "bpm": 120.0,
+    "offsetSeconds": 0,
+    "source": "midi_import",
+    "ticksPerBeat": 480,
+    "timeSignature": {
+      "denominator": 4,
+      "numerator": 4
+    }
+  },
+  "timingContractVersion": "0.1.0",
+  "title": "Tom Low"
+}

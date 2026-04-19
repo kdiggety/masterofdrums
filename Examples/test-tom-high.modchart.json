@@ -1,0 +1,54 @@
+{
+  "bpm": 120.0,
+  "metadata": {
+    "format": 0,
+    "sourceMIDI": "test-tom-high.mid",
+    "unmappedMIDINotes": []
+  },
+  "notes": [
+    {
+      "id": "19f7c00e-52a8-40ba-83cf-6ffb3b687091",
+      "label": "Tom High",
+      "lane": 2,
+      "time": 0.0
+    },
+    {
+      "id": "27397221-c26b-4a6b-82b3-104a063b6b52",
+      "label": "Tom High",
+      "lane": 2,
+      "time": 0.5
+    },
+    {
+      "id": "c8e6d5b8-fba7-4213-9211-e9a0438df737",
+      "label": "Tom High",
+      "lane": 2,
+      "time": 1.0
+    },
+    {
+      "id": "9b6bcd0a-2360-4773-a74e-173791557679",
+      "label": "Tom High",
+      "lane": 2,
+      "time": 1.5
+    },
+    {
+      "id": "6f0fa0b7-7860-437c-adc8-aab79c7a234f",
+      "label": "Tom High",
+      "lane": 2,
+      "time": 2.0
+    }
+  ],
+  "sections": [],
+  "timelineDuration": 4.0,
+  "timing": {
+    "bpm": 120.0,
+    "offsetSeconds": 0,
+    "source": "midi_import",
+    "ticksPerBeat": 480,
+    "timeSignature": {
+      "denominator": 4,
+      "numerator": 4
+    }
+  },
+  "timingContractVersion": "0.1.0",
+  "title": "Tom High"
+}

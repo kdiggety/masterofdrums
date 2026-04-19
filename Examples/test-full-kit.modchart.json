@@ -1,0 +1,72 @@
+{
+  "bpm": 120.0,
+  "metadata": {
+    "format": 0,
+    "sourceMIDI": "test-full-kit.mid",
+    "unmappedMIDINotes": []
+  },
+  "notes": [
+    {
+      "id": "e3a21a25-c7f7-4183-bdf0-f70f96c978b5",
+      "label": "Kick",
+      "lane": 4,
+      "time": 0.0
+    },
+    {
+      "id": "6cdde165-d0f3-4dd1-b0c4-11970228fb35",
+      "label": "Snare",
+      "lane": 0,
+      "time": 0.25
+    },
+    {
+      "id": "d8d164ab-97b0-4cd6-8aef-aa1f2206089b",
+      "label": "HiHat Closed",
+      "lane": 1,
+      "time": 0.375
+    },
+    {
+      "id": "ad918ebb-781e-4574-a8b5-1096481591ce",
+      "label": "Tom High",
+      "lane": 2,
+      "time": 0.5
+    },
+    {
+      "id": "7ee448ce-61ba-4d02-a5f1-c2f2f93b50cf",
+      "label": "Tom Mid",
+      "lane": 3,
+      "time": 0.625
+    },
+    {
+      "id": "b0dd43d1-4327-492b-ad99-991a0ecbd403",
+      "label": "Tom Low",
+      "lane": 3,
+      "time": 0.75
+    },
+    {
+      "id": "83fcb5da-157c-4faa-8be1-fd94d4924676",
+      "label": "Crash",
+      "lane": 3,
+      "time": 0.875
+    },
+    {
+      "id": "a227c9d3-4f61-48a4-bdb1-d46d67cd6024",
+      "label": "Ride",
+      "lane": 3,
+      "time": 1.0
+    }
+  ],
+  "sections": [],
+  "timelineDuration": 3.0,
+  "timing": {
+    "bpm": 120.0,
+    "offsetSeconds": 0,
+    "source": "midi_import",
+    "ticksPerBeat": 480,
+    "timeSignature": {
+      "denominator": 4,
+      "numerator": 4
+    }
+  },
+  "timingContractVersion": "0.1.0",
+  "title": "Full Kit"
+}
