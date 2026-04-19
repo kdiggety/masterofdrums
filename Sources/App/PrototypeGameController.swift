@@ -109,7 +109,7 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var playbackTimeText: String = "0.00s"
     @Published private(set) var currentPlaybackNoteID: UUID?
     @Published var isRecordedNotesAutoscrollEnabled: Bool = true
-    @Published private(set) var barBeatText: String = "1:1"
+    @Published private(set) var barBeatText: String = "0.0.0.000"
     @Published private(set) var musicalSubdivisionText: String = "1"
     @Published private(set) var bpmSourceText: String = "Manual"
     @Published private(set) var timingSourceText: String = "Manual"
@@ -1332,6 +1332,7 @@ final class PrototypeGameController: ObservableObject {
         activeDisplayLaneBlueprint = nil
         applyChart(Chart(notes: [], title: title, sections: [], displayLaneBlueprint: nil), bpmOverride: bpm, chartStatus: "Chart unloaded", recordHistory: true, persistLoadedChart: false)
         adminStatusText = "Chart unloaded"
+        syncTransportState()
         refocusGameplay()
     }
 
@@ -1671,10 +1672,12 @@ final class PrototypeGameController: ObservableObject {
         if playbackTimeText != nextPlaybackTimeText { playbackTimeText = nextPlaybackTimeText }
         let nextPlaybackDurationText = String(format: "%.2fs", playbackDuration)
         if playbackDurationText != nextPlaybackDurationText { playbackDurationText = nextPlaybackDurationText }
+        // Show "0.0.0.000" when nothing is loaded; otherwise show musical position
+        let hasContent = audio.duration > 0 || isAdminChartActive
         let position = MusicalTransport.position(at: currentTime, bpm: bpm, songOffset: songOffset, beatsPerBar: beatsPerBar, subdivisionsPerBeat: max(stepResolution.subdivisionsPerBeat, 1), ticksPerBeat: ticksPerBeat)
-        let nextBarBeatText = position.barBeatDivisionTickText
+        let nextBarBeatText = hasContent ? position.barBeatDivisionTickText : "0.0.0.000"
         if barBeatText != nextBarBeatText { barBeatText = nextBarBeatText }
-        let nextSubdivisionText = String(position.subdivision)
+        let nextSubdivisionText = hasContent ? String(position.subdivision) : "0"
         if musicalSubdivisionText != nextSubdivisionText { musicalSubdivisionText = nextSubdivisionText }
         let nextPlaybackNoteID = playbackNoteID(near: currentTime)
         if currentPlaybackNoteID != nextPlaybackNoteID { currentPlaybackNoteID = nextPlaybackNoteID }
