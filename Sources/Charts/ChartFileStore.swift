@@ -126,7 +126,10 @@ struct ChartDocument: Codable {
     }
 
     static func laneIndex(forPipelineLane rawLane: String) -> Int? {
-        let normalized = rawLane.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let normalized = rawLane
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+            .replacingOccurrences(of: "_", with: "")
 
         // Explicit kick mappings
         if normalized == "kick" || normalized.contains("bass drum") ||
