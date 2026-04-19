@@ -8,23 +8,7 @@ final class ScrubBehaviorTests: XCTestCase {
 
     // MARK: - Direction Tests
 
-    func testDragDownScrubbsForward() {
-        let startTime = 30.0
-        let translationHeight = 100.0
-        let availableHeight = 500.0
-
-        let result = PrototypeGameController.computeScrubTime(
-            from: startTime,
-            translationHeight: translationHeight,
-            availableHeight: availableHeight,
-            totalDuration: duration,
-            multiplier: multiplier
-        )
-
-        XCTAssertGreaterThan(result, startTime, "Dragging down (positive translation) should move forward in time")
-    }
-
-    func testDragUpScrubbsBackward() {
+    func testDragUpScrubbsForward() {
         let startTime = 30.0
         let translationHeight = -100.0
         let availableHeight = 500.0
@@ -37,7 +21,23 @@ final class ScrubBehaviorTests: XCTestCase {
             multiplier: multiplier
         )
 
-        XCTAssertLessThan(result, startTime, "Dragging up (negative translation) should move backward in time")
+        XCTAssertGreaterThan(result, startTime, "Dragging up (negative translation) should move forward in time")
+    }
+
+    func testDragDownScrubbsBackward() {
+        let startTime = 30.0
+        let translationHeight = 100.0
+        let availableHeight = 500.0
+
+        let result = PrototypeGameController.computeScrubTime(
+            from: startTime,
+            translationHeight: translationHeight,
+            availableHeight: availableHeight,
+            totalDuration: duration,
+            multiplier: multiplier
+        )
+
+        XCTAssertLessThan(result, startTime, "Dragging down (positive translation) should move backward in time")
     }
 
     func testNoDragNoChange() {
@@ -60,23 +60,6 @@ final class ScrubBehaviorTests: XCTestCase {
 
     func testScrubClampedAtZero() {
         let startTime = 5.0
-        let translationHeight = -100.0
-        let availableHeight = 100.0
-
-        let result = PrototypeGameController.computeScrubTime(
-            from: startTime,
-            translationHeight: translationHeight,
-            availableHeight: availableHeight,
-            totalDuration: duration,
-            multiplier: multiplier
-        )
-
-        XCTAssertGreaterThanOrEqual(result, 0, "Result should never be negative")
-        XCTAssertEqual(result, 0, accuracy: 0.001, "Large backward drag from start should clamp at 0")
-    }
-
-    func testScrubClampedAtDuration() {
-        let startTime = 115.0
         let translationHeight = 100.0
         let availableHeight = 100.0
 
@@ -88,8 +71,25 @@ final class ScrubBehaviorTests: XCTestCase {
             multiplier: multiplier
         )
 
+        XCTAssertGreaterThanOrEqual(result, 0, "Result should never be negative")
+        XCTAssertEqual(result, 0, accuracy: 0.001, "Large drag down from start should clamp at 0")
+    }
+
+    func testScrubClampedAtDuration() {
+        let startTime = 115.0
+        let translationHeight = -100.0
+        let availableHeight = 100.0
+
+        let result = PrototypeGameController.computeScrubTime(
+            from: startTime,
+            translationHeight: translationHeight,
+            availableHeight: availableHeight,
+            totalDuration: duration,
+            multiplier: multiplier
+        )
+
         XCTAssertLessThanOrEqual(result, duration, "Result should never exceed duration")
-        XCTAssertEqual(result, duration, accuracy: 0.001, "Large forward drag from end should clamp at duration")
+        XCTAssertEqual(result, duration, accuracy: 0.001, "Large drag up from end should clamp at duration")
     }
 
     // MARK: - Scale Tests
@@ -115,9 +115,9 @@ final class ScrubBehaviorTests: XCTestCase {
         )
 
         XCTAssertGreaterThan(
-            resultSmallHeight - startTime,
-            resultLargeHeight - startTime,
-            "Larger available height should reduce sensitivity (smaller delta for same translation)"
+            abs(resultSmallHeight - startTime),
+            abs(resultLargeHeight - startTime),
+            "Larger available height should reduce sensitivity (smaller magnitude delta for same translation)"
         )
     }
 
@@ -143,9 +143,9 @@ final class ScrubBehaviorTests: XCTestCase {
         )
 
         XCTAssertGreaterThan(
-            resultHighMultiplier - startTime,
-            resultLowMultiplier - startTime,
-            "Higher multiplier should increase delta"
+            abs(resultHighMultiplier - startTime),
+            abs(resultLowMultiplier - startTime),
+            "Higher multiplier should increase magnitude of delta"
         )
     }
 

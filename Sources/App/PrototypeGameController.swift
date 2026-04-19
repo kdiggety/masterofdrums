@@ -957,7 +957,9 @@ final class PrototypeGameController: ObservableObject {
         multiplier: Double = 4.0
     ) -> Double {
         guard availableHeight > 0 else { return startTime }
-        let normalizedDelta = translationHeight / availableHeight
+        // Drag up (negative translationHeight) moves forward through song; drag down moves backward.
+        // This matches intuitive timeline scrolling: dragging up = scrolling up through timeline = moving forward.
+        let normalizedDelta = -translationHeight / availableHeight
         let scaledDuration = max(totalDuration, 0) * multiplier
         let unclampedTargetTime = startTime + (normalizedDelta * scaledDuration)
         return max(0, min(totalDuration, unclampedTargetTime))
@@ -975,7 +977,8 @@ final class PrototypeGameController: ObservableObject {
 
     func adminDraggedNoteTime(from startTime: Double, translationHeight: Double, availableHeight: Double) -> Double {
         let height = max(availableHeight, 1)
-        let normalizedDelta = translationHeight / height
+        // Drag up (negative translationHeight) moves note forward in time; drag down moves backward.
+        let normalizedDelta = -translationHeight / height
         let scaledDuration = max(playbackDuration, 0) * adminNoteDragDurationMultiplier
         let unclampedTargetTime = startTime + (normalizedDelta * scaledDuration)
         return max(0, min(playbackDuration, unclampedTargetTime))
