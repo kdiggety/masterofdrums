@@ -52,6 +52,7 @@ final class GameplayScene: SKScene {
     #if DEBUG
     var _testLaneOrder: [ChartLane] { laneOrder }
     var _testLaneIndexByID: [String: Int] { laneIndexByID }
+    var _testHighwayNode: SKNode { highway }
     #endif
 
     init(chart: Chart, keyboardInputDevice: KeyboardInputDevice) {
