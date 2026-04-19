@@ -26,7 +26,7 @@ struct DefaultKeyboardLaneMapper: LaneMapping {
         case 3: return .yellow   // F
         case 38: return .blue    // J
         case 40: return .green   // K
-        case 49: return .kick    // Space
+        case 49: return .purple    // Space
         default: return nil
         }
     }

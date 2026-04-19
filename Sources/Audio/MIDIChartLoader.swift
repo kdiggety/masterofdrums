@@ -90,7 +90,7 @@ struct MIDIChartLoader {
 
     private func lane(forTrackName name: String) -> Lane? {
         let lower = name.lowercased()
-        if lower.contains("kick") { return .kick }
+        if lower.contains("kick") { return .purple }
         if lower.contains("snare") { return .red }
         if lower.contains("closedhh") || lower.contains("closed hh") || lower.contains("hihat") || lower.contains("hi hat") { return .yellow }
         return nil

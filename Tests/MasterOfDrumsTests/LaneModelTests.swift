@@ -27,7 +27,7 @@ final class LaneModelTests: XCTestCase {
             NoteEvent(lane: .yellow, time: 1.0, label: "Hi-Hat"),
             NoteEvent(lane: .blue, time: 1.5, label: "Tom High"),
             NoteEvent(lane: .green, time: 2.0, label: "Crash"),
-            NoteEvent(lane: .kick, time: 2.5, label: "Kick"),
+            NoteEvent(lane: .purple, time: 2.5, label: "Kick"),
         ]
 
         let chart = Chart(notes: notes, title: "Test")
@@ -38,7 +38,7 @@ final class LaneModelTests: XCTestCase {
 
         // Verify presentation lanes
         let presentations = Set(displayLanes.map { $0.presentationLane })
-        XCTAssertEqual(presentations, Set([.red, .yellow, .blue, .green, .kick]))
+        XCTAssertEqual(presentations, Set([.red, .yellow, .blue, .green, .purple]))
     }
 
     func testDisplayLanesDoesNotShowDuplicateCanonicalRows() {
@@ -73,7 +73,7 @@ final class LaneModelTests: XCTestCase {
 
     func testDisplayLanesOrderByPriority() {
         let notes: [NoteEvent] = [
-            NoteEvent(lane: .kick, time: 0.5),
+            NoteEvent(lane: .purple, time: 0.5),
             NoteEvent(lane: .red, time: 1.0),
             NoteEvent(lane: .blue, time: 1.5),
         ]
@@ -82,7 +82,7 @@ final class LaneModelTests: XCTestCase {
         let displayLanes = chart.displayLanes()
 
         // Lanes are displayed in order of appearance (in notes), not by priority
-        XCTAssertEqual(displayLanes.map(\.presentationLane), [.kick, .red, .blue])
+        XCTAssertEqual(displayLanes.map(\.presentationLane), [.purple, .red, .blue])
     }
 
     // MARK: - Admin Audition Display Lanes Unification
@@ -119,8 +119,8 @@ final class LaneModelTests: XCTestCase {
             ("Tom High", .blue),
             ("Tom Mid", .blue),
             ("Tom Low", .blue),
-            ("Kick", .kick),
-            ("Kick Drum", .kick),
+            ("Kick", .purple),
+            ("Kick Drum", .purple),
         ]
 
         for (label, expectedPresentation) in testCases {
@@ -137,7 +137,7 @@ final class LaneModelTests: XCTestCase {
             NoteEvent(lane: .yellow, time: 0.5), // Should map to "F"
             NoteEvent(lane: .blue, time: 1.0),   // Should map to "J"
             NoteEvent(lane: .green, time: 1.5),  // Should map to "K"
-            NoteEvent(lane: .kick, time: 2.0),   // Should map to "␣"
+            NoteEvent(lane: .purple, time: 2.0),   // Should map to "␣"
         ]
 
         let chart = Chart(notes: notes, title: "Test")
@@ -151,7 +151,7 @@ final class LaneModelTests: XCTestCase {
         XCTAssertEqual(keyLabels[.yellow], "F")
         XCTAssertEqual(keyLabels[.blue], "J")
         XCTAssertEqual(keyLabels[.green], "K")
-        XCTAssertEqual(keyLabels[.kick], "␣")
+        XCTAssertEqual(keyLabels[.purple], "␣")
     }
 
     // MARK: - Bounded 5-Lane Model
@@ -185,13 +185,13 @@ final class LaneModelTests: XCTestCase {
             NoteEvent(lane: .green, time: 1.0, label: "Crash"),
             NoteEvent(lane: .blue, time: 1.5, label: "Tom High"),
             NoteEvent(lane: .blue, time: 2.0, label: "Tom Mid"),
-            NoteEvent(lane: .kick, time: 2.5, label: "Kick"),
+            NoteEvent(lane: .purple, time: 2.5, label: "Kick"),
         ]
 
         let chart = Chart(notes: notes, title: "Test")
         let boundedLanes = chart.displayLanes(extendedLanes: false)
 
-        // One lane per sourceLane: .red, .yellow, .green, .blue (toms deduplicate), .kick = 5 lanes
+        // One lane per sourceLane: .red, .yellow, .green, .blue (toms deduplicate), .purple = 5 lanes
         XCTAssertEqual(boundedLanes.count, 5, "One lane per unique sourceLane")
     }
 

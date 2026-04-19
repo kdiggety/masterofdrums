@@ -50,7 +50,7 @@ final class MIDIIntegrationTests: XCTestCase {
         // Ken should fill: kick, snare, tom_high, crash/ride (4 lanes)
         let lanes = Set(chart.displayLanes().map { $0.sourceLane })
         XCTAssertEqual(lanes.count, 4, "Ken should have 4 lanes")
-        XCTAssertTrue(lanes.contains(.kick), "Should have kick")
+        XCTAssertTrue(lanes.contains(.purple), "Should have kick")
         XCTAssertTrue(lanes.contains(.red), "Should have snare")
         XCTAssertTrue(lanes.contains(.blue), "Should have tom_high")
         XCTAssertTrue(lanes.contains(.green), "Should have crash/ride/tom")
@@ -65,7 +65,7 @@ final class MIDIIntegrationTests: XCTestCase {
         // Dragula should fill: kick, snare, hihat, crash/ride (4 lanes)
         let lanes = Set(chart.displayLanes().map { $0.sourceLane })
         XCTAssertEqual(lanes.count, 4, "Dragula should have 4 lanes")
-        XCTAssertTrue(lanes.contains(.kick), "Should have kick")
+        XCTAssertTrue(lanes.contains(.purple), "Should have kick")
         XCTAssertTrue(lanes.contains(.red), "Should have snare")
         XCTAssertTrue(lanes.contains(.yellow), "Should have hihat")
         XCTAssertTrue(lanes.contains(.green), "Should have crash/ride")
@@ -116,7 +116,7 @@ final class MIDIIntegrationTests: XCTestCase {
         // Real Slim Shady is minimal (only 3 lanes: kick, snare, hihat)
         let lanes = Set(chart.displayLanes().map { $0.sourceLane })
         XCTAssertEqual(lanes.count, 3, "Real Slim Shady should use minimal lanes")
-        XCTAssertTrue(lanes.contains(.kick), "Should have kick")
+        XCTAssertTrue(lanes.contains(.purple), "Should have kick")
         XCTAssertTrue(lanes.contains(.red), "Should have snare")
         XCTAssertTrue(lanes.contains(.yellow), "Should have hihat")
     }
@@ -130,7 +130,7 @@ final class MIDIIntegrationTests: XCTestCase {
 
         let lanes = Set(chart.displayLanes().map { $0.sourceLane })
         XCTAssertEqual(lanes.count, 5, "Synthetic full-kit should hit all 5 lanes")
-        XCTAssertEqual(lanes, Set([.kick, .red, .yellow, .blue, .green]), "Should have all lanes")
+        XCTAssertEqual(lanes, Set([.purple, .red, .yellow, .blue, .green]), "Should have all lanes")
     }
 
     func testSyntheticMonophonicFilesHaveSingleLane() throws {
@@ -167,7 +167,7 @@ final class MIDIIntegrationTests: XCTestCase {
         // File has melody on channel 0 (ignored) and drums on channel 9 (kept)
         let lanes = Set(chart.displayLanes().map { $0.sourceLane })
         XCTAssertEqual(lanes.count, 2, "Only channel 9 notes should be captured")
-        XCTAssertTrue(lanes.contains(.kick), "Should have kick")
+        XCTAssertTrue(lanes.contains(.purple), "Should have kick")
         XCTAssertTrue(lanes.contains(.red), "Should have snare")
     }
 }

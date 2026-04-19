@@ -16,7 +16,7 @@ final class ChartLoadingIntegrationTests: XCTestCase {
         XCTAssertTrue(lanes.contains(.red), "Should have snare lane")
         XCTAssertTrue(lanes.contains(.blue), "Should have tom lane")
         XCTAssertTrue(lanes.contains(.green), "Should have crash lane")
-        XCTAssertTrue(lanes.contains(.kick), "Should have kick lane")
+        XCTAssertTrue(lanes.contains(.purple), "Should have kick lane")
     }
 
     func testKenNotesMapToCorrectLanes() throws {
@@ -29,7 +29,7 @@ final class ChartLoadingIntegrationTests: XCTestCase {
         XCTAssertGreaterThan(notesPerLane[Lane.red, default: []].count, 0, "Snare notes should exist")
         XCTAssertGreaterThan(notesPerLane[Lane.blue, default: []].count, 0, "Tom notes should exist")
         XCTAssertGreaterThan(notesPerLane[Lane.green, default: []].count, 0, "Crash notes should exist")
-        XCTAssertGreaterThan(notesPerLane[Lane.kick, default: []].count, 0, "Kick notes should exist")
+        XCTAssertGreaterThan(notesPerLane[Lane.purple, default: []].count, 0, "Kick notes should exist")
     }
 
     // MARK: - Dragula: Rock with Full Coverage
@@ -42,7 +42,7 @@ final class ChartLoadingIntegrationTests: XCTestCase {
         let lanes = Set(chart.displayLanes().map { $0.sourceLane })
         XCTAssertTrue(lanes.contains(.red), "Should have snare")
         XCTAssertTrue(lanes.contains(.yellow), "Should have hihat")
-        XCTAssertTrue(lanes.contains(.kick), "Should have kick")
+        XCTAssertTrue(lanes.contains(.purple), "Should have kick")
     }
 
     // MARK: - All Charts Load Correctly

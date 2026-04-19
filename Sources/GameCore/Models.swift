@@ -5,7 +5,7 @@ enum Lane: Int, CaseIterable, Identifiable {
     case yellow
     case blue
     case green
-    case kick
+    case purple
 
     var id: Int { rawValue }
 
@@ -15,7 +15,7 @@ enum Lane: Int, CaseIterable, Identifiable {
         case .yellow: return "Yellow"
         case .blue: return "Blue"
         case .green: return "Green"
-        case .kick: return "Kick"
+        case .purple: return "Purple"
         }
     }
 
@@ -25,7 +25,7 @@ enum Lane: Int, CaseIterable, Identifiable {
         case .yellow: return "F"
         case .blue: return "J"
         case .green: return "K"
-        case .kick: return "␣"
+        case .purple: return "␣"
         }
     }
 
@@ -35,7 +35,7 @@ enum Lane: Int, CaseIterable, Identifiable {
         case .yellow: return "Hi-Hat"
         case .blue: return "Tom"
         case .green: return "Crash"
-        case .kick: return "Kick"
+        case .purple: return "Kick"
         }
     }
 }
@@ -80,7 +80,7 @@ struct ChartLane: Identifiable, Equatable {
 
     var presentationLane: Lane {
         let normalized = label.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        if sourceLane == .kick || normalized.contains("kick") { return .kick }
+        if sourceLane == .purple || normalized.contains("kick") { return .purple }
         if normalized.contains("snare") { return .red }
         // Closed hi-hat and unqualified "hi hat" / "hihat" → .yellow (Hi-Hat Closed)
         if normalized == "hihat" || normalized == "hi hat"
@@ -181,8 +181,8 @@ struct Chart {
     static let prototype: Chart = {
         let pattern: [(Lane, TimeInterval)] = [
             (.red, 1.0), (.yellow, 1.5), (.blue, 2.0), (.green, 2.5),
-            (.red, 3.0), (.kick, 3.0), (.yellow, 3.5), (.blue, 4.0), (.green, 4.5),
-            (.kick, 5.0), (.red, 5.5), (.yellow, 6.0), (.blue, 6.5), (.green, 7.0)
+            (.red, 3.0), (.purple, 3.0), (.yellow, 3.5), (.blue, 4.0), (.green, 4.5),
+            (.purple, 5.0), (.red, 5.5), (.yellow, 6.0), (.blue, 6.5), (.green, 7.0)
         ]
         return Chart(notes: pattern.map { NoteEvent(lane: $0.0, time: $0.1) }, title: "Prototype")
     }()

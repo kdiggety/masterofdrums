@@ -43,7 +43,7 @@ final class LaneSoundPlayer {
         let amplitude: Double
 
         switch lane {
-        case .kick:
+        case .purple:
             duration = 0.18
             frequency = 62
             noiseMix = 0.02

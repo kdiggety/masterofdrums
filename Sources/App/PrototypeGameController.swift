@@ -165,7 +165,7 @@ final class PrototypeGameController: ObservableObject {
             refreshAdminVisibleNotes(at: adminScrubPreviewTime ?? audio.currentTime)
         }
     }
-    @Published var adminSelectedLane: Lane = .kick
+    @Published var adminSelectedLane: Lane = .purple
     @Published var adminNoteTime: Double = 0
     @Published private(set) var adminNotes: [NoteEvent] = []
     @Published private(set) var adminStatusText: String = "Open Admin to create or load a chart."
@@ -454,7 +454,7 @@ final class PrototypeGameController: ObservableObject {
         applyChart(chart, bpmOverride: bpm, chartStatus: "Started empty admin chart", recordHistory: true)
         adminStatusText = "Started new chart. Use step mode or record mode."
         adminNoteTime = 0
-        adminSelectedLane = .kick
+        adminSelectedLane = .purple
         stepCursorTime = 0
         updateStepCursorDisplay()
         refocusGameplay()

@@ -41,7 +41,7 @@ final class SmokeTests: XCTestCase {
 
         XCTAssertEqual(loaded.chart.title, "Lecrazy")
         XCTAssertEqual(loaded.chart.notes.count, 4)
-        XCTAssertEqual(loaded.chart.notes.map(\.lane), [.kick, .red, .yellow, .blue])
+        XCTAssertEqual(loaded.chart.notes.map(\.lane), [.purple, .red, .yellow, .blue])
         XCTAssertEqual(loaded.chart.notes.map(\.displayLabel), ["Kick", "Snare", "Hihat Closed", "Tom High"])
         XCTAssertEqual(loaded.timing?.source, "generated")
         XCTAssertEqual(loaded.timing?.ticksPerBeat, 480)
@@ -88,7 +88,7 @@ final class SmokeTests: XCTestCase {
         XCTAssertEqual(scene.debugVisibleNoteCount(), loaded.chart.notes.count)
         XCTAssertEqual(scene.debugRenderedNoteNodeCount(), loaded.chart.notes.count)
 
-        let expectedLaneCounts: [Lane: Int] = [.kick: 3, .red: 1, .yellow: 1]
+        let expectedLaneCounts: [Lane: Int] = [.purple: 3, .red: 1, .yellow: 1]
         XCTAssertEqual(scene.debugVisibleLaneCounts(), expectedLaneCounts)
     }
 }
