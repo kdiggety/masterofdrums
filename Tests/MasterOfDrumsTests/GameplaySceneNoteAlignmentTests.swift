@@ -16,6 +16,7 @@ final class GameplaySceneNoteAlignmentTests: XCTestCase {
         let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
 
         // Update scene to render notes
+        scene.updateVisibleNotes(notes)
         scene.update(0.0)
 
         let highway = scene._testHighwayNode
@@ -38,6 +39,7 @@ final class GameplaySceneNoteAlignmentTests: XCTestCase {
         let chart = Chart(notes: notes, title: "Lane Position Test")
         let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
 
+        scene.updateVisibleNotes(notes)
         scene.update(0.0)
 
         let laneOrder = scene._testLaneOrder
@@ -66,6 +68,7 @@ final class GameplaySceneNoteAlignmentTests: XCTestCase {
         let chart = Chart(notes: notes, title: "Time Alignment Test")
         let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
 
+        scene.updateVisibleNotes(notes)
         scene.update(0.0)
 
         // Notes at different times should be rendered at different y-positions
@@ -90,6 +93,7 @@ final class GameplaySceneNoteAlignmentTests: XCTestCase {
         let chart = Chart(notes: notes, title: "Multiple Notes Test")
         let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
 
+        scene.updateVisibleNotes(notes)
         scene.update(0.0)
 
         let highway = scene._testHighwayNode
@@ -118,6 +122,7 @@ final class GameplaySceneNoteAlignmentTests: XCTestCase {
         let chart = Chart(notes: notes, title: "Complete Chart Test")
         let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
 
+        scene.updateVisibleNotes(notes)
         scene.update(0.0)
 
         let highway = scene._testHighwayNode
@@ -143,6 +148,8 @@ final class GameplaySceneNoteAlignmentTests: XCTestCase {
         ]
         let chart = Chart(notes: notes, title: "Index Consistency Test")
         let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
+
+        scene.updateVisibleNotes(notes)
 
         let laneIndexByID = scene._testLaneIndexByID
         let laneOrder = scene._testLaneOrder

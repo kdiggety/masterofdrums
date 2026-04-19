@@ -45,6 +45,8 @@ final class GameplaySceneRenderingTests: XCTestCase {
         let chart = Chart(notes: notes, title: "Non-Canonical Order")
         let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
 
+        scene.updateVisibleNotes(notes)
+
         // Despite appearance order, lanes should be in canonical order
         let laneOrder = scene._testLaneOrder
         XCTAssertEqual(laneOrder.count, 5, "Should have 5 lanes")
@@ -84,6 +86,7 @@ final class GameplaySceneRenderingTests: XCTestCase {
         for (index, testCase) in testCases.enumerated() {
             let chart = Chart(notes: testCase.notes, title: "Test \(index)")
             let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
+            scene.updateVisibleNotes(testCase.notes)
             let laneOrder = scene._testLaneOrder
 
             XCTAssertEqual(laneOrder.map { $0.sourceLane }, testCase.expectedOrder,
@@ -103,6 +106,8 @@ final class GameplaySceneRenderingTests: XCTestCase {
         ]
         let chart = Chart(notes: notes, title: "Full Kit")
         let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
+
+        scene.updateVisibleNotes(notes)
 
         let laneIndexByID = scene._testLaneIndexByID
 
@@ -126,6 +131,8 @@ final class GameplaySceneRenderingTests: XCTestCase {
         ]
         let chart = Chart(notes: notes, title: "Full Kit")
         let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
+
+        scene.updateVisibleNotes(notes)
 
         let laneOrder = scene._testLaneOrder
 
@@ -156,6 +163,8 @@ final class GameplaySceneRenderingTests: XCTestCase {
         ]
         let chart = Chart(notes: notes, title: "Full Pipeline Test")
         let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
+
+        scene.updateVisibleNotes(notes)
 
         let laneOrder = scene._testLaneOrder
         let laneIndexByID = scene._testLaneIndexByID

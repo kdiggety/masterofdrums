@@ -14,6 +14,8 @@ final class GameplaySceneNodeInspectionTests: XCTestCase {
         let chart = Chart(notes: notes, title: "Test")
         let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
 
+        scene.updateVisibleNotes(notes)
+
         let highway = scene._testHighwayNode
         XCTAssertNotNil(highway, "Scene should have a highway node")
         XCTAssertGreaterThan(highway.children.count, 0, "Highway should have child nodes")
@@ -31,6 +33,8 @@ final class GameplaySceneNodeInspectionTests: XCTestCase {
         ]
         let chart = Chart(notes: notes, title: "All Lanes")
         let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
+
+        scene.updateVisibleNotes(notes)
 
         let highway = scene._testHighwayNode
         let shapeNodes = highway.children.compactMap { $0 as? SKShapeNode }
@@ -50,6 +54,8 @@ final class GameplaySceneNodeInspectionTests: XCTestCase {
         ]
         let chart = Chart(notes: notes, title: "Color Test")
         let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
+
+        scene.updateVisibleNotes(notes)
 
         let highway = scene._testHighwayNode
         let shapeNodes = highway.children.compactMap { $0 as? SKShapeNode }
@@ -92,6 +98,8 @@ final class GameplaySceneNodeInspectionTests: XCTestCase {
         let chart = Chart(notes: notes, title: "Key Labels")
         let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
 
+        scene.updateVisibleNotes(notes)
+
         let highway = scene._testHighwayNode
         let labelNodes = highway.children.compactMap { $0 as? SKLabelNode }
 
@@ -110,6 +118,8 @@ final class GameplaySceneNodeInspectionTests: XCTestCase {
         ]
         let chart = Chart(notes: notes, title: "Label Text")
         let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
+
+        scene.updateVisibleNotes(notes)
 
         let highway = scene._testHighwayNode
         let labelNodes = highway.children.compactMap { $0 as? SKLabelNode }
@@ -137,6 +147,8 @@ final class GameplaySceneNodeInspectionTests: XCTestCase {
         ]
         let chart = Chart(notes: notes, title: "Order Test")
         let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
+
+        scene.updateVisibleNotes(notes)
 
         let highway = scene._testHighwayNode
         let allNodes = highway.children
@@ -170,13 +182,15 @@ final class GameplaySceneNodeInspectionTests: XCTestCase {
         let chart = Chart(notes: notes, title: "Full Render Test")
         let scene = GameplayScene(chart: chart, keyboardInputDevice: KeyboardInputDevice())
 
+        scene.updateVisibleNotes(notes)
+
         let highway = scene._testHighwayNode
         let shapeNodes = highway.children.compactMap { $0 as? SKShapeNode }
         let labelNodes = highway.children.compactMap { $0 as? SKLabelNode }
 
         // Verify we have the right number of nodes
-        // 5 lanes × 2 shape nodes each = 10, plus 1 hitLine = 11 total shape nodes
-        XCTAssertEqual(shapeNodes.count, 11, "Should have 11 shape nodes (5 lanes × 2 + hitLine)")
+        // 5 lanes × 2 shape nodes each = 10, plus 1 hitLine = 11, plus 5 note nodes = 16 total shape nodes
+        XCTAssertEqual(shapeNodes.count, 16, "Should have 16 shape nodes (5 lanes × 2 + hitLine + 5 notes)")
         XCTAssertEqual(labelNodes.count, 10, "Should have 10 label nodes (5 lanes × 2)")
 
         // Verify colors are correct (first shape node should be red with 0.17 alpha)
