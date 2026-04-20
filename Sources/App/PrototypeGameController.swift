@@ -271,6 +271,22 @@ final class PrototypeGameController: ObservableObject {
             .sink { [weak self] value in self?.isAudioMuted = value }
             .store(in: &cancellables)
 
+        // Audio and chart listen to globalTime changes and stay in sync
+        // During lane scrub preview, adminScrubPreviewTargetTime is set and seeking is skipped
+        // When preview ends (finalizeAdminScrub clears it), seeking resumes
+        globalTime.didChange
+            .sink { [weak self] time, _ in
+                guard let self = self else { return }
+                // Only seek if not in preview mode (preview continues until adminScrubPreviewTargetTime is cleared)
+                if self.adminScrubPreviewTargetTime == nil {
+                    self.audio.seek(to: time)
+                    if self.isAdminChartActive {
+                        self.chartPreviewClock.seek(to: time)
+                    }
+                }
+            }
+            .store(in: &cancellables)
+
         syncState()
         syncTransportState()
         updateStepCursorDisplay()
@@ -992,35 +1008,21 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func seekTransport(to time: Double, from source: TimeChangeSource = .external) {
-        print("[seekTransport] START: time=\(String(format: "%.2f", time)) audio.current=\(String(format: "%.2f", audio.currentTime)) chart.current=\(String(format: "%.2f", chartPreviewClock.currentTime))")
-        if audio.duration > 0 {
-            audio.seek(to: time)
-            print("[seekTransport] after audio.seek: audio.current=\(String(format: "%.2f", audio.currentTime))")
-            if isAdminChartActive {
-                chartPreviewClock.seek(to: time)
-                print("[seekTransport] after chart.seek: chart.current=\(String(format: "%.2f", chartPreviewClock.currentTime))")
-            }
-        } else if isAdminChartActive {
-            chartPreviewClock.seek(to: time)
-        }
-        print("[seekTransport] before finalize: activeTransportTime=\(String(format: "%.2f", activeTransportTime))")
         finalizeAdminScrub(at: time, announce: false)
-        print("[seekTransport] after finalize: activeTransportTime=\(String(format: "%.2f", activeTransportTime))")
-        syncTransportState(requestedSource: source)
-        print("[seekTransport] after syncState: globalTime.time=\(String(format: "%.2f", globalTime.time)) activeTransportTime=\(String(format: "%.2f", activeTransportTime))")
+        globalTime.setDuration(playbackDuration)
+        globalTime.seek(to: time, from: source)
+        // Audio and chart automatically seek via globalTime listener
         adminStatusText = "Seeked to \(playbackTimeText)"
         refocusGameplay()
     }
 
     func updateAdminScrubPreview(to time: Double, forceUpdate: Bool = false) {
         let clampedTime = max(0, min(playbackDuration, time))
-        print("[updateAdminScrubPreview] time=\(String(format: "%.2f", time)) clamped=\(String(format: "%.2f", clampedTime)) audio.current=\(String(format: "%.2f", audio.currentTime))")
         if adminScrubPreviewTime == nil || forceUpdate {
             adminScrubPreviewTime = clampedTime
         }
         adminScrubPreviewTargetTime = clampedTime
         syncTransportState()
-        print("[updateAdminScrubPreview] after sync: globalTime.time=\(String(format: "%.2f", globalTime.time))")
     }
 
     func resolvedAdminScrubTime(for previewTime: Double) -> Double {

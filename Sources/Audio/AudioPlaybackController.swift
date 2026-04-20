@@ -202,24 +202,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
 
     func seek(to time: TimeInterval) {
         if let audioPlayer {
-            // WORKAROUND: AVAudioPlayer has a bug where setting currentTime to exactly
-            // the duration value causes it to reset to 0.00 instead. This is especially
-            // problematic in dual audio+chart scenarios where chart can extend beyond
-            // audio duration. When scrubbing to times beyond audio end, the time gets
-            // clamped to duration. On subsequent seeks to that clamped value, the bug
-            // would trigger, resetting audio to 0 and causing the UI to snap back.
-            //
-            // Fix: Clamp to (duration - 0.01 seconds) instead of exactly duration.
-            // The 10ms offset is imperceptible to users and smaller than frame timing.
-            // It only affects internal audio state when scrubbing past audio end—
-            // activeTransportTime prioritizes chart time in those cases anyway.
-            //
-            // Related: When scrubbing beyond audio duration with chart active, the
-            // chart position is used for display/timing. The audio.currentTime offset
-            // does not propagate to the UI.
-            let maxTime = max(0, audioPlayer.duration - 0.01)
-            let clamped = max(0, min(time, maxTime))
-            guard abs(audioPlayer.currentTime - clamped) > 0.001 else { return }
+            let clamped = max(0, min(time, audioPlayer.duration))
             audioPlayer.currentTime = clamped
         }
     }
