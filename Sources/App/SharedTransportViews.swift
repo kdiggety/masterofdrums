@@ -105,5 +105,10 @@ struct PositionSliderView: View {
                 sliderValue = newValue
             }
         }
+        .onChange(of: game.playbackDuration) { _ in
+            if !isDragging {
+                sliderValue = 0
+            }
+        }
     }
 }
