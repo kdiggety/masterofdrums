@@ -967,15 +967,13 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func scrubTargetTime(from startTime: Double, translationHeight: Double, availableHeight: Double) -> Double {
-        let result = Self.computeScrubTime(
+        Self.computeScrubTime(
             from: startTime,
             translationHeight: translationHeight,
             availableHeight: availableHeight,
             totalDuration: playbackDuration,
             multiplier: adminLaneScrubDurationMultiplier
         )
-        print("[scrubTargetTime] startTime=\(String(format: "%.2f", startTime)) translation=\(String(format: "%.2f", translationHeight)) -> result=\(String(format: "%.2f", result))")
-        return result
     }
 
     func adminDraggedNoteTime(from startTime: Double, translationHeight: Double, availableHeight: Double) -> Double {
@@ -1878,19 +1876,12 @@ final class PrototypeGameController: ObservableObject {
         if audio.duration > 0 && isAdminChartActive {
             let audioTime = audio.currentTime
             let chartTime = chartPreviewClock.currentTime
-            let result = chartTime > audioTime ? chartTime : audioTime
-            print("[activeTransportTime] both loaded: audio=\(String(format: "%.2f", audioTime)) chart=\(String(format: "%.2f", chartTime)) -> \(String(format: "%.2f", result))")
-            return result
+            return chartTime > audioTime ? chartTime : audioTime
         } else if audio.duration > 0 {
-            let result = audio.currentTime
-            print("[activeTransportTime] audio only: \(String(format: "%.2f", result))")
-            return result
+            return audio.currentTime
         } else if isAdminChartActive {
-            let result = chartPreviewClock.currentTime
-            print("[activeTransportTime] chart only: \(String(format: "%.2f", result))")
-            return result
+            return chartPreviewClock.currentTime
         } else {
-            print("[activeTransportTime] nothing loaded: 0.00")
             return 0
         }
     }
