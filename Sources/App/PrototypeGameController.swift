@@ -967,13 +967,15 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func scrubTargetTime(from startTime: Double, translationHeight: Double, availableHeight: Double) -> Double {
-        Self.computeScrubTime(
+        let result = Self.computeScrubTime(
             from: startTime,
             translationHeight: translationHeight,
             availableHeight: availableHeight,
             totalDuration: playbackDuration,
             multiplier: adminLaneScrubDurationMultiplier
         )
+        print("[scrubTargetTime] startTime=\(String(format: "%.2f", startTime)) translation=\(String(format: "%.2f", translationHeight)) -> result=\(String(format: "%.2f", result))")
+        return result
     }
 
     func adminDraggedNoteTime(from startTime: Double, translationHeight: Double, availableHeight: Double) -> Double {
@@ -1876,13 +1878,19 @@ final class PrototypeGameController: ObservableObject {
         if audio.duration > 0 && isAdminChartActive {
             let audioTime = audio.currentTime
             let chartTime = chartPreviewClock.currentTime
-            // Use chart time if it's ahead (means we seeked past audio duration)
-            return chartTime > audioTime ? chartTime : audioTime
+            let result = chartTime > audioTime ? chartTime : audioTime
+            print("[activeTransportTime] both loaded: audio=\(String(format: "%.2f", audioTime)) chart=\(String(format: "%.2f", chartTime)) -> \(String(format: "%.2f", result))")
+            return result
         } else if audio.duration > 0 {
-            return audio.currentTime
+            let result = audio.currentTime
+            print("[activeTransportTime] audio only: \(String(format: "%.2f", result))")
+            return result
         } else if isAdminChartActive {
-            return chartPreviewClock.currentTime
+            let result = chartPreviewClock.currentTime
+            print("[activeTransportTime] chart only: \(String(format: "%.2f", result))")
+            return result
         } else {
+            print("[activeTransportTime] nothing loaded: 0.00")
             return 0
         }
     }

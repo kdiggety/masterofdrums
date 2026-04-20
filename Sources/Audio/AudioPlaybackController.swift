@@ -203,8 +203,15 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
     func seek(to time: TimeInterval) {
         if let audioPlayer {
             let clamped = max(0, min(time, audioPlayer.duration))
-            guard abs(audioPlayer.currentTime - clamped) > 0.001 else { return }
+            print("[audio.seek] time=\(String(format: "%.2f", time)) duration=\(String(format: "%.2f", audioPlayer.duration)) clamped=\(String(format: "%.2f", clamped)) current=\(String(format: "%.2f", audioPlayer.currentTime))")
+            guard abs(audioPlayer.currentTime - clamped) > 0.001 else {
+                print("[audio.seek] skipped - already at target")
+                return
+            }
             audioPlayer.currentTime = clamped
+            print("[audio.seek] set to \(String(format: "%.2f", audioPlayer.currentTime))")
+        } else {
+            print("[audio.seek] no audioPlayer")
         }
     }
 
