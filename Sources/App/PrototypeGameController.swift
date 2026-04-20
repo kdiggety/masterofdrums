@@ -1036,9 +1036,7 @@ final class PrototypeGameController: ObservableObject {
 
     func finalizeAdminScrub(at time: Double, announce: Bool = true) {
         adminScrubPreviewTargetTime = nil
-        // Keep adminScrubPreviewTime set to the final time so the scene displays it correctly
-        // (instead of falling back to audio.currentTime which gets clamped at audio duration)
-        adminScrubPreviewTime = time
+        adminScrubPreviewTime = nil
         moveStepCursor(to: time, seekPlayback: false)
         if loopLength != .off {
             loopStartTime = quantizedLoopStart(for: time)
@@ -1829,20 +1827,13 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func currentSceneTime(fallbackAudioTime: Double) -> Double {
-        let hasAudio = audio.duration > 0
-        let hasChart = !session.chart.notes.isEmpty
-        let baseTime: Double
-        if hasAudio {
-            baseTime = fallbackAudioTime
-        } else if hasChart {
-            baseTime = chartPreviewClock.currentTime
-        } else {
-            baseTime = 0
-        }
         guard let targetTime = adminScrubPreviewTargetTime else {
-            return adminScrubPreviewTime ?? baseTime
+            // No preview/animation in progress - return globalTime (single source of truth)
+            // This ensures the scene shows the correct position even when audio is clamped
+            return adminScrubPreviewTime ?? globalTime.time
         }
 
+        // Animate from current preview position to target
         let currentTime = adminScrubPreviewTime ?? targetTime
         let delta = targetTime - currentTime
         let nextTime: Double
