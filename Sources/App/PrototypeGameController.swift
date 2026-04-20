@@ -992,22 +992,17 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func seekTransport(to time: Double, from source: TimeChangeSource = .external) {
-        print("[seek] seekTransport(to: \(String(format: "%.2f", time))) source=\(source) audio.duration=\(String(format: "%.2f", audio.duration)) isAdminChartActive=\(isAdminChartActive)")
         if audio.duration > 0 {
             audio.seek(to: time)
-            print("[seek]   audio.seek done, audio.currentTime=\(String(format: "%.2f", audio.currentTime))")
             if isAdminChartActive {
                 chartPreviewClock.seek(to: time)
-                print("[seek]   chartPreviewClock.seek done, chartPreviewClock.currentTime=\(String(format: "%.2f", chartPreviewClock.currentTime))")
             }
         } else if isAdminChartActive {
             chartPreviewClock.seek(to: time)
-            print("[seek]   chartPreviewClock.seek done, chartPreviewClock.currentTime=\(String(format: "%.2f", chartPreviewClock.currentTime))")
         }
         finalizeAdminScrub(at: time, announce: false)
         syncTransportState(requestedSource: source)
         adminStatusText = "Seeked to \(playbackTimeText)"
-        print("[seek] after sync: activeTransportTime=\(String(format: "%.2f", activeTransportTime))")
         refocusGameplay()
     }
 
@@ -1017,7 +1012,6 @@ final class PrototypeGameController: ObservableObject {
             adminScrubPreviewTime = clampedTime
         }
         adminScrubPreviewTargetTime = clampedTime
-        print("[scrub] updateAdminScrubPreview: time=\(String(format: "%.2f", time)), clampedTime=\(String(format: "%.2f", clampedTime)), adminScrubPreviewTime=\(adminScrubPreviewTime ?? 0)")
         syncTransportState()
     }
 
@@ -1679,9 +1673,6 @@ final class PrototypeGameController: ObservableObject {
         } else {
             source = adminScrubPreviewTime != nil ? .laneScrubbing : .playback
         }
-        if adminScrubPreviewTime != nil {
-            print("[scrub] syncTransportState: hasContent=\(hasContent), audio.duration=\(String(format: "%.2f", audio.duration)), isAdminChartActive=\(isAdminChartActive), adminScrubPreviewTime=\(adminScrubPreviewTime ?? 0), activeTransportTime=\(String(format: "%.2f", activeTransportTime)), nextTime=\(String(format: "%.2f", nextTime)), source=\(source)")
-        }
         globalTime.seek(to: nextTime, from: source)
 
         let nextTransportStateText = isChartOnlyPlaybackEnabled ? "Chart Preview" : audio.state.rawValue
@@ -1855,9 +1846,7 @@ final class PrototypeGameController: ObservableObject {
 
     var currentPlaybackTime: Double { activeTransportTime }
     var playbackDuration: Double {
-        let duration = max(audio.duration, session.chart.endTime, 0)
-        print("[duration] audio.duration=\(String(format: "%.2f", audio.duration)), chart.endTime=\(String(format: "%.2f", session.chart.endTime)), playbackDuration=\(String(format: "%.2f", duration)), laneCount=\(session.chart.notes.count)")
-        return duration
+        max(audio.duration, session.chart.endTime, 0)
     }
     var playbackProgress: Double {
         let duration = max(playbackDuration, 0.1)
