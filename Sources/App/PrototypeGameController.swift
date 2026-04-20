@@ -1981,13 +1981,15 @@ final class PrototypeGameController: ObservableObject {
         adminScrubPreviewTime = nil
         adminScrubPreviewTargetTime = nil
 
+        // Update globalTime first, which triggers listener to seek audio/chart
+        globalTime.setDuration(playbackDuration)
+        globalTime.seek(to: startTime, from: .external)
+
         if hasAudio {
             stopChartOnlyPlaybackIfNeeded(resetTime: false)
-            audio.seek(to: startTime)
             audio.play()
         } else {
             chartPreviewClock.stop()
-            chartPreviewClock.seek(to: startTime)
             isChartOnlyPlaybackEnabled = true
             chartPreviewClock.play()
         }
