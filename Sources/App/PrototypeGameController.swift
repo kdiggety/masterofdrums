@@ -1016,6 +1016,7 @@ final class PrototypeGameController: ObservableObject {
             adminScrubPreviewTime = clampedTime
         }
         adminScrubPreviewTargetTime = clampedTime
+        syncTransportState()
     }
 
     func resolvedAdminScrubTime(for previewTime: Double) -> Double {

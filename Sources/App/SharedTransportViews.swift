@@ -43,7 +43,7 @@ struct TransportControlsView: View {
                 }
             }
 
-            transportStatusRow("Position", "\(game.playbackTimeText) / \(game.playbackDurationText)")
+            transportStatusRow("Position", game.barBeatText)
             PositionSliderView(game: game)
                 .disabled(!game.canScrub)
 
