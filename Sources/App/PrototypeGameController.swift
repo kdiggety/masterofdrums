@@ -1872,21 +1872,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private var activeTransportTime: Double {
-        // When both audio and chart are present:
-        // - Audio is primary source when we're within audio bounds
-        // - But if chart has advanced past audio (we seeked past audio end), use chart
-        // - This allows scrubbing beyond audio duration when chart is longer
-        if audio.duration > 0 && isAdminChartActive {
-            let audioTime = audio.currentTime
-            let chartTime = chartPreviewClock.currentTime
-            return chartTime > audioTime ? chartTime : audioTime
-        } else if audio.duration > 0 {
-            return audio.currentTime
-        } else if isAdminChartActive {
-            return chartPreviewClock.currentTime
-        } else {
-            return 0
-        }
+        globalTime.time
     }
 
     private var activeTransportState: TransportState {
