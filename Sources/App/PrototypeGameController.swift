@@ -1017,6 +1017,7 @@ final class PrototypeGameController: ObservableObject {
             adminScrubPreviewTime = clampedTime
         }
         adminScrubPreviewTargetTime = clampedTime
+        print("[scrub] updateAdminScrubPreview: time=\(String(format: "%.2f", time)), clampedTime=\(String(format: "%.2f", clampedTime)), adminScrubPreviewTime=\(adminScrubPreviewTime ?? 0)")
         syncTransportState()
     }
 
@@ -1679,7 +1680,7 @@ final class PrototypeGameController: ObservableObject {
             source = adminScrubPreviewTime != nil ? .laneScrubbing : .playback
         }
         if adminScrubPreviewTime != nil {
-            print("[scrub] syncTransportState: adminScrubPreviewTime=\(adminScrubPreviewTime ?? 0), nextTime=\(nextTime), source=\(source)")
+            print("[scrub] syncTransportState: hasContent=\(hasContent), audio.duration=\(String(format: "%.2f", audio.duration)), isAdminChartActive=\(isAdminChartActive), adminScrubPreviewTime=\(adminScrubPreviewTime ?? 0), activeTransportTime=\(String(format: "%.2f", activeTransportTime)), nextTime=\(String(format: "%.2f", nextTime)), source=\(source)")
         }
         globalTime.seek(to: nextTime, from: source)
 
