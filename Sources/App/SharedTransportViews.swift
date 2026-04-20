@@ -93,21 +93,18 @@ struct PositionSliderView: View {
             onEditingChanged: { isEditing in
                 isDragging = isEditing
                 if isEditing {
-                    sliderValue = game.playbackProgress
+                    let duration = max(game.playbackDuration, 0.1)
+                    sliderValue = game.displayTime / duration
                 } else {
                     let targetTime = sliderValue * max(game.playbackDuration, 0.1)
                     game.seekTransport(to: targetTime)
                 }
             }
         )
-        .onChange(of: game.playbackProgress) { newValue in
+        .onChange(of: game.displayTime) { _ in
             if !isDragging {
-                sliderValue = newValue
-            }
-        }
-        .onChange(of: game.playbackDuration) { _ in
-            if !isDragging {
-                sliderValue = 0
+                let duration = max(game.playbackDuration, 0.1)
+                sliderValue = game.displayTime / duration
             }
         }
     }

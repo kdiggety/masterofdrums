@@ -152,6 +152,7 @@ final class PrototypeGameController: ObservableObject {
         }
     }
     @Published private(set) var adminScrubPreviewTime: Double?
+    @Published private(set) var displayTime: Double = 0
     @Published var bpm: Double = 120
     @Published var songOffset: Double = 0
     @Published private(set) var beatsPerBar: Int = 4
@@ -1666,23 +1667,27 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func syncTransportState() {
-        let currentTime = adminScrubPreviewTime ?? activeTransportTime
+        // Global musical time: the single source of truth for all displays
+        let hasContent = audio.duration > 0 || isAdminChartActive
+        let nextDisplayTime = hasContent ? (adminScrubPreviewTime ?? activeTransportTime) : 0
+        if displayTime != nextDisplayTime { displayTime = nextDisplayTime }
+
         let nextTransportStateText = isChartOnlyPlaybackEnabled ? "Chart Preview" : audio.state.rawValue
         if transportStateText != nextTransportStateText { transportStateText = nextTransportStateText }
-        let nextPlaybackTimeText = String(format: "%.2fs", currentTime)
+        let nextPlaybackTimeText = String(format: "%.2fs", displayTime)
         if playbackTimeText != nextPlaybackTimeText { playbackTimeText = nextPlaybackTimeText }
         let nextPlaybackDurationText = String(format: "%.2fs", playbackDuration)
         if playbackDurationText != nextPlaybackDurationText { playbackDurationText = nextPlaybackDurationText }
-        // Show "0.0.0.000" when nothing is loaded; otherwise show musical position
-        let hasContent = audio.duration > 0 || isAdminChartActive
-        let position = MusicalTransport.position(at: currentTime, bpm: bpm, songOffset: songOffset, beatsPerBar: beatsPerBar, subdivisionsPerBeat: max(stepResolution.subdivisionsPerBeat, 1), ticksPerBeat: ticksPerBeat)
+
+        // All displays derive from displayTime
+        let position = MusicalTransport.position(at: displayTime, bpm: bpm, songOffset: songOffset, beatsPerBar: beatsPerBar, subdivisionsPerBeat: max(stepResolution.subdivisionsPerBeat, 1), ticksPerBeat: ticksPerBeat)
         let nextBarBeatText = hasContent ? position.barBeatDivisionTickText : "0.0.0.000"
         if barBeatText != nextBarBeatText { barBeatText = nextBarBeatText }
         let nextSubdivisionText = hasContent ? String(position.subdivision) : "0"
         if musicalSubdivisionText != nextSubdivisionText { musicalSubdivisionText = nextSubdivisionText }
-        let nextPlaybackNoteID = playbackNoteID(near: currentTime)
+        let nextPlaybackNoteID = playbackNoteID(near: displayTime)
         if currentPlaybackNoteID != nextPlaybackNoteID { currentPlaybackNoteID = nextPlaybackNoteID }
-        refreshVisibleSceneNotesIfNeeded(at: currentTime)
+        refreshVisibleSceneNotesIfNeeded(at: displayTime)
     }
 
     private func refreshVisibleSceneNotesIfNeeded(at time: Double, force: Bool = false) {
