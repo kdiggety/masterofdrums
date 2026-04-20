@@ -1036,7 +1036,9 @@ final class PrototypeGameController: ObservableObject {
 
     func finalizeAdminScrub(at time: Double, announce: Bool = true) {
         adminScrubPreviewTargetTime = nil
-        adminScrubPreviewTime = nil
+        // Keep adminScrubPreviewTime set to the final time so the scene displays it correctly
+        // (instead of falling back to audio.currentTime which gets clamped at audio duration)
+        adminScrubPreviewTime = time
         moveStepCursor(to: time, seekPlayback: false)
         if loopLength != .off {
             loopStartTime = quantizedLoopStart(for: time)
