@@ -991,8 +991,8 @@ final class PrototypeGameController: ObservableObject {
         return max(0, min(playbackDuration, unclampedTime))
     }
 
-    func seekTransport(to time: Double) {
-        print("[seek] seekTransport(to: \(String(format: "%.2f", time))) audio.duration=\(String(format: "%.2f", audio.duration)) isAdminChartActive=\(isAdminChartActive)")
+    func seekTransport(to time: Double, from source: TimeChangeSource = .external) {
+        print("[seek] seekTransport(to: \(String(format: "%.2f", time))) source=\(source) audio.duration=\(String(format: "%.2f", audio.duration)) isAdminChartActive=\(isAdminChartActive)")
         if audio.duration > 0 {
             audio.seek(to: time)
             print("[seek]   audio.seek done, audio.currentTime=\(String(format: "%.2f", audio.currentTime))")
@@ -1005,7 +1005,7 @@ final class PrototypeGameController: ObservableObject {
             print("[seek]   chartPreviewClock.seek done, chartPreviewClock.currentTime=\(String(format: "%.2f", chartPreviewClock.currentTime))")
         }
         finalizeAdminScrub(at: time, announce: false)
-        syncTransportState()
+        syncTransportState(requestedSource: source)
         adminStatusText = "Seeked to \(playbackTimeText)"
         print("[seek] after sync: activeTransportTime=\(String(format: "%.2f", activeTransportTime))")
         refocusGameplay()
@@ -1666,13 +1666,18 @@ final class PrototypeGameController: ObservableObject {
         if adminSections != sortedSections { adminSections = sortedSections }
     }
 
-    private func syncTransportState() {
+    private func syncTransportState(requestedSource: TimeChangeSource? = nil) {
         let hasContent = audio.duration > 0 || isAdminChartActive
         let nextTime = hasContent ? (adminScrubPreviewTime ?? activeTransportTime) : 0
 
         // Update global musical time (source of truth)
         globalTime.setDuration(playbackDuration)
-        let source: TimeChangeSource = adminScrubPreviewTime != nil ? .laneScrubbing : .playback
+        let source: TimeChangeSource
+        if let requested = requestedSource {
+            source = requested
+        } else {
+            source = adminScrubPreviewTime != nil ? .laneScrubbing : .playback
+        }
         if adminScrubPreviewTime != nil {
             print("[scrub] syncTransportState: adminScrubPreviewTime=\(adminScrubPreviewTime ?? 0), nextTime=\(nextTime), source=\(source)")
         }

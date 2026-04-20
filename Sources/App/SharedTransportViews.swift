@@ -99,7 +99,7 @@ struct PositionSliderView: View {
                     sliderValue = game.globalTime.time / duration
                 } else {
                     let targetTime = sliderValue * max(game.globalTime.duration, 0.1)
-                    game.seekTransport(to: targetTime)
+                    game.seekTransport(to: targetTime, from: .positionSlider)
                 }
             }
         )
