@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 func transportStatusRow(_ title: String, _ value: String) -> some View {
     HStack {
@@ -85,6 +86,7 @@ struct PositionSliderView: View {
     let game: PrototypeGameController
     @State private var sliderValue: Double = 0
     @State private var isDragging = false
+    @State private var cancellables = Set<AnyCancellable>()
 
     var body: some View {
         Slider(
@@ -93,19 +95,20 @@ struct PositionSliderView: View {
             onEditingChanged: { isEditing in
                 isDragging = isEditing
                 if isEditing {
-                    let duration = max(game.playbackDuration, 0.1)
-                    sliderValue = game.displayTime / duration
+                    let duration = max(game.globalTime.duration, 0.1)
+                    sliderValue = game.globalTime.time / duration
                 } else {
-                    let targetTime = sliderValue * max(game.playbackDuration, 0.1)
+                    let targetTime = sliderValue * max(game.globalTime.duration, 0.1)
                     game.seekTransport(to: targetTime)
                 }
             }
         )
-        .onChange(of: game.displayTime) { _ in
-            if !isDragging {
-                let duration = max(game.playbackDuration, 0.1)
-                sliderValue = game.displayTime / duration
-            }
+        .onReceive(game.globalTime.didChange) { tuple in
+            let (time, source) = tuple
+            // Only update if change came from elsewhere
+            guard source != .positionSlider, !isDragging else { return }
+            let duration = max(game.globalTime.duration, 0.1)
+            sliderValue = time / duration
         }
     }
 }
