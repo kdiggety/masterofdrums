@@ -992,27 +992,35 @@ final class PrototypeGameController: ObservableObject {
     }
 
     func seekTransport(to time: Double, from source: TimeChangeSource = .external) {
+        print("[seekTransport] START: time=\(String(format: "%.2f", time)) audio.current=\(String(format: "%.2f", audio.currentTime)) chart.current=\(String(format: "%.2f", chartPreviewClock.currentTime))")
         if audio.duration > 0 {
             audio.seek(to: time)
+            print("[seekTransport] after audio.seek: audio.current=\(String(format: "%.2f", audio.currentTime))")
             if isAdminChartActive {
                 chartPreviewClock.seek(to: time)
+                print("[seekTransport] after chart.seek: chart.current=\(String(format: "%.2f", chartPreviewClock.currentTime))")
             }
         } else if isAdminChartActive {
             chartPreviewClock.seek(to: time)
         }
+        print("[seekTransport] before finalize: activeTransportTime=\(String(format: "%.2f", activeTransportTime))")
         finalizeAdminScrub(at: time, announce: false)
+        print("[seekTransport] after finalize: activeTransportTime=\(String(format: "%.2f", activeTransportTime))")
         syncTransportState(requestedSource: source)
+        print("[seekTransport] after syncState: globalTime.time=\(String(format: "%.2f", globalTime.time)) activeTransportTime=\(String(format: "%.2f", activeTransportTime))")
         adminStatusText = "Seeked to \(playbackTimeText)"
         refocusGameplay()
     }
 
     func updateAdminScrubPreview(to time: Double, forceUpdate: Bool = false) {
         let clampedTime = max(0, min(playbackDuration, time))
+        print("[updateAdminScrubPreview] time=\(String(format: "%.2f", time)) clamped=\(String(format: "%.2f", clampedTime)) audio.current=\(String(format: "%.2f", audio.currentTime))")
         if adminScrubPreviewTime == nil || forceUpdate {
             adminScrubPreviewTime = clampedTime
         }
         adminScrubPreviewTargetTime = clampedTime
         syncTransportState()
+        print("[updateAdminScrubPreview] after sync: globalTime.time=\(String(format: "%.2f", globalTime.time))")
     }
 
     func resolvedAdminScrubTime(for previewTime: Double) -> Double {
