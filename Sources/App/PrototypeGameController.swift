@@ -1673,6 +1673,9 @@ final class PrototypeGameController: ObservableObject {
         // Update global musical time (source of truth)
         globalTime.setDuration(playbackDuration)
         let source: TimeChangeSource = adminScrubPreviewTime != nil ? .laneScrubbing : .playback
+        if adminScrubPreviewTime != nil {
+            print("[scrub] syncTransportState: adminScrubPreviewTime=\(adminScrubPreviewTime ?? 0), nextTime=\(nextTime), source=\(source)")
+        }
         globalTime.seek(to: nextTime, from: source)
 
         let nextTransportStateText = isChartOnlyPlaybackEnabled ? "Chart Preview" : audio.state.rawValue
