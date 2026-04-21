@@ -294,7 +294,6 @@ final class PrototypeGameController: ObservableObject {
         chartPreviewTimerCancellable?.cancel()
 
         syncState()
-        syncTransportState()
         updateStepCursorDisplay()
         updatePlaybackRateText()
         updateLoopStatusText()
@@ -302,6 +301,7 @@ final class PrototypeGameController: ObservableObject {
         updateAdminHistoryAvailability()
         restoreLastOpenedSessionIfPossible()
         isInitializing = false
+        syncTransportState()
     }
 
     func chooseAudioFile() {
@@ -1685,6 +1685,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func syncTransportState(requestedSource: TimeChangeSource? = nil) {
+        guard !isInitializing else { return }
         let hasContent = audio.duration > 0 || isAdminChartActive
         let nextTime = hasContent ? (adminScrubPreviewTime ?? activeTransportTime) : 0
 
