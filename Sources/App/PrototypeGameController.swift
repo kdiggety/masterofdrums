@@ -1872,7 +1872,19 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private var activeTransportTime: Double {
-        globalTime.time
+        // Read actual playback position (primary source)
+        // This feeds into syncTransportState which updates globalTime
+        if audio.duration > 0 && isAdminChartActive {
+            let audioTime = audio.currentTime
+            let chartTime = chartPreviewClock.currentTime
+            return chartTime > audioTime ? chartTime : audioTime
+        } else if audio.duration > 0 {
+            return audio.currentTime
+        } else if isAdminChartActive {
+            return chartPreviewClock.currentTime
+        } else {
+            return 0
+        }
     }
 
     private var activeTransportState: TransportState {
