@@ -2014,6 +2014,10 @@ final class PrototypeGameController: ObservableObject {
         } else {
             chartPreviewClock.stop()
             isChartOnlyPlaybackEnabled = true
+            // Capture engine time for sample-accurate note scheduling in chart-only mode
+            if let renderTime = audio.engine.outputNode.lastRenderTime {
+                audio.anchorSampleTime = renderTime.sampleTime - Int64(startTime * 44100.0)
+            }
             chartPreviewClock.play()
         }
 
