@@ -190,7 +190,7 @@ final class PrototypeGameController: ObservableObject {
     private let inputRouter: InputRouter
     private let midiLoader = MIDIChartLoader()
     private let chartFileStore = ChartFileStore()
-    private let laneSoundPlayer = LaneSoundPlayer()
+    private lazy var laneSoundPlayer = LaneSoundPlayer(engine: audio.engine)
     private let chartPreviewClock = PreviewPlaybackClock()
     private var lastMetronomeSubdivisionIndex: Int?
     private var lastChartPlaybackTriggeredNoteIDs: Set<UUID> = []

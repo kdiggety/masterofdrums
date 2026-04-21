@@ -64,7 +64,7 @@ private final class AudioConverterFeeder: @unchecked Sendable {
 }
 
 @MainActor
-final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, @preconcurrency AVAudioPlayerDelegate {
+final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock {
     @Published private(set) var state: TransportState = .stopped
     @Published private(set) var loadedTrackName: String?
     @Published private(set) var statusText: String = "Preview clock"
@@ -74,16 +74,39 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
     @Published private(set) var playbackRate: Float = 1.0
     @Published private(set) var isMuted: Bool = false
 
+    let engine = AVAudioEngine()
+    private let filePlayer = AVAudioPlayerNode()
     private let previewClock = PreviewPlaybackClock()
-    private var audioPlayer: AVAudioPlayer?
+
+    private var audioFile: AVAudioFile?
+    private var anchorSampleTime: Int64 = 0
+    private var audioFileDuration: TimeInterval = 0
+    private let sampleRate = 44100.0
+
+    override init() {
+        super.init()
+        setupAudioEngine()
+    }
+
+    private func setupAudioEngine() {
+        engine.attach(filePlayer)
+        engine.connect(filePlayer, to: engine.mainMixerNode, format: AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 2))
+        try? engine.start()
+    }
 
     var currentTime: TimeInterval {
-        if let audioPlayer { return audioPlayer.currentTime }
+        if let audioFile {
+            guard let renderTime = engine.outputNode.lastRenderTime else { return 0 }
+            let elapsedSamples = renderTime.sampleTime - anchorSampleTime
+            return TimeInterval(elapsedSamples) / sampleRate
+        }
         return previewClock.currentTime
     }
 
     var duration: TimeInterval {
-        if let audioPlayer { return audioPlayer.duration }
+        if let audioFile {
+            return audioFileDuration
+        }
         return 0
     }
 
@@ -99,13 +122,9 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
 
     func loadAudioFile(from url: URL) {
         do {
-            let player = try AVAudioPlayer(contentsOf: url)
-            player.enableRate = true
-            player.rate = playbackRate
-            player.prepareToPlay()
-            player.delegate = self
-            player.volume = isMuted ? 0 : 1
-            audioPlayer = player
+            let file = try AVAudioFile(forReading: url)
+            audioFile = file
+            audioFileDuration = TimeInterval(file.length) / sampleRate
             currentFileURL = url
             loadedTrackName = url.lastPathComponent
             state = .stopped
@@ -113,6 +132,8 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
             detectedBPM = nil
             analysisDebug = BPMAnalysisDebug(status: "Analyzing", detail: "Checking metadata, filename, and audio signal")
             statusText = "Loaded \(url.lastPathComponent) · analyzing BPM…"
+
+            scheduleAudioFile()
 
             Task {
                 let detectedBPM = await detectBPM(for: url)
@@ -124,7 +145,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
                 }
             }
         } catch {
-            audioPlayer = nil
+            audioFile = nil
             currentFileURL = nil
             loadedTrackName = nil
             detectedBPM = nil
@@ -134,11 +155,18 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
         }
     }
 
+    private func scheduleAudioFile() {
+        guard let audioFile else { return }
+        filePlayer.scheduleFile(audioFile, at: nil)
+    }
+
     func play() {
-        if let audioPlayer {
-            audioPlayer.enableRate = true
-            audioPlayer.rate = playbackRate
-            audioPlayer.play()
+        if let audioFile {
+            anchorSampleTime = engine.outputNode.lastRenderTime?.sampleTime ?? 0
+            if !filePlayer.isPlaying {
+                try? engine.start()
+                filePlayer.play()
+            }
             state = .playing
             statusText = "Playing \(loadedTrackName ?? "track")"
         } else {
@@ -149,8 +177,8 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
     }
 
     func pause() {
-        if let audioPlayer {
-            audioPlayer.pause()
+        if let audioFile {
+            filePlayer.pause()
             state = .paused
             statusText = "Paused \(loadedTrackName ?? "track")"
         } else {
@@ -161,9 +189,9 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
     }
 
     func stop() {
-        if let audioPlayer {
-            audioPlayer.stop()
-            audioPlayer.currentTime = 0
+        if let audioFile {
+            filePlayer.stop()
+            scheduleAudioFile()
             state = .stopped
             statusText = loadedTrackName == nil ? "Stopped" : "Stopped \(loadedTrackName!)"
         } else {
@@ -175,22 +203,18 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
 
     func setPlaybackRate(_ rate: Float) {
         playbackRate = max(0.5, min(1.0, rate))
-        if let audioPlayer {
-            audioPlayer.enableRate = true
-            audioPlayer.rate = playbackRate
-        }
         statusText = "Playback speed \(Int(playbackRate * 100))%"
     }
 
     func toggleMute() {
         isMuted.toggle()
-        audioPlayer?.volume = isMuted ? 0 : 1
+        engine.mainMixerNode.outputVolume = isMuted ? 0 : 1
         statusText = isMuted ? "Audio muted" : "Audio unmuted"
     }
 
     func unloadAudio() {
-        audioPlayer?.stop()
-        audioPlayer = nil
+        filePlayer.stop()
+        audioFile = nil
         currentFileURL = nil
         loadedTrackName = nil
         detectedBPM = nil
@@ -201,15 +225,19 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock, 
     }
 
     func seek(to time: TimeInterval) {
-        if let audioPlayer {
-            let clamped = max(0, min(time, audioPlayer.duration))
-            audioPlayer.currentTime = clamped
-        }
-    }
+        if audioFile != nil {
+            let clamped = max(0, min(time, audioFileDuration))
+            filePlayer.stop()
 
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        state = .stopped
-        statusText = flag ? "Finished \(loadedTrackName ?? "track")" : "Playback stopped"
+            let targetFrame = AVAudioFramePosition(clamped * sampleRate)
+            let remainingFrames = AVAudioFrameCount(max(0, Int64(audioFile!.length) - targetFrame))
+            filePlayer.scheduleSegment(audioFile!, startingFrame: targetFrame, frameCount: remainingFrames, at: nil)
+
+            if state == .playing {
+                anchorSampleTime = engine.outputNode.lastRenderTime?.sampleTime ?? 0
+                filePlayer.play()
+            }
+        }
     }
 
     private func detectBPM(for url: URL) async -> BPMDetectionResult? {

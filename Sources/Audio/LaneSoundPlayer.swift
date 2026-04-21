@@ -3,31 +3,42 @@ import Foundation
 
 @MainActor
 final class LaneSoundPlayer {
-    private let engine = AVAudioEngine()
+    private let engine: AVAudioEngine
     private let player = AVAudioPlayerNode()
     private let format: AVAudioFormat
     private let sampleRate: Double
 
-    init() {
+    init(engine: AVAudioEngine) {
+        self.engine = engine
         self.format = AVAudioFormat(standardFormatWithSampleRate: 44_100, channels: 1)!
         self.sampleRate = format.sampleRate
 
         engine.attach(player)
         engine.connect(player, to: engine.mainMixerNode, format: format)
-        try? engine.start()
-        player.play()
     }
 
     func play(lane: Lane) {
-        schedule(buffer: makeBuffer(for: lane), interrupt: false)
+        schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
+    }
+
+    func play(lane: Lane, at noteTime: Double, anchorSampleTime: Int64, currentTime: Double) {
+        let sampleOffset = Int64((noteTime - currentTime) * sampleRate)
+        let targetSampleTime = anchorSampleTime + sampleOffset
+        let audioTime = AVAudioTime(sampleTime: targetSampleTime, atRate: sampleRate)
+        schedule(buffer: makeBuffer(for: lane), at: audioTime, interrupt: false)
     }
 
     func playMetronome(isDownbeat: Bool) {
-        schedule(buffer: makeMetronomeBuffer(isDownbeat: isDownbeat), interrupt: false)
+        schedule(buffer: makeMetronomeBuffer(isDownbeat: isDownbeat), at: nil, interrupt: false)
     }
 
-    private func schedule(buffer: AVAudioPCMBuffer, interrupt: Bool) {
-        player.scheduleBuffer(buffer, at: nil, options: interrupt ? .interrupts : [], completionHandler: nil)
+    func cancelScheduled() {
+        player.stop()
+        player.play()
+    }
+
+    private func schedule(buffer: AVAudioPCMBuffer, at time: AVAudioTime?, interrupt: Bool) {
+        player.scheduleBuffer(buffer, at: time, options: interrupt ? .interrupts : [], completionHandler: nil)
         if !engine.isRunning {
             try? engine.start()
         }
