@@ -300,6 +300,10 @@ final class PrototypeGameController: ObservableObject {
         scene.selectedAdminNoteID = adminSelectedNoteID
         updateAdminHistoryAvailability()
         restoreLastOpenedSessionIfPossible()
+        // Ensure clean state at startup: no playback should be active
+        audio.stop()
+        chartPreviewClock.stop()
+        isChartOnlyPlaybackEnabled = false
         isInitializing = false
         syncTransportState()
     }
