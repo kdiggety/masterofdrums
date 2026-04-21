@@ -289,6 +289,9 @@ final class PrototypeGameController: ObservableObject {
             }
             .store(in: &cancellables)
 
+        lookaheadSchedulerTimer?.cancel()
+        chartPreviewTimerCancellable?.cancel()
+
         syncState()
         syncTransportState()
         updateStepCursorDisplay()
@@ -2013,6 +2016,7 @@ final class PrototypeGameController: ObservableObject {
         if hasChart && !isChartMuted {
             isChartAuditionActive = true
             lastChartPlaybackTriggeredNoteIDs.removeAll()
+            scheduledNoteIDs.removeAll()
             chartPreviewLastAuditionTime = startTime - 0.02
             handleChartOnlyPlaybackTick(at: startTime)
             startChartPreviewTimer()
