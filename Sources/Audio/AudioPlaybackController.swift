@@ -234,7 +234,9 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock {
             filePlayer.scheduleSegment(audioFile!, startingFrame: targetFrame, frameCount: remainingFrames, at: nil)
 
             if state == .playing {
-                anchorSampleTime = engine.outputNode.lastRenderTime?.sampleTime ?? 0
+                if let renderTime = engine.outputNode.lastRenderTime {
+                    anchorSampleTime = renderTime.sampleTime - Int64(clamped * sampleRate)
+                }
                 filePlayer.play()
             }
         }
