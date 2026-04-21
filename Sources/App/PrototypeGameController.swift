@@ -2057,7 +2057,7 @@ final class PrototypeGameController: ObservableObject {
     private func scheduleDueNotes() {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-            let now = self.activeTransportTime
+            let now = self.globalTime.time
             let window = now + 0.2
             let due = self.session.chart.notes.filter {
                 $0.time >= now && $0.time <= window && !self.scheduledNoteIDs.contains($0.id)
