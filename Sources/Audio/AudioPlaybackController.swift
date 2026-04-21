@@ -79,7 +79,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock {
     private let previewClock = PreviewPlaybackClock()
 
     private var audioFile: AVAudioFile?
-    private var anchorSampleTime: Int64 = 0
+    var anchorSampleTime: Int64 = 0
     private var audioFileDuration: TimeInterval = 0
     private let sampleRate = 44100.0
 

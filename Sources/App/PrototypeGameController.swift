@@ -196,6 +196,8 @@ final class PrototypeGameController: ObservableObject {
     private var lastChartPlaybackTriggeredNoteIDs: Set<UUID> = []
     private var chartPreviewLastAuditionTime: Double?
     private var chartPreviewTimerCancellable: AnyCancellable?
+    private var lookaheadSchedulerTimer: DispatchSourceTimer?
+    private var scheduledNoteIDs: Set<UUID> = []
     private let completionGracePeriod: TimeInterval = 0.5
     private let adminLaneScrubDurationMultiplier: Double = 0.08
     private let adminNoteDragDurationMultiplier: Double = 0.03
@@ -1009,6 +1011,8 @@ final class PrototypeGameController: ObservableObject {
 
     func seekTransport(to time: Double, from source: TimeChangeSource = .external) {
         finalizeAdminScrub(at: time, announce: false)
+        laneSoundPlayer.cancelScheduled()
+        scheduledNoteIDs.removeAll()
         globalTime.setDuration(playbackDuration)
         globalTime.seek(to: time, from: source)
         // Audio and chart automatically seek via globalTime listener
@@ -1231,6 +1235,10 @@ final class PrototypeGameController: ObservableObject {
         isChartAuditionActive = false
         chartPreviewTimerCancellable?.cancel()
         chartPreviewTimerCancellable = nil
+        lookaheadSchedulerTimer?.cancel()
+        lookaheadSchedulerTimer = nil
+        laneSoundPlayer.cancelScheduled()
+        scheduledNoteIDs.removeAll()
         if isChartOnlyPlaybackEnabled {
             stopChartOnlyPlaybackIfNeeded(resetTime: false)
             adminStatusText = "Chart-only playback off"
@@ -1962,15 +1970,9 @@ final class PrototypeGameController: ObservableObject {
 
     private func handleChartOnlyPlaybackTick(at time: Double) {
         guard isChartAuditionActive else { return }
-        let previousTime = chartPreviewLastAuditionTime ?? (time - 0.02)
-        let dueNotes = session.chart.notes.filter { note in
-            note.time >= previousTime && note.time <= time + 0.02
-        }
-        for note in dueNotes where isLaneAudibleForAdminChartPlayback(note) {
-            laneSoundPlayer.play(lane: note.lane)
-            lastChartPlaybackTriggeredNoteIDs.insert(note.id)
-        }
         chartPreviewLastAuditionTime = time
+        // Notes are now pre-scheduled by the lookahead scheduler with sample-accurate timing
+        // This tick only handles end-of-playback detection and metronome
         if isChartOnlyPlaybackEnabled && time >= max(session.chart.endTime + 0.05, 0.05) {
             stopChartOnlyPlaybackIfNeeded(resetTime: true)
             adminStatusText = "Chart-only playback finished"
@@ -1978,6 +1980,8 @@ final class PrototypeGameController: ObservableObject {
             isChartAuditionActive = false
             chartPreviewTimerCancellable?.cancel()
             chartPreviewTimerCancellable = nil
+            lookaheadSchedulerTimer?.cancel()
+            lookaheadSchedulerTimer = nil
         }
     }
 
@@ -2030,6 +2034,32 @@ final class PrototypeGameController: ObservableObject {
                 self.handleChartOnlyPlaybackTick(at: time)
                 self.syncTransportState()
             }
+        startLookaheadScheduler()
+    }
+
+    private func startLookaheadScheduler() {
+        lookaheadSchedulerTimer?.cancel()
+        lookaheadSchedulerTimer = DispatchSource.makeTimerSource(queue: .global(qos: .userInteractive))
+        lookaheadSchedulerTimer?.schedule(deadline: .now(), repeating: .milliseconds(16))
+        lookaheadSchedulerTimer?.setEventHandler { [weak self] in
+            self?.scheduleDueNotes()
+        }
+        lookaheadSchedulerTimer?.resume()
+    }
+
+    private func scheduleDueNotes() {
+        let now = activeTransportTime
+        let window = now + 0.05
+        let due = session.chart.notes.filter {
+            $0.time >= now && $0.time <= window && !scheduledNoteIDs.contains($0.id)
+        }
+        for note in due where isLaneAudibleForAdminChartPlayback(note) {
+            scheduledNoteIDs.insert(note.id)
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                self.laneSoundPlayer.play(lane: note.lane, at: note.time, anchorSampleTime: self.audio.anchorSampleTime, currentTime: now)
+            }
+        }
     }
 
     private func auditionNotesNearStepCursor() {
