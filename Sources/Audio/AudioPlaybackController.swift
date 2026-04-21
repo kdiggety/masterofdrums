@@ -80,6 +80,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock {
 
     private var audioFile: AVAudioFile?
     var anchorSampleTime: Int64 = 0
+    private var fileStartTime: TimeInterval = 0
     private var audioFileDuration: TimeInterval = 0
     private let sampleRate = 44100.0
 
@@ -158,11 +159,16 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock {
     private func scheduleAudioFile() {
         guard let audioFile else { return }
         filePlayer.scheduleFile(audioFile, at: nil)
+        fileStartTime = 0
     }
 
     func play() {
         if let audioFile {
-            anchorSampleTime = engine.outputNode.lastRenderTime?.sampleTime ?? 0
+            if let renderTime = engine.outputNode.lastRenderTime {
+                anchorSampleTime = renderTime.sampleTime - Int64(fileStartTime * sampleRate)
+            } else {
+                anchorSampleTime = 0
+            }
             if !filePlayer.isPlaying {
                 try? engine.start()
                 filePlayer.play()
@@ -232,6 +238,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock {
             let targetFrame = AVAudioFramePosition(clamped * sampleRate)
             let remainingFrames = AVAudioFrameCount(max(0, Int64(audioFile!.length) - targetFrame))
             filePlayer.scheduleSegment(audioFile!, startingFrame: targetFrame, frameCount: remainingFrames, at: nil)
+            fileStartTime = clamped
 
             if state == .playing {
                 if let renderTime = engine.outputNode.lastRenderTime {
