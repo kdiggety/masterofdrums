@@ -128,6 +128,7 @@ final class PrototypeGameController: ObservableObject {
     @Published private(set) var isAudioMuted: Bool = false
     @Published private(set) var isChartMuted: Bool = false
     @Published private(set) var isChartAuditionActive: Bool = false
+    private var isInitializing = true
     @Published var adminMutedLaneIDs: Set<String> = []
     @Published var adminSoloedLaneIDs: Set<String> = []
     @Published var adminExtendedLanes: Bool = false {
@@ -300,6 +301,7 @@ final class PrototypeGameController: ObservableObject {
         scene.selectedAdminNoteID = adminSelectedNoteID
         updateAdminHistoryAvailability()
         restoreLastOpenedSessionIfPossible()
+        isInitializing = false
     }
 
     func chooseAudioFile() {
@@ -1989,6 +1991,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func startTransport(at startTime: Double) {
+        guard !isInitializing else { return }
         let hasAudio = audio.loadedTrackName != nil
         let hasChart = !session.chart.notes.isEmpty
         guard hasAudio || hasChart else {

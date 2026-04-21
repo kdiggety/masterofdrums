@@ -96,7 +96,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock {
     }
 
     var currentTime: TimeInterval {
-        if let audioFile {
+        if audioFile != nil {
             guard let renderTime = engine.outputNode.lastRenderTime else { return 0 }
             let elapsedSamples = renderTime.sampleTime - anchorSampleTime
             return TimeInterval(elapsedSamples) / sampleRate
@@ -105,7 +105,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock {
     }
 
     var duration: TimeInterval {
-        if let audioFile {
+        if audioFile != nil {
             return audioFileDuration
         }
         return 0
@@ -163,7 +163,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock {
     }
 
     func play() {
-        if let audioFile {
+        if audioFile != nil {
             if let renderTime = engine.outputNode.lastRenderTime {
                 anchorSampleTime = renderTime.sampleTime - Int64(fileStartTime * sampleRate)
             } else {
@@ -183,7 +183,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock {
     }
 
     func pause() {
-        if let audioFile {
+        if audioFile != nil {
             filePlayer.pause()
             state = .paused
             statusText = "Paused \(loadedTrackName ?? "track")"
@@ -195,7 +195,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock {
     }
 
     func stop() {
-        if let audioFile {
+        if audioFile != nil {
             filePlayer.stop()
             scheduleAudioFile()
             state = .stopped
