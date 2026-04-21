@@ -2048,17 +2048,16 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func scheduleDueNotes() {
-        let now = activeTransportTime
-        let window = now + 0.2
-        let due = session.chart.notes.filter {
-            $0.time >= now && $0.time <= window && !scheduledNoteIDs.contains($0.id)
-        }
-        for note in due where isLaneAudibleForAdminChartPlayback(note) {
-            scheduledNoteIDs.insert(note.id)
-            DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                let currentTime = self.activeTransportTime
-                self.laneSoundPlayer.play(lane: note.lane, at: note.time, anchorSampleTime: self.audio.anchorSampleTime, currentTime: currentTime)
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            let now = self.activeTransportTime
+            let window = now + 0.2
+            let due = self.session.chart.notes.filter {
+                $0.time >= now && $0.time <= window && !self.scheduledNoteIDs.contains($0.id)
+            }
+            for note in due where self.isLaneAudibleForAdminChartPlayback(note) {
+                self.scheduledNoteIDs.insert(note.id)
+                self.laneSoundPlayer.play(lane: note.lane, at: note.time, anchorSampleTime: self.audio.anchorSampleTime, currentTime: now)
             }
         }
     }
