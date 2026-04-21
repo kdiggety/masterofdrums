@@ -2049,7 +2049,7 @@ final class PrototypeGameController: ObservableObject {
 
     private func scheduleDueNotes() {
         let now = activeTransportTime
-        let window = now + 0.05
+        let window = now + 0.2
         let due = session.chart.notes.filter {
             $0.time >= now && $0.time <= window && !scheduledNoteIDs.contains($0.id)
         }
@@ -2057,7 +2057,8 @@ final class PrototypeGameController: ObservableObject {
             scheduledNoteIDs.insert(note.id)
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
-                self.laneSoundPlayer.play(lane: note.lane, at: note.time, anchorSampleTime: self.audio.anchorSampleTime, currentTime: now)
+                let currentTime = self.activeTransportTime
+                self.laneSoundPlayer.play(lane: note.lane, at: note.time, anchorSampleTime: self.audio.anchorSampleTime, currentTime: currentTime)
             }
         }
     }
