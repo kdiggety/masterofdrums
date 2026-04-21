@@ -83,6 +83,7 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock {
     private var fileStartTime: TimeInterval = 0
     private var audioFileDuration: TimeInterval = 0
     private let sampleRate = 44100.0
+    private var frozenTime: TimeInterval = 0
 
     override init() {
         super.init()
@@ -97,6 +98,9 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock {
 
     var currentTime: TimeInterval {
         if audioFile != nil {
+            if state == .paused {
+                return frozenTime
+            }
             guard let renderTime = engine.outputNode.lastRenderTime else { return 0 }
             let elapsedSamples = renderTime.sampleTime - anchorSampleTime
             return TimeInterval(elapsedSamples) / sampleRate
@@ -164,8 +168,9 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock {
 
     func play() {
         if audioFile != nil {
+            let startTime = state == .paused ? frozenTime : fileStartTime
             if let renderTime = engine.outputNode.lastRenderTime {
-                anchorSampleTime = renderTime.sampleTime - Int64(fileStartTime * sampleRate)
+                anchorSampleTime = renderTime.sampleTime - Int64(startTime * sampleRate)
             } else {
                 anchorSampleTime = 0
             }
@@ -184,6 +189,9 @@ final class AudioPlaybackController: NSObject, ObservableObject, PlaybackClock {
 
     func pause() {
         if audioFile != nil {
+            guard let renderTime = engine.outputNode.lastRenderTime else { return }
+            let elapsedSamples = renderTime.sampleTime - anchorSampleTime
+            frozenTime = TimeInterval(elapsedSamples) / sampleRate
             filePlayer.pause()
             state = .paused
             statusText = "Paused \(loadedTrackName ?? "track")"
