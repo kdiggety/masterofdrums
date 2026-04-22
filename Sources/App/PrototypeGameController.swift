@@ -1981,7 +1981,8 @@ final class PrototypeGameController: ObservableObject {
         isChartOnlyPlaybackEnabled = false
         isChartAuditionActive = false
         chartPreviewClock.stop()
-        audio.engine.stop()
+        // Keep audio engine running in chart-only mode to preserve renderTime continuity.
+        // Only stop scheduling samples, don't stop the engine.
         playbackTimerCancellable?.cancel()
         playbackTimerCancellable = nil
         playbackStartWallTime = nil
