@@ -1982,6 +1982,7 @@ final class PrototypeGameController: ObservableObject {
         isChartAuditionActive = false
         chartPreviewClock.stop()
         audio.engine.stop()
+        laneSoundPlayer.clearPlaybackSessionAnchor()
         playbackTimerCancellable?.cancel()
         playbackTimerCancellable = nil
         playbackStartWallTime = nil

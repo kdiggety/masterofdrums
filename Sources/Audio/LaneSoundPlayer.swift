@@ -21,10 +21,19 @@ final class LaneSoundPlayer {
     }
 
     func setPlaybackSessionAnchor(globalTime: Double) {
-        guard let renderTime = engine.outputNode.lastRenderTime else { return }
+        guard let renderTime = engine.outputNode.lastRenderTime else {
+            print("[LANEPLAY] Cannot set anchor: NO renderTime available! engine.isRunning=\(engine.isRunning)")
+            return
+        }
         playbackSessionStartSampleTime = renderTime.sampleTime
         playbackSessionStartGlobalTime = globalTime
         print("[LANEPLAY] Set session anchor: globalTime=\(String(format: "%.3f", globalTime)) sampleTime=\(renderTime.sampleTime)")
+    }
+
+    func clearPlaybackSessionAnchor() {
+        playbackSessionStartSampleTime = nil
+        playbackSessionStartGlobalTime = nil
+        print("[LANEPLAY] Cleared session anchor")
     }
 
     func play(lane: Lane) {
