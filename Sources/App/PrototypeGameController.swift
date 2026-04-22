@@ -1245,6 +1245,7 @@ final class PrototypeGameController: ObservableObject {
         isChartAuditionActive = false
         playbackTimerCancellable?.cancel()
         playbackTimerCancellable = nil
+        playbackStartWallTime = nil
         lookaheadSchedulerTimer?.cancel()
         lookaheadSchedulerTimer = nil
         laneSoundPlayer.cancelScheduled()
