@@ -1297,7 +1297,7 @@ final class PrototypeGameController: ObservableObject {
             isChartAuditionActive = !isChartMuted
             chartPreviewClock.play()
             if !isChartMuted {
-                startChartPreviewTimer()
+                startPlaybackTimer()
             }
             refreshAdminVisibleNotes(at: startTime)
             adminStatusText = "Chart-only playback on at \(displayPositionText(for: startTime))"
@@ -1322,7 +1322,7 @@ final class PrototypeGameController: ObservableObject {
         } else if activeTransportState == .playing && !session.chart.notes.isEmpty {
             isChartAuditionActive = true
             chartPreviewLastAuditionTime = max(0, activeTransportTime - 0.02)
-            startChartPreviewTimer()
+            startPlaybackTimer()
         }
         adminStatusText = isChartMuted ? "Chart muted" : chartLaneFilterStatusText(base: "Chart unmuted")
         refocusGameplay()
