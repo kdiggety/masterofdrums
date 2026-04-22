@@ -196,7 +196,9 @@ final class PrototypeGameController: ObservableObject {
     private var lastMetronomeSubdivisionIndex: Int?
     private var lastChartPlaybackTriggeredNoteIDs: Set<UUID> = []
     private var chartPreviewLastAuditionTime: Double?
-    private var chartPreviewTimerCancellable: AnyCancellable?
+    private var playbackTimerCancellable: AnyCancellable?
+    private var playbackStartWallTime: Date?
+    private var playbackStartGlobalTime: Double = 0
     private var lookaheadSchedulerTimer: DispatchSourceTimer?
     private var scheduledNoteIDs: Set<UUID> = []
     private let completionGracePeriod: TimeInterval = 0.5
@@ -291,7 +293,7 @@ final class PrototypeGameController: ObservableObject {
             .store(in: &cancellables)
 
         lookaheadSchedulerTimer?.cancel()
-        chartPreviewTimerCancellable?.cancel()
+        playbackTimerCancellable?.cancel()
 
         syncState()
         updateStepCursorDisplay()
@@ -1241,8 +1243,8 @@ final class PrototypeGameController: ObservableObject {
     }
     func pauseTransport() {
         isChartAuditionActive = false
-        chartPreviewTimerCancellable?.cancel()
-        chartPreviewTimerCancellable = nil
+        playbackTimerCancellable?.cancel()
+        playbackTimerCancellable = nil
         lookaheadSchedulerTimer?.cancel()
         lookaheadSchedulerTimer = nil
         laneSoundPlayer.cancelScheduled()
@@ -1307,8 +1309,8 @@ final class PrototypeGameController: ObservableObject {
         isChartMuted.toggle()
         if isChartMuted {
             isChartAuditionActive = false
-            chartPreviewTimerCancellable?.cancel()
-            chartPreviewTimerCancellable = nil
+            playbackTimerCancellable?.cancel()
+            playbackTimerCancellable = nil
         } else if activeTransportState == .playing && !session.chart.notes.isEmpty {
             isChartAuditionActive = true
             chartPreviewLastAuditionTime = max(0, activeTransportTime - 0.02)
@@ -1955,8 +1957,8 @@ final class PrototypeGameController: ObservableObject {
         isChartOnlyPlaybackEnabled = false
         isChartAuditionActive = false
         isChartAuditionActive = false
-        chartPreviewTimerCancellable?.cancel()
-        chartPreviewTimerCancellable = nil
+        playbackTimerCancellable?.cancel()
+        playbackTimerCancellable = nil
         lastChartPlaybackTriggeredNoteIDs.removeAll()
         chartPreviewLastAuditionTime = nil
         lastMetronomeSubdivisionIndex = nil
@@ -1987,8 +1989,8 @@ final class PrototypeGameController: ObservableObject {
             adminStatusText = "Chart-only playback finished"
         } else if !isChartOnlyPlaybackEnabled && activeTransportState != .playing {
             isChartAuditionActive = false
-            chartPreviewTimerCancellable?.cancel()
-            chartPreviewTimerCancellable = nil
+            playbackTimerCancellable?.cancel()
+            playbackTimerCancellable = nil
             lookaheadSchedulerTimer?.cancel()
             lookaheadSchedulerTimer = nil
         }
@@ -2040,8 +2042,8 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func startChartPreviewTimer() {
-        chartPreviewTimerCancellable?.cancel()
-        chartPreviewTimerCancellable = Timer.publish(every: 1.0 / 60.0, on: .main, in: .common)
+        playbackTimerCancellable?.cancel()
+        playbackTimerCancellable = Timer.publish(every: 1.0 / 60.0, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 guard let self else { return }
