@@ -2097,7 +2097,10 @@ final class PrototypeGameController: ObservableObject {
                     print("[TIMER] fire #\(timerFireCount) newTime=\(String(format: "%.3f", newTime))")
                 }
                 self.globalTime.seek(to: newTime, from: .playback)
-                self.syncTransportState()
+                // Only update UI state every 6 frames (~10Hz) to reduce main-thread load
+                if timerFireCount % 6 == 0 {
+                    self.syncTransportState()
+                }
             }
         startLookaheadScheduler()
     }
