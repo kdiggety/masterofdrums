@@ -21,9 +21,14 @@ final class LaneSoundPlayer {
         schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
     }
 
-    func play(lane: Lane, at noteTime: Double, anchorSampleTime: Int64, currentTime: Double) {
-        let sampleOffset = Int64((noteTime - currentTime) * sampleRate)
-        let targetSampleTime = anchorSampleTime + sampleOffset
+    func play(lane: Lane, at noteTime: Double, currentTime: Double) {
+        guard let renderTime = engine.outputNode.lastRenderTime else {
+            schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
+            return
+        }
+        let secondsAhead = noteTime - currentTime
+        let samplesAhead = Int64(round(secondsAhead * sampleRate))
+        let targetSampleTime = renderTime.sampleTime + samplesAhead
         let audioTime = AVAudioTime(sampleTime: targetSampleTime, atRate: sampleRate)
         schedule(buffer: makeBuffer(for: lane), at: audioTime, interrupt: false)
     }

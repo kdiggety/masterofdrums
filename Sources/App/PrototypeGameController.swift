@@ -2055,6 +2055,9 @@ final class PrototypeGameController: ObservableObject {
             try? audio.engine.start()
             if let renderTime = audio.engine.outputNode.lastRenderTime {
                 audio.anchorSampleTime = renderTime.sampleTime - Int64(startTime * 44100.0)
+                print("[START] chart-only mode: startTime=\(String(format: "%.3f", startTime)) renderTime.sampleTime=\(renderTime.sampleTime) anchorSampleTime=\(audio.anchorSampleTime)")
+            } else {
+                print("[START] chart-only mode: NO renderTime available!")
             }
             chartPreviewClock.play()
         }
@@ -2065,6 +2068,11 @@ final class PrototypeGameController: ObservableObject {
             scheduledNoteIDs.removeAll()
             chartPreviewLastAuditionTime = startTime - 0.02
             handleChartOnlyPlaybackTick(at: startTime)
+            let firstFiveNotes = session.chart.notes.prefix(5).map { String(format: "%.3f", $0.time) }.joined(separator: ", ")
+            let lastFiveNotes = session.chart.notes.suffix(5).map { String(format: "%.3f", $0.time) }.joined(separator: ", ")
+            print("[START] starting playback: chart notes=\(session.chart.notes.count) globalTime=\(String(format: "%.3f", globalTime.time))")
+            print("[START] first 5 note times: [\(firstFiveNotes)]")
+            print("[START] last 5 note times: [\(lastFiveNotes)]")
             startPlaybackTimer()
             // Schedule notes at current position immediately so they play when playback starts
             scheduleDueNotes()
@@ -2078,11 +2086,16 @@ final class PrototypeGameController: ObservableObject {
 
     private func startPlaybackTimer() {
         playbackTimerCancellable?.cancel()
+        var timerFireCount = 0
         playbackTimerCancellable = Timer.publish(every: 1.0 / 60.0, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 guard let self else { return }
+                timerFireCount += 1
                 let newTime = self.calculateCurrentPlaybackTime()
+                if timerFireCount == 1 || timerFireCount % 60 == 0 {
+                    print("[TIMER] fire #\(timerFireCount) newTime=\(String(format: "%.3f", newTime))")
+                }
                 self.globalTime.seek(to: newTime, from: .playback)
                 self.syncTransportState()
             }
@@ -2093,7 +2106,12 @@ final class PrototypeGameController: ObservableObject {
         lookaheadSchedulerTimer?.cancel()
         lookaheadSchedulerTimer = DispatchSource.makeTimerSource(queue: .global(qos: .userInteractive))
         lookaheadSchedulerTimer?.schedule(deadline: .now(), repeating: .milliseconds(16))
+        var schedulerFireCount = 0
         lookaheadSchedulerTimer?.setEventHandler { [weak self] in
+            schedulerFireCount += 1
+            if schedulerFireCount == 1 || schedulerFireCount % 10 == 0 {
+                print("[LOOKAHEAD] fire #\(schedulerFireCount)")
+            }
             self?.scheduleDueNotes()
         }
         lookaheadSchedulerTimer?.resume()
@@ -2104,12 +2122,18 @@ final class PrototypeGameController: ObservableObject {
             guard let self else { return }
             let now = self.globalTime.time
             let window = now + 0.2
-            let due = self.session.chart.notes.filter {
-                $0.time >= now && $0.time <= window && !self.scheduledNoteIDs.contains($0.id)
+            let allNotes = self.session.chart.notes
+            let inWindow = allNotes.filter { $0.time >= now && $0.time <= window }
+            let due = inWindow.filter { !self.scheduledNoteIDs.contains($0.id) }
+
+            if now < 0.3 {
+                print("[SCHEDULER] now=\(String(format: "%.3f", now)) window=\(String(format: "%.3f", window)) total=\(allNotes.count) inWindow=\(inWindow.count) due=\(due.count) scheduled=\(self.scheduledNoteIDs.count)")
             }
+
             for note in due where self.isLaneAudibleForAdminChartPlayback(note) {
                 self.scheduledNoteIDs.insert(note.id)
-                self.laneSoundPlayer.play(lane: note.lane, at: note.time, anchorSampleTime: self.audio.anchorSampleTime, currentTime: now)
+                print("[SCHEDULER] scheduling note at \(String(format: "%.3f", note.time)) lane=\(note.lane.id)")
+                self.laneSoundPlayer.play(lane: note.lane, at: note.time, currentTime: now)
             }
         }
     }
