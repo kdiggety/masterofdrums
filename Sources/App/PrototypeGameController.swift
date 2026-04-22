@@ -1242,6 +1242,9 @@ final class PrototypeGameController: ObservableObject {
         startTransport(at: adminScrubPreviewTime ?? activeTransportTime)
     }
     func pauseTransport() {
+        // Save current position before clearing playback anchors
+        let frozenPosition = globalTime.time
+
         isChartAuditionActive = false
         playbackTimerCancellable?.cancel()
         playbackTimerCancellable = nil
@@ -1257,6 +1260,9 @@ final class PrototypeGameController: ObservableObject {
         } else {
             audio.pause()
         }
+
+        // Restore the frozen position so it doesn't reset to bar 1
+        globalTime.seek(to: frozenPosition, from: .external)
         syncTransportState()
         refocusGameplay()
     }
@@ -1812,6 +1818,10 @@ final class PrototypeGameController: ObservableObject {
             }
             if isAdminAuthoringActive {
                 if wasPlaying {
+                    // Update playback timer anchors so it continues from the new position
+                    playbackStartGlobalTime = stepCursorTime
+                    playbackStartWallTime = Date()
+
                     adminScrubPreviewTime = nil
                     adminScrubPreviewTargetTime = nil
                     refreshAdminVisibleNotes(at: stepCursorTime)
