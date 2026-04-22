@@ -11,13 +11,14 @@ help:
 build:
 	swift build
 
-clean-build: clean build
+clean-build:
+	swift package clean && swift build
 
 run:
-	swift run masterofdrums
+	swift run MasterOfDrums
 
 test:
 	swift test
 
 clean:
-	rm -rf .build
+	swift package clean
