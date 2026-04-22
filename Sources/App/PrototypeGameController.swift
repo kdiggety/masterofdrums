@@ -2052,7 +2052,13 @@ final class PrototypeGameController: ObservableObject {
             chartPreviewClock.stop()
             isChartOnlyPlaybackEnabled = true
             // Start audio engine for sample-accurate note scheduling in chart-only mode
-            try? audio.engine.start()
+            do {
+                try audio.engine.start()
+                print("[START] chart-only mode: engine started successfully")
+            } catch {
+                print("[START] chart-only mode: Failed to start engine: \(error)")
+                return
+            }
             if let renderTime = audio.engine.outputNode.lastRenderTime {
                 audio.anchorSampleTime = renderTime.sampleTime - Int64(startTime * 44100.0)
                 print("[START] chart-only mode: startTime=\(String(format: "%.3f", startTime)) renderTime.sampleTime=\(renderTime.sampleTime) anchorSampleTime=\(audio.anchorSampleTime)")

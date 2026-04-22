@@ -22,7 +22,12 @@ final class LaneSoundPlayer {
 
     func play(lane: Lane, at noteTime: Double, currentTime: Double) {
         if !engine.isRunning {
-            try? engine.start()
+            do {
+                try engine.start()
+                print("[LANEPLAY] Restarted engine")
+            } catch {
+                print("[LANEPLAY] Failed to restart engine: \(error)")
+            }
         }
         guard let renderTime = engine.outputNode.lastRenderTime else {
             print("[LANEPLAY] NO renderTime! engine.isRunning=\(engine.isRunning)")
