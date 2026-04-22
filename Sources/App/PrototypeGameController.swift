@@ -1961,6 +1961,7 @@ final class PrototypeGameController: ObservableObject {
         isChartOnlyPlaybackEnabled = false
         isChartAuditionActive = false
         chartPreviewClock.stop()
+        audio.engine.stop()
         playbackTimerCancellable?.cancel()
         playbackTimerCancellable = nil
         playbackStartWallTime = nil
@@ -2030,7 +2031,8 @@ final class PrototypeGameController: ObservableObject {
         } else {
             chartPreviewClock.stop()
             isChartOnlyPlaybackEnabled = true
-            // Capture engine time for sample-accurate note scheduling in chart-only mode
+            // Start audio engine for sample-accurate note scheduling in chart-only mode
+            try? audio.engine.start()
             if let renderTime = audio.engine.outputNode.lastRenderTime {
                 audio.anchorSampleTime = renderTime.sampleTime - Int64(startTime * 44100.0)
             }
