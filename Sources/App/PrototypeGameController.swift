@@ -1955,21 +1955,19 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func stopChartOnlyPlaybackIfNeeded(resetTime: Bool) {
-        guard isChartOnlyPlaybackEnabled else { return }
-        chartPreviewClock.pause()
-        if resetTime {
-            chartPreviewClock.stop()
-        }
         adminScrubPreviewTime = nil
         adminScrubPreviewTargetTime = nil
         isChartOnlyPlaybackEnabled = false
         isChartAuditionActive = false
-        isChartAuditionActive = false
         playbackTimerCancellable?.cancel()
         playbackTimerCancellable = nil
+        playbackStartWallTime = nil
         lastChartPlaybackTriggeredNoteIDs.removeAll()
         chartPreviewLastAuditionTime = nil
         lastMetronomeSubdivisionIndex = nil
+        if resetTime {
+            globalTime.reset(from: .external)
+        }
     }
 
     private func handleMetronomeTick(at time: Double) {
