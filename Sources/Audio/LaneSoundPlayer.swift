@@ -23,7 +23,7 @@ final class LaneSoundPlayer {
 
     func play(lane: Lane, at noteTime: Double, currentTime: Double) {
         guard let renderTime = engine.outputNode.lastRenderTime else {
-            print("[LANEPLAY] NO renderTime available, scheduling at nil")
+            print("[LANEPLAY] NO renderTime! engine.isRunning=\(engine.isRunning) player.isPlaying=\(player.isPlaying)")
             schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
             return
         }
