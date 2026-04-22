@@ -1023,6 +1023,13 @@ final class PrototypeGameController: ObservableObject {
         finalizeAdminScrub(at: time, announce: false)
         laneSoundPlayer.cancelScheduled()
         scheduledNoteIDs.removeAll()
+
+        // Update playback timer anchors if playing, so timer continues from new position
+        if activeTransportState == .playing {
+            playbackStartGlobalTime = time
+            playbackStartWallTime = Date()
+        }
+
         globalTime.setDuration(playbackDuration)
         globalTime.seek(to: time, from: source)
         // Audio and chart automatically seek via globalTime listener
@@ -1821,6 +1828,9 @@ final class PrototypeGameController: ObservableObject {
                     // Update playback timer anchors so it continues from the new position
                     playbackStartGlobalTime = stepCursorTime
                     playbackStartWallTime = Date()
+
+                    // Clear scheduled notes so they can be re-scheduled at the new position
+                    scheduledNoteIDs.removeAll()
 
                     adminScrubPreviewTime = nil
                     adminScrubPreviewTargetTime = nil
