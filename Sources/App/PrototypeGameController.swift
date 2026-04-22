@@ -2066,6 +2066,8 @@ final class PrototypeGameController: ObservableObject {
             chartPreviewLastAuditionTime = startTime - 0.02
             handleChartOnlyPlaybackTick(at: startTime)
             startPlaybackTimer()
+            // Schedule notes at current position immediately so they play when playback starts
+            scheduleDueNotes()
         } else {
             isChartAuditionActive = false
         }
