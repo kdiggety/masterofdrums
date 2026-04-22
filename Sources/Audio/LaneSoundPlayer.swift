@@ -7,6 +7,10 @@ final class LaneSoundPlayer {
     private let format: AVAudioFormat
     private let sampleRate: Double
 
+    // Track playback session anchor to survive engine stop/start cycles
+    private var playbackSessionStartSampleTime: Int64?
+    private var playbackSessionStartGlobalTime: Double?
+
     init(engine: AVAudioEngine) {
         self.engine = engine
         self.format = AVAudioFormat(standardFormatWithSampleRate: 44_100, channels: 1)!
@@ -14,6 +18,13 @@ final class LaneSoundPlayer {
 
         engine.attach(player)
         engine.connect(player, to: engine.mainMixerNode, format: format)
+    }
+
+    func setPlaybackSessionAnchor(globalTime: Double) {
+        guard let renderTime = engine.outputNode.lastRenderTime else { return }
+        playbackSessionStartSampleTime = renderTime.sampleTime
+        playbackSessionStartGlobalTime = globalTime
+        print("[LANEPLAY] Set session anchor: globalTime=\(String(format: "%.3f", globalTime)) sampleTime=\(renderTime.sampleTime)")
     }
 
     func play(lane: Lane) {
@@ -29,16 +40,27 @@ final class LaneSoundPlayer {
                 print("[LANEPLAY] Failed to restart engine: \(error)")
             }
         }
-        guard let renderTime = engine.outputNode.lastRenderTime else {
-            print("[LANEPLAY] NO renderTime! engine.isRunning=\(engine.isRunning)")
+
+        // Use session anchor to calculate sample-accurate time, independent of renderTime resets
+        guard let sessionStartSampleTime = playbackSessionStartSampleTime,
+              let sessionStartGlobalTime = playbackSessionStartGlobalTime else {
+            print("[LANEPLAY] NO session anchor! engine.isRunning=\(engine.isRunning)")
             schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
             return
         }
+
+        // Calculate elapsed time since session started
+        let elapsedInSession = currentTime - sessionStartGlobalTime
+        let elapsedSamples = Int64(round(elapsedInSession * sampleRate))
+        let currentSessionSampleTime = sessionStartSampleTime + elapsedSamples
+
+        // Calculate how far ahead the note is
         let secondsAhead = noteTime - currentTime
         let samplesAhead = Int64(round(secondsAhead * sampleRate))
-        let targetSampleTime = renderTime.sampleTime + samplesAhead
+        let targetSampleTime = currentSessionSampleTime + samplesAhead
+
         let audioTime = AVAudioTime(sampleTime: targetSampleTime, atRate: sampleRate)
-        print("[LANEPLAY] noteTime=\(String(format: "%.3f", noteTime)) current=\(String(format: "%.3f", currentTime)) secondsAhead=\(String(format: "%.3f", secondsAhead)) renderTime.sampleTime=\(renderTime.sampleTime) targetSampleTime=\(targetSampleTime)")
+        print("[LANEPLAY] noteTime=\(String(format: "%.3f", noteTime)) current=\(String(format: "%.3f", currentTime)) target=\(targetSampleTime)")
         schedule(buffer: makeBuffer(for: lane), at: audioTime, interrupt: false)
     }
 

@@ -1981,8 +1981,7 @@ final class PrototypeGameController: ObservableObject {
         isChartOnlyPlaybackEnabled = false
         isChartAuditionActive = false
         chartPreviewClock.stop()
-        // Keep audio engine running in chart-only mode to preserve renderTime continuity.
-        // Only stop scheduling samples, don't stop the engine.
+        audio.engine.stop()
         playbackTimerCancellable?.cancel()
         playbackTimerCancellable = nil
         playbackStartWallTime = nil
@@ -2075,6 +2074,10 @@ final class PrototypeGameController: ObservableObject {
             scheduledNoteIDs.removeAll()
             chartPreviewLastAuditionTime = startTime - 0.02
             handleChartOnlyPlaybackTick(at: startTime)
+
+            // Set playback session anchor so sample scheduling survives engine stop/restart
+            laneSoundPlayer.setPlaybackSessionAnchor(globalTime: startTime)
+
             let firstFiveNotes = session.chart.notes.prefix(5).map { String(format: "%.3f", $0.time) }.joined(separator: ", ")
             let lastFiveNotes = session.chart.notes.suffix(5).map { String(format: "%.3f", $0.time) }.joined(separator: ", ")
             print("[START] starting playback: chart notes=\(session.chart.notes.count) globalTime=\(String(format: "%.3f", globalTime.time))")
