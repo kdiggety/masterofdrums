@@ -1261,8 +1261,8 @@ final class PrototypeGameController: ObservableObject {
             audio.pause()
         }
 
-        // Restore the frozen position so it doesn't reset to bar 1
-        globalTime.seek(to: frozenPosition, from: .external)
+        // Lock the frozen position so syncTransportState doesn't reset it
+        adminScrubPreviewTime = frozenPosition
         syncTransportState()
         refocusGameplay()
     }
