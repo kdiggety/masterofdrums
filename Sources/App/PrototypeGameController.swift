@@ -1960,6 +1960,7 @@ final class PrototypeGameController: ObservableObject {
         adminScrubPreviewTargetTime = nil
         isChartOnlyPlaybackEnabled = false
         isChartAuditionActive = false
+        chartPreviewClock.stop()
         playbackTimerCancellable?.cancel()
         playbackTimerCancellable = nil
         playbackStartWallTime = nil
