@@ -2118,12 +2118,14 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func scheduleDueNotes() {
+        let now = globalTime.time
+        let window = now + 0.2
+        let allNotes = session.chart.notes
+        let inWindow = allNotes.filter { $0.time >= now && $0.time <= window }
+
+        // Dispatch state mutation to main thread, audio scheduling to background
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-            let now = self.globalTime.time
-            let window = now + 0.2
-            let allNotes = self.session.chart.notes
-            let inWindow = allNotes.filter { $0.time >= now && $0.time <= window }
             let due = inWindow.filter { !self.scheduledNoteIDs.contains($0.id) }
 
             if now < 0.3 {
@@ -2133,6 +2135,7 @@ final class PrototypeGameController: ObservableObject {
             for note in due where self.isLaneAudibleForAdminChartPlayback(note) {
                 self.scheduledNoteIDs.insert(note.id)
                 print("[SCHEDULER] scheduling note at \(String(format: "%.3f", note.time)) lane=\(note.lane.id)")
+                // Schedule audio on background thread to avoid blocking main UI
                 self.laneSoundPlayer.play(lane: note.lane, at: note.time, currentTime: now)
             }
         }

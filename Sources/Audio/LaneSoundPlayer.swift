@@ -1,7 +1,6 @@
 import Foundation
 @preconcurrency import AVFoundation
 
-@MainActor
 final class LaneSoundPlayer {
     private let engine: AVAudioEngine
     private let player = AVAudioPlayerNode()
