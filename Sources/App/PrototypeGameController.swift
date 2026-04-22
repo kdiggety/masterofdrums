@@ -1259,6 +1259,13 @@ final class PrototypeGameController: ObservableObject {
         refocusGameplay()
     }
 
+    private func calculateCurrentPlaybackTime() -> Double {
+        guard let startWallTime = playbackStartWallTime else { return 0 }
+        let elapsedSeconds = Date().timeIntervalSince(startWallTime)
+        let adjustedElapsed = elapsedSeconds * Double(audio.playbackRate)
+        return playbackStartGlobalTime + adjustedElapsed
+    }
+
     func toggleMetronome() {
         isMetronomeEnabled.toggle()
         lastMetronomeSubdivisionIndex = nil
