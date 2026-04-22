@@ -1246,6 +1246,7 @@ final class PrototypeGameController: ObservableObject {
         playbackTimerCancellable?.cancel()
         playbackTimerCancellable = nil
         playbackStartWallTime = nil
+        playbackStartGlobalTime = 0
         lookaheadSchedulerTimer?.cancel()
         lookaheadSchedulerTimer = nil
         laneSoundPlayer.cancelScheduled()
@@ -1962,6 +1963,7 @@ final class PrototypeGameController: ObservableObject {
         playbackTimerCancellable?.cancel()
         playbackTimerCancellable = nil
         playbackStartWallTime = nil
+        playbackStartGlobalTime = 0
         lastChartPlaybackTriggeredNoteIDs.removeAll()
         chartPreviewLastAuditionTime = nil
         lastMetronomeSubdivisionIndex = nil
