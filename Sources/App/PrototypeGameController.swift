@@ -2048,14 +2048,14 @@ final class PrototypeGameController: ObservableObject {
         refocusGameplay()
     }
 
-    private func startChartPreviewTimer() {
+    private func startPlaybackTimer() {
         playbackTimerCancellable?.cancel()
         playbackTimerCancellable = Timer.publish(every: 1.0 / 60.0, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 guard let self else { return }
-                let time = self.activeTransportTime
-                self.handleChartOnlyPlaybackTick(at: time)
+                let newTime = self.calculateCurrentPlaybackTime()
+                self.globalTime.seek(to: newTime, from: .playback)
                 self.syncTransportState()
             }
         startLookaheadScheduler()
