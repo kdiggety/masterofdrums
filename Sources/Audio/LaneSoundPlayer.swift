@@ -23,6 +23,7 @@ final class LaneSoundPlayer {
 
     func play(lane: Lane, at noteTime: Double, currentTime: Double) {
         guard let renderTime = engine.outputNode.lastRenderTime else {
+            print("[LANEPLAY] NO renderTime available, scheduling at nil")
             schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
             return
         }
@@ -30,6 +31,7 @@ final class LaneSoundPlayer {
         let samplesAhead = Int64(round(secondsAhead * sampleRate))
         let targetSampleTime = renderTime.sampleTime + samplesAhead
         let audioTime = AVAudioTime(sampleTime: targetSampleTime, atRate: sampleRate)
+        print("[LANEPLAY] noteTime=\(String(format: "%.3f", noteTime)) current=\(String(format: "%.3f", currentTime)) secondsAhead=\(String(format: "%.3f", secondsAhead)) renderTime.sampleTime=\(renderTime.sampleTime) targetSampleTime=\(targetSampleTime)")
         schedule(buffer: makeBuffer(for: lane), at: audioTime, interrupt: false)
     }
 
