@@ -18,6 +18,8 @@ final class LaneSoundPlayer {
 
         engine.attach(player)
         engine.connect(player, to: engine.mainMixerNode, format: format)
+        // Initialize player node state by stopping it - ensures clean state before first play
+        player.stop()
     }
 
     func setPlaybackSessionAnchor(globalTime: Double) {
