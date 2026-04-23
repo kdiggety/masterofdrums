@@ -71,34 +71,10 @@ final class LaneSoundPlayer {
             return
         }
 
-        // If just started (currentTime very close to sessionStartGlobalTime), schedule at nil (asap)
-        // to ensure first notes play before the render loop advances too far
-        let timeSinceSessionStart = currentTime - sessionStartGlobalTime
-        if timeSinceSessionStart < 0.05 {
-            print("[PLAY]   ⚡ First note - scheduling at nil (asap) to ensure playback")
-            schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
-            return
-        }
-
-        // Calculate elapsed time since session started
-        let elapsedInSession = currentTime - sessionStartGlobalTime
-        let elapsedSamples = Int64(round(elapsedInSession * sampleRate))
-        let currentSessionSampleTime = sessionStartSampleTime + elapsedSamples
-
-        // Calculate how far ahead the note is, but ensure minimum lookahead buffer
-        // (scheduling at current/past sample time doesn't work - audio engine needs lookahead)
-        let secondsAhead = noteTime - currentTime
-        let minLookaheadSeconds: Double = 0.005  // 5ms minimum - one audio frame at 200Hz
-        let secondsAheadWithBuffer = max(minLookaheadSeconds, secondsAhead)
-        let samplesAhead = Int64(round(secondsAheadWithBuffer * sampleRate))
-        let targetSampleTime = currentSessionSampleTime + samplesAhead
-
-        let audioTime = AVAudioTime(sampleTime: targetSampleTime, atRate: sampleRate)
-        print("[PLAY]   ✓ Scheduling with anchor:")
-        print("[PLAY]      sessionStart=\(sessionStartSampleTime) current=\(currentSessionSampleTime)")
-        print("[PLAY]      noteTime=\(String(format: "%.3f", noteTime)) ahead=\(secondsAhead)s (buffered to \(secondsAheadWithBuffer)s)")
-        print("[PLAY]      samplesAhead=\(samplesAhead) targetSampleTime=\(targetSampleTime)")
-        schedule(buffer: makeBuffer(for: lane), at: audioTime, interrupt: false)
+        // Use nil scheduling (asap) - the lookahead scheduler ensures buffers are queued with lookahead
+        // Sample-time scheduling doesn't work on first playback, but nil scheduling does
+        print("[PLAY]   ✓ Scheduling at nil (asap) - lookahead scheduler provides timing")
+        schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
     }
 
     func playMetronome(isDownbeat: Bool) {
