@@ -71,6 +71,15 @@ final class LaneSoundPlayer {
             return
         }
 
+        // If just started (currentTime very close to sessionStartGlobalTime), schedule at nil (asap)
+        // to ensure first notes play before the render loop advances too far
+        let timeSinceSessionStart = currentTime - sessionStartGlobalTime
+        if timeSinceSessionStart < 0.05 {
+            print("[PLAY]   ⚡ First note - scheduling at nil (asap) to ensure playback")
+            schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
+            return
+        }
+
         // Calculate elapsed time since session started
         let elapsedInSession = currentTime - sessionStartGlobalTime
         let elapsedSamples = Int64(round(elapsedInSession * sampleRate))
