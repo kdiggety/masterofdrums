@@ -22,12 +22,16 @@ final class LaneSoundPlayer {
 
     func setPlaybackSessionAnchor(globalTime: Double) {
         guard let renderTime = engine.outputNode.lastRenderTime else {
-            print("[LANEPLAY] Cannot set anchor: NO renderTime available! engine.isRunning=\(engine.isRunning)")
+            print("[ANCHOR] ✗ Cannot set anchor: NO renderTime available! engine.isRunning=\(engine.isRunning) player.isPlaying=\(player.isPlaying)")
             return
         }
         playbackSessionStartSampleTime = renderTime.sampleTime
         playbackSessionStartGlobalTime = globalTime
-        print("[LANEPLAY] Set session anchor: globalTime=\(String(format: "%.3f", globalTime)) sampleTime=\(renderTime.sampleTime)")
+        print("[ANCHOR] ✓ Set session anchor:")
+        print("[ANCHOR]   globalTime=\(String(format: "%.3f", globalTime))")
+        print("[ANCHOR]   renderTime.sampleTime=\(renderTime.sampleTime)")
+        print("[ANCHOR]   engine.isRunning=\(engine.isRunning)")
+        print("[ANCHOR]   player.isPlaying=\(player.isPlaying)")
     }
 
     func clearPlaybackSessionAnchor() {
@@ -41,19 +45,24 @@ final class LaneSoundPlayer {
     }
 
     func play(lane: Lane, at noteTime: Double, currentTime: Double) {
+        print("[PLAY] noteTime=\(String(format: "%.3f", noteTime)) currentTime=\(String(format: "%.3f", currentTime))")
+        print("[PLAY]   engine.isRunning=\(engine.isRunning) player.isPlaying=\(player.isPlaying)")
+
         if !engine.isRunning {
             do {
                 try engine.start()
-                print("[LANEPLAY] Restarted engine")
+                print("[PLAY]   ✓ Restarted engine")
             } catch {
-                print("[LANEPLAY] Failed to restart engine: \(error)")
+                print("[PLAY]   ✗ Failed to restart engine: \(error)")
+                return
             }
         }
 
         // Use session anchor to calculate sample-accurate time, independent of renderTime resets
         guard let sessionStartSampleTime = playbackSessionStartSampleTime,
               let sessionStartGlobalTime = playbackSessionStartGlobalTime else {
-            print("[LANEPLAY] NO session anchor! engine.isRunning=\(engine.isRunning)")
+            print("[PLAY]   ✗ NO session anchor! scheduling at nil (asap)")
+            print("[PLAY]      engine.isRunning=\(engine.isRunning) player.isPlaying=\(player.isPlaying)")
             schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
             return
         }
@@ -69,7 +78,10 @@ final class LaneSoundPlayer {
         let targetSampleTime = currentSessionSampleTime + samplesAhead
 
         let audioTime = AVAudioTime(sampleTime: targetSampleTime, atRate: sampleRate)
-        print("[LANEPLAY] noteTime=\(String(format: "%.3f", noteTime)) current=\(String(format: "%.3f", currentTime)) target=\(targetSampleTime)")
+        print("[PLAY]   ✓ Scheduling with anchor:")
+        print("[PLAY]      sessionStart=\(sessionStartSampleTime) current=\(currentSessionSampleTime)")
+        print("[PLAY]      noteTime=\(String(format: "%.3f", noteTime)) ahead=\(secondsAhead)s samplesAhead=\(samplesAhead)")
+        print("[PLAY]      targetSampleTime=\(targetSampleTime)")
         schedule(buffer: makeBuffer(for: lane), at: audioTime, interrupt: false)
     }
 
@@ -83,13 +95,28 @@ final class LaneSoundPlayer {
     }
 
     private func schedule(buffer: AVAudioPCMBuffer, at time: AVAudioTime?, interrupt: Bool) {
+        print("[SCHEDULE] ⟳ scheduling buffer at=\(time?.description ?? "nil") interrupt=\(interrupt)")
+        print("[SCHEDULE]   engine.isRunning=\(engine.isRunning) player.isPlaying=\(player.isPlaying)")
+        print("[SCHEDULE]   buffer.frameLength=\(buffer.frameLength) capacity=\(buffer.frameCapacity)")
+
         player.scheduleBuffer(buffer, at: time, options: interrupt ? .interrupts : [], completionHandler: nil)
+        print("[SCHEDULE]   ✓ scheduleBuffer called")
+
         if !engine.isRunning {
-            try? engine.start()
+            do {
+                try engine.start()
+                print("[SCHEDULE]   ✓ engine.start() succeeded")
+            } catch {
+                print("[SCHEDULE]   ✗ engine.start() failed: \(error)")
+            }
         }
+
         if !player.isPlaying {
             player.play()
+            print("[SCHEDULE]   ✓ player.play() called")
         }
+
+        print("[SCHEDULE] ✓ done. engine.isRunning=\(engine.isRunning) player.isPlaying=\(player.isPlaying)")
     }
 
     private func makeBuffer(for lane: Lane) -> AVAudioPCMBuffer {
