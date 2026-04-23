@@ -1985,6 +1985,8 @@ final class PrototypeGameController: ObservableObject {
         laneSoundPlayer.clearPlaybackSessionAnchor()
         playbackTimerCancellable?.cancel()
         playbackTimerCancellable = nil
+        lookaheadSchedulerTimer?.cancel()
+        lookaheadSchedulerTimer = nil
         playbackStartWallTime = nil
         playbackStartGlobalTime = 0
         lastChartPlaybackTriggeredNoteIDs.removeAll()
