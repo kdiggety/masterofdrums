@@ -368,7 +368,7 @@ final class GameplayScene: SKScene {
                 let keyLabel = SKLabelNode()
                 keyLabel.text = key
                 keyLabel.fontColor = .white.withAlphaComponent(0.92)
-                keyLabel.fontSize = lane.presentationLane == .purple ? 22 : 24
+                keyLabel.fontSize = 24
                 keyLabel.position = CGPoint(x: laneFrame.midX, y: hitLineY - 30)
                 keyLabel.verticalAlignmentMode = .center
                 keyLabel.horizontalAlignmentMode = .center
@@ -443,7 +443,7 @@ final class GameplayScene: SKScene {
     private func makeNoteNode(for note: NoteEvent) -> SKShapeNode {
         let displayLane = laneOrder.first(where: { $0.id == note.displayLaneID })
         let presentationLane = displayLane?.presentationLane ?? note.lane
-        let noteSize = CGSize(width: presentationLane == .purple ? 60 : 52, height: presentationLane == .purple ? 14 : 12)
+        let noteSize = CGSize(width: 52, height: 12)
         let noteRect = CGRect(x: -noteSize.width / 2, y: -noteSize.height / 2, width: noteSize.width, height: noteSize.height)
         let node = SKShapeNode(rect: noteRect, cornerRadius: 3)
         node.name = noteNodeNamePrefix + note.id.uuidString
@@ -460,7 +460,7 @@ final class GameplayScene: SKScene {
         let label = SKLabelNode()
         label.text = keyLabelText
         label.fontColor = .white
-        label.fontSize = presentationLane == .purple ? 12 : 11
+        label.fontSize = 11
         label.verticalAlignmentMode = .center
         label.horizontalAlignmentMode = .center
         label.position = CGPoint(x: 0, y: 0)
