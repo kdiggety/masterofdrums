@@ -2079,6 +2079,7 @@ final class PrototypeGameController: ObservableObject {
             handleChartOnlyPlaybackTick(at: startTime)
 
             // Set playback session anchor so sample scheduling survives engine stop/restart
+            print("[START] about to set session anchor, globalTime=\(String(format: "%.3f", startTime))")
             laneSoundPlayer.setPlaybackSessionAnchor(globalTime: startTime)
 
             let firstFiveNotes = session.chart.notes.prefix(5).map { String(format: "%.3f", $0.time) }.joined(separator: ", ")
@@ -2086,9 +2087,12 @@ final class PrototypeGameController: ObservableObject {
             print("[START] starting playback: chart notes=\(session.chart.notes.count) globalTime=\(String(format: "%.3f", globalTime.time))")
             print("[START] first 5 note times: [\(firstFiveNotes)]")
             print("[START] last 5 note times: [\(lastFiveNotes)]")
+            print("[START] about to start playback timer and lookahead scheduler")
             startPlaybackTimer()
             // Schedule notes at current position immediately so they play when playback starts
+            print("[START] about to schedule due notes at startup")
             scheduleDueNotes()
+            print("[START] playback timer and scheduler started, ready for notes")
         } else {
             isChartAuditionActive = false
         }
