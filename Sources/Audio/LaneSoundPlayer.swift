@@ -74,16 +74,19 @@ final class LaneSoundPlayer {
         let elapsedSamples = Int64(round(elapsedInSession * sampleRate))
         let currentSessionSampleTime = sessionStartSampleTime + elapsedSamples
 
-        // Calculate how far ahead the note is
+        // Calculate how far ahead the note is, but ensure minimum lookahead buffer
+        // (scheduling at current/past sample time doesn't work - audio engine needs lookahead)
         let secondsAhead = noteTime - currentTime
-        let samplesAhead = Int64(round(secondsAhead * sampleRate))
+        let minLookaheadSeconds: Double = 0.005  // 5ms minimum - one audio frame at 200Hz
+        let secondsAheadWithBuffer = max(minLookaheadSeconds, secondsAhead)
+        let samplesAhead = Int64(round(secondsAheadWithBuffer * sampleRate))
         let targetSampleTime = currentSessionSampleTime + samplesAhead
 
         let audioTime = AVAudioTime(sampleTime: targetSampleTime, atRate: sampleRate)
         print("[PLAY]   ✓ Scheduling with anchor:")
         print("[PLAY]      sessionStart=\(sessionStartSampleTime) current=\(currentSessionSampleTime)")
-        print("[PLAY]      noteTime=\(String(format: "%.3f", noteTime)) ahead=\(secondsAhead)s samplesAhead=\(samplesAhead)")
-        print("[PLAY]      targetSampleTime=\(targetSampleTime)")
+        print("[PLAY]      noteTime=\(String(format: "%.3f", noteTime)) ahead=\(secondsAhead)s (buffered to \(secondsAheadWithBuffer)s)")
+        print("[PLAY]      samplesAhead=\(samplesAhead) targetSampleTime=\(targetSampleTime)")
         schedule(buffer: makeBuffer(for: lane), at: audioTime, interrupt: false)
     }
 
