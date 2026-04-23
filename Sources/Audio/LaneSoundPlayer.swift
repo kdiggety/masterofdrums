@@ -37,7 +37,9 @@ final class LaneSoundPlayer {
     func clearPlaybackSessionAnchor() {
         playbackSessionStartSampleTime = nil
         playbackSessionStartGlobalTime = nil
-        print("[LANEPLAY] Cleared session anchor")
+        // When stopping, reset the player node so it will play() again when engine restarts
+        player.stop()
+        print("[ANCHOR] ✓ Cleared session anchor and reset player node")
     }
 
     func play(lane: Lane) {
