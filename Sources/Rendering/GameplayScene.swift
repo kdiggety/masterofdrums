@@ -509,7 +509,7 @@ final class GameplayScene: SKScene {
         case .yellow: return .systemYellow
         case .blue: return .systemBlue
         case .green: return .systemGreen
-        case .purple: return .systemPurple
+        case .purple: return NSColor(red: 0.7, green: 0.3, blue: 0.8, alpha: 1.0)
         }
     }
 }

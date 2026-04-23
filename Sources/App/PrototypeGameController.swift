@@ -2057,16 +2057,11 @@ final class PrototypeGameController: ObservableObject {
             // Start audio engine for sample-accurate note scheduling in chart-only mode
             do {
                 try audio.engine.start()
-                print("[START] chart-only mode: engine started successfully")
             } catch {
-                print("[START] chart-only mode: Failed to start engine: \(error)")
                 return
             }
             if let renderTime = audio.engine.outputNode.lastRenderTime {
                 audio.anchorSampleTime = renderTime.sampleTime - Int64(startTime * 44100.0)
-                print("[START] chart-only mode: startTime=\(String(format: "%.3f", startTime)) renderTime.sampleTime=\(renderTime.sampleTime) anchorSampleTime=\(audio.anchorSampleTime)")
-            } else {
-                print("[START] chart-only mode: NO renderTime available!")
             }
             chartPreviewClock.play()
         }
@@ -2079,20 +2074,11 @@ final class PrototypeGameController: ObservableObject {
             handleChartOnlyPlaybackTick(at: startTime)
 
             // Set playback session anchor so sample scheduling survives engine stop/restart
-            print("[START] about to set session anchor, globalTime=\(String(format: "%.3f", startTime))")
             laneSoundPlayer.setPlaybackSessionAnchor(globalTime: startTime)
 
-            let firstFiveNotes = session.chart.notes.prefix(5).map { String(format: "%.3f", $0.time) }.joined(separator: ", ")
-            let lastFiveNotes = session.chart.notes.suffix(5).map { String(format: "%.3f", $0.time) }.joined(separator: ", ")
-            print("[START] starting playback: chart notes=\(session.chart.notes.count) globalTime=\(String(format: "%.3f", globalTime.time))")
-            print("[START] first 5 note times: [\(firstFiveNotes)]")
-            print("[START] last 5 note times: [\(lastFiveNotes)]")
-            print("[START] about to start playback timer and lookahead scheduler")
             startPlaybackTimer()
             // Schedule notes at current position immediately so they play when playback starts
-            print("[START] about to schedule due notes at startup")
             scheduleDueNotes()
-            print("[START] playback timer and scheduler started, ready for notes")
         } else {
             isChartAuditionActive = false
         }
@@ -2110,9 +2096,6 @@ final class PrototypeGameController: ObservableObject {
                 guard let self else { return }
                 timerFireCount += 1
                 let newTime = self.calculateCurrentPlaybackTime()
-                if timerFireCount == 1 || timerFireCount % 60 == 0 {
-                    print("[TIMER] fire #\(timerFireCount) newTime=\(String(format: "%.3f", newTime))")
-                }
                 self.globalTime.seek(to: newTime, from: .playback)
                 // Only update UI state every 6 frames (~10Hz) to reduce main-thread load
                 if timerFireCount % 6 == 0 {
@@ -2129,9 +2112,6 @@ final class PrototypeGameController: ObservableObject {
         var schedulerFireCount = 0
         lookaheadSchedulerTimer?.setEventHandler { [weak self] in
             schedulerFireCount += 1
-            if schedulerFireCount == 1 || schedulerFireCount % 10 == 0 {
-                print("[LOOKAHEAD] fire #\(schedulerFireCount)")
-            }
             self?.scheduleDueNotes()
         }
         lookaheadSchedulerTimer?.resume()
@@ -2148,13 +2128,8 @@ final class PrototypeGameController: ObservableObject {
             guard let self else { return }
             let due = inWindow.filter { !self.scheduledNoteIDs.contains($0.id) }
 
-            if now < 0.3 {
-                print("[SCHEDULER] now=\(String(format: "%.3f", now)) window=\(String(format: "%.3f", window)) total=\(allNotes.count) inWindow=\(inWindow.count) due=\(due.count) scheduled=\(self.scheduledNoteIDs.count)")
-            }
-
             for note in due where self.isLaneAudibleForAdminChartPlayback(note) {
                 self.scheduledNoteIDs.insert(note.id)
-                print("[SCHEDULER] scheduling note at \(String(format: "%.3f", note.time)) lane=\(note.lane.id)")
                 // Schedule audio on background thread to avoid blocking main UI
                 self.laneSoundPlayer.play(lane: note.lane, at: note.time, currentTime: now)
             }

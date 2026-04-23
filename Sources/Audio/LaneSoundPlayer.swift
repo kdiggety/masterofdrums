@@ -24,12 +24,10 @@ final class LaneSoundPlayer {
 
     func setPlaybackSessionAnchor(globalTime: Double) {
         guard let renderTime = engine.outputNode.lastRenderTime else {
-            print("[LANEPLAY] Cannot set anchor: NO renderTime available! engine.isRunning=\(engine.isRunning)")
             return
         }
         playbackSessionStartSampleTime = renderTime.sampleTime
         playbackSessionStartGlobalTime = globalTime
-        print("[LANEPLAY] Set session anchor: globalTime=\(String(format: "%.3f", globalTime)) sampleTime=\(renderTime.sampleTime)")
     }
 
     func clearPlaybackSessionAnchor() {
@@ -37,7 +35,6 @@ final class LaneSoundPlayer {
         playbackSessionStartGlobalTime = nil
         // When stopping, reset the player node so it will play() again when engine restarts
         player.stop()
-        print("[LANEPLAY] Cleared session anchor")
     }
 
     func play(lane: Lane) {
@@ -48,22 +45,19 @@ final class LaneSoundPlayer {
         if !engine.isRunning {
             do {
                 try engine.start()
-                print("[LANEPLAY] Restarted engine")
             } catch {
-                print("[LANEPLAY] Failed to restart engine: \(error)")
+                // Engine restart failed, but schedule anyway
             }
         }
 
-        // Use session anchor to calculate sample-accurate time, independent of renderTime resets
-        guard let sessionStartSampleTime = playbackSessionStartSampleTime,
-              let sessionStartGlobalTime = playbackSessionStartGlobalTime else {
-            print("[LANEPLAY] NO session anchor! engine.isRunning=\(engine.isRunning)")
+        // Session anchor is set but sample-accurate scheduling uses asap (nil) timing
+        guard playbackSessionStartSampleTime != nil,
+              playbackSessionStartGlobalTime != nil else {
             schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
             return
         }
 
         // Schedule buffers asap (nil) - the lookahead scheduler ensures timing with 16ms fires and 200ms lookahead
-        print("[LANEPLAY] noteTime=\(String(format: "%.3f", noteTime)) current=\(String(format: "%.3f", currentTime))")
         schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
     }
 
