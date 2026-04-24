@@ -90,7 +90,6 @@ struct AdminChartEditorView: View {
             .frame(maxWidth: .infinity)
             .frame(height: 352)
             .layoutPriority(1)
-            .padding(.vertical, 12)
 
             // Scrollable sections below gameplay
             ScrollView(.vertical) {
