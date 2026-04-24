@@ -7,7 +7,7 @@ struct AdminChartEditorView: View {
     @State private var editingSectionName: String = ""
     @State private var activeSectionDrag: (id: UUID, edge: SongSectionEdge, anchorTime: Double)?
     @State private var sectionStripTargetTime: Double?
-    @State private var isSessionSetupExpanded = false
+    @State private var isSessionSetupExpanded = true
     @State private var isStepNavigationExpanded = false
     @State private var isTimingSyncExpanded = false
     @State private var isMonitoringExpanded = true
@@ -30,7 +30,7 @@ struct AdminChartEditorView: View {
                         // Fixed transport section at top - never scrolls
                         transportSection
                             .layoutPriority(1)
-                            .frame(height: 380)
+                            .frame(height: 320)
 
                         // Scrollable content area - all other controls and sections
                         ScrollView(.vertical) {
@@ -38,7 +38,7 @@ struct AdminChartEditorView: View {
                                 rightPanel
                             }
                             .frame(width: 244, alignment: .topLeading)
-                            .padding(.top, 10)
+                            .padding(.top, 4)
                             .padding(.bottom, 12)
                         }
                     }
