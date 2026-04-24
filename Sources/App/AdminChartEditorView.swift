@@ -656,7 +656,13 @@ struct DraggableDivider: View {
         }
         .frame(height: 6)
         .contentShape(Rectangle())
-        .cursor(.resizeColumn)
+        .onHover { isHovering in
+            if isHovering {
+                NSCursor.resizeUpDown.push()
+            } else {
+                NSCursor.pop()
+            }
+        }
         .gesture(
             DragGesture()
                 .onChanged { value in
