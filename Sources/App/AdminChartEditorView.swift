@@ -654,15 +654,9 @@ struct DraggableDivider: View {
                 .padding(.horizontal, 12)
             Spacer()
         }
+        .frame(height: 6)
         .contentShape(Rectangle())
-        .onContinuousHover { phase in
-            switch phase {
-            case .active:
-                NSCursor.resizeUpDown.push()
-            case .ended:
-                NSCursor.pop()
-            }
-        }
+        .cursor(.resizeColumn)
         .gesture(
             DragGesture()
                 .onChanged { value in
