@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AdminChartEditorView: View {
     @EnvironmentObject private var game: PrototypeGameController
+    @AppStorage("adminChartGameplayHeight") private var gameplayHeight: Double = 400
     @State private var editingSectionID: UUID?
     @State private var editingSectionName: String = ""
     @State private var activeSectionDrag: (id: UUID, edge: SongSectionEdge, anchorTime: Double)?
@@ -77,7 +78,7 @@ struct AdminChartEditorView: View {
             .layoutPriority(0)
             .frame(maxHeight: 80)
 
-            // Fixed gameplay area - never scrolls
+            // Flexible gameplay area - resizable via divider
             GameplayContainerView(
                 scene: game.scene,
                 focusVersion: game.gameplayFocusVersion,
@@ -88,8 +89,11 @@ struct AdminChartEditorView: View {
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .contentShape(Rectangle())
             .frame(maxWidth: .infinity)
-            .frame(height: 400)
-            .layoutPriority(1)
+            .frame(height: gameplayHeight)
+
+            // Subtle draggable divider
+            DraggableDivider(position: $gameplayHeight)
+                .frame(height: 6)
 
             // Scrollable sections below gameplay
             ScrollView(.vertical) {
@@ -99,7 +103,7 @@ struct AdminChartEditorView: View {
                 .padding(.top, 8)
             }
             .layoutPriority(2)
-            .frame(minHeight: 250, maxHeight: .infinity)
+            .frame(maxHeight: .infinity)
         }
     }
 
@@ -633,5 +637,39 @@ struct AdminChartEditorView: View {
         Button(title, action: action)
             .buttonStyle(BorderedProminentButtonStyle())
             .focusable(false)
+    }
+}
+
+struct DraggableDivider: View {
+    @Binding var position: Double
+    private let minHeight: Double = 250
+    private let maxHeight: Double = 550
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Spacer()
+            RoundedRectangle(cornerRadius: 1.5)
+                .fill(Color.gray.opacity(0.35))
+                .frame(height: 3)
+                .padding(.horizontal, 12)
+            Spacer()
+        }
+        .contentShape(Rectangle())
+        .onContinuousHover { phase in
+            switch phase {
+            case .active:
+                NSCursor.resizeUpDown.push()
+            case .ended:
+                NSCursor.pop()
+            }
+        }
+        .gesture(
+            DragGesture()
+                .onChanged { value in
+                    let delta = value.location.y - value.startLocation.y
+                    let newHeight = position + delta
+                    position = max(minHeight, min(maxHeight, newHeight))
+                }
+        )
     }
 }
