@@ -151,31 +151,12 @@ struct Chart {
             return blueprint
         }
 
-        // Build lanes from notes, avoiding duplicates, then sort by lane order
-        var lanes: [ChartLane] = []
-        var seenSourceLanes = Set<Lane>()
-
-        for note in notes {
-            guard !seenSourceLanes.contains(note.lane) else { continue }
-            seenSourceLanes.insert(note.lane)
-
-            let lane = ChartLane(
-                id: note.lane.displayName.lowercased(),
-                label: note.displayLabel,
-                sourceLane: note.lane,
-                keyLabel: note.lane.keyLabel
-            )
-            lanes.append(lane)
+        // Always include all lanes so beat guides span the full width
+        let allLanes = Lane.allCases.map {
+            ChartLane(id: $0.displayName.lowercased(), label: $0.laneLabel, sourceLane: $0, keyLabel: $0.keyLabel)
         }
 
-        // If no notes, use all lanes
-        if lanes.isEmpty {
-            lanes = Lane.allCases.map {
-                ChartLane(id: $0.displayName.lowercased(), label: $0.laneLabel, sourceLane: $0, keyLabel: $0.keyLabel)
-            }
-        }
-
-        return lanes.sorted { $0.sourceLane.rawValue < $1.sourceLane.rawValue }
+        return allLanes.sorted { $0.sourceLane.rawValue < $1.sourceLane.rawValue }
     }
 
     static let prototype: Chart = {
