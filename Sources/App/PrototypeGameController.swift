@@ -2124,14 +2124,26 @@ final class PrototypeGameController: ObservableObject {
         let inWindow = allNotes.filter { $0.time >= now && $0.time <= window }
 
         // Dispatch state mutation to main thread, audio scheduling to background
+        let fireTime = Date()
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             let due = inWindow.filter { !self.scheduledNoteIDs.contains($0.id) }
 
+            if !due.isEmpty {
+                let dispatchDelay = Date().timeIntervalSince(fireTime) * 1000
+                print("🔊 SCHED: fire \(String(format: "%.3f", now))s → dispatch +\(String(format: "%.1f", dispatchDelay))ms, \(due.count) notes")
+            }
+
+            let schedStart = Date()
             for note in due where self.isLaneAudibleForAdminChartPlayback(note) {
                 self.scheduledNoteIDs.insert(note.id)
                 // Schedule audio on background thread to avoid blocking main UI
                 self.laneSoundPlayer.play(lane: note.lane, at: note.time, currentTime: now)
+            }
+
+            let schedElapsed = Date().timeIntervalSince(schedStart) * 1000
+            if !due.isEmpty && schedElapsed > 0.1 {
+                print("⏱️ SCHED: play() calls took \(String(format: "%.1f", schedElapsed))ms for \(due.count) notes")
             }
         }
     }
