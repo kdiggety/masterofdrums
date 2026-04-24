@@ -75,6 +75,7 @@ struct AdminChartEditorView: View {
                 }
             }
             .layoutPriority(0)
+            .frame(maxHeight: 80)
 
             // Fixed gameplay area - never scrolls
             GameplayContainerView(
@@ -87,7 +88,7 @@ struct AdminChartEditorView: View {
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .contentShape(Rectangle())
             .frame(maxWidth: .infinity)
-            .frame(height: 460)
+            .frame(height: 400)
             .layoutPriority(1)
 
             // Scrollable sections below gameplay
@@ -98,7 +99,7 @@ struct AdminChartEditorView: View {
                 .padding(.top, 8)
             }
             .layoutPriority(2)
-            .frame(maxHeight: .infinity)
+            .frame(minHeight: 250, maxHeight: .infinity)
         }
     }
 
