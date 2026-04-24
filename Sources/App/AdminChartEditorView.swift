@@ -446,7 +446,7 @@ struct AdminChartEditorView: View {
                             }
                         }
                     }
-                    .frame(minHeight: 250, maxHeight: 320)
+                    .frame(minHeight: 250, maxHeight: .infinity)
                     .onChange(of: game.currentPlaybackNoteID) { noteID in
                         guard game.isRecordedNotesAutoscrollEnabled, let noteID else { return }
                         withAnimation(.easeInOut(duration: 0.18)) {
