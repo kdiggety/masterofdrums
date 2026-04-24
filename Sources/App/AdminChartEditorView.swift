@@ -73,7 +73,6 @@ struct AdminChartEditorView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     songSectionsSection
                 }
-                .padding(.bottom, 12)
             }
             .layoutPriority(0)
 
@@ -88,7 +87,7 @@ struct AdminChartEditorView: View {
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .contentShape(Rectangle())
             .frame(maxWidth: .infinity)
-            .frame(height: 352)
+            .frame(height: 280)
             .layoutPriority(1)
 
             // Scrollable sections below gameplay
@@ -96,7 +95,6 @@ struct AdminChartEditorView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     recordedNotesSection
                 }
-                .padding(.top, 12)
             }
             .layoutPriority(0)
         }
