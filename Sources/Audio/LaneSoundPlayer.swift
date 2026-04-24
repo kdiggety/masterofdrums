@@ -98,9 +98,9 @@ final class LaneSoundPlayer {
             noiseMix = 0.72
             amplitude = 0.72
         case .yellow:
-            duration = 0.05
-            frequency = 480
-            noiseMix = 0.90
+            duration = 0.04
+            frequency = 1400
+            noiseMix = 0.75
             amplitude = 0.12
         case .blue:
             duration = 0.10
