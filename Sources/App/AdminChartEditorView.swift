@@ -88,7 +88,7 @@ struct AdminChartEditorView: View {
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .contentShape(Rectangle())
             .frame(maxWidth: .infinity)
-            .frame(height: 440)
+            .frame(height: 308)
             .layoutPriority(1)
             .padding(.vertical, 12)
 
