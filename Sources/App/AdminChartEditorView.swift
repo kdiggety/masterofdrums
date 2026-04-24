@@ -97,7 +97,8 @@ struct AdminChartEditorView: View {
                 }
                 .padding(.top, 8)
             }
-            .layoutPriority(0)
+            .layoutPriority(2)
+            .frame(maxHeight: .infinity)
         }
     }
 
