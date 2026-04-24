@@ -95,6 +95,7 @@ struct AdminChartEditorView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     recordedNotesSection
                 }
+                .padding(.top, 8)
             }
             .layoutPriority(0)
         }
