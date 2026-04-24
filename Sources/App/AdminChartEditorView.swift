@@ -619,7 +619,7 @@ struct AdminChartEditorView: View {
         case .yellow: return .yellow
         case .blue: return .blue
         case .green: return .green
-        case .purple: return Color(red: 0.7, green: 0.3, blue: 0.8)
+        case .purple: return Color(red: 0.5, green: 0.2, blue: 0.6)
         }
     }
 
