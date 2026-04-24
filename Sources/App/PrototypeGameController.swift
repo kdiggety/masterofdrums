@@ -2108,7 +2108,9 @@ final class PrototypeGameController: ObservableObject {
     private func startLookaheadScheduler() {
         lookaheadSchedulerTimer?.cancel()
         lookaheadSchedulerTimer = DispatchSource.makeTimerSource(queue: .global(qos: .userInteractive))
-        lookaheadSchedulerTimer?.schedule(deadline: .now(), repeating: .milliseconds(16))
+        // 32ms interval (~31Hz) to avoid collision with 60Hz main thread timer
+        // Doubled lookahead window (400ms) maintains same time-to-lookahead
+        lookaheadSchedulerTimer?.schedule(deadline: .now(), repeating: .milliseconds(32))
         var schedulerFireCount = 0
         lookaheadSchedulerTimer?.setEventHandler { [weak self] in
             schedulerFireCount += 1
@@ -2119,7 +2121,7 @@ final class PrototypeGameController: ObservableObject {
 
     private func scheduleDueNotes() {
         let now = globalTime.time
-        let window = now + 0.2
+        let window = now + 0.4
         let allNotes = session.chart.notes
         let inWindow = allNotes.filter { $0.time >= now && $0.time <= window }
 
@@ -2131,7 +2133,8 @@ final class PrototypeGameController: ObservableObject {
 
             if !due.isEmpty {
                 let dispatchDelay = Date().timeIntervalSince(fireTime) * 1000
-                print("🔊 SCHED: fire \(String(format: "%.3f", now))s → dispatch +\(String(format: "%.1f", dispatchDelay))ms, \(due.count) notes")
+                let timingMarker = dispatchDelay > 20 ? "⚠️" : "✓"
+                print("\(timingMarker) SCHED: fire \(String(format: "%.3f", now))s → delay \(String(format: "%.1f", dispatchDelay))ms, \(due.count) notes")
             }
 
             let schedStart = Date()
@@ -2142,7 +2145,7 @@ final class PrototypeGameController: ObservableObject {
             }
 
             let schedElapsed = Date().timeIntervalSince(schedStart) * 1000
-            if !due.isEmpty && schedElapsed > 0.1 {
+            if !due.isEmpty && schedElapsed > 0.5 {
                 print("⏱️ SCHED: play() calls took \(String(format: "%.1f", schedElapsed))ms for \(due.count) notes")
             }
         }
