@@ -87,7 +87,7 @@ struct AdminChartEditorView: View {
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .contentShape(Rectangle())
             .frame(maxWidth: .infinity)
-            .frame(height: 420)
+            .frame(height: 460)
             .layoutPriority(1)
 
             // Scrollable sections below gameplay
