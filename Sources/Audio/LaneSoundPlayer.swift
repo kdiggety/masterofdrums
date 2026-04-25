@@ -50,19 +50,7 @@ final class LaneSoundPlayer {
             }
         }
 
-        // Calculate sample-accurate time from current engine render time
-        guard let renderTime = engine.outputNode.lastRenderTime else {
-            schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
-            return
-        }
-
-        // Offset = (noteTime - currentTime) in seconds → samples
-        let offsetSeconds = noteTime - currentTime
-        let offsetSamples = Int64(offsetSeconds * sampleRate)
-        let targetSampleTime = renderTime.sampleTime + offsetSamples
-        let audioTime = AVAudioTime(sampleTime: targetSampleTime, atRate: sampleRate)
-
-        schedule(buffer: makeBuffer(for: lane), at: audioTime, interrupt: false)
+        schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
     }
 
     func playMetronome(isDownbeat: Bool) {
