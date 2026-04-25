@@ -50,15 +50,19 @@ final class LaneSoundPlayer {
             }
         }
 
-        // Session anchor is set but sample-accurate scheduling uses asap (nil) timing
-        guard playbackSessionStartSampleTime != nil,
-              playbackSessionStartGlobalTime != nil else {
+        // Calculate sample-accurate time from current engine render time
+        guard let renderTime = engine.outputNode.lastRenderTime else {
             schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
             return
         }
 
-        // Schedule buffers asap (nil) - the lookahead scheduler ensures timing with 16ms fires and 200ms lookahead
-        schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
+        // Offset = (noteTime - currentTime) in seconds → samples
+        let offsetSeconds = noteTime - currentTime
+        let offsetSamples = Int64(offsetSeconds * sampleRate)
+        let targetSampleTime = renderTime.sampleTime + offsetSamples
+        let audioTime = AVAudioTime(sampleTime: targetSampleTime, atRate: sampleRate)
+
+        schedule(buffer: makeBuffer(for: lane), at: audioTime, interrupt: false)
     }
 
     func playMetronome(isDownbeat: Bool) {
