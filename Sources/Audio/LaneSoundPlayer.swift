@@ -6,6 +6,7 @@ final class LaneSoundPlayer {
     private let player = AVAudioPlayerNode()
     private let format: AVAudioFormat
     private let sampleRate: Double
+    private var sampleCache: [Lane: AVAudioPCMBuffer] = [:]
 
     // Track playback session anchor to survive engine stop/start cycles
     private var playbackSessionStartSampleTime: Int64?
@@ -38,9 +39,9 @@ final class LaneSoundPlayer {
     }
 
     func play(lane: Lane) {
-        // Synthesize on background thread, schedule on main
+        // Load sample or synthesize on background thread, schedule on main
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            let buffer = self?.makeBuffer(for: lane)
+            let buffer = self?.getBuffer(for: lane)
             DispatchQueue.main.async {
                 guard let buffer else { return }
                 self?.schedule(buffer: buffer, at: nil, interrupt: false)
@@ -57,9 +58,9 @@ final class LaneSoundPlayer {
             }
         }
 
-        // Synthesize on background thread, schedule on main
+        // Load sample or synthesize on background thread, schedule on main
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            let buffer = self?.makeBuffer(for: lane)
+            let buffer = self?.getBuffer(for: lane)
             DispatchQueue.main.async {
                 guard let buffer else { return }
                 self?.schedule(buffer: buffer, at: nil, interrupt: false)
@@ -89,6 +90,43 @@ final class LaneSoundPlayer {
         }
         if !player.isPlaying {
             player.play()
+        }
+    }
+
+    private func getBuffer(for lane: Lane) -> AVAudioPCMBuffer? {
+        // Check cache first
+        if let cached = sampleCache[lane] {
+            return cached
+        }
+
+        // Try to load sample file
+        if let sampleBuffer = loadSampleBuffer(for: lane) {
+            sampleCache[lane] = sampleBuffer
+            return sampleBuffer
+        }
+
+        // Fallback to synthesis
+        return makeBuffer(for: lane)
+    }
+
+    private func loadSampleBuffer(for lane: Lane) -> AVAudioPCMBuffer? {
+        let sampleFilenames: [Lane: String] = [
+            .yellow: "Closed-Hi-Hat-1.wav"
+        ]
+
+        guard let filename = sampleFilenames[lane] else { return nil }
+
+        guard let url = Bundle.main.url(forResource: String(filename.dropLast(4)), withExtension: "wav") else {
+            return nil
+        }
+
+        do {
+            let audioFile = try AVAudioFile(forReading: url)
+            let buffer = AVAudioPCMBuffer(pcmFormat: audioFile.processingFormat, frameCapacity: AVAudioFrameCount(audioFile.length))!
+            try audioFile.read(into: buffer)
+            return buffer
+        } catch {
+            return nil
         }
     }
 

@@ -12,7 +12,10 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "MasterOfDrums",
-            path: "Sources"
+            path: "Sources",
+            resources: [
+                .copy("Audio/Samples")
+            ]
         ),
         .testTarget(
             name: "MasterOfDrumsTests",
