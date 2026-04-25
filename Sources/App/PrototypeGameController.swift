@@ -2114,20 +2114,6 @@ final class PrototypeGameController: ObservableObject {
         lookaheadSchedulerTimer = nil
     }
 
-    private func startLookaheadScheduler() {
-        lookaheadSchedulerTimer?.cancel()
-        lookaheadSchedulerTimer = DispatchSource.makeTimerSource(queue: .global(qos: .userInteractive))
-        // 32ms interval (~31Hz) to avoid collision with 60Hz main thread timer
-        // Doubled lookahead window (400ms) maintains same time-to-lookahead
-        lookaheadSchedulerTimer?.schedule(deadline: .now(), repeating: .milliseconds(32))
-        var schedulerFireCount = 0
-        lookaheadSchedulerTimer?.setEventHandler { [weak self] in
-            schedulerFireCount += 1
-            self?.scheduleDueNotes()
-        }
-        lookaheadSchedulerTimer?.resume()
-    }
-
     private func scheduleDueNotes() {
         let now = globalTime.time
         let window = now + 0.2
@@ -2135,16 +2121,9 @@ final class PrototypeGameController: ObservableObject {
         let inWindow = allNotes.filter { $0.time >= now && $0.time <= window }
 
         let due = inWindow.filter { !scheduledNoteIDs.contains($0.id) }
-        if !due.isEmpty {
-            let schedStart = Date()
-            for note in due where isLaneAudibleForAdminChartPlayback(note) {
-                scheduledNoteIDs.insert(note.id)
-                laneSoundPlayers[note.lane]?.play(lane: note.lane, at: note.time, currentTime: now)
-            }
-            let schedElapsed = Date().timeIntervalSince(schedStart) * 1000
-            if schedElapsed > 0.5 {
-                print("⏱️ SCHED: play() calls took \(String(format: "%.1f", schedElapsed))ms for \(due.count) notes @ \(String(format: "%.3f", now))s")
-            }
+        for note in due where isLaneAudibleForAdminChartPlayback(note) {
+            scheduledNoteIDs.insert(note.id)
+            laneSoundPlayers[note.lane]?.play(lane: note.lane, at: note.time, currentTime: now)
         }
     }
 
