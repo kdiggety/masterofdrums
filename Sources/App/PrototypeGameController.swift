@@ -2101,8 +2101,13 @@ final class PrototypeGameController: ObservableObject {
                 if timerFireCount % 6 == 0 {
                     self.syncTransportState()
                 }
+                // Schedule notes due in lookahead window directly on main thread (no dispatch)
+                // Fires ~60Hz which naturally pre-schedules notes with 400ms lookahead
+                self.scheduleDueNotes()
             }
-        startLookaheadScheduler()
+        // Cancel background lookahead scheduler - integrated into 60Hz timer above
+        lookaheadSchedulerTimer?.cancel()
+        lookaheadSchedulerTimer = nil
     }
 
     private func startLookaheadScheduler() {
@@ -2121,32 +2126,20 @@ final class PrototypeGameController: ObservableObject {
 
     private func scheduleDueNotes() {
         let now = globalTime.time
-        let window = now + 0.4
+        let window = now + 0.2
         let allNotes = session.chart.notes
         let inWindow = allNotes.filter { $0.time >= now && $0.time <= window }
 
-        // Dispatch state mutation to main thread, audio scheduling to background
-        let fireTime = Date()
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            let due = inWindow.filter { !self.scheduledNoteIDs.contains($0.id) }
-
-            if !due.isEmpty {
-                let dispatchDelay = Date().timeIntervalSince(fireTime) * 1000
-                let timingMarker = dispatchDelay > 20 ? "⚠️" : "✓"
-                print("\(timingMarker) SCHED: fire \(String(format: "%.3f", now))s → delay \(String(format: "%.1f", dispatchDelay))ms, \(due.count) notes")
-            }
-
+        let due = inWindow.filter { !scheduledNoteIDs.contains($0.id) }
+        if !due.isEmpty {
             let schedStart = Date()
-            for note in due where self.isLaneAudibleForAdminChartPlayback(note) {
-                self.scheduledNoteIDs.insert(note.id)
-                // Schedule audio on background thread to avoid blocking main UI
-                self.laneSoundPlayer.play(lane: note.lane, at: note.time, currentTime: now)
+            for note in due where isLaneAudibleForAdminChartPlayback(note) {
+                scheduledNoteIDs.insert(note.id)
+                laneSoundPlayer.play(lane: note.lane, at: note.time, currentTime: now)
             }
-
             let schedElapsed = Date().timeIntervalSince(schedStart) * 1000
-            if !due.isEmpty && schedElapsed > 0.5 {
-                print("⏱️ SCHED: play() calls took \(String(format: "%.1f", schedElapsed))ms for \(due.count) notes")
+            if schedElapsed > 0.5 {
+                print("⏱️ SCHED: play() calls took \(String(format: "%.1f", schedElapsed))ms for \(due.count) notes @ \(String(format: "%.3f", now))s")
             }
         }
     }
