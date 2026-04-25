@@ -38,7 +38,14 @@ final class LaneSoundPlayer {
     }
 
     func play(lane: Lane) {
-        schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
+        // Synthesize on background thread, schedule on main
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let buffer = self?.makeBuffer(for: lane)
+            DispatchQueue.main.async {
+                guard let buffer else { return }
+                self?.schedule(buffer: buffer, at: nil, interrupt: false)
+            }
+        }
     }
 
     func play(lane: Lane, at noteTime: Double, currentTime: Double) {
@@ -50,11 +57,24 @@ final class LaneSoundPlayer {
             }
         }
 
-        schedule(buffer: makeBuffer(for: lane), at: nil, interrupt: false)
+        // Synthesize on background thread, schedule on main
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let buffer = self?.makeBuffer(for: lane)
+            DispatchQueue.main.async {
+                guard let buffer else { return }
+                self?.schedule(buffer: buffer, at: nil, interrupt: false)
+            }
+        }
     }
 
     func playMetronome(isDownbeat: Bool) {
-        schedule(buffer: makeMetronomeBuffer(isDownbeat: isDownbeat), at: nil, interrupt: false)
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let buffer = self?.makeMetronomeBuffer(isDownbeat: isDownbeat)
+            DispatchQueue.main.async {
+                guard let buffer else { return }
+                self?.schedule(buffer: buffer, at: nil, interrupt: false)
+            }
+        }
     }
 
     func cancelScheduled() {
