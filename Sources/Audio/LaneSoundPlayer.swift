@@ -111,21 +111,29 @@ final class LaneSoundPlayer {
 
     private func loadSampleBuffer(for lane: Lane) -> AVAudioPCMBuffer? {
         let sampleFilenames: [Lane: String] = [
-            .yellow: "Closed-Hi-Hat-1.wav"
+            .yellow: "Sources/Audio/Samples/Closed-Hi-Hat-1.wav"
         ]
 
-        guard let filename = sampleFilenames[lane] else { return nil }
+        guard let relativePath = sampleFilenames[lane] else {
+            return nil
+        }
 
-        guard let url = Bundle.main.url(forResource: String(filename.dropLast(4)), withExtension: "wav") else {
+        let url = URL(fileURLWithPath: relativePath)
+
+        guard FileManager.default.fileExists(atPath: url.path) else {
+            print("❌ Sample file not found at: \(url.path)")
             return nil
         }
 
         do {
             let audioFile = try AVAudioFile(forReading: url)
+            print("✅ Loaded \(lane) sample: \(audioFile.length) frames @ \(audioFile.processingFormat.sampleRate)Hz")
             let buffer = AVAudioPCMBuffer(pcmFormat: audioFile.processingFormat, frameCapacity: AVAudioFrameCount(audioFile.length))!
             try audioFile.read(into: buffer)
+            print("✅ Buffered \(buffer.frameLength) frames for \(lane)")
             return buffer
         } catch {
+            print("❌ Error loading \(lane) sample: \(error)")
             return nil
         }
     }
