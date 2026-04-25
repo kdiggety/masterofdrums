@@ -191,7 +191,11 @@ final class PrototypeGameController: ObservableObject {
     private let inputRouter: InputRouter
     private let midiLoader = MIDIChartLoader()
     private let chartFileStore = ChartFileStore()
-    private lazy var laneSoundPlayer = LaneSoundPlayer(engine: audio.engine)
+    private lazy var laneSoundPlayers: [Lane: LaneSoundPlayer] = {
+        Dictionary(uniqueKeysWithValues: Lane.allCases.map { lane in
+            (lane, LaneSoundPlayer(engine: audio.engine))
+        })
+    }()
     private let chartPreviewClock = PreviewPlaybackClock()
     private var lastMetronomeSubdivisionIndex: Int?
     private var lastChartPlaybackTriggeredNoteIDs: Set<UUID> = []
@@ -1021,7 +1025,7 @@ final class PrototypeGameController: ObservableObject {
 
     func seekTransport(to time: Double, from source: TimeChangeSource = .external) {
         finalizeAdminScrub(at: time, announce: false)
-        laneSoundPlayer.cancelScheduled()
+        Lane.allCases.forEach { laneSoundPlayers[$0]?.cancelScheduled() }
         scheduledNoteIDs.removeAll()
 
         // Update playback timer anchors if playing, so timer continues from new position
@@ -1259,7 +1263,7 @@ final class PrototypeGameController: ObservableObject {
         playbackStartGlobalTime = 0
         lookaheadSchedulerTimer?.cancel()
         lookaheadSchedulerTimer = nil
-        laneSoundPlayer.cancelScheduled()
+        Lane.allCases.forEach { laneSoundPlayers[$0]?.cancelScheduled() }
         scheduledNoteIDs.removeAll()
         if isChartOnlyPlaybackEnabled {
             stopChartOnlyPlaybackIfNeeded(resetTime: false)
@@ -1613,7 +1617,7 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func handleInput(_ event: InputEvent) {
-        laneSoundPlayer.play(lane: event.lane)
+        laneSoundPlayers[event.lane]?.play(lane: event.lane)
         if isAdminAuthoringActive {
             if isAdminRecordMode {
                 let note = NoteEvent(lane: event.lane, time: event.timestamp)
@@ -1982,7 +1986,7 @@ final class PrototypeGameController: ObservableObject {
         isChartAuditionActive = false
         chartPreviewClock.stop()
         audio.engine.stop()
-        laneSoundPlayer.clearPlaybackSessionAnchor()
+        Lane.allCases.forEach { laneSoundPlayers[$0]?.clearPlaybackSessionAnchor() }
         playbackTimerCancellable?.cancel()
         playbackTimerCancellable = nil
         lookaheadSchedulerTimer?.cancel()
@@ -2009,7 +2013,7 @@ final class PrototypeGameController: ObservableObject {
         guard isBeat else { return }
         let beatIndex = subdivisionIndex / max(stepResolution.subdivisionsPerBeat, 1)
         let isDownbeat = beatIndex % max(beatsPerBar, 1) == 0
-        laneSoundPlayer.playMetronome(isDownbeat: isDownbeat)
+        laneSoundPlayers[.purple]?.playMetronome(isDownbeat: isDownbeat)
     }
 
     private func handleChartOnlyPlaybackTick(at time: Double) {
@@ -2074,7 +2078,7 @@ final class PrototypeGameController: ObservableObject {
             handleChartOnlyPlaybackTick(at: startTime)
 
             // Set playback session anchor so sample scheduling survives engine stop/restart
-            laneSoundPlayer.setPlaybackSessionAnchor(globalTime: startTime)
+            Lane.allCases.forEach { laneSoundPlayers[$0]?.setPlaybackSessionAnchor(globalTime: startTime) }
 
             startPlaybackTimer()
             // Schedule notes at current position immediately so they play when playback starts
@@ -2135,7 +2139,7 @@ final class PrototypeGameController: ObservableObject {
             let schedStart = Date()
             for note in due where isLaneAudibleForAdminChartPlayback(note) {
                 scheduledNoteIDs.insert(note.id)
-                laneSoundPlayer.play(lane: note.lane, at: note.time, currentTime: now)
+                laneSoundPlayers[note.lane]?.play(lane: note.lane, at: note.time, currentTime: now)
             }
             let schedElapsed = Date().timeIntervalSince(schedStart) * 1000
             if schedElapsed > 0.5 {
@@ -2148,7 +2152,7 @@ final class PrototypeGameController: ObservableObject {
         let targetTime = quantizedStepCursorTime()
         let notes = session.chart.notes.filter { abs($0.time - targetTime) <= max(stepInterval * 0.45, 0.02) }
         for note in notes where isLaneAudibleForAdminChartPlayback(note) {
-            laneSoundPlayer.play(lane: note.lane)
+            laneSoundPlayers[note.lane]?.play(lane: note.lane)
         }
     }
 
