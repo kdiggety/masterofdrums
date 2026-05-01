@@ -85,12 +85,12 @@ final class LaneSoundPlayer {
     }
 
     private func schedule(buffer: AVAudioPCMBuffer, lane: Lane?, at time: AVAudioTime?, interrupt: Bool) {
-        // Determine if we should interrupt based on sample duration
+        // Determine if we should interrupt based on lane type
         let shouldInterrupt: Bool
         if let lane = lane {
-            // Long samples (>1s) should interrupt previous notes
-            let durationSeconds = Double(buffer.frameLength) / sampleRate
-            shouldInterrupt = durationSeconds > 1.0
+            // Green lane (crash/open hi-hat) always interrupts
+            // Others (kicks, snares, toms) don't interrupt
+            shouldInterrupt = (lane == .green)
         } else {
             shouldInterrupt = interrupt
         }
