@@ -143,3 +143,21 @@ Run tests frequently during audio changes — regressions are easy on timing-cri
 - Per-lane players are lightweight (one AVAudioPlayerNode each)
 - Metronome uses same audio engine (doesn't interrupt, queues naturally)
 
+## 🧠 Autonomous Self-Improvement & Learning
+
+At the end of each session, learnings are reviewed and patterns that should become persistent guidance are identified. This section documents those learnings so that future Claude sessions can apply them immediately.
+
+### Session Learnings (updated 2026-04-25)
+
+**Audio Timing:**
+- Lookahead scheduling on 60Hz main thread (not background threads) keeps audio in sync with UI
+- Per-lane AVAudioPlayerNode instances prevent cross-lane blocking
+- Sample-accurate scheduling with AVAudioTime causes lag — use nil scheduling + synthesize on background instead
+- Green lane (crash) interrupts to handle repeated notes; other lanes queue naturally
+- Volume adjustments: Apply AFTER synthesis to buffer copies, not during synthesis
+
+**Testing & Iteration:**
+- Test on specific patterns: repeated note clusters (Blinding Lights bar 5-7), double kicks, rapid samples
+- Mute/solo button consistency requires matching lane IDs across UI, button handlers, and filtering logic — use `Lane.displayName.lowercased()` everywhere
+- When timing regresses, revert immediately and try different approach — don't iterate on broken paths
+
