@@ -127,11 +127,34 @@ final class LaneSoundPlayer {
 
         do {
             let audioFile = try AVAudioFile(forReading: url)
-            print("✅ Loaded \(lane) sample: \(audioFile.length) frames @ \(audioFile.processingFormat.sampleRate)Hz")
-            let buffer = AVAudioPCMBuffer(pcmFormat: audioFile.processingFormat, frameCapacity: AVAudioFrameCount(audioFile.length))!
-            try audioFile.read(into: buffer)
-            print("✅ Buffered \(buffer.frameLength) frames for \(lane)")
-            return buffer
+            print("✅ Loaded \(lane) sample: \(audioFile.length) frames @ \(audioFile.processingFormat.sampleRate)Hz, channels: \(audioFile.processingFormat.channelCount)")
+
+            // Read into original format first
+            let originalBuffer = AVAudioPCMBuffer(pcmFormat: audioFile.processingFormat, frameCapacity: AVAudioFrameCount(audioFile.length))!
+            try audioFile.read(into: originalBuffer)
+
+            // Convert to player format if needed
+            if audioFile.processingFormat.channelCount != format.channelCount {
+                print("⚠️ Converting from \(audioFile.processingFormat.channelCount) channels to \(format.channelCount) channels")
+                let convertedBuffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: originalBuffer.frameLength)!
+
+                // Simple mono conversion: if stereo, mix channels; if mono, use as-is
+                if audioFile.processingFormat.channelCount == 2 && format.channelCount == 1 {
+                    // Mix stereo to mono
+                    let sourceL = originalBuffer.floatChannelData![0]
+                    let sourceR = originalBuffer.floatChannelData![1]
+                    let dest = convertedBuffer.floatChannelData![0]
+                    for i in 0..<Int(originalBuffer.frameLength) {
+                        dest[i] = (sourceL[i] + sourceR[i]) * 0.5
+                    }
+                }
+                convertedBuffer.frameLength = originalBuffer.frameLength
+                print("✅ Converted to \(format.channelCount) channels, \(convertedBuffer.frameLength) frames")
+                return convertedBuffer
+            }
+
+            print("✅ Buffered \(originalBuffer.frameLength) frames for \(lane)")
+            return originalBuffer
         } catch {
             print("❌ Error loading \(lane) sample: \(error)")
             return nil
