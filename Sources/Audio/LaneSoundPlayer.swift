@@ -96,13 +96,21 @@ final class LaneSoundPlayer {
     private func getBuffer(for lane: Lane) -> AVAudioPCMBuffer? {
         // Check cache first
         if let cached = sampleCache[lane] {
-            return cached
+            // Create a copy of the cached buffer to allow simultaneous playback
+            let copy = AVAudioPCMBuffer(pcmFormat: cached.format, frameCapacity: cached.frameLength)!
+            copy.frameLength = cached.frameLength
+            memcpy(copy.floatChannelData![0], cached.floatChannelData![0], Int(cached.frameLength) * MemoryLayout<Float>.size)
+            return copy
         }
 
         // Try to load sample file
         if let sampleBuffer = loadSampleBuffer(for: lane) {
             sampleCache[lane] = sampleBuffer
-            return sampleBuffer
+            // Return a copy for this playback
+            let copy = AVAudioPCMBuffer(pcmFormat: sampleBuffer.format, frameCapacity: sampleBuffer.frameLength)!
+            copy.frameLength = sampleBuffer.frameLength
+            memcpy(copy.floatChannelData![0], sampleBuffer.floatChannelData![0], Int(sampleBuffer.frameLength) * MemoryLayout<Float>.size)
+            return copy
         }
 
         // Fallback to synthesis
