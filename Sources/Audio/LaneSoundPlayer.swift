@@ -136,7 +136,7 @@ final class LaneSoundPlayer {
         let scale: Float
         switch lane {
         case .green:
-            scale = 0.7  // 30% reduction = 70% of original
+            scale = 0.5  // 50% reduction = 50% of original
         default:
             scale = 1.0  // No change
         }
