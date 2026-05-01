@@ -111,7 +111,8 @@ final class LaneSoundPlayer {
 
     private func loadSampleBuffer(for lane: Lane) -> AVAudioPCMBuffer? {
         let sampleFilenames: [Lane: String] = [
-            .yellow: "Sources/Audio/Samples/Closed-Hi-Hat-1.wav"
+            .yellow: "Sources/Audio/Samples/Closed-Hi-Hat-1.wav",
+            .green: "Sources/Audio/Samples/Yamaha-TG100-Ride-Cymbal.wav"
         ]
 
         guard let relativePath = sampleFilenames[lane] else {
