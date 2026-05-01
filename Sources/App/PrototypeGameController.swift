@@ -2136,11 +2136,12 @@ final class PrototypeGameController: ObservableObject {
     }
 
     private func isLaneAudibleForAdminChartPlayback(_ note: NoteEvent) -> Bool {
-        let laneID = note.displayLaneID.isEmpty ? note.lane.displayName.lowercased() : note.displayLaneID
+        // Use Lane enum directly (not displayLaneID which uses note labels)
+        let laneLowercased = note.lane.displayName.lowercased()
         if !adminSoloedLaneIDs.isEmpty {
-            return adminSoloedLaneIDs.contains(laneID)
+            return adminSoloedLaneIDs.contains(laneLowercased)
         }
-        return !adminMutedLaneIDs.contains(laneID)
+        return !adminMutedLaneIDs.contains(laneLowercased)
     }
 
     private func chartLaneFilterStatusText(base: String) -> String {
