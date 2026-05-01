@@ -44,7 +44,7 @@ final class LaneSoundPlayer {
             let buffer = self?.getBuffer(for: lane)
             DispatchQueue.main.async {
                 guard let buffer else { return }
-                self?.schedule(buffer: buffer, at: nil, interrupt: true)
+                self?.schedule(buffer: buffer, lane: lane, at: nil, interrupt: false)
             }
         }
     }
@@ -63,7 +63,7 @@ final class LaneSoundPlayer {
             let buffer = self?.getBuffer(for: lane)
             DispatchQueue.main.async {
                 guard let buffer else { return }
-                self?.schedule(buffer: buffer, at: nil, interrupt: true)
+                self?.schedule(buffer: buffer, lane: lane, at: nil, interrupt: false)
             }
         }
     }
@@ -73,7 +73,8 @@ final class LaneSoundPlayer {
             let buffer = self?.makeMetronomeBuffer(isDownbeat: isDownbeat)
             DispatchQueue.main.async {
                 guard let buffer else { return }
-                self?.schedule(buffer: buffer, at: nil, interrupt: true)
+                // Metronome doesn't interrupt
+                self?.schedule(buffer: buffer, lane: nil, at: nil, interrupt: false)
             }
         }
     }
@@ -83,8 +84,18 @@ final class LaneSoundPlayer {
         player.play()
     }
 
-    private func schedule(buffer: AVAudioPCMBuffer, at time: AVAudioTime?, interrupt: Bool) {
-        player.scheduleBuffer(buffer, at: time, options: interrupt ? .interrupts : [], completionHandler: nil)
+    private func schedule(buffer: AVAudioPCMBuffer, lane: Lane?, at time: AVAudioTime?, interrupt: Bool) {
+        // Determine if we should interrupt based on sample duration
+        let shouldInterrupt: Bool
+        if let lane = lane {
+            // Long samples (>1s) should interrupt previous notes
+            let durationSeconds = Double(buffer.frameLength) / sampleRate
+            shouldInterrupt = durationSeconds > 1.0
+        } else {
+            shouldInterrupt = interrupt
+        }
+
+        player.scheduleBuffer(buffer, at: time, options: shouldInterrupt ? .interrupts : [], completionHandler: nil)
         if !engine.isRunning {
             try? engine.start()
         }
@@ -100,6 +111,8 @@ final class LaneSoundPlayer {
             let copy = AVAudioPCMBuffer(pcmFormat: cached.format, frameCapacity: cached.frameLength)!
             copy.frameLength = cached.frameLength
             memcpy(copy.floatChannelData![0], cached.floatChannelData![0], Int(cached.frameLength) * MemoryLayout<Float>.size)
+            // Scale volume for specific lanes
+            scaleVolume(buffer: copy, for: lane)
             return copy
         }
 
@@ -110,11 +123,30 @@ final class LaneSoundPlayer {
             let copy = AVAudioPCMBuffer(pcmFormat: sampleBuffer.format, frameCapacity: sampleBuffer.frameLength)!
             copy.frameLength = sampleBuffer.frameLength
             memcpy(copy.floatChannelData![0], sampleBuffer.floatChannelData![0], Int(sampleBuffer.frameLength) * MemoryLayout<Float>.size)
+            // Scale volume for specific lanes
+            scaleVolume(buffer: copy, for: lane)
             return copy
         }
 
         // Fallback to synthesis
         return makeBuffer(for: lane)
+    }
+
+    private func scaleVolume(buffer: AVAudioPCMBuffer, for lane: Lane) {
+        let scale: Float
+        switch lane {
+        case .green:
+            scale = 0.7  // 30% reduction = 70% of original
+        default:
+            scale = 1.0  // No change
+        }
+
+        guard scale != 1.0 else { return }
+
+        let channel = buffer.floatChannelData![0]
+        for i in 0..<Int(buffer.frameLength) {
+            channel[i] *= scale
+        }
     }
 
     private func loadSampleBuffer(for lane: Lane) -> AVAudioPCMBuffer? {
