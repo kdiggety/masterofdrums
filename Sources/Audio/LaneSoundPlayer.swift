@@ -44,7 +44,7 @@ final class LaneSoundPlayer {
             let buffer = self?.getBuffer(for: lane)
             DispatchQueue.main.async {
                 guard let buffer else { return }
-                self?.schedule(buffer: buffer, at: nil, interrupt: false)
+                self?.schedule(buffer: buffer, at: nil, interrupt: true)
             }
         }
     }
@@ -63,7 +63,7 @@ final class LaneSoundPlayer {
             let buffer = self?.getBuffer(for: lane)
             DispatchQueue.main.async {
                 guard let buffer else { return }
-                self?.schedule(buffer: buffer, at: nil, interrupt: false)
+                self?.schedule(buffer: buffer, at: nil, interrupt: true)
             }
         }
     }
@@ -73,7 +73,7 @@ final class LaneSoundPlayer {
             let buffer = self?.makeMetronomeBuffer(isDownbeat: isDownbeat)
             DispatchQueue.main.async {
                 guard let buffer else { return }
-                self?.schedule(buffer: buffer, at: nil, interrupt: false)
+                self?.schedule(buffer: buffer, at: nil, interrupt: true)
             }
         }
     }
