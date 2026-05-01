@@ -143,9 +143,25 @@ Run tests frequently during audio changes — regressions are easy on timing-cri
 - Per-lane players are lightweight (one AVAudioPlayerNode each)
 - Metronome uses same audio engine (doesn't interrupt, queues naturally)
 
+## Formatting Rules
+1. Never use bulleted lists.
+2. Provide all options, recommendations, and lists using numbered lists (1., 2., 3.).
+3. If a list is short, write it in natural language prose, separated by commas.
+4. When comparing options, use tables or numbered lists.
+
+## Workflow & Code Review
+
+1. **All changes requiring user review must be committed.** Do not leave uncommitted changes when asking for feedback.
+2. **Major changes go to a feature branch.** Create a branch for significant features, refactoring, or audio/timing work.
+3. **Only push to main after user confirms feature works.** Test the feature, get user approval on the branch, then merge to main only after confirmation.
+
 ## 🧠 Autonomous Self-Improvement & Learning
 
-At the end of each session, learnings are reviewed and patterns that should become persistent guidance are identified. This section documents those learnings so that future Claude sessions can apply them immediately.
+At the end of every session or task, you must:
+1. **Review Learnings:** Reflect on your recent interactions, mistakes, and successes. Did we establish a new pattern, fix a recurring issue, or define a new standard?
+2. **Propose Updates:** Review the current instructions in `CLAUDE.md`. If anything is outdated, redundant, or needs to be added, list out the exact changes.
+3. **Draft Modifications:** If an update is necessary, output a proposal using a `[SUGGESTED UPDATE]` block. The user will verify and approve the changes.
+4. **Learn from Feedback:** If the user corrects your approach to a task, immediately distill that correction into a persistent rule for future turns.
 
 ### Session Learnings (updated 2026-04-25)
 
